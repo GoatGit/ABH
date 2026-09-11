@@ -1,0 +1,20 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current Decision seat and earlier approval responsibility revalidation",
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "targetedTests": 55,
+    "failed": 0,
+    "documentLinks": 216,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/current-seat.log",
+  "logSha256": "4cdc391df2275a95bf42fbf6e4dd3dd352690cb34d130c4f394ab695302d500a",
+  "limitations": [
+    "Targeted Decision/Action regression; not a full workspace check.",
+    "Installed eligibility still owns Grant, separation of duties, business conditions and concurrent revocation fence locking.",
+    "ResolveException, Correction, governed unfreeze and complete V1 remain unfinished."
+  ]
+}

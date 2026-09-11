@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Persisted signed structure expectation reader",
+  "checks": {
+    "focusedTests": 5,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Real PostgreSQL Artifact Store Command writes canonical report and Cosign Bundle; reader locks and reads actual bytes.",
+    "Wrong owner, missing report source reference, noncanonical JSON, report replacement, signer rotation and late source withdrawal rejected."
+  ],
+  "limitations": [
+    "Reader authenticates an expectation, not actual migration completion.",
+    "Installed package and deployment authority remain host admissions; no integrated stored-report-to-target runner yet.",
+    "Formal Contracts, data verification, durable actual results and Enable incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-stored-structure-test.log",
+      "sha256": "827ef02a815d98b09d2bb3dfe15b07469b6a30fe973459177066dfae8fcb567f"
+    },
+    {
+      "path": "artifacts/verification/migration-stored-structure-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-stored-structure-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-stored-structure-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-stored-structure-docs.log",
+      "sha256": "25d89cc7e8d2d1bd8111c9ba13a3d3b6ab90c68773d277cd432105e2ffa48515"
+    }
+  ]
+}

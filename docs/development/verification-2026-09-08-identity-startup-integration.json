@@ -1,0 +1,36 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Verified IdP Service identity through actual HTTP service startup and shutdown",
+  "checks": {
+    "focusedTests": 22,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "documentLinks": 222,
+    "containersRemaining": 0
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/identity-startup-integration-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    },
+    {
+      "path": "artifacts/verification/identity-startup-integration-final-tests.log",
+      "sha256": "7b239a54813e58cf07c40869f98d75a1a4b0e33ff4aca92205e0b419344cd2e9"
+    },
+    {
+      "path": "artifacts/verification/identity-startup-integration-tests.log",
+      "sha256": "3953e3ddaca1c26c44d8ef5fec2271c08e9983e5fe4cfd8fda5b5a6eb13a2c4c"
+    },
+    {
+      "path": "artifacts/verification/identity-startup-integration-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "limitations": [
+    "Test and documentation changes only; full Core and workspace checks not rerun.",
+    "IdP and drain Port are explicit fixtures; identity mapping, current membership, database and HTTP socket are real.",
+    "No production IdP or native queue successful business end-to-end acceptance.",
+    "Full V1 remains incomplete."
+  ]
+}

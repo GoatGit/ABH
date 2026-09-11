@@ -1,0 +1,59 @@
+{
+  "status": "SpecificationOnly",
+  "executeAt": [
+    "M0-B",
+    "M0-C"
+  ],
+  "note": "These are future database/runtime test requirements, not executed recovery evidence.",
+  "cases": [
+    {
+      "id": "authority-after-grant-commit",
+      "startingFixtures": [
+        "execution-authority"
+      ],
+      "crashAfter": "Service Grant committed; ExecutionAuthority not yet committed",
+      "requiredObservations": [
+        "Action stays Validated",
+        "retry uses same effectKey and existing Grant",
+        "only one Authority, Audit effect and budget allocation after completion"
+      ]
+    },
+    {
+      "id": "authority-revoked-replay",
+      "startingFixtures": [
+        "revoked-authority-history"
+      ],
+      "crashAfter": "revocation committed before duplicate issuance request",
+      "requiredObservations": [
+        "old receipt returned as historical result",
+        "no new Active Authority",
+        "no new Dispatch Permit"
+      ]
+    },
+    {
+      "id": "pin-commit-before-plan",
+      "startingFixtures": [
+        "action-pin-set"
+      ],
+      "crashAfter": "pinSet committed; Plan not yet compiled",
+      "requiredObservations": [
+        "after new Release, original pinned Connector used",
+        "no placeholder Run or Invocation",
+        "same subject with changed input digest returns PIN_INPUT_CONFLICT",
+        "missing required slot rolls back entire set"
+      ]
+    },
+    {
+      "id": "tenant-pool-reuse",
+      "startingFixtures": [
+        "tenant-context"
+      ],
+      "crashAfter": "tenant A transaction fails or is cancelled",
+      "requiredObservations": [
+        "tenant B sees no A rows on reused connection",
+        "ordinary runtime role cannot bypass RLS or modify Audit",
+        "missing tenant context rejected before data access"
+      ]
+    }
+  ]
+}

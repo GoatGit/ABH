@@ -1,0 +1,16 @@
+{
+  "schema": "TenantContext",
+  "value": {
+    "requestId": "00000000-0000-4000-8000-000000000001",
+    "actingOrganizationId": "00000000-0000-4000-8000-000000000003",
+    "resourceOrganizationId": "00000000-0000-4000-8000-000000000003",
+    "actor": {
+      "type": "Human",
+      "id": "00000000-0000-4000-8000-000000000004"
+    },
+    "purposeOfUse": "abh.internal-publication",
+    "sessionEpoch": 1,
+    "scopeEpoch": 1,
+    "contextExpiresAt": "2026-09-07T00:01:00Z"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "View definitions integrated into signed structural inspection and recovery",
+  "checks": {
+    "focusedTests": 41,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Every inventoried v/m requires unique detailed expected view; missing/duplicate definitions reject.",
+    "View fields participate in expected digest and combined actual result.",
+    "Real signed view definition drift invalidates old saved observation; mismatch persists and revalidates as false."
+  ],
+  "limitations": [
+    "Views still require additional dependency/rule/trigger/materialized-index/ACL verification.",
+    "Detailed shapes remain internal; business data checks and Enable lifecycle incomplete.",
+    "Changed required expectation shape needs newly governed expected digest; no silent legacy acceptance.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-views-integrated-test.log",
+      "sha256": "e1b5000c44e2553cf7abd9d880e6f1019d90dd8ab79b66b943f649e8ee7bcf49"
+    },
+    {
+      "path": "artifacts/verification/migration-views-integrated-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-views-integrated-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-views-integrated-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-views-integrated-docs.log",
+      "sha256": "ed9a9d8fe423f23549f133742f1fe8cefc351791d9e47fa6ee4d015d017e411c"
+    }
+  ]
+}

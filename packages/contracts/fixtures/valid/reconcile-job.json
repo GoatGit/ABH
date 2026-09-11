@@ -1,0 +1,29 @@
+{
+  "schema": "JobEnvelope",
+  "value": {
+    "jobType": "abh.operation.reconcile",
+    "targetRef": {
+      "type": "abh.operation",
+      "id": "00000000-0000-4000-8000-000000000056",
+      "version": 2
+    },
+    "commandRef": {
+      "type": "abh.command",
+      "id": "00000000-0000-4000-8000-000000000050",
+      "version": 1
+    },
+    "dedupeKey": "reconcile-operation-56",
+    "notBefore": "2026-09-07T00:02:00.000001Z",
+    "deadline": "2026-09-07T01:00:00Z",
+    "authorityRef": {
+      "type": "abh.execution-authority",
+      "id": "00000000-0000-4000-8000-000000000060",
+      "version": 1
+    },
+    "causeRef": {
+      "type": "abh.event",
+      "id": "00000000-0000-4000-8000-000000000058",
+      "version": 1
+    }
+  }
+}

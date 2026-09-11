@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-09",
+  "scope": "Suspension scan page actual Artifact command persistence, idempotent lost-ack recovery and fresh-process readback",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "typecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "Test-installed storage/reference policy and identity.",
+    "Persisted pages are evidence, not notification delivery/consumption receipts.",
+    "No automatic job discovery, retirement or compatible query.",
+    "Test-only changes; no full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-pages-docs.log",
+      "sha256": "71633bfe9a9e9bfd94da34766b701ca66201c0e49fca1bbfee749dd1db4d6230"
+    },
+    {
+      "path": "artifacts/verification/suspension-pages-tests.log",
+      "sha256": "3bd7de56232e6fab5dc573e51adb9dca0e83f4d29d130676d23d2eab3429bf90"
+    },
+    {
+      "path": "artifacts/verification/suspension-pages-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Persisted observation revalidation against new actual inspection",
+  "checks": {
+    "focusedTests": 5,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Saved observation read under combined source locks and compared to original real inspection from the same management transaction.",
+    "Historical result from another UoW, tampered matched flag and late source withdrawal rejected.",
+    "Actual extra sequence invalidates earlier matching observation; matching historical/current mismatch remains false."
+  ],
+  "limitations": [
+    "No standalone historical observation validator or signed result; source admission remains host-controlled.",
+    "Host supplies live inspection callback and retains target/authority lifetime.",
+    "No SQL replay or Enable authority; business data verification and lifecycle incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-structure-revalidate-test.log",
+      "sha256": "9e159a2c8cbedb0e34f62cc70ae7797cd2dcbf8ad7129884b518de1b0cf82966"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-revalidate-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-revalidate-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-revalidate-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-revalidate-docs.log",
+      "sha256": "8f9ea570117f6c8b0b8bb7da49ab9f10377888188c21327cd5f969ac8eb7c26e"
+    }
+  ]
+}

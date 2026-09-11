@@ -1,0 +1,55 @@
+{
+  "schema": "EnqueueJobRequest",
+  "value": {
+    "context": {
+      "callId": "00000000-0000-4000-8000-000000000070",
+      "requestContextRef": {
+        "type": "abh.request-context",
+        "id": "00000000-0000-4000-8000-000000000071",
+        "version": 1
+      },
+      "target": {
+        "objectRef": {
+          "type": "abh.operation",
+          "id": "00000000-0000-4000-8000-000000000056",
+          "version": 2
+        },
+        "action": "abh.runtime.enqueue",
+        "scopeRefs": [
+          {
+            "type": "abh.organization",
+            "id": "00000000-0000-4000-8000-000000000003",
+            "version": 1
+          }
+        ]
+      },
+      "deadline": "2026-09-07T00:02:00Z"
+    },
+    "job": {
+      "jobType": "abh.operation.reconcile",
+      "targetRef": {
+        "type": "abh.operation",
+        "id": "00000000-0000-4000-8000-000000000056",
+        "version": 2
+      },
+      "commandRef": {
+        "type": "abh.command",
+        "id": "00000000-0000-4000-8000-000000000050",
+        "version": 1
+      },
+      "dedupeKey": "reconcile-operation-56",
+      "notBefore": "2026-09-07T00:02:00.000001Z",
+      "deadline": "2026-09-07T01:00:00Z",
+      "authorityRef": {
+        "type": "abh.execution-authority",
+        "id": "00000000-0000-4000-8000-000000000060",
+        "version": 1
+      },
+      "causeRef": {
+        "type": "abh.event",
+        "id": "00000000-0000-4000-8000-000000000058",
+        "version": 1
+      }
+    }
+  }
+}

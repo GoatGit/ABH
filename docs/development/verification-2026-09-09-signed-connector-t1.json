@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-09",
+  "scope": "Signed Connector business approval, actual T1 and Permit, one committed Pack dispatch, independent Capture and persistence retry",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreTypecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "Test-installed identity, Grants, governance, Compiler, Domain, Wasm policies and transport; no real Provider.",
+    "Explicit unmetered fixture: empty resource envelope and no reservations.",
+    "Independent query, lifecycle recovery and terminal reconciliation not exercised in this signed chain.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-connector-t1-docs.log",
+      "sha256": "a67f9601838f309e6baaa6cc20bc7cd181d00a662a5b3094e8ef88ffb05a3386"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-t1-tests.log",
+      "sha256": "9d8d9d4ab97a57cfa2d2354f7dbb03f371f61baebaac78922cfb2e9d8305eb51"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-t1-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-11",
+  "subject": "acting/resource organization context and explicit switch UI",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r typecheck",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "workbenchTests": 7,
+    "workbenchPassed": 7,
+    "workbenchFailed": 0,
+    "workbenchTypecheck": "passed",
+    "workbenchNextBuild": "passed",
+    "contractsArtifacts": "51 files matched",
+    "apiEntryPointsChecked": 13,
+    "documentationLinks": 756,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "session separates actingOrganizationId and resourceOrganizationId",
+    "navigation always exposes the current acting and resource organization context",
+    "host adapters may declare stable switchable organization choices",
+    "organization selection cookies are HttpOnly and SameSite=Lax",
+    "cookie selection is treated as an untrusted hint rather than authorization",
+    "identity adapters revalidate membership, workspace and purpose on every request",
+    "organization selection format validation rejects invalid organization or workspace cookies",
+    "query keys partition both acting and resource organization",
+    "default deny-all identity adapter remains fail-closed"
+  ],
+  "limits": [
+    "organization member, purpose, connection and automation governance UI remains open",
+    "browser organization-switch E2E is not implemented yet",
+    "host production identity adapter installation remains mandatory",
+    "JSON Forms is not implemented yet",
+    "ECharts is not implemented yet",
+    "compensation proposal creation remains open",
+    "Settings journey is not implemented yet",
+    "browser accessibility and performance verification remain open",
+    "production process and tenant lifecycle governance remain open"
+  ]
+}

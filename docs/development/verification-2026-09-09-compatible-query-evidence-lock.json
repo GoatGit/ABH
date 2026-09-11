@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-09",
+  "scope": "Compatibility evidence stable through query exit admission and commit",
+  "tests": {
+    "actions": {
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "limitations": [
+    "Actual signed replacement Pack resolver remains incomplete.",
+    "No full Core rerun.",
+    "Remaining V1 outstanding."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/compatible-query-evidence-lock-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-evidence-lock-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-evidence-lock-docs.log",
+      "sha256": "c59a9233bcf3b4f18c5abe50dc17b9a91fa58f9434c3baebd01b1e4dac0a26b7"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-evidence-lock-tests.log",
+      "sha256": "061e597f901b8533e325dd76b55579b90012cecad40f9555f255cd28ae6b3068"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-evidence-lock-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

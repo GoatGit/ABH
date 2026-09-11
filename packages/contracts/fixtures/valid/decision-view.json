@@ -1,0 +1,71 @@
+{
+  "schema": "DecisionView",
+  "value": {
+    "decisionRef": {
+      "type": "abh.decision",
+      "id": "00000000-0000-4000-8000-000000000053",
+      "version": 2
+    },
+    "package": {
+      "requestRef": {
+        "type": "abh.responsibility-request",
+        "id": "00000000-0000-4000-8000-000000000051",
+        "version": 1
+      },
+      "routeRevision": 1,
+      "slotId": "publisher",
+      "subjectRef": {
+        "type": "abh.action",
+        "id": "00000000-0000-4000-8000-000000000006",
+        "version": 2
+      },
+      "proposalDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "question": "Publish this brief?",
+      "recommendation": "Publish the reviewed internal brief.",
+      "alternatives": [
+        "Keep the brief private.",
+        "Request a revision."
+      ],
+      "impactUpperBound": {
+        "scopeRefs": [
+          {
+            "type": "abh.organization",
+            "id": "00000000-0000-4000-8000-000000000003",
+            "version": 1
+          }
+        ],
+        "resourceRequirements": [],
+        "maxMoney": [],
+        "description": "Publish one existing internal brief to the Fake destination; no financial cost."
+      },
+      "risks": [
+        "The Fake destination may acknowledge late."
+      ],
+      "evidenceRefs": [
+        {
+          "type": "abh.artifact",
+          "id": "00000000-0000-4000-8000-000000000041",
+          "version": 1
+        }
+      ],
+      "validUntil": "2026-09-07T01:00:00Z",
+      "allowedResponses": [
+        "Approved",
+        "Rejected"
+      ],
+      "packageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "status": "Approved",
+    "effectSummaries": [
+      {
+        "effectRef": {
+          "type": "abh.decision-effect",
+          "id": "00000000-0000-4000-8000-000000000054",
+          "version": 1
+        },
+        "status": "Pending"
+      }
+    ],
+    "availableActions": []
+  }
+}

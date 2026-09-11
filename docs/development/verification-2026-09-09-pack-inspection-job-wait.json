@@ -1,0 +1,81 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Original preparation blocker provenance and transactional Waiting",
+  "checks": {
+    "contractsTests": 281,
+    "signedInstalledIntegration": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "contractsBuild": "passed",
+    "generatedArtifacts": 49,
+    "contractsApiReports": 9,
+    "coreApiReports": 2,
+    "fullCore": 468,
+    "contractsTypecheck": "passed",
+    "documentLinks": "passed",
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "Blocked proof is a historical actual preparation outcome, not current truth or completion.",
+    "onBlocked notification reconstructs the status and does not carry original provenance; persistent Job Worker must use prepare results directly.",
+    "LeaseBusy is not produced as a Waiting proof because that path holds no lease.",
+    "Cancellation, generic failure, early lease-loss recovery, durable Job Worker/queue/doctor and full verification/Enable incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-check.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-contracts-api.log",
+      "sha256": "4afb17510f9088b4dc052dee5a1eff3b9c934b5c4a5daccd66d04366c4c01249"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-contracts-test.log",
+      "sha256": "e9de64fbcc46a86475e6cd430e78c78a9fec6ed086c53a59cd74a38ec66984dc"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-contracts-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-core-api.log",
+      "sha256": "68391ea0bb683f05a50365093d210f5d27e84c52eb8f8123cd32e4a1f3f8d4b2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-docs.log",
+      "sha256": "c5fe8582b9651175cc35db652b96fc633789540b09cb651249d60d85188c72af"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-full-core.log",
+      "sha256": "7fb245feaac90df07837058b880dcf513ffe980613111477329f1af70433562f"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-generate.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-wait-integration.log",
+      "sha256": "f56166b36e0a6f66c69208f86dee046e699d44eac3604cbf5a0964cd74b31760"
+    }
+  ]
+}

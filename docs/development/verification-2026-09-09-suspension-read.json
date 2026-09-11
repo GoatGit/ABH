@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-09",
+  "scope": "Suspension Artifact page recovery with exact digest/event/capability/source validation and current read admission",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "limitations": [
+    "Host-installed independent Artifact read policy required.",
+    "Recovered page is not current business authority or notification receipt.",
+    "No Owner consumption, retirement or compatible query; no full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-read-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-read-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-read-docs.log",
+      "sha256": "cca8a75962d50ecd9512cec4afa939a1bac89a9f21f306eef1f160564c0a0ba9"
+    },
+    {
+      "path": "artifacts/verification/suspension-read-tests.log",
+      "sha256": "207fd7bdaf44f237d30292dfbb0a9021485ac77729c1346a5a6a84894e516162"
+    },
+    {
+      "path": "artifacts/verification/suspension-read-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

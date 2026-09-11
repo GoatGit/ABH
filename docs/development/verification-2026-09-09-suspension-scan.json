@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-09",
+  "scope": "Bounded suspension target scan with independent context refresh and acceptance-before-cursor advancement",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "limitations": [
+    "Acceptance callback is test-installed; no persistent notification queue/Owner consumption yet.",
+    "No global reference watermark, retirement or compatible query.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-scan-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-scan-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-scan-docs.log",
+      "sha256": "c3c6def65cd1c8b397f5d362bc50a37681c5d1c1a60a52e2b9b53795c1c8723c"
+    },
+    {
+      "path": "artifacts/verification/suspension-scan-tests.log",
+      "sha256": "b076c0f4e6898454b14fbe9013f3fbf8036a2218f58b34249743723aeda2c917"
+    },
+    {
+      "path": "artifacts/verification/suspension-scan-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

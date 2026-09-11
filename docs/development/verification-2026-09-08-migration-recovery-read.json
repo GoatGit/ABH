@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Consistent maintenance migration recovery journal reads",
+  "checks": {
+    "focusedTests": 11,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Read immutable claim, global version digest and complete observations in one repeatable read snapshot.",
+    "Concurrent committed observation update is invisible to the ongoing snapshot and visible to the next read.",
+    "Reject execution digest tampering and observation identity, kind and parent substitution.",
+    "Reject runtime access, wrong reference version and missing attempts; return independent records.",
+    "Empty history and COMMIT acknowledgement grant no execution, retry or verification status."
+  ],
+  "limitations": [
+    "Maintenance recovery history does not verify actual target database state or Artifact/signature/governance authority.",
+    "Runner execution, nontransactional recovery, result verification, business table readiness and Enable remain incomplete.",
+    "Focused journal suite rerun; full Core was not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-recovery-read-test.log",
+      "sha256": "e8d8084bb71bcfa9bcafb30a54e87203246cb1f4aeddcad6bb6edb92d5273409"
+    },
+    {
+      "path": "artifacts/verification/migration-recovery-read-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-recovery-read-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-recovery-read-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-recovery-read-docs.log",
+      "sha256": "f3d2aa4b39e6b78732d0803ddad496b8daf8eb836d6698702a9a5cd25c5a9086"
+    }
+  ]
+}

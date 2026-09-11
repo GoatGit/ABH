@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core Run lifecycle and Gateway commands",
+  "commands": [
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test test/run-commands.test.ts",
+    "packages/core: node --test --test-concurrency=1 test/*.test.ts",
+    "corepack pnpm contracts:test",
+    "corepack pnpm docs:check",
+    "corepack pnpm build",
+    "corepack pnpm api:update",
+    "corepack pnpm api:check"
+  ],
+  "results": {
+    "contractArtifacts": 51,
+    "contractTests": 311,
+    "coreTests": 516,
+    "corePassed": 516,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "documentationLinks": 727,
+    "contractApiEntryPoints": 9,
+    "coreApiEntryPoints": 3
+  },
+  "coverage": [
+    "Active Mission requirement",
+    "authority and workflow mismatch rejection",
+    "mission version conflict",
+    "single active Run enforcement",
+    "start and complete Audit/Outbox persistence",
+    "Mission activeRunRef create and terminal cleanup",
+    "same-transaction Static Assignment PinSet resolution",
+    "exact Workflow capability version pinning",
+    "start, complete and tool command idempotent replay",
+    "tool callKey binds deterministic argument digest",
+    "HTTP installation registers Run and Tool commands"
+  ],
+  "limits": [
+    "Run recovery orchestration is not implemented",
+    "Tool Gateway records governed calls but does not perform external execution"
+  ]
+}

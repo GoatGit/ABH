@@ -1,0 +1,83 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Atomic deployment-bound data impact evidence recording",
+  "checks": {
+    "contractsTests": 248,
+    "coreFullTests": 339,
+    "focusedTests": 19,
+    "failed": 0,
+    "skipped": 0,
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "isolatedContainersRemaining": 0,
+    "documentLinks": 240
+  },
+  "coverage": [
+    "Formal record and command bind Pack, deployment, compiler, environment and source inventories.",
+    "Immutable RLS table checked against migration/readiness inventory.",
+    "Actual snapshot and original validation evidence read under current governance and deployment locks.",
+    "Impact recomputed before new write or replay.",
+    "Atomic report/audit/event/receipt rollback and idempotent replay.",
+    "Missing/revoked Grant, compiler revocation, changed policy and wrong deployment version reject."
+  ],
+  "limitations": [
+    "Compiler/environment/source admission is an explicit Fixture in tests, not a production source resolver.",
+    "No signed compiler evidence, persistent baseline catalog, migration verifier or Enable/Registry lifecycle yet.",
+    "Low-level read requires current caller admission; historical impact alone is not use authority."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-owner-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-contract-test.log",
+      "sha256": "d2041a2c08ad1b1f4525ec0b308bc21fb1a754ed2561bc984aa7813b4605ef9f"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-core-full.log",
+      "sha256": "fd959ed058f098dc85c220be7575505250b5e9791871cdbae5ae31048db6f674"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-docs.log",
+      "sha256": "f911abc83cb9b52719063572460df8249c26b9c1b86b3d359234d9796d36a9c5"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-generate.log",
+      "sha256": "bec6050a5253084e710e1335eb3f8899147fa958342ba034480b22cc9ed9db66"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-generated.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-test.log",
+      "sha256": "5cb9741e3beefc2a5a083b5d00af53da0182611b56786219a126ad000fcfb169"
+    },
+    {
+      "path": "artifacts/verification/impact-owner-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

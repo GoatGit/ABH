@@ -1,0 +1,37 @@
+{
+  "name": "@abh/workbench",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.13.0"
+  },
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start",
+    "test": "node --test test/*.test.ts",
+    "test:e2e": "node test/browser/build-e2e.mjs && playwright test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@abh/contracts": "workspace:*",
+    "@abh/core": "workspace:*",
+    "@jsonforms/core": "3.8.0",
+    "@jsonforms/react": "3.8.0",
+    "@jsonforms/vanilla-renderers": "3.8.0",
+    "@tanstack/react-query": "5.102.8",
+    "ajv": "8.20.0",
+    "echarts": "6.1.0",
+    "next": "15.5.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@playwright/test": "1.55.1",
+    "@types/react": "19.1.16",
+    "@types/react-dom": "19.1.9",
+    "typescript": "5.9.3"
+  }
+}

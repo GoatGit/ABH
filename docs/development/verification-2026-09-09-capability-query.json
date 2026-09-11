@@ -1,0 +1,120 @@
+{
+  "date": "2026-09-09",
+  "scope": "Bounded business-purpose Enabled capability candidate discovery with independent read permission; no exact runtime handle resolution",
+  "tests": {
+    "contracts": {
+      "passed": 305,
+      "failed": 0
+    },
+    "registryAndQuery": {
+      "passed": 2,
+      "failed": 0
+    },
+    "realCosignRegression": {
+      "passed": 1,
+      "failed": 0,
+      "note": "Existing signed empty-provides Pack validation/registration/approval/Enable/replay path passed after Owner read separation."
+    },
+    "fullCore": {
+      "total": 509,
+      "passed": 504,
+      "failed": 0,
+      "skipped": 5,
+      "note": "Final serial full run after build. Cosign unset; main real signed Pack test passed separately. Other signed suites not rerun."
+    }
+  },
+  "checks": {
+    "contractsBuild": true,
+    "coreBuild": true,
+    "contractsTypecheck": true,
+    "coreTypecheck": true,
+    "generatedArtifacts": 49,
+    "contractsApiEntries": 9,
+    "coreApiEntries": 3,
+    "docs": true
+  },
+  "limitations": [
+    "Candidate query is internal implementation with a registered public query contract; HTTP route remains Unavailable.",
+    "Exact resolution, Assignment/Pin binding, actual immutable Schema bytes, trusted implementation handles and runtime invocation authorization remain incomplete.",
+    "Nonempty multi-version query uses admin-seeded installation/validation/governance facts, not real signed nonempty Enable.",
+    "Health, visibility and compatibility inspection is a mandatory bounded trusted-host callback under declared fences.",
+    "Signature verification-input changes fail closed pending governed revalidation; query does not run full CTK or migrations.",
+    "No paging cursor yet; complete=false indicates the 1000-row scan or 100-row return bound truncated the result."
+  ],
+  "diagnostics": [
+    "Registered query permission through protocol query registry; core catalog actions are reserved for internal commands.",
+    "Updated generator route-count assertion to include the new unavailable HTTP query contract.",
+    "Normalized PostgreSQL result arrays before canonical comparison to exclude driver metadata.",
+    "Foreign unverified context is rejected by identity derivation before the query; test reflects that boundary."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/capability-query-build-final.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/capability-query-contracts-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/capability-query-contracts-api.log",
+      "sha256": "55004d7b9afb8258b77fb6aa39d6c8dcc1db748206aa6f664cd7bf1e7f251968"
+    },
+    {
+      "path": "artifacts/verification/capability-query-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/capability-query-contracts-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/capability-query-contracts.log",
+      "sha256": "ed8f1653f87e0fb173c720c8795298f3648a62fb00241d23f282669c6b8a6898"
+    },
+    {
+      "path": "artifacts/verification/capability-query-core-api-check.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/capability-query-core-api.log",
+      "sha256": "69b6956e0c35e5e9332bef8220911a89bd331472682ce0b6c5de176eaf8c7ad8"
+    },
+    {
+      "path": "artifacts/verification/capability-query-core-full.log",
+      "sha256": "c85585d6d6cddf39875e3ea9f165a8751fdf4ed5a54ee5eace85c9c477015241"
+    },
+    {
+      "path": "artifacts/verification/capability-query-docs-final.log",
+      "sha256": "9a1120097ded32d0ad52489504e42d0c36aa537f5a4a155905cc255a0c648a2e"
+    },
+    {
+      "path": "artifacts/verification/capability-query-docs.log",
+      "sha256": "54bb4583ab6ba98ed8cb83daae8a7d0ac86ed223f63902a080cef0766d0cc70f"
+    },
+    {
+      "path": "artifacts/verification/capability-query-generated.log",
+      "sha256": "e0e8a3ca2a6b713303505c7d470817cf5b0cf1b27b722faea2d23a62eff18a3b"
+    },
+    {
+      "path": "artifacts/verification/capability-query-runtime-final.log",
+      "sha256": "ae41447fe94b22132b96307c3aed0feda0708ec5dcbf178584a1a775a996224d"
+    },
+    {
+      "path": "artifacts/verification/capability-query-runtime.log",
+      "sha256": "c439cc72014a950b51913dcce91ffce6646fec1029fd0939de793dc29f2fe67f"
+    },
+    {
+      "path": "artifacts/verification/capability-query-signed-regression.log",
+      "sha256": "4341851bf52bf246da7c25a79abe1561698a07012df1817e165532aea357fa20"
+    },
+    {
+      "path": "artifacts/verification/capability-query-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/capability-query-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

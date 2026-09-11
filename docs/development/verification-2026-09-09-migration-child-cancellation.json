@@ -1,0 +1,107 @@
+{
+  "date": "2026-09-09",
+  "scope": "Retain child operation cancellation across migration preparation, signature and staging helpers",
+  "tests": {
+    "budgetUnit": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "realStagingImpact": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "realMigrationSignatureInspection": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "fullContractsRerun": false
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreApi": "passed (3 entry points)",
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/migration-child-cancellation-unit.log",
+      "sha256": "0bc994b35fe5813c1a10427dd97cc4dcdad3df73a7bc2634edde872605dfcb85"
+    },
+    {
+      "path": "artifacts/verification/migration-child-cancellation-staging.log",
+      "sha256": "f487ba9ad155188517d678277e7678883b76c0ac1f0be6014df24c04eced3b87"
+    },
+    {
+      "path": "artifacts/verification/migration-child-cancellation-integration.log",
+      "sha256": "436e13927d24ecaac243787decc2ff215ebf53c6573ec7077ea30e20ff541c95"
+    },
+    {
+      "path": "artifacts/verification/migration-child-cancellation-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-child-cancellation-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-child-cancellation-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/migration-child-cancellation-docs.log",
+      "sha256": "e59d699d3506bea0612226e933104c9ad3cf504f801260b4ef63533cedd4ac1c"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/migration-work-options.ts",
+      "sha256": "162eec80bb170adb95157c3de995554b49550b0624c9d39629c4375133f83007"
+    },
+    {
+      "path": "packages/core/src/extensions/prepare-database-migration.ts",
+      "sha256": "cd184585f5519261c2211fc28bfb14a0327eb910f48d9f58efc65c621e03ddc0"
+    },
+    {
+      "path": "packages/core/src/extensions/prepare-migration-content.ts",
+      "sha256": "d0198491e15e0c304bc93849e18ab4ab230a1ba3c9931f72190e73940cf4f58c"
+    },
+    {
+      "path": "packages/core/src/extensions/signed-migration-plan.ts",
+      "sha256": "608d69d565f5c69c403956ac09ebe4558701e39f33c99617e5961e9660943b30"
+    },
+    {
+      "path": "packages/core/src/extensions/migration-signature-artifact.ts",
+      "sha256": "6557dfc7615b38dea78627fbbd82fa64b30bb7e37ad7ce119e743c0a44e98c7f"
+    },
+    {
+      "path": "packages/core/src/extensions/read-signed-migration-result.ts",
+      "sha256": "4a27f0ea08f92cf3a8aae25b7dc46727e72858357c7c6f11a6b19e70f84524b8"
+    },
+    {
+      "path": "packages/core/src/extensions/stage-pack.ts",
+      "sha256": "46fa372722d227e7a53ed471c6d957b226db0612c4c6a5e110095d240756ee3b"
+    },
+    {
+      "path": "packages/core/src/extensions/recover-staged-pack.ts",
+      "sha256": "0cf0d852adf6d56b4ef2a0c3afb4e48adb5ce2e230990c233a759006ce5678f4"
+    },
+    {
+      "path": "packages/core/test/migration-work-options.test.ts",
+      "sha256": "ac75c62cae229d7534826c878b92b7f53e769b9c4b1de8356ee5f4d9330b5d8d"
+    },
+    {
+      "path": "packages/core/test/migration-signature.test.ts",
+      "sha256": "46c624ed239d9a1c320a2ff76d0475ed42a5c2d1ab5464c6897973ca3022e2f6"
+    }
+  ],
+  "remaining": [
+    "Late cleanup durable reporting",
+    "Enable Owner and approval assembly",
+    "Remaining V1 modules"
+  ]
+}

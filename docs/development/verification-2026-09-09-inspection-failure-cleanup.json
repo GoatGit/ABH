@@ -1,0 +1,82 @@
+{
+  "date": "2026-09-09",
+  "scope": "Preserve inspection and target cleanup failures independently without inventing persisted failure or cleanup authority",
+  "tests": {
+    "targetAndDisposal": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0
+    },
+    "realSignatureJobRuntime": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApi": "passed (3 entry points)",
+    "docs": "passed",
+    "isolatedIntegrationContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/inspection-failure-cleanup-tests.log",
+      "sha256": "9bc6610f7022b92f1e768ac2beb4a3f02ffc8f24abf7f40e4bcec0bd5bc3dd27"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-cleanup-migration.log",
+      "sha256": "04a6591c64ed33449cb5b35c07ab3294cfd6de5828fd16d81d9cd7dd6c2f13f1"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-cleanup-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-cleanup-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-cleanup-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-cleanup-docs.log",
+      "sha256": "8cffe7bc271d0f26a9ae604e3b2de35ad55f41f2ac45509f32e41d800db1b884"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/inspect-migration-target.ts",
+      "sha256": "137fd600eba8e8bdbb2f8810ce8b155d93505785660360412d53f27146a12b8a"
+    },
+    {
+      "path": "packages/core/src/extensions/run-installed-migration-inspection.ts",
+      "sha256": "26cf8841b4edc73f3601b4100297ff1d54c4acb2501af71aead1051b512b7d43"
+    },
+    {
+      "path": "packages/core/src/extensions/run-pack-inspection-job.ts",
+      "sha256": "4138b6f8a6b17b5cd56a7350a01a12ffca4ebf45e188d57f4f7091bf27ab1116"
+    },
+    {
+      "path": "packages/core/test/inspection-disposal.test.ts",
+      "sha256": "495c4e816884181799dac28653616d77e0d8bc68b49ab217d0576fd5e0cb115d"
+    },
+    {
+      "path": "packages/core/test/migration-inspection-target.test.ts",
+      "sha256": "25a141b0c833d1f72140950421b44d65f9acf782e03bbb852d75419d6c0c1333"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-job-execution-fixture.ts",
+      "sha256": "9c86c2cdf16354ba46a4e0a3ebad1f050242470fa33526c98b62874a39ab1318"
+    }
+  ],
+  "remaining": [
+    "Persistent evidence for general inspection execution exceptions",
+    "Persistent reporting of cleanup failures on late preparation results",
+    "Complete Pack validation and Enable",
+    "Broader V1 requirements remain incomplete"
+  ]
+}

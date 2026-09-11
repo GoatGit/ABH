@@ -1,0 +1,22 @@
+{
+  "schema": "AuthorizedRequestContext",
+  "value": {
+    "requestId": "00000000-0000-4000-8000-000000000001",
+    "correlationId": "00000000-0000-4000-8000-000000000002",
+    "actingOrganizationId": "00000000-0000-4000-8000-000000000003",
+    "resourceOrganizationId": "00000000-0000-4000-8000-000000000003",
+    "actor": {
+      "type": "Human",
+      "id": "00000000-0000-4000-8000-000000000004"
+    },
+    "purposeOfUse": "abh.internal-publication",
+    "authnStrength": {
+      "level": "SingleFactor"
+    },
+    "sessionEpoch": 1,
+    "scopeEpoch": 1,
+    "receivedAt": "2026-09-07T00:00:00Z",
+    "contextExpiresAt": "2026-09-07T00:01:00Z",
+    "authorizationSnapshotId": "00000000-0000-4000-8000-000000000015"
+  }
+}

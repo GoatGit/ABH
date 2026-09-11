@@ -1,0 +1,67 @@
+{
+  "date": "2026-09-09",
+  "scope": "Persisted Pack inspection Job management recovery worker and optional tenant host installation",
+  "tests": {
+    "suite": "Core full suite with real PostgreSQL and Cosign",
+    "passed": 470,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 246622.84025
+  },
+  "checks": {
+    "typecheck": "passed",
+    "build": "passed",
+    "api": "passed (2 entry points)",
+    "docs": "passed",
+    "isolatedTestContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-inspection-job-worker-full-core.log",
+      "sha256": "f4c67772c8b33fdc930c9c88d2e56330e8cc3b55a30ac073d4898c5be5ff3fc9"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-worker-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-worker-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-worker-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-worker-docs.log",
+      "sha256": "c8d2d841a7164dfa8c805b9e83915b240f852269bf48549ce139cef18d386542"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/inspection-job-worker.ts",
+      "sha256": "e2d8acda670fb79c3e016c66967c7f61e65cec47ff7f6adede29f967109b792f"
+    },
+    {
+      "path": "packages/core/src/durable/runtime-host.ts",
+      "sha256": "f2f0e8ef1c74d62e39b9b493434e4044ade8162ac9da802b4c14440bee6413fe"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-job-execution-fixture.ts",
+      "sha256": "a82f80ba18d47d74850eff9feedc91316bf4036761d411294a0e97c439a251ee"
+    },
+    {
+      "path": "packages/core/test/runtime-host.test.ts",
+      "sha256": "127c8accdd571ed2a38c30e341acbc62a4392d2c21129c40ec68599205042f93"
+    }
+  ],
+  "remaining": [
+    "JobEnvelope inspection job type and target registration",
+    "queue publication/delivery/acknowledgement",
+    "general InspectionFailed evidence",
+    "early lost-lease recovery",
+    "cross-process cancellation",
+    "doctor",
+    "domain/backfill/projection verification and Enable"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Persisted raw migration execution evidence read",
+  "checks": {
+    "focusedAggregateTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Actual signed installed execution result Artifact reads under source row lock and current admission.",
+    "Attempt/environment/owner/source bindings and closed canonical result envelope are validated.",
+    "Rehashed altered domain, status, fields, time, environment and noncanonical JSON reject.",
+    "Read results cannot mint execution provenance; source denial and copy isolation covered."
+  ],
+  "limitations": [
+    "Host supplies actual maintenance attempt; this reader verifies recorded content, not result truth or current target database state.",
+    "No automatic observation recovery, result signature, cross-step/nontransactional recovery or Enable.",
+    "Full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-result-read-test.log",
+      "sha256": "44c369956795b0ac70d92896e92a172a32b15cf5bc12a971ffcb669425f48828"
+    },
+    {
+      "path": "artifacts/verification/migration-result-read-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-result-read-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-result-read-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-result-read-docs.log",
+      "sha256": "1e03b6316ca823f0a8fe46eabd9d16530392316fcd2fde4a5cd4b0de70ff3291"
+    }
+  ]
+}

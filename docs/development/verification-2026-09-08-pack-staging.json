@@ -1,0 +1,55 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Durable local Pack snapshot staging and restart recovery",
+  "checks": {
+    "coreFullTests": 333,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": 226,
+    "isolatedContainersRemaining": 0
+  },
+  "coverage": [
+    "Real Cosign verified private candidate persists all payload and proof bytes.",
+    "Fresh Node process restores original validation report and content without private trust authority.",
+    "Cancellation and pre-publication fsync failure remove only current temporary snapshot.",
+    "Post-rename parent fsync failure preserves complete uncertain snapshot.",
+    "Metadata commitment, payload and proof replacement are rejected.",
+    "Insecure roots, symlinks, hardlinks and traversal are rejected."
+  ],
+  "limitations": [
+    "64 MiB payload/proof snapshot and 2 MiB metadata; deployment-owned durable local filesystem only.",
+    "Filesystem calls are checked at I/O boundaries, not forcibly interrupted in kernel.",
+    "Installation transaction, deploymentVersion CAS, impact evidence, Enable/Registry and orphan GC remain unimplemented.",
+    "Recovery only checks stored integrity; current authority, trust, revocation, expiration and installation must be checked separately."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-staging-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-staging-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-staging-core-full.log",
+      "sha256": "0823b6fcd7194efe916afd8da690b2a3f849e41747aa01d90a25ccecb9aadaed"
+    },
+    {
+      "path": "artifacts/verification/pack-staging-docs.log",
+      "sha256": "0d39b43e99a02f1496658d0483b1b445d4650321e2d51a83e32ba9f686acac61"
+    },
+    {
+      "path": "artifacts/verification/pack-staging-test.log",
+      "sha256": "a52d3f949c7c02c91fb915d3bde08317fa863537d4d309490af8e9878fc2ac35"
+    },
+    {
+      "path": "artifacts/verification/pack-staging-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

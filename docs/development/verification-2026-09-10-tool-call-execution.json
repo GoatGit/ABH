@@ -1,0 +1,52 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core real tool call prepare, adapter, output validation, artifact storage, and terminal CAS lifecycle",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/run-commands.test.ts",
+    "node --test packages/core/test/model-gateway.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "runCommandTests": 1,
+    "runCommandPassed": 1,
+    "runCommandFailed": 0,
+    "modelGatewayTests": 10,
+    "modelGatewayPassed": 10,
+    "modelGatewayFailed": 0,
+    "coreTests": 539,
+    "corePassed": 533,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractArtifacts": 51,
+    "coreApiReport": "passed",
+    "coreApiEntryPoints": 4,
+    "documentationLinks": 733,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "prepare commits a Pending call only after binding, deadline, purpose, grant, fence, idempotency, and call-limit checks",
+    "adapter receives the frozen binding, call key, arguments, and target refs after prepare commits",
+    "successful output is validated by an explicitly installed validator",
+    "validated output is stored through the bounded Inline Artifact Owner",
+    "result artifact owner is the terminal tool call and sources include binding, capability, and target refs",
+    "artifact storage and Completed CAS commit atomically",
+    "explicit failed result with a digest performs a one-way Failed CAS",
+    "adapter throw, timeout, unknown shape, output rejection, or oversized artifact keeps Pending",
+    "replaying a Pending call does not invoke the adapter again",
+    "replaying terminal states returns stable references without another remote call",
+    "Pending calls consume binding call capacity",
+    "HTTP installation requires explicit tool adapter, output validator, and result storage"
+  ],
+  "limits": [
+    "production remote tool transport remains host-installed and is not bundled",
+    "independent Pending reconciliation remains open",
+    "failed calls do not yet persist a separate evidence artifact",
+    "tool cost reservation and usage settlement remain open",
+    "background binding expiry archiving remains open"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema": "ActionRecord",
+  "value": {
+    "actionRef": {
+      "type": "abh.action",
+      "id": "00000000-0000-4000-8000-000000000006",
+      "version": 1
+    },
+    "resourceOrganizationId": "00000000-0000-4000-8000-000000000003",
+    "sourceCommandRef": {
+      "type": "abh.command",
+      "id": "00000000-0000-4000-8000-000000000050",
+      "version": 1
+    },
+    "proposedBy": {
+      "type": "Human",
+      "id": "00000000-0000-4000-8000-000000000004"
+    },
+    "executionPrincipalRef": {
+      "type": "abh.principal",
+      "id": "00000000-0000-4000-8000-000000000005",
+      "version": 1
+    },
+    "actionType": "hello.publish",
+    "payloadArtifactRef": {
+      "type": "abh.artifact",
+      "id": "00000000-0000-4000-8000-000000000041",
+      "version": 1
+    },
+    "payloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "targetRefs": [
+      {
+        "type": "hello.brief",
+        "id": "00000000-0000-4000-8000-000000000040",
+        "version": 1
+      }
+    ],
+    "inputVersionRefs": [
+      {
+        "type": "hello.brief",
+        "id": "00000000-0000-4000-8000-000000000040",
+        "version": 1
+      }
+    ],
+    "completionPolicyRef": {
+      "type": "hello.completion-policy",
+      "id": "00000000-0000-4000-8000-000000000043",
+      "version": 1
+    },
+    "riskClass": "hello.low-risk",
+    "position": {
+      "lifecycle": "Proposed",
+      "outcome": "NotStarted"
+    }
+  }
+}

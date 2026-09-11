@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core bounded binary media staging through the existing ObjectStore protocol",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core build",
+    "node --test --test-concurrency=1 packages/core/test/artifacts.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/artifacts.test.ts packages/core/test/database-diagnostic.test.ts packages/core/test/runtime-host.test.ts packages/core/test/run-commands.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "artifactTests": 11,
+    "artifactPassed": 11,
+    "artifactFailed": 0,
+    "affectedTests": 21,
+    "affectedPassed": 21,
+    "affectedFailed": 0,
+    "coreTests": 543,
+    "corePassed": 537,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractsArtifactsMatched": 51,
+    "apiEntryPointsMatched": 4,
+    "docsLinksChecked": 739,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "storeObjectArtifact dispatches string content to the unchanged text/JSON staging path and Uint8Array content to binary staging",
+    "binary content is copied into private storage before digest and external put",
+    "size is strictly greater than 65536 and at most 262144 bytes",
+    "MIME is restricted to PNG, JPEG, WebP and GIF",
+    "magic bytes are sniffed and declared-versus-sniffed mismatches are rejected",
+    "a valid 70000-byte PNG completes put, readback, publish and authorized read",
+    "Artifact storage remains metadata-only with a null inline body",
+    "the staging attempt reaches Published after T2 publication"
+  ],
+  "limits": [
+    "production cloud or remote ObjectStore adapters remain host-installed",
+    "Pending staging attempts that never received a tracking ref are not physically addressable",
+    "a process crash between an adapter returning Completed and Core recording its response remains unavoidable without a portable two-phase port",
+    "binary media staging does not change the Tool JSON output path"
+  ]
+}

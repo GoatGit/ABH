@@ -1,0 +1,40 @@
+{
+  "schema": "CommandEnvelope",
+  "value": {
+    "commandId": "00000000-0000-4000-8000-000000000050",
+    "type": "abh.actions.propose",
+    "schemaVersion": "0.1.0",
+    "idempotencyKey": "publish-brief-40",
+    "target": {
+      "type": "abh.organization",
+      "id": "00000000-0000-4000-8000-000000000003"
+    },
+    "payload": {
+      "actionType": "hello.publish",
+      "targetRefs": [
+        {
+          "type": "hello.brief",
+          "id": "00000000-0000-4000-8000-000000000040",
+          "version": 1
+        }
+      ],
+      "payloadRef": {
+        "type": "abh.artifact",
+        "id": "00000000-0000-4000-8000-000000000041",
+        "version": 1
+      },
+      "sourceVersionRefs": [
+        {
+          "type": "hello.brief",
+          "id": "00000000-0000-4000-8000-000000000040",
+          "version": 1
+        }
+      ],
+      "sourceProposalRef": {
+        "type": "hello.proposal",
+        "id": "00000000-0000-4000-8000-000000000042",
+        "version": 1
+      }
+    }
+  }
+}

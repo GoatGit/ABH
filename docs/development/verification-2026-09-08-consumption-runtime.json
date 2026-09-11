@@ -1,0 +1,21 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Consumption recovery loop and tenant runtime composition",
+  "checks": {
+    "coreTypecheck": "passed",
+    "inboxAndRuntimeTests": 13,
+    "failed": 0,
+    "skipped": 0,
+    "documentLinks": 215,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/consumption-runtime.log",
+  "logSha256": "7a48ce0aa79e224a8f22a08ccb7e312d9b72697ab1f7ca59a8f8199c7e4c1086",
+  "scope": "Targeted checks for internal orchestration; previous full pnpm check is recorded separately in outbox-consumption evidence",
+  "limitations": [
+    "Production process hosting, trusted Context issuance, queue consumer execution and drain integration remain.",
+    "Continuous consumer watermarks, legal retention and idempotent deletion remain.",
+    "V1 implementation and independent acceptance are not complete."
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Data inspection relation identity and concurrent snapshot stability",
+  "checks": {
+    "focusedTests": 16,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "ACCESS SHARE acquired before catalog inspection; resolved relation OID compared with snapshot catalog identity.",
+    "Real concurrent ALTER blocked at catalog boundary; insert allowed but excluded from existing REPEATABLE READ snapshot.",
+    "DDL proceeds after inspection transaction ends; next inspection sees new data."
+  ],
+  "limitations": [
+    "Ordinary table data invariants only; signed/installed data assembly and Enable remain incomplete.",
+    "Host still governs database/schema authority and target transaction lifetime.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-data-lock-test.log",
+      "sha256": "00795dc2c5ff1173099524733e8cb35b087c3793f6c2e5a470d9f50cd231424c"
+    },
+    {
+      "path": "artifacts/verification/migration-data-lock-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-data-lock-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-lock-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-data-lock-docs.log",
+      "sha256": "5d6107e16d9be33f45dde67623c5d489c3da2e7c8674728134c0381058f2a40c"
+    }
+  ]
+}

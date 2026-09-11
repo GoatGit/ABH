@@ -1,0 +1,17 @@
+{
+  "schema": "CommandEnvelope",
+  "value": {
+    "commandId": "00000000-0000-4000-8000-000000000055",
+    "type": "abh.actions.cancel",
+    "schemaVersion": "0.1.0",
+    "idempotencyKey": "cancel-brief-40",
+    "target": {
+      "type": "abh.action",
+      "id": "00000000-0000-4000-8000-000000000006"
+    },
+    "expectedVersion": 3,
+    "payload": {
+      "reason": "Publication is no longer needed."
+    }
+  }
+}

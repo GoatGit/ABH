@@ -1,0 +1,25 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Fastify transport with explicit trusted installation and contract firewall",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 223,
+    "coreTests": 235,
+    "httpTests": 10,
+    "failed": 0,
+    "documentLinks": 217,
+    "generatedArtifacts": 48,
+    "apiEntryPoints": 9,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/fastify-check.log",
+  "logSha256": "b5b908ee0f0e8d950b191d66ff674a87fb1a69bf96c65c35821b2a07005cf520",
+  "lockSha256": "57c3f4a9144df012bb8c816aa356e5b622c46a805d670d3c452be73cb72bcffe",
+  "limitations": [
+    "Production authentication, governance, Core handler/DTO installation and service lifecycle remain incomplete.",
+    "HTTP cancellation does not prove transaction rollback; handlers must honor their own transactional cancellation rules.",
+    "SDK/CLI and runnable hello-business remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

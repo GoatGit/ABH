@@ -1,0 +1,39 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Frozen Control effect inputs and tenant Service recovery worker",
+  "checks": {
+    "coreTests": 237,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "migrationVersion": 42,
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/control-effect-worker-core-final.log",
+      "sha256": "aedc6cd5bc592c6080b611fd0d69432813762ff606aadcb95e8cf553c3de808a"
+    },
+    {
+      "path": "artifacts/verification/control-effect-worker-typecheck-final.log",
+      "sha256": "c70eec6071b0f0fe48aad06a103990e676f51ad535d84ab19aaa65f23115e37c"
+    },
+    {
+      "path": "artifacts/verification/control-effect-worker-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/control-effect-worker-docs.log",
+      "sha256": "d5e7ec9fa954deb6917af95efe5f26b05af72412b79c0bd02e13485c9043360b"
+    }
+  ],
+  "limitations": [
+    "Prepared Control effects only; production parameter construction/governance remains required.",
+    "Errors propagate to host; classified backoff, Blocked/Abandoned, new responsibility cases and Domain effects remain incomplete.",
+    "Queue event delivery path, global discovery, capacity/SLO and public effect queries remain incomplete.",
+    "Full workspace contract/API checks not repeated because public contracts are unchanged in this batch.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

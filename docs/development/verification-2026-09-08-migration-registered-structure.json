@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Persisted ownership and live target binding for structure inspection",
+  "checks": {
+    "focusedTests": 35,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Actual independent same-named database rejected by live advisory-lock proof.",
+    "All declared migration schemas must appear exactly once in inspection scope.",
+    "Current admission before and after inspection receives fixed organization/package/plan/expectation binding.",
+    "Mutation of caller expectations cannot replace captured input; actual unexpected sequence mismatches."
+  ],
+  "limitations": [
+    "Admission is still a host callback; no integrated signature or installed artifact validation.",
+    "Caller owns target read-only REPEATABLE READ transaction and connection lifetime and retains authority fences.",
+    "Matching is structural scope only, not data verification, readiness or Enable.",
+    "Formal structural contracts and persisted verification artifacts incomplete; full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-registered-structure-test.log",
+      "sha256": "8dd468dd18d4569751a3014371e7ea386a5a7d1ca1569d7ca0f214848015c1c7"
+    },
+    {
+      "path": "artifacts/verification/migration-registered-structure-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-registered-structure-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-registered-structure-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-registered-structure-docs.log",
+      "sha256": "f2367802231871e3f6d6058247fc187a79b17aa2d6c6df50878333eb119a9a06"
+    }
+  ]
+}

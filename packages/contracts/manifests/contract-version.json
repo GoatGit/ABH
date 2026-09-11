@@ -1,0 +1,21 @@
+{
+  "version": "0.1.0",
+  "stability": "Preview",
+  "stage": "M0-B PostgreSQL foundation development",
+  "schemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "previousRelease": null,
+  "publicSchemas": [
+    "public.schema.json",
+    "workflow.schema.json",
+    "adapters.schema.json",
+    "catalog.schema.json",
+    "facts.schema.json"
+  ],
+  "internalSchemas": [
+    "tenant-context.schema.json"
+  ],
+  "portsAvailable": true,
+  "httpRoutesAvailable": false,
+  "httpContractsAvailable": true,
+  "implementedAdapters": []
+}

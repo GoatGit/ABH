@@ -1,0 +1,54 @@
+{
+  "date": "2026-09-09",
+  "scope": "Query invocation input, policy and transport binding before asynchronous work",
+  "tests": {
+    "actions": {
+      "passed": 63,
+      "failed": 0,
+      "skipped": 0
+    },
+    "core": {
+      "total": 513,
+      "passed": 508,
+      "failed": 0,
+      "skipped": 5
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "Production Gateway and Pack resolver composition and per-invocation governance remain incomplete.",
+    "Bound methods retain trusted receivers; their internal state is not frozen.",
+    "Full suite includes five skipped tests; no signed nonempty Pack runtime acceptance claimed."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/query-binding-actions.log",
+      "sha256": "f3936af87679a30da9ca61aa30c4322de254344f29f8a0103e1982882717d077"
+    },
+    {
+      "path": "artifacts/verification/query-binding-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/query-binding-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/query-binding-core-full.log",
+      "sha256": "0b35cdf71557ee668c5922062e0c9f948a31d989e1c0ee65f05e7c57efea0ecd"
+    },
+    {
+      "path": "artifacts/verification/query-binding-docs.log",
+      "sha256": "f6c82f9bb67f34c0dcd777d2c247782ffda3a1f858352b4bf1b228a60832a385"
+    },
+    {
+      "path": "artifacts/verification/query-binding-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

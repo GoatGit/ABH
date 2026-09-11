@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-09",
+  "scope": "Final query exit admission atomically rolls back budget and exit on denial",
+  "tests": {
+    "actions": {
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "Full Pack query composition remains incomplete.",
+    "No full Core rerun in this batch."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/query-final-admission-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/query-final-admission-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/query-final-admission-docs.log",
+      "sha256": "d5a90487232f86be05d2294d337b36d2dcbedce111af88f822817a144eec2d16"
+    },
+    {
+      "path": "artifacts/verification/query-final-admission-tests.log",
+      "sha256": "a1834405de4bda8598fe8e5e1b7ec98c4846b382510b66c4b8478f3edf8edac8"
+    },
+    {
+      "path": "artifacts/verification/query-final-admission-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

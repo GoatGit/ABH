@@ -1,0 +1,86 @@
+{
+  "date": "2026-09-09",
+  "scope": "Generated PackMigrationNonApplicabilityReport contract shared by persistence, revalidation and discovery",
+  "tests": {
+    "contracts": {
+      "passed": 295,
+      "failed": 0,
+      "skipped": 0
+    },
+    "realCosignDatabase": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "coreTypecheck": "passed",
+    "generation": "passed (49 files)",
+    "api": "passed (Contracts 9 / Core 3 entry points)",
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/non-applicability-contract-tests-final.log",
+      "sha256": "7b1fc4dbc5119ca42143997f0b690eeb457178b3c03c8895b3b3ee335934e35a"
+    },
+    {
+      "path": "artifacts/verification/non-applicability-contract-integration.log",
+      "sha256": "6a96a8ed6775d5574b5a3dbfd6895f9559c3999fbac69f6dc081ed900a4ace24"
+    },
+    {
+      "path": "artifacts/verification/non-applicability-contract-build-final.log",
+      "sha256": "03ec83b377f9a08bc38f5c585cbca2669b265489cb1f77143b4a0d2a9462273c"
+    },
+    {
+      "path": "artifacts/verification/non-applicability-contract-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/non-applicability-contract-drift.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/non-applicability-contract-api.log",
+      "sha256": "0ba9da79ee2fdcb50bea0e7bdb55d59d118afa7fbd759de1c65aa6b3af5e7f5c"
+    },
+    {
+      "path": "artifacts/verification/non-applicability-contract-docs.log",
+      "sha256": "b8d8403d3fd4a3877ec96d0bd2b01bf8372a50dd429d8b663aad35ce86cbda40"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "671483e7c54d37319051165b6d16507adaf09dba9546e8951144733eb18b1928"
+    },
+    {
+      "path": "packages/contracts/src/relationships.ts",
+      "sha256": "cb6e78f4bc66fec290f5605cf1ec52666d6a866d51e867748a7ba9829656e4e8"
+    },
+    {
+      "path": "packages/contracts/test/migration-non-applicability.test.ts",
+      "sha256": "83df42fd764d927abf61ffc583d17151156c6b8237f4a6173307e6adf98257f3"
+    },
+    {
+      "path": "packages/core/src/extensions/record-migration-non-applicability.ts",
+      "sha256": "c7f434939a0b77315150284cc1111a4f669b1e3f2391723e2330766b2262f128"
+    },
+    {
+      "path": "packages/core/src/extensions/read-migration-non-applicability.ts",
+      "sha256": "272b7766412d640c7fe117e36049298c5bee2e2707d91074fa0883939ed15ad8"
+    },
+    {
+      "path": "packages/core/src/extensions/select-migration-non-applicability.ts",
+      "sha256": "7b81c3bf2d48dcfc7942ed30d3d327a88d34fd03535803e8d174631ee9288c64"
+    }
+  ],
+  "remaining": [
+    "Enable Owner and approval assembly",
+    "Full applicable domain/backfill/projection verification",
+    "Remaining V1 modules"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Inspection and observation transaction lease fencing",
+  "checks": {
+    "finalIntegration": "passed",
+    "tests": 7,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "Lease fencing is explicit; automatic claim, heartbeat, lost-lease cancellation and release are not yet installed in PackInspectionWorker.",
+    "Control fences serialize management transactions; heartbeat scheduling must respect these locks and actual lease deadlines.",
+    "Full Core suite not repeated.",
+    "Production jobs, full domain/backfill/projection verification, ObjectStore and Enable incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-fencing-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-fencing-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-fencing-docs.log",
+      "sha256": "166e33cd023bb28cfb0db74d04e2c05184726d540b7cfcf597b4c04ef131ce83"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-fencing-test.log",
+      "sha256": "1b4e48e1fb50690338103e7363cde391b1644d3847c670e018a8e0741e352109"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-fencing-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "coverage": [
+    "Explicit lease binding survives factory/Worker configuration snapshots and fences real hosted recovery.",
+    "Released old lease cannot recover an otherwise valid saved observation.",
+    "Actual database-time expiry during Artifact readback rolls back the newly inserted result.",
+    "Takeover permits the same producer to persist exactly one result; stale replay and wrong-Pack lease binding reject.",
+    "All Pack lease operations share the later aggregate lock order; generic lease regression passes."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "compiler": "OPA",
+  "version": "1.20.2",
+  "commit": "b2c26708e9d55645d7f837db495031f7e4152594",
+  "sourceDigest": "sha256:c474dc8014818289c8640387030767fee79bdddf9326f61c33517c7f6e486666",
+  "wasmDigest": "sha256:4e2f32ac0d4bffddd392520f75f67daa620abc6ae064b2b739c2510a0fb40f1a",
+  "entrypoints": [
+    "abh_fixture/decision",
+    "abh_fixture/empty_behavior",
+    "abh_fixture/malformed",
+    "abh_fixture/undefined_decision",
+    "abh_fixture/host_time",
+    "abh_fixture/slow",
+    "abh_fixture/action_decision",
+    "abh_fixture/scope_decision"
+  ]
+}

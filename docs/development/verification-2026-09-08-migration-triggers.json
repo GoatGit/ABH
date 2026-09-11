@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Migration trigger definition and direct function fingerprint checks",
+  "checks": {
+    "focusedTests": 9,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Hand-authored trigger/function metadata matches actual PostgreSQL DDL.",
+    "Trigger disable, same-name body replacement and SECURITY DEFINER changes mismatch.",
+    "Existing columns/constraints/indexes/RLS checks pass."
+  ],
+  "limitations": [
+    "Non-internal triggers and direct functions only; no transitive function, external binary, execution ACL or behavioral verification.",
+    "Data, partition, whole-schema, formal result contract/signature, readiness and Enable incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-triggers-test.log",
+      "sha256": "315fd2a1591cda00d8cd2267ceed04f445cb6a52086139c919ea9a3f96c29caf"
+    },
+    {
+      "path": "artifacts/verification/migration-triggers-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-triggers-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-triggers-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-triggers-docs.log",
+      "sha256": "db3c5c76ca70d93a87a14e8cdf3ca6856a3b075441e59de56e9551d4aadfdf1c"
+    }
+  ]
+}

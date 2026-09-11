@@ -1,0 +1,35 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "DecisionView submit readiness from current Owner facts",
+  "checks": {
+    "decisionTests": 32,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/decision-readiness-tests.log",
+      "sha256": "ca85340010dfd1177199887f7f29b0bb57ad184296f3f812aa6b51d97acfa2db"
+    },
+    {
+      "path": "artifacts/verification/decision-readiness-typecheck.log",
+      "sha256": "c70eec6071b0f0fe48aad06a103990e676f51ad535d84ab19aaa65f23115e37c"
+    },
+    {
+      "path": "artifacts/verification/decision-readiness-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/decision-readiness-docs.log",
+      "sha256": "d5e7ec9fa954deb6917af95efe5f26b05af72412b79c0bd02e13485c9043360b"
+    }
+  ],
+  "limitations": [
+    "Targeted tests only; full workspace check not repeated.",
+    "QueryMeta/watermark, HTTP Decision queries and full V1 acceptance remain incomplete."
+  ]
+}

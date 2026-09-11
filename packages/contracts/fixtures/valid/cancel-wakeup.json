@@ -1,0 +1,36 @@
+{
+  "schema": "CancelWakeupRequest",
+  "value": {
+    "context": {
+      "callId": "00000000-0000-4000-8000-000000000070",
+      "requestContextRef": {
+        "type": "abh.request-context",
+        "id": "00000000-0000-4000-8000-000000000071",
+        "version": 1
+      },
+      "target": {
+        "objectRef": {
+          "type": "abh.durable-wait",
+          "id": "00000000-0000-4000-8000-000000000075",
+          "version": 2
+        },
+        "action": "abh.runtime.cancel-wakeup",
+        "scopeRefs": [
+          {
+            "type": "abh.organization",
+            "id": "00000000-0000-4000-8000-000000000003",
+            "version": 1
+          }
+        ]
+      },
+      "deadline": "2026-09-07T00:02:00Z"
+    },
+    "waitRef": {
+      "type": "abh.durable-wait",
+      "id": "00000000-0000-4000-8000-000000000075",
+      "version": 2
+    },
+    "expectedVersion": 2,
+    "reason": "Owner no longer needs this wakeup."
+  }
+}

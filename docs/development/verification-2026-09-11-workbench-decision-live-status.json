@@ -1,0 +1,60 @@
+{
+  "date": "2026-09-11",
+  "subject": "authorized Decision detail live status with same-origin SSE",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r typecheck",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "workbenchTests": 6,
+    "workbenchPassed": 6,
+    "workbenchFailed": 0,
+    "workbenchTypecheck": "passed",
+    "workbenchNextBuildRoutes": [
+      "/",
+      "/actions",
+      "/actions/[id]",
+      "/api/decisions/[id]",
+      "/api/events/[type]/[id]",
+      "/api/projections/[id]",
+      "/decisions/[id]",
+      "/inbox",
+      "/missions/[id]"
+    ],
+    "workbenchNextBuild": "passed",
+    "contractsArtifacts": "51 files matched",
+    "apiEntryPointsChecked": 13,
+    "documentationLinks": 755,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "decision BFF performs a strong server-authorized query",
+    "decision query keys partition decision, organization, workspace, purpose, authorization digest and actor",
+    "decision SSE subscribes one bounded subject per detail page",
+    "projection change triggers server-authorized refresh without optimistic writes",
+    "projection reset removes local cache and asks for baseline reconstruction",
+    "SSE disabled or interrupted falls back to authorized polling",
+    "server status/version drift prompts refresh before further human confirmation",
+    "final submission still requires If-Match, current grants and Decision Owner admission",
+    "inbox does not open a burst of per-item SSE connections"
+  ],
+  "limits": [
+    "whole-inbox realtime aggregation remains open",
+    "JSON Forms is not implemented yet",
+    "ECharts is not implemented yet",
+    "organization switcher is not implemented yet",
+    "compensation proposal creation remains open",
+    "Settings journey is not implemented yet",
+    "browser SSE E2E, concurrency, reconnect and reset verification remain open",
+    "browser accessibility and performance verification remain open",
+    "production identity adapter installation remains a host requirement",
+    "production process and tenant lifecycle governance remain open"
+  ]
+}

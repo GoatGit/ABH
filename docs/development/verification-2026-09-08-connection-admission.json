@@ -1,0 +1,20 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Bounded cancellable database connection admission",
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreTests": 206,
+    "failed": 0,
+    "documentLinks": 215,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/connection-admission-core.log",
+  "logSha256": "e65f980c2f5d7ae7ebd1b53f5471328c3ee8ad0a291d7f231bc37934eae49e5a",
+  "limitations": [
+    "Core regression only; no new full workspace check in this batch.",
+    "Connection setup, transaction initialization and network failures still require end-to-end deadline verification.",
+    "Production capacity and SLO acceptance are not proven; V1 remains incomplete."
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Unresolved responsibility routing retry for unchanged frozen seats",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 223,
+    "coreTests": 211,
+    "failed": 0,
+    "migrationVersion": 34,
+    "generatedArtifacts": 48,
+    "publicApiReports": 9,
+    "documentLinks": 216,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/retry-route-check.log",
+  "logSha256": "6d41da3f5d45f89c64730c62465f578ae623616a1bd5d48c93a1a4b519b21402",
+  "limitations": [
+    "Only current eligibility recovery for an unchanged frozen Request; no seat replacement, new Route revision, delegation or escalation.",
+    "Automatic retry scheduling and formal frozenPolicyRefs/directory governance remain unimplemented.",
+    "Installed eligibility still owns current Grant/conditions/separation of duties and declared control fences.",
+    "ResolveException, Correction, governed unfreeze and complete V1 acceptance remain unfinished."
+  ]
+}

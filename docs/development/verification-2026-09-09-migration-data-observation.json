@@ -1,0 +1,81 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Formal actual data observation and persistent recovery validation",
+  "checks": {
+    "contractsTests": 262,
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "generatedArtifacts": 48,
+    "contractsApiReports": 9,
+    "coreFocusedTests": 7,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Exact bigint counts, duplicate scopes, impossible counts and contradictory matching reject.",
+    "Observation binds signed expectation, distinct Artifact sources and microsecond timing.",
+    "Digest covers actual data and signature metadata; raw Bundle bytes excluded.",
+    "Real installed data recovery rejects an invalid persisted count; valid and mismatching observations persist."
+  ],
+  "limitations": [
+    "Representation validation does not prove actual facts or producer provenance.",
+    "Declared invariants only; structure/data orchestration, full domain, backfill, projection and Enable remain incomplete.",
+    "Core full suite not repeated this batch."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-data-observation-generate.log",
+      "sha256": "bec6050a5253084e710e1335eb3f8899147fa958342ba034480b22cc9ed9db66"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-check.log",
+      "sha256": "b3cbe210508e5986509785a68024ab0c18dd472e5648d281fbbaac68f454057f"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-test.log",
+      "sha256": "cab2dc7d0c4ce0a52b3101d71428db22f1b29cbed56186b76f91b88a1296b875"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-types.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-api-update.log",
+      "sha256": "cbace512b733947aef68a16f9ea0f6876a69c91b8f1b20666b301f9fe76eb5ee"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-api.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-core-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-core-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-core-test.log",
+      "sha256": "8459bb3153f0dc313a18fc18d750858c77f99a8794eefc07c2e479fc4f47f403"
+    },
+    {
+      "path": "artifacts/verification/migration-data-observation-docs.log",
+      "sha256": "8dfcb97e149c9f0b7ff4e377f3b111e6fdfd48f210916c4e0a688105da1ab9eb"
+    }
+  ]
+}

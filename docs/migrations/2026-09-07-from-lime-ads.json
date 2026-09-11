@@ -1,0 +1,237 @@
+{
+  "sourceRepository": "https://github.com/GoatGit/lime-ads",
+  "source": "working tree including uncommitted design fixes",
+  "destinationRepository": "https://github.com/GoatGit/ABH",
+  "note": "Source hashes recorded before moving; local Markdown links rewritten after byte-for-byte verification. V1 index adapted separately.",
+  "files": [
+    {
+      "source": "docs/V1/10-ABH详细设计/00-模块地图与阅读指南.md",
+      "destination": "docs/V1/10-ABH详细设计/00-模块地图与阅读指南.md",
+      "sourceSha256": "5cc82001b31ed268898516e7b3a97970886817986fec231e54bfe1b929da9e80",
+      "migratedSha256": "fb42b96527c591f0cd329fa95d53c06bb1f8eaf9cd7b7a1aa285c906ad2f07c4"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/01-公共契约与错误模型.md",
+      "destination": "docs/V1/10-ABH详细设计/01-公共契约与错误模型.md",
+      "sourceSha256": "86090abedc05dd909f5956b802352f3e4a0e25655183fc551a123f8ec1d5f67f",
+      "migratedSha256": "b672fa368dbdabf926d5ff76910f020a12ea7a4e99fc8aecd20d71962364b6e2"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/02-状态与执行契约规范.md",
+      "destination": "docs/V1/10-ABH详细设计/02-状态与执行契约规范.md",
+      "sourceSha256": "31cce50333ccd4f7abfd023f9a14c6545a7e4c8c0846b27932a1263d76713a0a",
+      "migratedSha256": "fa38beb8ec95cb4be94cdd24e6bfe81b4f9121ab876db9b91accab9d07555ce7"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/03-责任授权与执行链规范.md",
+      "destination": "docs/V1/10-ABH详细设计/03-责任授权与执行链规范.md",
+      "sourceSha256": "b66364b348e092038a866296e4944751f7881ecd7e7da11001aea6a47a1507eb",
+      "migratedSha256": "1588669a9c2a07e62526b84123b9c9b08a9aad8029fe864baaae7bebee675fd9"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/04-NFR与容量模型.md",
+      "destination": "docs/V1/10-ABH详细设计/04-NFR与容量模型.md",
+      "sourceSha256": "f5d3226e1ef0a97fa80ca7358dcafed7395b180527073b7f200539ac7e5b43a2",
+      "migratedSha256": "af059a85867b0520d8a3e5d8f252c783e78943ef50f44fcf0e8054a9eee3003c"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/05-Contract-Package与一致性检查.md",
+      "destination": "docs/V1/10-ABH详细设计/05-Contract-Package与一致性检查.md",
+      "sourceSha256": "8d41161309f944be7e50adccd9662352a489edb155f8f25ee0eb0476b5608b25",
+      "migratedSha256": "8d41161309f944be7e50adccd9662352a489edb155f8f25ee0eb0476b5608b25"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/10-Mission-Controller详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/10-Mission-Controller详细设计.md",
+      "sourceSha256": "429e3ed6a6892878d4fb2bb0d1c04cd09e2e2cdc1d6b043877b70d8dcdedee12",
+      "migratedSha256": "4570b7a84b3ae81e024421ea2adae8435ca85b719bbad1403b29c78e1be77a6a"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/11-Run-Orchestrator与Task-Graph详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/11-Run-Orchestrator与Task-Graph详细设计.md",
+      "sourceSha256": "d40238a17553d2df61a404259a7b418a78546c48f7ab6f48798f7c9a62c3abd8",
+      "migratedSha256": "ab47343ec0613805804db3c355f5d57cddcfb6efc7d24dbaa21610184b9b647e"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/12-Agent-Runtime与Pi-Adapter详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/12-Agent-Runtime与Pi-Adapter详细设计.md",
+      "sourceSha256": "7ca4353cf89a8f51e167b41cca0e5bde490ed34dbb8b6296ccd9ab7caea28322",
+      "migratedSha256": "7ca4353cf89a8f51e167b41cca0e5bde490ed34dbb8b6296ccd9ab7caea28322"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/13-Definition与Workflow-Registry详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/13-Definition与Workflow-Registry详细设计.md",
+      "sourceSha256": "35f448d17f2ec1a426cc1b7989276caaeae23765cc3116661072362bb9a22baa",
+      "migratedSha256": "fe0b7ece2eebb5c70c3ca59ff8b8d43aa238994442d04ac74f0c22d026ed2e4c"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/14-Context与Mission-Memory详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/14-Context与Mission-Memory详细设计.md",
+      "sourceSha256": "fa75ecefd197a0a466ded965286db09037c067cdaea68b9fdc33c1c98d5a714a",
+      "migratedSha256": "fa75ecefd197a0a466ded965286db09037c067cdaea68b9fdc33c1c98d5a714a"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/15-Verification详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/15-Verification详细设计.md",
+      "sourceSha256": "a5da63364fd5307e48417c23552d6d36bb60bc8782389f23c55cd33bcbfaa1fc",
+      "migratedSha256": "a5da63364fd5307e48417c23552d6d36bb60bc8782389f23c55cd33bcbfaa1fc"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/16-Evaluation与Learning详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/16-Evaluation与Learning详细设计.md",
+      "sourceSha256": "c0e36a533436d4c01ae9572b9503e048798c9ebac543f1747cf5bb3a59f6e43c",
+      "migratedSha256": "17cc48197d65cf07d30db3de3416a9bf075e772c306625972bee7a9fa997e0e4"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/20-Interaction与Identity详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/20-Interaction与Identity详细设计.md",
+      "sourceSha256": "2df96b21f84a3ac641f87aa00d24e752407035035db66dc2d9595f0f0653ea89",
+      "migratedSha256": "448b9aa793aadd2f04066011d987cd2e2be7e87eec3dc8af6b0d380e23fea082"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/21-Authorization与Policy详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/21-Authorization与Policy详细设计.md",
+      "sourceSha256": "4d724f310d73ae2f678ed159df78fa54cfb2718c160a3b1bebeee95359fab43d",
+      "migratedSha256": "82965940d3ca0d58b9eaa8c5daf9d4b674dd5531015beb2553fa715ae8695c0d"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/22-Resource-Ledger详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/22-Resource-Ledger详细设计.md",
+      "sourceSha256": "c04ffae51eabc63496899c657093f1614c1dfe7d633503d1d729434ff198baba",
+      "migratedSha256": "c04ffae51eabc63496899c657093f1614c1dfe7d633503d1d729434ff198baba"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/23-Tool-Gateway详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/23-Tool-Gateway详细设计.md",
+      "sourceSha256": "f5ef687b4898361bb59a1f59d3ffccd7bee44e55f4d367209090301184f3eac5",
+      "migratedSha256": "812c94db665a1625425865ee25e59b273c2b798ad7aeee2a8cbb82e6927b9c41"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/24-Model-Gateway详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/24-Model-Gateway详细设计.md",
+      "sourceSha256": "8623b467248e91a9befde0c9e5f50a7c6cbce8585a0dc284c9a988165dbe9750",
+      "migratedSha256": "8623b467248e91a9befde0c9e5f50a7c6cbce8585a0dc284c9a988165dbe9750"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/25-Action-Engine详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/25-Action-Engine详细设计.md",
+      "sourceSha256": "e59652be617d26340bfad8c4e464d351313881af88dfb7bc30e074c3b40702a2",
+      "migratedSha256": "45141e7a6532d65a1e1bfbdeaaa5324b99cf5be27a04189ae8764b5ea67bbf16"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/26-Operation与Reconciliation详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/26-Operation与Reconciliation详细设计.md",
+      "sourceSha256": "4e51609c1eee58ad60ce06b7e2a36652b8efbd6dd2f3a71690e84f4005617beb",
+      "migratedSha256": "0b905784d520c2bfa5100ad6bc33eb23ed8ed3050f2d5284ed6906fbaa784d31"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/27-Durable-Execution详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/27-Durable-Execution详细设计.md",
+      "sourceSha256": "c35bbc50b7f90bd364d6f2fbc2f5b297af0e54ed8989df74f2c2c60807b7c53c",
+      "migratedSha256": "9024b2b465d2593872fb6ac06bc7e16787472c03a7b273adbc95a344e53e4b65"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/28-Data-Artifact与Audit详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/28-Data-Artifact与Audit详细设计.md",
+      "sourceSha256": "e613073611ebeb36abc5812e1d734681dc27c936b06b8df1f32c14c6f515ee8f",
+      "migratedSha256": "35c88dca5808d04c863da447b45ce8e1b10b65d54e8e149e0ae86971cd8659c1"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/29-Pack-Loader与Capability-Registry详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/29-Pack-Loader与Capability-Registry详细设计.md",
+      "sourceSha256": "17343c5058a0d4b311590387beeb588bf632a1c806beb1ca6b9226b90e798c89",
+      "migratedSha256": "17343c5058a0d4b311590387beeb588bf632a1c806beb1ca6b9226b90e798c89"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/30-Capability-Release详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/30-Capability-Release详细设计.md",
+      "sourceSha256": "9f680b7cb921cc125a13353aae0dbf4839bd5e514ea9ba0cbbfe94a501363ed8",
+      "migratedSha256": "9f680b7cb921cc125a13353aae0dbf4839bd5e514ea9ba0cbbfe94a501363ed8"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/31-Secret与Isolation详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/31-Secret与Isolation详细设计.md",
+      "sourceSha256": "2b5218f89a18184cb5317983d183c1d21ff37d45e1b4b28f746d73f914d1e737",
+      "migratedSha256": "2b5218f89a18184cb5317983d183c1d21ff37d45e1b4b28f746d73f914d1e737"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/40-Responsibility与Routing详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/40-Responsibility与Routing详细设计.md",
+      "sourceSha256": "84bfc05331b1443589b266013b6d1395aed478eb5f096a413bf80d8567f9f195",
+      "migratedSha256": "84bfc05331b1443589b266013b6d1395aed478eb5f096a413bf80d8567f9f195"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/41-Decision详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/41-Decision详细设计.md",
+      "sourceSha256": "de791157ca1402a052d0184466960b1ecd1835c21460eb2ae3419edf4a03b258",
+      "migratedSha256": "560e04dcb8d3fd56249db11fdfc64945be810a081ee006e7ce379719b1addb5d"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/42-Correction与Exception详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/42-Correction与Exception详细设计.md",
+      "sourceSha256": "e4ff16ac03daabf909f81deb0bc8c946e9adade0bb98041cc5212680e782200b",
+      "migratedSha256": "e4ff16ac03daabf909f81deb0bc8c946e9adade0bb98041cc5212680e782200b"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/50-Projection与Realtime详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/50-Projection与Realtime详细设计.md",
+      "sourceSha256": "b1d4504cd6d4fc704e73391c5cab01a02bc74af06600dd76c5a49f3a86ca343e",
+      "migratedSha256": "b1d4504cd6d4fc704e73391c5cab01a02bc74af06600dd76c5a49f3a86ca343e"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/51-Business-Workbench详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/51-Business-Workbench详细设计.md",
+      "sourceSha256": "76845d3f9747b646c6d9501a6eae759193b9d2eb7ce199121e1e568abb762076",
+      "migratedSha256": "76845d3f9747b646c6d9501a6eae759193b9d2eb7ce199121e1e568abb762076"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/60-SDK与CTK详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/60-SDK与CTK详细设计.md",
+      "sourceSha256": "33d9a86f3a11a2b0aef2dcf801555da2a1b30370ae7806d8d2f1f32c896323b9",
+      "migratedSha256": "33d9a86f3a11a2b0aef2dcf801555da2a1b30370ae7806d8d2f1f32c896323b9"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/61-CLI-Distribution与运维详细设计.md",
+      "destination": "docs/V1/10-ABH详细设计/61-CLI-Distribution与运维详细设计.md",
+      "sourceSha256": "8c34822b1b4df381f1dbde6bc5ab585614e75d1c00dde392ce285291c3fc9f36",
+      "migratedSha256": "924fef8da9b9399b857e3f1d9a7b4ef0b3242831e3d2b791fa3832b25187c52f"
+    },
+    {
+      "source": "docs/V1/10-ABH详细设计/62-工程实施与验收门禁.md",
+      "destination": "docs/V1/10-ABH详细设计/62-工程实施与验收门禁.md",
+      "sourceSha256": "2458a06be9982b973e4c0c3a8748e6d26460014d7e887a4f6b79c971e1f9d3e8",
+      "migratedSha256": "2458a06be9982b973e4c0c3a8748e6d26460014d7e887a4f6b79c971e1f9d3e8"
+    },
+    {
+      "source": "docs/V1/00-总体设计/ABH公共内核与Pack运行规范.md",
+      "destination": "docs/V1/00-总体设计/ABH公共内核与Pack运行规范.md",
+      "sourceSha256": "42cc0cbd79d8b34682a7d1f429be784292e108b77fd6fd119ab346b5a0c41d66",
+      "migratedSha256": "7625559f4c9ec5224693a68b3e6f9048a1d3c44ea9061af495168d30b350c964"
+    },
+    {
+      "source": "docs/V1/00-总体设计/Agentic-Business-Harness总体设计.md",
+      "destination": "docs/V1/00-总体设计/Agentic-Business-Harness总体设计.md",
+      "sourceSha256": "bf7fef7351401ae9816cd89a8ddc43f5e7c0d3d6f40d874c26803e3ce966e1a9",
+      "migratedSha256": "c6afe1edd846aa751b7ed644198f4c2778dd32e355aec5323f94f18ca61f23be"
+    },
+    {
+      "source": "docs/V1/00-总体设计/Building-Agentic-Business-Harness-on-Agent-Harness.md",
+      "destination": "docs/V1/00-总体设计/Building-Agentic-Business-Harness-on-Agent-Harness.md",
+      "sourceSha256": "ee220061258368c455232cf0845f73a2590e27161da2e776aa43642d055fddd9",
+      "migratedSha256": "9c59bbd25a191f7f5e7e614a7352a71afd8d0610d6920d1fb2163b41e30b2dad"
+    },
+    {
+      "source": "docs/V1/00-总体设计/模块详细设计规范.md",
+      "destination": "docs/V1/00-总体设计/模块详细设计规范.md",
+      "sourceSha256": "4d28e43f16c8f4d0a74e2eb37a7429c0268990917ae98f5832428568160f3e82",
+      "migratedSha256": "926a47a782e69a81e370cab8c0a749302a4a1a2401fb27a33c21d9b2a33079ea"
+    },
+    {
+      "source": "docs/V1/00-总体设计/系统边界与技术基线.md",
+      "destination": "docs/V1/00-总体设计/系统边界与技术基线.md",
+      "sourceSha256": "09f94ffe03440b5066588f4c840f27dbb1bd0df7cb8801d2990b8a8a9ae17fef",
+      "migratedSha256": "8fe828e281cbcd1bc4874511748384d1a3f0b79581cfaa2a4440ceac95c74fe2"
+    }
+  ],
+  "sourceHead": "093ca2a98987fb3061cc538934df591641f94d91"
+}

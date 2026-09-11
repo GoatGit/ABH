@@ -1,0 +1,122 @@
+{
+  "date": "2026-09-09",
+  "scope": "Authoritative expired/replaced lease evidence, atomic Running Job failure, independent recovery Grant, optional worker assembly and physical lease identity validation",
+  "tests": {
+    "contracts": {
+      "passed": 288,
+      "failed": 0,
+      "skipped": 0
+    },
+    "coreFull": {
+      "passed": 473,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 252024.698042
+    }
+  },
+  "checks": {
+    "workspaceTypecheck": "passed",
+    "contractsBuildAndApiUpdate": "passed",
+    "coreBuild": "passed",
+    "api": "passed (Contracts 9, Core 2 entry points)",
+    "generated": "49 artifacts match",
+    "docs": "passed",
+    "isolatedTestContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-inspection-lease-loss-contracts-tests.log",
+      "sha256": "8080fd91ff40c163c680728122600d006965d60d200475a0883a23d8bc7763ea"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lease-loss-full-core.log",
+      "sha256": "5f3a7fa7e3de7790af7ca23c0d0e0a28baadb18cf513cdc26b2a5b48293403a7"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lease-loss-typecheck.log",
+      "sha256": "8a41752ae5562830addd98cb702261fa55ee817c8b68034ed8a43faf251d1807"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lease-loss-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lease-loss-contracts-api.log",
+      "sha256": "0a7465656173a6c5b16b2f249f7e9a94c2cbb850aaefd2bbc191a2db5fe6f113"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lease-loss-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lease-loss-generated.log",
+      "sha256": "e0e8a3ca2a6b713303505c7d470817cf5b0cf1b27b722faea2d23a62eff18a3b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lease-loss-docs.log",
+      "sha256": "1886aefd3487e7f563cd1c08f07b3946e36b1f04c940549381b612c4182cc5e2"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/durable/work-leases.ts",
+      "sha256": "a570c579a6c19099ffbafdb7363329961fe9f2ad90616646395070669b1636a0"
+    },
+    {
+      "path": "packages/core/src/extensions/inspection-lease-loss.ts",
+      "sha256": "00d34d5eb80ca4be28645d74667d9e358baaa266db61523e6673ee6e714e9363"
+    },
+    {
+      "path": "packages/core/src/extensions/fail-lost-pack-inspection.ts",
+      "sha256": "052b2f605ccae01d960e71647c59a2d1ba57ab27dcb3952fd952ab078a728db8"
+    },
+    {
+      "path": "packages/core/src/extensions/inspection-job-worker.ts",
+      "sha256": "e804a8131b2c8b1f2007c81949a0b82a8e7afbf5005ba67c47772a07c2e6312f"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-lease-loss-fixture.ts",
+      "sha256": "83fe85fd4c2de2c6384fbc8953e47054ea845813569efb70902ff30c990790f4"
+    },
+    {
+      "path": "packages/core/test/work-leases.test.ts",
+      "sha256": "1d2e5dbf339a44332057aac9e9b78e1a87de69161a4caf1193077f14033fc40e"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-job-execution-fixture.ts",
+      "sha256": "f6fd22ef8fd0dc4fc7a0ed31cb6fc8487bbc3d1a1c45a96c61405426bcb934e2"
+    },
+    {
+      "path": "packages/core/test/installed-migration-fixture.ts",
+      "sha256": "ed267db22ea559e8fc04f734c2a25b9717da9daaab53964dc44811f52aaedbf3"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "7e8cc26e096643753632f8730f8ffc0705a3f7adada510a80ed1fc640facafaa"
+    },
+    {
+      "path": "packages/contracts/src/relationships.ts",
+      "sha256": "13066149fa84a2c6bdce1f18503b0e1fdb5186db7ae72f9bf68d71b46bda303f"
+    },
+    {
+      "path": "packages/contracts/catalog/core.json",
+      "sha256": "29839d7b2023f142f2ef1e4e83fbe7359c3735e6b88bb9518132e5f5297ec9c9"
+    },
+    {
+      "path": "packages/contracts/protocol/registry.yaml",
+      "sha256": "052771b005a1199f257aa9db143344af9f1f959b417c41330bbfb2e76757cb2f"
+    },
+    {
+      "path": "packages/contracts/test/pack-inspection-lease-loss.test.ts",
+      "sha256": "e4d3b55c9defd010ec8bd6a31516aeb7963ac38ffe5b7f090092968bfbbd6aa4"
+    }
+  ],
+  "remaining": [
+    "General InspectionFailed from execution exception evidence",
+    "doctor",
+    "production configuration and backpressure",
+    "complete installation pipeline and domain/backfill/projection verification",
+    "Enable lifecycle",
+    "proof of remote worker termination is not supplied by lease-loss evidence"
+  ]
+}

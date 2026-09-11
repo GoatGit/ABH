@@ -1,0 +1,44 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Recompute and verify supplied Pack data impact results",
+  "checks": {
+    "focusedTests": 6,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": 238
+  },
+  "coverage": [
+    "Schema-valid hidden changes, fabricated migrations, substituted subject/baseline and changed inventory completeness are rejected.",
+    "Reordered semantic sets accepted; input mutation does not replace verification snapshot."
+  ],
+  "limitations": [
+    "Inventory provenance, current environment/deployment binding, persistent impact Owner and Enable remain unimplemented.",
+    "Full Core suite not rerun for isolated impact verifier addition."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-recompute-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/impact-recompute-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-recompute-docs.log",
+      "sha256": "962d1d96625dc0345dec086938049007dce6d64607dfb15b90f961a65dffe302"
+    },
+    {
+      "path": "artifacts/verification/impact-recompute-test.log",
+      "sha256": "f7be3a3ff1dc7e184c854b07dc1daeb4cce65cd7f28674062aa53480dde69d9e"
+    },
+    {
+      "path": "artifacts/verification/impact-recompute-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Installed inspection, dedicated target, persistence and recovery workflow",
+  "checks": {
+    "combinedTests": 11,
+    "expandedLifecycleTests": 11,
+    "testScopeNote": "Commands overlap; do not sum.",
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Actual installed structure/data verification flows through target cleanup, management commit and separate Artifact persistence.",
+    "Recovery verifies actual state and retains saved Ref; drift and prior-transaction substitution reject.",
+    "Private aggregate provenance additionally binds the target connection.",
+    "Target disposal on expired management admission, input snapshot failure and forged callback output."
+  ],
+  "limitations": [
+    "Internal workflow; production installation Worker and task discovery incomplete.",
+    "Host provides target and actual installed verifier callback.",
+    "Full domain/backfill/projection and Enable incomplete; combined/structural observation contracts remain internal.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-inspection-run-test.log",
+      "sha256": "bd40adedef405ba827935943484ccef1e3343f8c3b3899f8cd4af74c05725947"
+    },
+    {
+      "path": "artifacts/verification/migration-inspection-run-admission.log",
+      "sha256": "a4642743f09f0525f4e3ca88b4634304afa6949857ddeca3b765c39d50e192c9"
+    },
+    {
+      "path": "artifacts/verification/migration-inspection-run-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-inspection-run-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-inspection-run-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-inspection-run-docs.log",
+      "sha256": "eb51fd898427c472d6e00f31c702c116f103202e17f0cad9058c634b3623b26f"
+    }
+  ]
+}

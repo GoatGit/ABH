@@ -1,0 +1,60 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Bounded JSON/YAML Pack Manifest worker parsing integrated with current governance validation",
+  "checks": {
+    "focusedTests": 3,
+    "packRegressionTests": 26,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "builtJavaScriptWorker": "passed",
+    "apiReports": 11,
+    "documentLinks": 222
+  },
+  "dependency": {
+    "yaml": "2.9.0",
+    "license": "ISC"
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/manifest-parser-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/manifest-parser-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/manifest-parser-dependency.log",
+      "sha256": "131ad56682a32c37f031e32b082211f9057c993ee9c73ed1e5a64cbd688a77a8"
+    },
+    {
+      "path": "artifacts/verification/manifest-parser-dist.log",
+      "sha256": "63b60d7f1c537bf800b5f5cedd46979a318d13370709c99b5d9653b547cdc9ea"
+    },
+    {
+      "path": "artifacts/verification/manifest-parser-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    },
+    {
+      "path": "artifacts/verification/manifest-parser-regression.log",
+      "sha256": "52642fadb89325cfb766f19fa4c215aadd92c4fdf86aa4cecd1845a16ef171dd"
+    },
+    {
+      "path": "artifacts/verification/manifest-parser-tests.log",
+      "sha256": "13669762baf14738703e1ce33854e5a339d20baba37bee546454ff214b8da197"
+    },
+    {
+      "path": "artifacts/verification/manifest-parser-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "limitations": [
+    "Input bytes must be read separately with bounded I/O; no manifest file discovery or archive extraction.",
+    "Worker is a bounded parser, not an executable Pack isolation Port.",
+    "Core full suite/workspace not rerun.",
+    "Persistent governance, Stage/Enable and full V1 remain incomplete."
+  ]
+}

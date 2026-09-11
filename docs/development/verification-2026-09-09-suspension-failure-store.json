@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-09",
+  "scope": "Authorized sanitized suspension failure Artifact storage with same-diagnostic dedupe",
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "limitations": [
+    "Diagnostic is not a business receipt, occurrence counter or resolved-state record.",
+    "Current storage policy and identity remain trusted installations.",
+    "Scope directory, Run Owner, Retire, compatible query and remaining V1 outstanding.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-failure-store-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-failure-store-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-failure-store-docs.log",
+      "sha256": "7ba863b6f1bc3ba207820fdccc14f61f5389c383ec48fb05c27f6996011e14fd"
+    },
+    {
+      "path": "artifacts/verification/suspension-failure-store-tests.log",
+      "sha256": "90b2ce940766c4d1d50afb1185944aac946ccb29d571d1b934e8aea3181fe7ad"
+    },
+    {
+      "path": "artifacts/verification/suspension-failure-store-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

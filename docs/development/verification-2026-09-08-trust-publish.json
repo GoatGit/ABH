@@ -1,0 +1,82 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Signed Pack trust policy publication Command with current Grant and atomic journal",
+  "checks": {
+    "contractsTests": 243,
+    "coreFullSerialTests": 333,
+    "failed": 0,
+    "skipped": 0,
+    "contractsTypecheck": "passed",
+    "coreTypecheck": "passed",
+    "contractsBuild": "passed",
+    "coreBuild": "passed",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 224,
+    "isolatedContainersRemaining": 0
+  },
+  "initialFullRun": {
+    "passed": 310,
+    "failed": 2,
+    "reason": "database.test.ts and pg-boss.test.ts hit Testcontainers 10000 ms host port binding timeout before business assertions; subsequent serial full run passed"
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/trust-publish-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-contract-test.log",
+      "sha256": "adb8cb0cfedf6a68681175d4a661ece78d919df025eb6437e7a31909fa575f93"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-core-full-serial.log",
+      "sha256": "5a7a5ad70c436eba85aba8fc5f63253dfe5d0c2f192419258f9455a117233029"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-core-full.log",
+      "sha256": "3bc58de6bb1ebdcda24470954e728c82af45e36f80463b05d1d1cbfe13f19326"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-core-test.log",
+      "sha256": "b112aec9cce11a25dd08dfdbed9548d28550fe0ff643aaf7ba7fe25d125277f0"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-docs.log",
+      "sha256": "edfad8bfac943f6edb50f9780c2d0f157dc2392f7373246a16d0836d87a530b5"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-generate.log",
+      "sha256": "bec6050a5253084e710e1335eb3f8899147fa958342ba034480b22cc9ed9db66"
+    },
+    {
+      "path": "artifacts/verification/trust-publish-generated.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    }
+  ],
+  "limitations": [
+    "Management signer admission remains an explicit deployment callback; persistent management root rotation/revocation is not implemented.",
+    "No management HTTP/CLI publishing tool, Pack Stage/Enable or full independent CTK runner."
+  ]
+}

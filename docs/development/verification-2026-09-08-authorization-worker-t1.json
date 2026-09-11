@@ -1,0 +1,32 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Actual authorization worker T1 and recovery after lost post-commit notification",
+  "checks": {
+    "actionIntegrationTests": 59,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "documentLinks": 222,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/authorization-worker-t1-tests.log",
+      "sha256": "fed3fcd43b52e07967ee629e996676cbbac459c434d489b25b42e979f0c65593"
+    },
+    {
+      "path": "artifacts/verification/authorization-worker-t1-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/authorization-worker-t1-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    }
+  ],
+  "limitations": [
+    "This tests-and-documentation batch ran Action integration tests, Core typecheck and docs check; it did not rerun all Core/workspace tests or build/API.",
+    "Approval and Authority were prepared by actual Owners; automatic responsibility creation and Wait resumption remain incomplete.",
+    "Multi-loop tenant runtime end-to-end integration and production HTTP/governance remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Persisted ownership and dedicated migration connection preflight composition",
+  "checks": {
+    "focusedTests": 42,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 266
+  },
+  "coverage": [
+    "Missing persistent ownership rejects; actual registration permits composed preflight.",
+    "Final management admission denial, ownership deletion and role elevation reject.",
+    "Deployment readiness rejects Queue column-only access to ownership inventory."
+  ],
+  "limitations": [
+    "Current management admission and authority fences remain host-installed.",
+    "Host must wire both connections to the same deployment.",
+    "No migration execution authority, real evidence verification or Enable.",
+    "No full Core rerun; latest full suite remains prior 368-test run."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-registered-test.log",
+      "sha256": "7d0c40f6e9399062985d9429baf06d5f116c9ef5445d2d3acb603f341a993367"
+    },
+    {
+      "path": "artifacts/verification/migration-registered-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-registered-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-registered-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-registered-docs.log",
+      "sha256": "d486a008b24b0c552839f2107d02f16557b11004d1bf5e751c228ef8b6c33cfd"
+    }
+  ]
+}

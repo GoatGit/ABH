@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Whole migration plan evidence binding and source locking",
+  "checks": {
+    "focusedTests": 10,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 280
+  },
+  "coverage": [
+    "Complete Manifest migration set and ownership validation before evidence reads.",
+    "All source rows locked before first evidence callback, tested by real concurrent update lock timeout.",
+    "First-step evidence expiry during second-step verifier rejects complete result."
+  ],
+  "limitations": [
+    "Caller must provide current persistent ownership and deployment/governance fences.",
+    "Independent supporting-fact and signer verification still deployment callbacks.",
+    "No execution permit, Migration Runner or Enable.",
+    "Full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-plan-evidence-test.log",
+      "sha256": "9992063d5f4791e14d46d665504dc31c1f5ef0dda562306b219ea4006a4b5814"
+    },
+    {
+      "path": "artifacts/verification/migration-plan-evidence-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-plan-evidence-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-plan-evidence-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-plan-evidence-docs.log",
+      "sha256": "84385630465ddcf08bc1ef186d554a357175bc65a69337e082a21505826d6f00"
+    }
+  ]
+}

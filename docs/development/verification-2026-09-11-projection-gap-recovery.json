@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core MissionSummary projection historical consumer gap recovery",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test --test-name-pattern \"Run lifecycle\" --test-concurrency=1 packages/core/test/run-commands.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/adapter-fastify test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "runLifecycleTests": 1,
+    "runLifecyclePassed": 1,
+    "runLifecycleFailed": 0,
+    "coreTests": 543,
+    "corePassed": 537,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "fastifyTests": 15,
+    "fastifyPassed": 15,
+    "fastifyFailed": 0,
+    "contractArtifacts": 51,
+    "contractsApiEntryPoints": 9,
+    "documentationLinks": 747,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "historical scan requires runtime deliver purpose and current drain grant",
+    "only eligible MissionSummary events at or before the consumer watermark are candidates",
+    "events with an existing consumer Inbox are excluded",
+    "historical gaps are ordered by PostgreSQL created_at and event id",
+    "each recovery page is bounded by the installed worker page size",
+    "watermark-after-event gaps invisible to normal pending scan are discovered",
+    "worker repairs historical gaps before scanning events after the watermark",
+    "recovery reuses durable Inbox admission, event digest and advisory idempotency",
+    "projection rebuild, Inbox, audit Outbox and watermark remain one transaction",
+    "watermark movement remains monotonic and cannot regress during repair",
+    "worker onPage reports repaired work separately from normal handling",
+    "repair leaves no further historical gaps"
+  ],
+  "limits": [
+    "projection subscriptions for other domains remain open",
+    "production projection lag and gap metrics remain open",
+    "the V1 workbench remains open"
+  ]
+}

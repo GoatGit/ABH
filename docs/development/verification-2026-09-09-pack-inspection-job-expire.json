@@ -1,0 +1,86 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Database-time inspection Job expiry and budget failure evidence",
+  "checks": {
+    "contractsTests": 277,
+    "signedInstalledAndTimeoutIntegration": 3,
+    "finalTimeoutBoundaryTests": 2,
+    "contractsBuild": "passed",
+    "coreBuild": "passed",
+    "coreTypecheck": "passed",
+    "contractsApiReports": 9,
+    "coreApiReports": 2,
+    "generatedArtifacts": 49,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "contractsTypecheck": "passed",
+    "documentLinks": "passed"
+  },
+  "limitations": [
+    "Expiry does not require or release the old lease and does not prove the worker stopped or SQL succeeded.",
+    "Counts Running wall-clock time through the DB assessment; Pending/Waiting idle time is not work usage.",
+    "General Waiting/Cancelled/InspectionFailed/Succeeded, pre-timeout lease-loss recovery and Worker/queue/doctor integration remain incomplete.",
+    "Signed integration completed before final unsupported-UTC arithmetic hardening; final contracts and timeout boundary tests cover that change.",
+    "No full Core regression or production SLO validation in this batch."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-check.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-contracts-api.log",
+      "sha256": "4afb17510f9088b4dc052dee5a1eff3b9c934b5c4a5daccd66d04366c4c01249"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-contracts-test.log",
+      "sha256": "1871a471b3bb65582c7c221343f3829cc6bafea4b1cd03ca94faa5308b583cb7"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-contracts-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-core-api.log",
+      "sha256": "68391ea0bb683f05a50365093d210f5d27e84c52eb8f8123cd32e4a1f3f8d4b2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-docs.log",
+      "sha256": "13138952d99d174f0beedc777f9f46991e4629d6482c4b52e46bef9a141c13a0"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-final-integration.log",
+      "sha256": "d828650deabcab07ebc9f00ea3e941416939bd6fb6f147d1a42d956ad1f6fe0b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-generate.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-integration.log",
+      "sha256": "86dcd703fa7683499dec2c688c8d3478ed98f43faf244ff3bc94ddf7f29c56e9"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-expire-timeout-test.log",
+      "sha256": "7301fbf0fb29dc90c2da366c2eaba83098eff7a613f585cfb0653083dc5fef7a"
+    }
+  ]
+}

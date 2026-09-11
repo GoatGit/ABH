@@ -1,0 +1,22 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Terminal receipt discovery and current-authorized comparison Worker",
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreTests": 206,
+    "failed": 0,
+    "migrationVersion": 32,
+    "documentLinks": 215,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/terminal-worker-core.log",
+  "logSha256": "de2144c878e1714c0b491814e7eb0b5089d2fed36ffb8df22837a3c6d8d6c4dd",
+  "limitations": [
+    "Core regression only; no new full workspace check in this batch.",
+    "Human Exception routing, Correction and governed unfreeze remain unimplemented.",
+    "Worker compares persisted terminal evidence only; Observing Operation query/Controller orchestration remains.",
+    "Local tests do not prove production installation governance, scan capacity/SLO or full V1 acceptance."
+  ]
+}

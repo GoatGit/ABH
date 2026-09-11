@@ -1,0 +1,51 @@
+{
+  "schema": "ActionQueryResponse",
+  "value": {
+    "success": true,
+    "data": {
+      "actionRef": {
+        "type": "abh.action",
+        "id": "00000000-0000-4000-8000-000000000006",
+        "version": 4
+      },
+      "actionType": "hello.publish",
+      "position": {
+        "lifecycle": "Reconciling",
+        "outcome": "Unknown"
+      },
+      "authorizationSummary": {
+        "authorityRef": {
+          "type": "abh.execution-authority",
+          "id": "00000000-0000-4000-8000-000000000001",
+          "version": 1
+        }
+      },
+      "operationSummary": [
+        {
+          "operationRef": {
+            "type": "abh.operation",
+            "id": "00000000-0000-4000-8000-000000000056",
+            "version": 2
+          },
+          "position": {
+            "lifecycle": "Observing",
+            "outcome": "Unknown"
+          }
+        }
+      ],
+      "unresolvedRefs": [
+        {
+          "type": "abh.operation",
+          "id": "00000000-0000-4000-8000-000000000056",
+          "version": 2
+        }
+      ],
+      "availableActions": []
+    },
+    "meta": {
+      "asOf": "2026-09-07T00:05:00Z",
+      "watermark": "action:6:4",
+      "stale": false
+    }
+  }
+}

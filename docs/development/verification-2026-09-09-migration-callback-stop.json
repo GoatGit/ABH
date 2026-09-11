@@ -1,0 +1,74 @@
+{
+  "date": "2026-09-09",
+  "scope": "Stop migration signature admission chains at child cancellation boundaries",
+  "tests": {
+    "unit": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "realMigrationSignatureInspection": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "fullContractsRerun": false
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreApi": "passed (3 entry points)",
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/migration-callback-stop-unit.log",
+      "sha256": "254e184c5d75d8085c32503c2a3877a7f95cabeff6abd7ee2197e1b13b2ea19d"
+    },
+    {
+      "path": "artifacts/verification/migration-callback-stop-integration.log",
+      "sha256": "bbcc0d140ac593fba1c74fdd04653e3fc18e85952de772ab6ce99c9ea865f854"
+    },
+    {
+      "path": "artifacts/verification/migration-callback-stop-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-callback-stop-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-callback-stop-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/migration-callback-stop-docs.log",
+      "sha256": "07ede0679bb85a538e76c10d333925a0d12c01063836921005cd515740c5dab8"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/migration-work-options.ts",
+      "sha256": "0927a6be241ffbddb081c1cfa07b08ff7f9c6508f18625e417d0f8bfb96202a9"
+    },
+    {
+      "path": "packages/core/src/extensions/migration-signature-artifact.ts",
+      "sha256": "86aa99b44c3c754d2ca8bf73babeef50ca5d534b2dfa5a1f6fb7b1e2da8d4550"
+    },
+    {
+      "path": "packages/core/src/extensions/read-signed-migration-result.ts",
+      "sha256": "6b5e2d43e23b107f4d0f1fc511135477d4a196b536b7e26533f5f5301d9cc4cf"
+    },
+    {
+      "path": "packages/core/test/migration-signature.test.ts",
+      "sha256": "629d8e8bbab06a8ddd5ca5875350091ac7fbaebb925c6ac60d14b661f7afaedb"
+    }
+  ],
+  "remaining": [
+    "Late cleanup durable reporting",
+    "Enable Owner and approval assembly",
+    "Remaining V1 modules"
+  ]
+}

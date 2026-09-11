@@ -1,0 +1,154 @@
+{
+  "date": "2026-09-09",
+  "scope": "Internal CTK Artifact recording and reading, and current PackEnableProposal evidence assembly for NotApplicable migrations",
+  "tests": {
+    "realCosignPostgres": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "log": "artifacts/verification/pack-ctk-artifact-tests-final.log",
+      "note": "Single comprehensive integration includes actual CTK signature, independent Grants, replay/rollback, wrong bodies, cancellation and proposal derivation tests."
+    },
+    "contracts": {
+      "passed": 298,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "coreTypecheck": "passed",
+    "contractsTypecheck": "passed",
+    "generation": "passed (49 files)",
+    "coreApi": "passed (3 entry points)",
+    "contractsApi": "passed (9 entry points)",
+    "docs": "passed"
+  },
+  "initialFailures": [
+    "Fixture duplicate variable name",
+    "Public store-inline does not permit Pack management purpose; implemented independent Internal RecordPackConformanceCommand, without widening public permission",
+    "Generation rejected attempted public action in internal registration",
+    "Typecheck launched before contract build completed, rerun after build",
+    "Container host port binding timeout; fixture cleanup confirmed and terminal run retried",
+    "Fixture generic EntityRef narrowed to installed-pack literal"
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/pack-conformance-artifact.ts",
+      "sha256": "1fabb79f89fbd7df5ae70cdb113a13eebdac8efe1196ea7385a3e6bf655fdcda"
+    },
+    {
+      "path": "packages/core/src/extensions/prepare-pack-enable-proposal.ts",
+      "sha256": "16b9b72bdfd95a0d49d41acc44e3dad8bea744848666ed36fee2310e413b6ec0"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "69f4858cfe275afe20cf80c588edc64ca6e6df47b512012bde0c9ec275cd2ee6"
+    },
+    {
+      "path": "packages/contracts/catalog/core.json",
+      "sha256": "bc64e24ba85d07910be40718bc0c801aa271ea94cc2ab79b991b9faa48a41ea5"
+    },
+    {
+      "path": "packages/contracts/protocol/registry.yaml",
+      "sha256": "c0653134fb7ea221a852645e66024c0d00d8fe5041674a5bb4829eb3899c9062"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "a5f79df508c9994755d633f95836ec1291f8af4a7567e70ee0d0f1e7dd9439ed"
+    },
+    {
+      "path": "packages/contracts/test/pack-conformance-command.test.ts",
+      "sha256": "d64a667a038ed9841c67ca8e3bf6b00801fa3de7771aff6af75f5fc67ba87902"
+    }
+  ],
+  "remaining": [
+    "Formal Pack approval request command and Human Gateway assembly",
+    "Complete verification branch for applicable migrations, Domain/backfill/projections",
+    "Enable lifecycle Owner, migrations and capability registry",
+    "Remaining V1 modules"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-build.log",
+      "sha256": "e982cd7e93f8b9252869a90aa0515c352aa12307ef48e5adbedc8d5d9de2ca3f"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-contract-tests.log",
+      "sha256": "6ed5a95d488463c95bbe8253060688c878ed3c39e138f9e1a5741122ca4a6b49"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-core-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-docs.log",
+      "sha256": "0d5e83f1e39719eef21e45b589e4165b6df8b7218f129aab9abf454e0ec4fda8"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-drift.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-generation-rerun.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-generation.log",
+      "sha256": "1b0cace6ff361ec1053b784a9ae07a4c910d9f72a79d528d2532ff1ae18040fc"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-tests-command.log",
+      "sha256": "02bab6fe9ccfd26997ead48fe7be88430a1cb7cec8c1a0acba56f9b61db2cb27"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-tests-current.log",
+      "sha256": "e69deabdb92c2c3f7c84dc1f0a8a53963069cfac884d7800a56e0a342a2fc1fe"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-tests-final.log",
+      "sha256": "0c767b1011eb65b58c0fa3d5668dcace43eed082a99eba7b57ea1fa40354d3d2"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-tests-rerun.log",
+      "sha256": "3fff4e4760b8fa81687c05fe4e85bb7bede5e2c9f722ca19746121be4029e5cd"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-tests.log",
+      "sha256": "8312885cc07e0a7c36c67dd46955a6c98f7c92496d86d9547d9c35432c6cbabb"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-typecheck-current.log",
+      "sha256": "f5dd7012d2928a8e76449847682821bc85a90841537e34fecefe8b76bd041e50"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-typecheck-rerun.log",
+      "sha256": "851d718f749190018b2bd206b40eb566ef675c00926b19a65985d24d920026a6"
+    },
+    {
+      "path": "artifacts/verification/pack-ctk-artifact-typecheck.log",
+      "sha256": "24384af1f5a413f311576735d2f82ea5bb58b794c99f73d54f7df426702c0fd5"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "HTTP SubmitDecision with atomic durable Pending effect intents",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 225,
+    "coreTests": 237,
+    "transportTests": 10,
+    "failed": 0,
+    "migrationVersion": 40,
+    "generatedArtifacts": 48,
+    "apiEntryPoints": 9,
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/decision-effects-check.log",
+  "logSha256": "417bab6a65aadc59b9155a09769a863af22c6a7618612b59277c998a6014fc29",
+  "limitations": [
+    "Pending immutable intents only: target Owner application, receipts and retry worker remain incomplete.",
+    "Mandatory installed source/MFA/duties/condition/complete effect policy remains required; test policies are explicit fixtures.",
+    "Production identity/governance, public Decision query DTOs and full service/SDK/CLI remain incomplete.",
+    "Core public entry and full V1 acceptance remain incomplete."
+  ]
+}

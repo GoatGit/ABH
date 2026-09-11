@@ -1,0 +1,43 @@
+{
+  "schema": "PutObjectRequest",
+  "value": {
+    "context": {
+      "callId": "00000000-0000-4000-8000-000000000070",
+      "requestContextRef": {
+        "type": "abh.request-context",
+        "id": "00000000-0000-4000-8000-000000000071",
+        "version": 1
+      },
+      "target": {
+        "objectRef": {
+          "type": "abh.artifact",
+          "id": "00000000-0000-4000-8000-000000000076",
+          "version": 1
+        },
+        "action": "abh.artifacts.store",
+        "scopeRefs": [
+          {
+            "type": "abh.organization",
+            "id": "00000000-0000-4000-8000-000000000003",
+            "version": 1
+          }
+        ]
+      },
+      "deadline": "2026-09-07T00:02:00Z"
+    },
+    "authorizedContextRef": {
+      "type": "abh.authorized-context",
+      "id": "00000000-0000-4000-8000-000000000077",
+      "version": 1
+    },
+    "stagedArtifactRef": {
+      "type": "abh.artifact",
+      "id": "00000000-0000-4000-8000-000000000076",
+      "version": 1
+    },
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "sizeBytes": 3,
+    "mediaType": "text/plain",
+    "idempotencyKey": "put-brief-76"
+  }
+}

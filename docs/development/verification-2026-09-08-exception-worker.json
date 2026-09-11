@@ -1,0 +1,23 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Continuous frozen-report responsibility routing",
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "targetedTests": 46,
+    "failed": 0,
+    "documentLinks": 216,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/exception-worker-actions.log",
+  "logSha256": "df4b76b6effe0f0636feb5910d3c15c65a522dfbb923da842a7ef014ca87db75",
+  "initialFailureLog": "artifacts/verification/exception-worker-actions-first-failure.log",
+  "initialFailure": "OPA evaluation timeout before Exception scenario; subsequent calls on terminated instance denied. Fresh fixture rerun passed.",
+  "limitations": [
+    "Targeted regression only, not full workspace check.",
+    "Installed responsibility routing and eligibility still require production governance.",
+    "Unresolved Request rerouting, ResolveException, Correction and governed unfreeze remain unfinished.",
+    "No production scan capacity/SLO or full V1 acceptance claim."
+  ]
+}

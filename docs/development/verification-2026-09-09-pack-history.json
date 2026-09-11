@@ -1,0 +1,99 @@
+{
+  "date": "2026-09-09",
+  "scope": "Append-only installation history, explicit historical exactRef reads and atomic Stage retention",
+  "tests": {
+    "targetedRealCosignDatabase": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCore": {
+      "total": 501,
+      "passed": 496,
+      "failed": 0,
+      "skipped": 5,
+      "note": "Cosign unset in full run. Actual CTK/Pack pipeline ran in targeted 14-test suite; other four signature files not rerun in this batch."
+    }
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreApi": "passed (3 entry points)",
+    "databaseManifest": 56,
+    "coreTypecheck": "passed",
+    "docs": "passed"
+  },
+  "initialFailures": [
+    "Physical foreign key rejected by existing security readiness rules; removed and retained Owner validation",
+    "Foreign tenant fixture used wrong purpose; changed to management context to exercise RLS"
+  ],
+  "sources": [
+    {
+      "path": "packages/core/migrations/1788882000000_installed_pack_history.cjs",
+      "sha256": "1341b5ecc84a39924009fb8303df5086d8f1ac1ac43d231c8aa19fc3d0a564d2"
+    },
+    {
+      "path": "packages/core/src/extensions/installed-packs.ts",
+      "sha256": "fde34b8125bee40a0d8f82c10e13dbe415ed8e3f193444026b5c461250d7d557"
+    },
+    {
+      "path": "packages/core/src/extensions/stage-pack.ts",
+      "sha256": "6b870c0cd6e82d19c71e19f1d3ed7ff8c766c88d9989aa36df8b99d38e0146b8"
+    },
+    {
+      "path": "packages/core/src/data/manifest.ts",
+      "sha256": "7ad8946fb1129fab907c1fd24fc7f5dedc871650281812cb0df8fa30e22f7e1e"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "a144df64d34c59277a4981137e51eae8cff32aafa156e8452e44ddd8cb8a62c5"
+    }
+  ],
+  "remaining": [
+    "InstalledPack lifecycle version schema and migration",
+    "Enable/Suspend/Retire Owners and capability registry",
+    "Full applicable migration and Domain/backfill/projection verification",
+    "Remaining V1 modules"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-history-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-history-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-history-core-full.log",
+      "sha256": "3ab983699c392c5bf30ed8056ef6ea68a2a8c15646ba14ad94e86e7cf3a73f54"
+    },
+    {
+      "path": "artifacts/verification/pack-history-docs.log",
+      "sha256": "f2b4e5dd6321cf7ef0cba2a56f2a3e905318f7a152fded2e5276ada3ab007f6c"
+    },
+    {
+      "path": "artifacts/verification/pack-history-tests-final.log",
+      "sha256": "0e0e975f26a2aa1a3c096c176192296b5897d4ea990b5cb63f832775b6d64dc7"
+    },
+    {
+      "path": "artifacts/verification/pack-history-tests-verified.log",
+      "sha256": "e5c9bea1b869254e9898dcdde168b425adc64d13372db1ab8689a1578f0333bc"
+    },
+    {
+      "path": "artifacts/verification/pack-history-tests.log",
+      "sha256": "9fd9d23b84bb44b3384822d64c5b5c98f84eda201e2ac610cf5aa82be34dcb06"
+    },
+    {
+      "path": "artifacts/verification/pack-history-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-history-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-history-docs-final.log",
+      "sha256": "f2b4e5dd6321cf7ef0cba2a56f2a3e905318f7a152fded2e5276ada3ab007f6c"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Installed Pack preparation and no-SQL impact classification",
+  "checks": {
+    "focusedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 302
+  },
+  "coverage": [
+    "Current installed snapshot and compiler-signed impact supply all Pack/environment bindings.",
+    "NotApplicable produces no SQL work.",
+    "Incomplete signed impact rejects.",
+    "Changed projection without SQL returns DataVerificationRequired.",
+    "Revoked source prevents preparation."
+  ],
+  "limitations": [
+    "TrustedCode full installed migration preparation branch still needs end-to-end fixture coverage.",
+    "Final execution-time checks, production supporting facts, Runner and Enable remain incomplete.",
+    "No execution permit; full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/installed-preparation-test.log",
+      "sha256": "4fe0d0b3501832513c9eef25da12333fdd9e505e56f9c34d2d7a1ed07508269c"
+    },
+    {
+      "path": "artifacts/verification/installed-preparation-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/installed-preparation-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/installed-preparation-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/installed-preparation-docs.log",
+      "sha256": "615ce927fb979bae1da7a9a7bdfcace9960c23965024499dffd8bf2e2a385edc"
+    }
+  ]
+}

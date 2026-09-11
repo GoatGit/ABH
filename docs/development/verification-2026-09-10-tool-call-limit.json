@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core Tool binding atomic call limit",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/run-commands.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "postgresIntegrationPassed": 1,
+    "postgresIntegrationFailed": 0,
+    "coreTests": 529,
+    "corePassed": 523,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractArtifacts": 51,
+    "documentationLinks": 729
+  },
+  "coverage": [
+    "binding reference types and bounded call limit validation",
+    "binding row locked for update",
+    "tenant, record and row status consistency",
+    "command target equals payload binding",
+    "active binding and deadline checks",
+    "atomic count across all non-replay call outcomes",
+    "call limit exceeded rejection",
+    "same callKey and argument digest replay without consuming quota",
+    "three concurrent requests contend for two slots",
+    "expired deadline rejected without partial command state"
+  ],
+  "limits": [
+    "external capability execution remains a test stub",
+    "budget reservation and settlement remain open",
+    "output schema validation and isolated execution remain open",
+    "background deadline archival worker remains open"
+  ]
+}

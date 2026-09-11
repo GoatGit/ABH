@@ -1,0 +1,60 @@
+{
+  "date": "2026-09-11",
+  "subject": "TanStack Query authorization keys and same-origin Mission SSE invalidation",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r typecheck",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "workbenchTests": 5,
+    "workbenchPassed": 5,
+    "workbenchFailed": 0,
+    "workbenchTypecheck": "passed",
+    "workbenchNextBuildRoutes": [
+      "/",
+      "/actions",
+      "/actions/[id]",
+      "/api/events/[type]/[id]",
+      "/api/projections/[id]",
+      "/decisions/[id]",
+      "/inbox",
+      "/missions/[id]"
+    ],
+    "workbenchNextBuild": "passed",
+    "contractsArtifacts": "51 files matched",
+    "apiEntryPointsChecked": 13,
+    "documentationLinks": 754,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "query keys partition subject, organization, workspace, purpose, authorization digest, actor and field set",
+    "mission projection first render remains server-read and strongly authorized",
+    "client projection refresh uses the bounded mission field set",
+    "same-origin SSE proxy injects identity server-side and does not forward cookies upstream",
+    "bounded Last-Event-ID is forwarded for resume",
+    "projection reset removes the local query and requires baseline reconstruction",
+    "SSE disabled or unavailable falls back to authorized polling",
+    "projection responses and event streams are marked non-cacheable",
+    "accepted commands are never optimisticly marked effective"
+  ],
+  "limits": [
+    "Decision subscription UI is not consuming SSE yet",
+    "only Mission Summary has live Workbench invalidation",
+    "JSON Forms is not implemented yet",
+    "ECharts is not implemented yet",
+    "organization switcher is not implemented yet",
+    "compensation proposal creation remains open",
+    "Settings journey is not implemented yet",
+    "browser SSE E2E, concurrency, reconnect and reset verification remain open",
+    "browser accessibility and performance verification remain open",
+    "production identity adapter installation remains a host requirement",
+    "production process and tenant lifecycle governance remain open"
+  ]
+}

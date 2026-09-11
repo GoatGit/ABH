@@ -1,0 +1,73 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Formal migration evidence contracts and real Artifact binding",
+  "checks": {
+    "contractsTests": 251,
+    "coreFocusedTests": 6,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "contractsTypecheck": "passed",
+    "coreBuild": "passed",
+    "contractsBuild": "passed",
+    "generatedFiles": 48,
+    "apiReports": 11,
+    "remainingTestContainers": 0,
+    "documentLinks": 276
+  },
+  "coverage": [
+    "Actual Artifact read with exact refs, row locks, current access and canonical JSON bytes.",
+    "Evidence binds organization/package/execution fields/environment/deployment version/kind/outcome/time.",
+    "Execution digest excludes evidence IDs to avoid self-reference.",
+    "Missing authority, malformed JSON and binding substitutions reject.",
+    "Expiry during final evidence callback rejects all reports."
+  ],
+  "limitations": [
+    "Issuer, signature and supporting fact verification callbacks are fixtures in tests and require production assembly.",
+    "No execution authority, Migration Runner, evidence max lifetime policy or Enable.",
+    "Full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-evidence-test.log",
+      "sha256": "70e4e3d1879a8196f181e4b0c19dcd1f68841efc6d384a2068126396247c8197"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-contract-test.log",
+      "sha256": "aa59f122166daa739de94a48e4db83d9482396903cd26c1d7134a2856996bff4"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-check.log",
+      "sha256": "b3cbe210508e5986509785a68024ab0c18dd472e5648d281fbbaac68f454057f"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-generate.log",
+      "sha256": "bec6050a5253084e710e1335eb3f8899147fa958342ba034480b22cc9ed9db66"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-docs.log",
+      "sha256": "d9a4d7d1b263874f1bf80e5e155152fc9a2ba2e21be693f9b1a206e33ac8954b"
+    }
+  ]
+}

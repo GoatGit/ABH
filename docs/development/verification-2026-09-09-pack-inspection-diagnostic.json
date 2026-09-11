@@ -1,0 +1,74 @@
+{
+  "date": "2026-09-09",
+  "scope": "Internal inspection diagnostic backend and actual undelivered Pending expiry recovery",
+  "tests": {
+    "targetedCore": {
+      "file": "migration-signature.test.ts",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 107858.349292
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApi": "passed (2 entry points)",
+    "docs": "passed",
+    "isolatedTestContainersRemaining": 0
+  },
+  "coverage": [
+    "No mutation of Job/lease versions, receipts, audit or outbox during diagnosis",
+    "AwaitDelivery, AttemptExecution, ObserveRunning, SettleLostLease, SettleExpired and Terminal",
+    "Current and future reference handling, denied management or evidence reads",
+    "Actual expiration of an undelivered Pending Job without preparation, attempts or elapsed work"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostic-tests.log",
+      "sha256": "8f885ab5a4e8f6c10e12ded1039d3861d39609edaa062a344c294b8a423d8d55"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostic-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostic-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostic-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostic-docs.log",
+      "sha256": "936183a41c7fe35cc06fbc1ee4ea8475a8e8b6a74b760bbe4a28884bea25192d"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/inspect-pack-inspection-job.ts",
+      "sha256": "ad25ee4fd072917c2806b209e4e3332312a8f77148b02f02c09562d34f53cbb0"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-diagnostic-fixture.ts",
+      "sha256": "56ffee961c2cb6881cc1f235935d7f6a3396da81659a42039cc7b49101cf86ed"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-job-execution-fixture.ts",
+      "sha256": "fd95d760b754b067a83dfd19d0890007283dc33b2cb9a72ac501a9744300b793"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-lease-loss-fixture.ts",
+      "sha256": "d28de67a81f48a978d1e2fde7b3a6ac0f4571c48d367e30d180d30c17826a8c3"
+    }
+  ],
+  "remaining": [
+    "doctor CLI/HTTP installation",
+    "general execution failure evidence",
+    "production configuration and backpressure",
+    "complete installation phases and domain/backfill/projection verification",
+    "Enable lifecycle"
+  ]
+}

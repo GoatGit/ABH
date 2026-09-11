@@ -1,0 +1,97 @@
+{
+  "date": "2026-09-09",
+  "scope": "Persisted capability set binding in Pack Enable proposals, requests and Human approval consumption; no Enabled transition",
+  "tests": {
+    "contracts": {
+      "passed": 304,
+      "failed": 0
+    },
+    "targetedRealCosignDatabaseFinal": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "note": "Serial real signed CTK/registration/Enable proposal-request-precommit, Human approvals, nonempty registry Owner fixture, and Wait regression."
+    },
+    "fullCore": {
+      "total": 494,
+      "passed": 488,
+      "failed": 1,
+      "skipped": 5,
+      "note": "Only failure: waits.test.ts fixture Docker host port-binding timeout before business assertions. Serial supplement passed all 14 Wait tests, restoring coverage of the omitted 13 child cases; no full-suite green rerun claimed."
+    }
+  },
+  "checks": {
+    "contractsBuild": true,
+    "coreBuild": true,
+    "contractsTypecheck": true,
+    "coreTypecheck": true,
+    "generatedArtifacts": 49,
+    "contractsApiEntries": 9,
+    "coreApiEntries": 3,
+    "docs": true
+  },
+  "diagnostics": [
+    "Initial approval negative tests exposed missing capability evidence check; corrected and subsequent actual Human tests passed.",
+    "Initial downstream typecheck was started before Contracts build finished and saw stale declarations; final ordered build/typecheck passed.",
+    "Parallel targeted fixture also hit Docker port-binding timeout; final serial 25-test run passed."
+  ],
+  "limitations": [
+    "Current signed integration Pack provides is empty; nonempty capability registry uses an admin-seeded staged fixture.",
+    "InstalledPack state persistence remains Staged/version 1. Runtime resolution and activation, Suspend/Retire, applicable full migration verification remain incomplete.",
+    "Current implementation, read permission and health admission remains a mandatory trusted deployment callback, with fences declared before Deployment/Pack locks."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/capability-enable-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-contracts-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-contracts-api.log",
+      "sha256": "91d2df37aeced5dfc3d0d2e53be5d4753114ede67e2e6add221eb7e7f70dc337"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-contracts-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-contracts.log",
+      "sha256": "fa4a692fec2ad693aa3108e13ea497608865bdcdb5e739e604e74a5b12c7e3cb"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-core-api-check.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-core-api.log",
+      "sha256": "69b6956e0c35e5e9332bef8220911a89bd331472682ce0b6c5de176eaf8c7ad8"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-core-full.log",
+      "sha256": "9a54240d85d3d5951b8692eff1e2eb7c4a187891e437bdbda1471d17f6e3972e"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-docs.log",
+      "sha256": "f48982a5f76ec3026396091a0efa7c24f1e86a621d0ebeb7d45f4a9bc4b19e32"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-generated.log",
+      "sha256": "e0e8a3ca2a6b713303505c7d470817cf5b0cf1b27b722faea2d23a62eff18a3b"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-integration-final.log",
+      "sha256": "1380787a87c19e554f87592c0668ef088620112669ebba7bae5284fdd86a745f"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-integration.log",
+      "sha256": "f8442c5c67da73309315f4b74f7f91f4b3f2d54a3fc0e8d08d6add3fe655aff1"
+    },
+    {
+      "path": "artifacts/verification/capability-enable-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

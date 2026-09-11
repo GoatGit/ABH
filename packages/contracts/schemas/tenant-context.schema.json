@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:abh:contracts:0.1.0:tenant-context",
+  "title": "TenantContext",
+  "description": "Internal data access contract only. Never accepted from public clients.",
+  "type": "object",
+  "properties": {
+    "requestId": {
+      "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+    },
+    "actor": {
+      "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+    },
+    "actingOrganizationId": {
+      "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+    },
+    "resourceOrganizationId": {
+      "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+    },
+    "workspaceId": {
+      "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+    },
+    "purposeOfUse": {
+      "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+    },
+    "sessionEpoch": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "scopeEpoch": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "contextExpiresAt": {
+      "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+    }
+  },
+  "required": [
+    "requestId",
+    "actor",
+    "actingOrganizationId",
+    "resourceOrganizationId",
+    "purposeOfUse",
+    "sessionEpoch",
+    "scopeEpoch",
+    "contextExpiresAt"
+  ],
+  "additionalProperties": false
+}

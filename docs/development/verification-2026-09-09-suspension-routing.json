@@ -1,0 +1,55 @@
+{
+  "date": "2026-09-09",
+  "scope": "Explicit Action suspension subscription fanout through real pg-boss, frozen Outbox validation, independent Inbox effects and consumption coverage; historical Pack registration source verification",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "core": {
+      "total": 520,
+      "passed": 514,
+      "failed": 0,
+      "skipped": 6
+    }
+  },
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "limitations": [
+    "Subscription inventory is explicitly installed, bounded to 100; automatic paginated/cross-scope discovery and backfill are outstanding.",
+    "Registered/public kind mapping, business notification and Artifact policies remain trusted installation inputs.",
+    "Test queue admission uses an explicit isolated installation, not production identity governance.",
+    "Observations preserve Action/Operation responsibility; Retire, compatible query and full V1 remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-routing-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-routing-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-routing-core-tests.log",
+      "sha256": "80f1503db1ec10e8c72050b2a3d2daa1d2036d7bc292ff312cc6363e37898f9d"
+    },
+    {
+      "path": "artifacts/verification/suspension-routing-docs.log",
+      "sha256": "9301608be273e54aff9b47a9f9ebe4c3e4920479425dee8f786c65bab4059ebe"
+    },
+    {
+      "path": "artifacts/verification/suspension-routing-tests.log",
+      "sha256": "b0340f085627de4d5d2046d10acd30d48f7b1f144275d3ba109454e027ff7ce3"
+    },
+    {
+      "path": "artifacts/verification/suspension-routing-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

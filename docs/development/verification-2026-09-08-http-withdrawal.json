@@ -1,0 +1,43 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Decision withdrawal HTTP through IdentityIngress and transactional Owner",
+  "checks": {
+    "coreTests": 236,
+    "transportTests": 10,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/http-withdrawal-core.log",
+      "sha256": "4a8cb3dd64089aaeac8f9e66d441b8af5ff6a708cf1d3cb99d1149f69aba5db5"
+    },
+    {
+      "path": "artifacts/verification/http-withdrawal-transport.log",
+      "sha256": "e7f06ee71ccee81ad26a1c53406e91f4b4692cd355409f58e3f64accb8c8d1bc"
+    },
+    {
+      "path": "artifacts/verification/http-withdrawal-typecheck.log",
+      "sha256": "c70eec6071b0f0fe48aad06a103990e676f51ad535d84ab19aaa65f23115e37c"
+    },
+    {
+      "path": "artifacts/verification/http-withdrawal-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/http-withdrawal-docs.log",
+      "sha256": "d5e7ec9fa954deb6917af95efe5f26b05af72412b79c0bd02e13485c9043360b"
+    }
+  ],
+  "limitations": [
+    "Trusted credentials resolver and source governance checks remain mandatory installations; test IdP/governance are explicit fixtures.",
+    "Same-organization IdentityIngress only; no HTTP Workspace selection yet.",
+    "Only withdrawal is mounted in Core server composition; other commands and query DTOs remain incomplete.",
+    "Core public entry, production server lifecycle, SDK/CLI and full V1 acceptance remain incomplete.",
+    "Full workspace check not repeated; unchanged contract/API reports retain previous batch evidence."
+  ]
+}

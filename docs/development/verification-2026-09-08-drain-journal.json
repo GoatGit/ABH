@@ -1,0 +1,19 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Local persistent drain report journal",
+  "checks": {
+    "coreTypecheck": "passed",
+    "targetedTests": 8,
+    "failed": 0,
+    "documentLinks": 215
+  },
+  "log": "artifacts/verification/drain-journal.log",
+  "logSha256": "0aec0066f34dbe4bfffb6d1f52ff6a386fc359bb85b1b114a85d0ff2aef094d7",
+  "limitations": [
+    "Requires trusted existing persistent-volume directory with hard-link and directory fsync support.",
+    "Actual power-loss durability is not proven by these filesystem tests.",
+    "Operational evidence only; not business Audit, replay authority or ObjectStore.",
+    "Full V1 remains incomplete; no full workspace check repeated."
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Formal structural and combined migration observation contracts",
+  "checks": {
+    "coreBaselineBeforeContractChanges": 462,
+    "contractsTests": 266,
+    "finalInstalledIntegration": "passed",
+    "installedSignatureIntegration": 1,
+    "contractsTypecheck": "passed",
+    "coreTypecheck": "passed",
+    "contractsBuild": "passed",
+    "coreBuild": "passed",
+    "generatedArtifacts": 48,
+    "contractsApiReports": 9,
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "Core full baseline precedes the observation contract changes.",
+    "Contract consistency does not prove live state, provenance, full verification or Enable.",
+    "Production installation jobs, execution leases, ObjectStore, domain/backfill/projection verification and Enable incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/core-installation-current-2026-09-09.log",
+      "sha256": "89fc18d4b61e3c8a01d826896cded2ff60acfad5665154ba7674379ea2b379f2"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-contracts-api-check.log",
+      "sha256": "4afb17510f9088b4dc052dee5a1eff3b9c934b5c4a5daccd66d04366c4c01249"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-contracts-api.log",
+      "sha256": "cbace512b733947aef68a16f9ea0f6876a69c91b8f1b20666b301f9fe76eb5ee"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-contracts-check.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-contracts-docs.log",
+      "sha256": "febe1c525520a61bd3f72d5ac5bd9c419d7d6b8c31a4e00f05e4fca0fac97008"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-contracts-generate.log",
+      "sha256": "0bc57764d623986aecba920b5efc862279c1b81774cdebce63d0a91f2c1ab97a"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-contracts-installed.log",
+      "sha256": "c2a31012d7ca31f6a16e9273146117432551d9daee7d9c5221dbf95c0894182c"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-contracts-test.log",
+      "sha256": "ae48dc39fef52518f8938ffba9be16bed8430a2eb821dfe70ec10436e3e94dd5"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-contracts-types.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-core-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-core-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-recovery-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-recovery-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-recovery-docs.log",
+      "sha256": "14f5e2fba8147af62ab3ef37459d019edf7bfccdc2006fb6b48b6e5c2e305e36"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-recovery-test.log",
+      "sha256": "d4c7003852011c7681719f83fbf5bab4056681210327eabd4bbb582aad3592fd"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-recovery-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "coverage": [
+    "Closed bounded structural catalog observations and combined data/structure evidence.",
+    "Nested count, signature time, binding, source identity and component match consistency checks.",
+    "Contract digest covers both observations and observation time.",
+    "Actual signed installed structure/state persistence and recovery pass through formal contracts."
+  ]
+}

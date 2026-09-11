@@ -1,0 +1,111 @@
+{
+  "date": "2026-09-09",
+  "scope": "Internal Enable command and transition record contracts, same-UoW evidence/approval/Grant admission without state mutation",
+  "tests": {
+    "realCosignDatabaseAndApproval": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "contracts": {
+      "passed": 302,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "coreTypecheck": "passed",
+    "contractsTypecheck": "passed",
+    "generation": "passed (49 files)",
+    "api": "passed (Contracts 9 / Core 3 entry points)",
+    "docs": "passed"
+  },
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/prepare-pack-enable-commit.ts",
+      "sha256": "c6b4f092ce7a5334a912b13b910893f240673a6d96595ae9ecd91d537b20618d"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "e30826997694ee486c8b15d98a8f18b5db2db7b764593e22e206844e9129852b"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "cf1b0805e4da1191f478738d0b8e207bcc646e0b932cb395b813cafc3adde100"
+    },
+    {
+      "path": "packages/contracts/src/relationships.ts",
+      "sha256": "3abf4900153b2291660f0bb4f9adafcb87d9420d11603a24a0e59d5283a16fed"
+    },
+    {
+      "path": "packages/contracts/protocol/registry.yaml",
+      "sha256": "b0f70133b533731d8df1e15d9a50f2ed90077abb20705612530c3e33238823fa"
+    },
+    {
+      "path": "packages/contracts/catalog/core.json",
+      "sha256": "6cf8eb64e6497b036e5fb9786af3e047a35aaa6339fbfd0ac37dfbb1a1a7fc1a"
+    },
+    {
+      "path": "packages/contracts/test/pack-enable-record.test.ts",
+      "sha256": "8cba0e7434ef96293e6bbbd41c1c5a9328e3185bd6adf2b18298fa328ab5312d"
+    }
+  ],
+  "remaining": [
+    "Atomic Enabled state CAS, history, deployment revision and Journal in a lifecycle Owner",
+    "Capability registration and runtime resolution",
+    "Complete applicable migration and Domain/backfill/projection verification",
+    "Remaining V1 modules"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-enable-admission-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-build.log",
+      "sha256": "e982cd7e93f8b9252869a90aa0515c352aa12307ef48e5adbedc8d5d9de2ca3f"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-contract-tests.log",
+      "sha256": "f91ee430a54ffef34ac17b0930ed66854f2fbd67026a8d718c24a5797a537004"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-core-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-docs.log",
+      "sha256": "11ca5e08f0fc478e186d9cb86fccf0328ff55cbe0798b643e99cd270c69d868c"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-drift.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-generation.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-tests.log",
+      "sha256": "fe95af658e3b4fede10d4375518a9819d58faeb49ee857806b6c73232329df93"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-admission-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

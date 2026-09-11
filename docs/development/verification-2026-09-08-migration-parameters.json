@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Dedicated migration role parameter ACL and session checks",
+  "checks": {
+    "focusedTests": 34,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 268
+  },
+  "coverage": [
+    "Direct and PUBLIC parameter SET delegation rejects.",
+    "ALTER SYSTEM delegation rejects without executing configuration writes.",
+    "Previously changed session_replication_role remains rejected after privilege revocation."
+  ],
+  "limitations": [
+    "No general session reset or administrator privilege-race protection.",
+    "Migration Runner, evidence verification, business readiness and Enable remain incomplete.",
+    "Focused tests only; full Core suite not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-parameters-test.log",
+      "sha256": "0a504fd400df7ecc088d1cdee1619f0a17b973d7f9d2b57d918c4165500cbc79"
+    },
+    {
+      "path": "artifacts/verification/migration-parameters-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-parameters-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-parameters-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-parameters-docs.log",
+      "sha256": "fa851a97f2166b17f86bbbaa8b6bc33917a9b9446cf0a46574686f4acad6037e"
+    }
+  ]
+}

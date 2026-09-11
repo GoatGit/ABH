@@ -1,0 +1,81 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Formal signed structure report contracts",
+  "checks": {
+    "contractsTests": 255,
+    "coreFocusedTests": 40,
+    "failed": 0,
+    "skipped": 0,
+    "contractsGeneratedArtifacts": 48,
+    "contractsCheck": "passed",
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "contractsApiReports": 9,
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Closed formal binding/report types and validators, exact Pack version, complete digest fields and bounded deployment version.",
+    "Microsecond expiry ordering, missing fields, nested extras and every signed binding affecting report digest.",
+    "Core uses formal contract; real Cosign, stored artifacts and registered PostgreSQL inspection regression passed."
+  ],
+  "limitations": [
+    "Formal report authenticates expected structure metadata, not actual database results.",
+    "Detailed expectation shapes remain internal types; installed authority, data verification, result persistence and Enable incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-structure-contract-generate.log",
+      "sha256": "bec6050a5253084e710e1335eb3f8899147fa958342ba034480b22cc9ed9db66"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-check.log",
+      "sha256": "b3cbe210508e5986509785a68024ab0c18dd472e5648d281fbbaac68f454057f"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-test.log",
+      "sha256": "7f8c0e1970c78e893b0e0c187270aa44ed1c9723d863be5435dfa4af49ed12cc"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-types.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-api-update.log",
+      "sha256": "cbace512b733947aef68a16f9ea0f6876a69c91b8f1b20666b301f9fe76eb5ee"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-api.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-core-test.log",
+      "sha256": "d1ba6f7c163614df911e586c07db12a6d1c26a305f41fe4b4167b1c57f863fc1"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-core-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-core-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-contract-docs.log",
+      "sha256": "949149470747af553121d78d73c5ab28aa953f3c02b08abf3477c872b55c6025"
+    }
+  ]
+}

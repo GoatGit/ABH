@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core ResponsibilityInbox projection consumer and authorized SSE subscription",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-reporter=spec test/responsibility-inbox-projection.test.ts",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm --filter @abh/adapter-fastify test",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "responsibilityInboxProjectionTests": 1,
+    "responsibilityInboxProjectionPassed": 1,
+    "responsibilityInboxProjectionFailed": 0,
+    "contractArtifacts": 51,
+    "contractsApiEntryPoints": 9,
+    "documentationLinks": 750,
+    "coreTests": 546,
+    "corePassed": 540,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "fastifyTests": 15,
+    "fastifyPassed": 15,
+    "fastifyFailed": 0
+  },
+  "coverage": [
+    "each routed Decision owns one ResponsibilityInbox projection subject",
+    "pending projection exposes allowed responses without exposing package question or risk detail",
+    "approved projection clears available responses and advances the decision source version",
+    "runtime refresh requires abh.runtime.deliver and a current abh.decisions.read grant",
+    "worker scans eligible decision and responsibility-request events with bounded pages",
+    "durable Inbox admission, projection rebuild, audit Outbox and watermark remain transactional",
+    "event replay does not increment projection version",
+    "missing projection is rebuilt from committed sources",
+    "subscription emits only committed consumer Inbox hints bound to the decision resultRef",
+    "Last-Event-ID anchor validation and zero-UUID catch-up preserve opaque cursor semantics",
+    "each emitted hint rereads projection authorization and carries no business payload",
+    "Fastify decision SSE routes through the same bounded transport contract"
+  ],
+  "limits": [
+    "the actual V1 workbench remains open",
+    "production hosting, tenant registration and lifecycle management for projection workers remain open",
+    "historical Inbox recovery after a deliberately removed committed Inbox is rejected by stable command receipts rather than replayed"
+  ]
+}

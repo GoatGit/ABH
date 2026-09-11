@@ -1,0 +1,20 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Process signals and ingress shutdown coordination",
+  "checks": {
+    "coreTypecheck": "passed",
+    "targetedTests": 19,
+    "failed": 0,
+    "skipped": 0,
+    "documentLinks": 215,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/process-service.log",
+  "logSha256": "271f6a5af977750ba1ee4eb438ae99aea4fc72c07c38af6e340693e16e17b019",
+  "limitations": [
+    "Actual HTTP ingress, durable drain-report backend and production identity provisioning remain.",
+    "Tests emit signals through EventEmitter; no external process was signalled.",
+    "Targeted regression only; full V1 acceptance remains incomplete."
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "date": "2026-09-09",
+  "scope": "Same-UoW exact capability resolution from actual persisted Pins and Enabled registry through complete package bytes, Schema and deployment-injected implementation",
+  "tests": {
+    "targeted": {
+      "passed": 11,
+      "failed": 0
+    },
+    "fullCore": {
+      "total": 512,
+      "passed": 506,
+      "failed": 1,
+      "skipped": 5,
+      "note": "Only failure: inspection-job-storage fixture host-clock timestamp was ahead of DB time, rejected by existing negative-duration invariant. Fixture changed to DB clock; no full green rerun claimed."
+    },
+    "finalSupplement": {
+      "passed": 12,
+      "failed": 0,
+      "note": "Inspection Job storage plus exact capability/query, Schema and Release after DB-clock fixture correction."
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "Nonempty resolver integration uses explicitly admin-seeded Pack metadata and real byte source; no real signed nonempty end-to-end acceptance yet.",
+    "Production Gateway composition, HTTP routes and per-invocation policy/Permit checks remain incomplete.",
+    "Returned implementation is supplied by trusted deployment code; no dynamic import or arbitrary package code is executed by the resolver.",
+    "Public kind to registered kind mapping is explicitly fixed by build-time binding; digest is the complete registrationDigest.",
+    "Suspend/Retire and applicable migration verification remain incomplete."
+  ],
+  "diagnostics": [
+    "Kept production clock checks unchanged; corrected host/DB clock mixing in inspection storage test fixture."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/capability-resolve-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-core-full.log",
+      "sha256": "58e13d8f9c4f067376220d785dfd7dae58d7e6832a4fa3c70c8537288614b20d"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-docs-final.log",
+      "sha256": "299402c3bb520f5504cf5198fe3717a7a68ca814d15a76cbf54ee619746008ee"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-docs.log",
+      "sha256": "9a1120097ded32d0ad52489504e42d0c36aa537f5a4a155905cc255a0c648a2e"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-final-supplement.log",
+      "sha256": "b4a446d06feeb9ac4d5ac145e91794c0b6086fe98d552474ad75fa1d6a6da466"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-tests-final.log",
+      "sha256": "7af8dfada834b444a3ca87397488bef58f648b36fe2293ad373cb6a2496bc647"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-tests.log",
+      "sha256": "6c49c9d27bd71fbf10fbc8ed1c6b9968865b2b44f73756d99b65a4ae4389b021"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-typecheck-last.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/capability-resolve-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

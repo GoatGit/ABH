@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Mandatory impact source body verification in shared Owner admission",
+  "checks": {
+    "focusedTests": 8,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "isolatedContainersRemaining": 0,
+    "documentLinks": 246
+  },
+  "coverage": [
+    "Record/replay/current reads enforce actual Artifact body comparison independent of deployment callback implementation.",
+    "Dedicated actual-source authorization rejects replay and reads.",
+    "Mismatched source rejected even when current callback omits inventory comparison."
+  ],
+  "limitations": [
+    "Compiler provenance and completeness, baseline directory, source fences and retention still require deployment integration.",
+    "Only bounded inline JSON source artifacts; migration verification and Enable remain incomplete.",
+    "Relevant focused suites rerun; full Core suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-source-required-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/impact-source-required-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-source-required-docs.log",
+      "sha256": "37e8c2cfd7c10f26c6bf033d79297c6950f610913d1b9b44c7cd6bc55d400baf"
+    },
+    {
+      "path": "artifacts/verification/impact-source-required-test.log",
+      "sha256": "425a91eb714cf704009a1b72a6718c963b0c700f87e18212d725d81603773900"
+    },
+    {
+      "path": "artifacts/verification/impact-source-required-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

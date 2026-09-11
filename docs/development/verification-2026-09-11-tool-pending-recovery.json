@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core tenant-local Tool Pending recovery worker with work leases and cost-safe settlement",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test --test-concurrency=1 packages/core/test/run-commands.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/run-commands.test.ts packages/core/test/runtime-host.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "runCommandTests": 2,
+    "runCommandPassed": 2,
+    "runCommandFailed": 0,
+    "runtimeAndRunCommandTests": 8,
+    "runtimeAndRunCommandPassed": 8,
+    "runtimeAndRunCommandFailed": 0,
+    "contractArtifacts": 51,
+    "coreApiEntryPoints": 4,
+    "coreTests": 540,
+    "corePassed": 534,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "documentationLinks": 737,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "pending sweep is tenant-local, purpose-checked, UUID-keyed and age-bounded",
+    "service identity, current invoke grant, fences and Pending state are required",
+    "one work lease claims each call and blocks concurrent recovery",
+    "the host-installed recovery transport is mandatory and bounded by lease expiry",
+    "completed recoveries reuse the explicit output validator and authorized artifact storage",
+    "paid completion settles actual usage through the existing reservation",
+    "explicit recovery failure persists the digest while retaining unknown-cost responsibility",
+    "unknown recovery leaves Pending and holds the reservation",
+    "terminal CAS races roll back without rewriting state",
+    "released leases leave no active recovery claims",
+    "tenant runtime optionally installs the recovery worker behind its shared context binding",
+    "tenant runtime snapshots recovery callbacks and tunables before loop startup",
+    "the end-to-end runtime loop completes a paid pending recovery"
+  ],
+  "limits": [
+    "tenancy discovery remains host-installed",
+    "remote transport isolation remains host-installed",
+    "external Operation or tracking binding remains open",
+    "256 KiB Object Store output staging remains open"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core model call evidence-driven reconciliation",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/model-gateway.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build",
+    "corepack pnpm --filter @abh/core api:check"
+  ],
+  "results": {
+    "modelGatewayTests": 8,
+    "modelGatewayPassed": 8,
+    "modelGatewayFailed": 0,
+    "coreTests": 537,
+    "corePassed": 531,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractArtifacts": 51,
+    "documentationLinks": 731,
+    "workspaceBuild": "passed",
+    "coreApiReport": "passed"
+  },
+  "coverage": [
+    "unknown adapter results remain InFlight with held budget",
+    "completed reconciliation requires nonnegative usage",
+    "failed reconciliation requires an artifact evidence reference",
+    "completed cumulative reconciliation consumes actual token usage",
+    "completed capacity reconciliation releases instead of consuming",
+    "confirmed no-effect reconciliation releases the reservation",
+    "TTL alone cannot fail a call or release its reservation",
+    "budget settlement precedes terminal aggregate CAS"
+  ],
+  "limits": [
+    "evidence admission remains a trusted internal Owner responsibility",
+    "automatic provider polling and callback recovery remain open",
+    "raw response artifact and output schema validation remain open",
+    "streaming events, fallback and production adapter assembly remain open"
+  ]
+}

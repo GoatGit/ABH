@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-09",
+  "scope": "Signed nonempty Connector current validation, local durable snapshot and fresh-process recovery",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreTypecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "Governance source is a trusted test installation, not persisted governance publication.",
+    "Database Stage/Human/Enable and full successful execution integration remains outstanding.",
+    "Fixture CTK is not production conformance acceptance.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-connector-recovery-docs.log",
+      "sha256": "85f560f32a9a7433b8dbea3fc4875f03d8a8337787323429b0f5d7cc58c72483"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-recovery-tests.log",
+      "sha256": "d39bcc746213db505e07b98471a10286bd46feab9dd7096a851b9d5f78f7b6df"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-recovery-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core InspectToolCall contract, HTTP query, grant admission, and typed client",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/run-commands.test.ts",
+    "corepack pnpm contracts:check",
+    "node --test --test-concurrency=1 test/*.test.ts",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "runCommandTests": 1,
+    "runCommandPassed": 1,
+    "runCommandFailed": 0,
+    "modelGatewayTests": 10,
+    "modelGatewayPassed": 10,
+    "modelGatewayFailed": 0,
+    "coreTests": 539,
+    "corePassed": 533,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractArtifacts": 51,
+    "coreApiEntryPoints": 4,
+    "coreApiReport": "passed",
+    "documentationLinks": 735,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "GetToolCall is registered as a public query for abh.tool-call",
+    "ToolCallInspection exposes the current record, tracking ref, error digest, and explicit unmetered cost",
+    "result bodies remain behind authorized Artifact references",
+    "HTTP assembly wires abh.tools.get to the mission query owner",
+    "inspection grant resolution is explicitly installed",
+    "organization and grant fences are locked before Control admission",
+    "abh.tools.read is validated against the exact tool call",
+    "typed client exposes tools.get",
+    "real PostgreSQL inspection covers failed calls and authority denial"
+  ],
+  "limits": [
+    "cost is explicitly unmetered until Resource Ledger integration",
+    "trackingRef remains the ToolCall until external Operation binding exists",
+    "automatic pending scan and callback recovery remain open",
+    "production remote tool transport remains host-installed"
+  ]
+}

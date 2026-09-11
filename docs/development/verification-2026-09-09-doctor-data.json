@@ -1,0 +1,142 @@
+{
+  "date": "2026-09-09",
+  "scope": "Executable doctor data using a public read-only Core diagnostic and generated output contracts",
+  "tests": {
+    "contracts": {
+      "passed": 290,
+      "failed": 0,
+      "skipped": 0
+    },
+    "coreDiagnostic": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "cli": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "workspaceTypecheck": "passed (CLI checks JavaScript syntax)",
+    "generatedDrift": "passed (49 files)",
+    "api": "passed (Contracts 9 entries, Core 3 entries)",
+    "docs": "passed",
+    "isolatedIntegrationContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/doctor-data-contracts-generate.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/doctor-data-contracts-check.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/doctor-data-contracts-tests.log",
+      "sha256": "b1ebfce069d30459000d2d88c327bb358e18ec3ff2e0c80e9649af45d183da90"
+    },
+    {
+      "path": "artifacts/verification/doctor-data-integration.log",
+      "sha256": "95ed3158a3abc15a191e62ea1c93183781dddf172611ae6020d23d1a9476a9cc"
+    },
+    {
+      "path": "artifacts/verification/doctor-data-cli-tests.log",
+      "sha256": "da1091c65eb9dffec9c94846468b08a9399a37f655eec18bfd8e89633408f726"
+    },
+    {
+      "path": "artifacts/verification/doctor-data-workspace-build.log",
+      "sha256": "0cceef904b2f2695c9f94f6a50027ff4e4cd619973752351a7f2648257332ae1"
+    },
+    {
+      "path": "artifacts/verification/doctor-data-workspace-typecheck.log",
+      "sha256": "ee4348cab3d5d3ad83a56044020a749cb00fe206d7e1703def14ce0cb145f184"
+    },
+    {
+      "path": "artifacts/verification/doctor-data-api.log",
+      "sha256": "0ba9da79ee2fdcb50bea0e7bdb55d59d118afa7fbd759de1c65aa6b3af5e7f5c"
+    },
+    {
+      "path": "artifacts/verification/doctor-data-install.log",
+      "sha256": "dacd26e85b91265bcd1db27553f5d7bdbaf50c62a0e12320dc10ae709b07d1f6"
+    },
+    {
+      "path": "artifacts/verification/doctor-data-docs.log",
+      "sha256": "a4a7d4ecc4b1cdeaa44442efdbbda53de7a3caf0278ecbd81f577c528183bc59"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/diagnostics.ts",
+      "sha256": "cbfcb211e70a6a36b362c852329f3021cc09a828d1c6b9d17a89a51bda9b939d"
+    },
+    {
+      "path": "packages/core/test/database-diagnostic.test.ts",
+      "sha256": "aca165e0f94e2aa46b5fdc4200d05d305d8a0cb0254f4e67931511c299ee3523"
+    },
+    {
+      "path": "packages/core/api/diagnostics.api.md",
+      "sha256": "280f8ee9b18e45543120d4faf67c76af7041b9270c12ea353e9ece81e449f6a3"
+    },
+    {
+      "path": "packages/cli/bin/abh.mjs",
+      "sha256": "c2a62dd9acc33b7cc2a64080fff0931e54732d3d2e5a7d44699b25d2e4185efb"
+    },
+    {
+      "path": "packages/cli/src/doctor.mjs",
+      "sha256": "488f748be4bc86ee64c506e98dc87a0dcc2aae1143b6cf611f2fedc7750bfde5"
+    },
+    {
+      "path": "packages/cli/test/doctor.test.mjs",
+      "sha256": "07f01941071a2684745689b44f6a827094dbbb5fd033cd0914ba666573441d59"
+    },
+    {
+      "path": "packages/cli/package.json",
+      "sha256": "7db89778fb5a6e07cd20e6cb1bc448fb5013b7ef27ad0479d06208d3eb9cf461"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "79b61f1f38cc6dbe2e1ab2e6bbfe4fd4c0966da05c2ed514343074069ad36d7f"
+    },
+    {
+      "path": "packages/contracts/test/database-diagnostic.test.ts",
+      "sha256": "1271da7169dc087c288cf92752bec1234ec1050cdb22c4cfcf98f21850900904"
+    },
+    {
+      "path": "packages/contracts/generated/manifest.json",
+      "sha256": "010e5210a783124fbc00721eaf93eeb4b3791874bef23ab6f50603dd02d5ddbd"
+    },
+    {
+      "path": "packages/contracts/api/index.api.md",
+      "sha256": "1741bf8c670630fb6e84f0f39804a4eb3ca5cf0bc5696067cee2073e691b73d8"
+    },
+    {
+      "path": "packages/contracts/api/schema.api.md",
+      "sha256": "8e614933f743cb38eb764444ad179185ef2162e30b38b265b809e5e540af2b00"
+    },
+    {
+      "path": "package.json",
+      "sha256": "b0f4766212db53c718190573b35f968855c37353209367c2aa55e07bad1483dd"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "fa151f79b16efc4ece71a7ae8ec6d04b41e9f1f13c755fcde9d56834aced5836"
+    },
+    {
+      "path": "packages/cli/README.md",
+      "sha256": "ef7f626a3f9bc9cd279a3f5b49f3f0009a01f7331a6e36a3d37ad27b7275e35e"
+    }
+  ],
+  "remaining": [
+    "doctor pack/operation CLI ingress",
+    "complete configuration schema and production Secret Ref resolution",
+    "init/dev, Pack commands, upgrades and import/export",
+    "distribution packaging",
+    "general inspection exception evidence and complete Pack validation/Enable",
+    "full V1 implementation"
+  ]
+}

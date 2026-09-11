@@ -1,0 +1,14 @@
+{
+  "schema": "DrainReport",
+  "value": {
+    "drained": false,
+    "remainingRefs": [
+      {
+        "type": "abh.job",
+        "id": "00000000-0000-4000-8000-000000000074",
+        "version": 1
+      }
+    ],
+    "completedAt": "2026-09-07T00:01:00Z"
+  }
+}

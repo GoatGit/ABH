@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-09",
+  "scope": "Actual Action suspension discovery/storage/delivery composition with bounded progress and restart",
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "limitations": [
+    "Single event/capability/business scope per invocation.",
+    "Cross-scope task scheduling, Run Owner, Retire and compatible query outstanding.",
+    "Production identity/policy installation outstanding.",
+    "No full Core rerun in this batch."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-processing-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-processing-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-processing-docs.log",
+      "sha256": "3ffdcbd30f86cd7a3d0503128a7e62f0a672e9810b64c492482e4336ea89ab3f"
+    },
+    {
+      "path": "artifacts/verification/suspension-processing-tests.log",
+      "sha256": "7ecc2e713ddf9abd2979062598c9951998df01604971af8cdbda6237909f492a"
+    },
+    {
+      "path": "artifacts/verification/suspension-processing-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

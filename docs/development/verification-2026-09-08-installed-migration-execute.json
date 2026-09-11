@@ -1,0 +1,55 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Installed governed migration execution assembly",
+  "checks": {
+    "focusedTests": 23,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Actual signed installed Pack preparation feeds Manifest, plan and SQL to the execution primitive before SQL and before COMMIT.",
+    "Claim environment/deployment, exact step and report/Bundle references match current preparation.",
+    "Real independent release/SLSA/CTK/compiler/migration signatures, staging, impact, durable claim and dedicated-role SELECT 1 execution compose successfully.",
+    "Persistent replay cannot dispatch.",
+    "Invalid snapshot regression now returns Unknown without SQL and closes the owned connection.",
+    "Transactional DDL, rollback, timeout and real lost COMMIT acknowledgement scenarios pass together."
+  ],
+  "limitations": [
+    "Production supporting facts/source/key governance and actual result verification remain host duties.",
+    "No automatic outcome Artifact/observation persistence, cross-step recovery, nontransactional Runner, business table readiness or Enable.",
+    "Installed integration executes SELECT 1; richer DDL covered separately by execution primitive tests.",
+    "Full Core not rerun in this batch."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/installed-migration-execute-test.log",
+      "sha256": "d4ebceb7630a871cc986a8794395be646039b4b5a75a1c913669a07cab1d637d"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-execute-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-execute-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-execute-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-execute-cleanup-before.log",
+      "sha256": "19703dd59c571e47d861fa968ebbdfa61842bbfa5e26d5726b68a2eb55bed2c9"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-execute-docs.log",
+      "sha256": "f139a84bcb314629fad567c07b148e0134e61bf350be61bf163a9acea5ccb6da"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "date": "2026-09-09",
+  "scope": "Use settlement action authority for inspection result reads and avoid failure settlement after committed-result read denial",
+  "tests": {
+    "integrationInitial": {
+      "passed": 1,
+      "failed": 0
+    },
+    "integrationExpanded": {
+      "passed": 0,
+      "failed": 1,
+      "reason": "Later preexisting assertion encountered expired 120-second CTK fixture evidence after added real scenarios."
+    },
+    "integrationRerun": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "fullContractsRerun": false
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreApi": "passed (3 entry points)",
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/inspection-result-authority-integration.log",
+      "sha256": "61edb15a06071027ed2603b70a11236f9befaf975f72e268a29a706046eee718"
+    },
+    {
+      "path": "artifacts/verification/inspection-result-authority-integration-final.log",
+      "sha256": "8d2559802b8495379a549a058611eaff46d0d1c99aba0a32453e172a420b347e"
+    },
+    {
+      "path": "artifacts/verification/inspection-result-authority-integration-rerun.log",
+      "sha256": "1d6f547d0d24e3f33ecb8b75a503825fc2c5c77ec0da7a430cf26e21f648a79f"
+    },
+    {
+      "path": "artifacts/verification/inspection-result-authority-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/inspection-result-authority-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/inspection-result-authority-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/inspection-result-authority-docs.log",
+      "sha256": "0beac94b02fcb9a31a9c1cab92490733610c7e92ef1b080f9d3bb0198ecf258e"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/run-pack-inspection-job.ts",
+      "sha256": "2bc78573185ee2b21ba77c975083df864aaab82dbb2542a835e15551600f8b34"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-failure-fixture.ts",
+      "sha256": "929ed88a185b91dec2c39ec213010ec41b277a0b9436d4964f9691a873d46ec3"
+    },
+    {
+      "path": "packages/core/test/installed-migration-fixture.ts",
+      "sha256": "1d4a68f8421a637061e671edb7f258e0275a87d3a950cf90473799951b3b7713"
+    }
+  ],
+  "remaining": [
+    "Late cleanup durable reporting",
+    "Complete Pack diagnostics and Enable",
+    "Remaining V1 modules"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "stage": "M0-A workflow and transport contracts; not full gate acceptance",
+  "execution": "local",
+  "date": "2026-09-07",
+  "repositoryHead": "d038f12e12a95d960807c5ce502d79adcec3399a",
+  "workingTree": "uncommitted implementation; existing migration and foundation preserved",
+  "platform": "Darwin arm64",
+  "node": "24.13.0",
+  "pnpm": "10.28.2",
+  "lockSha256": "a6ed663eb4e53ee68cb88a730fb82c113a51abbc6e395bc6bec4fc97bd856a4d",
+  "contractVersion": "0.1.0",
+  "profile": "contract-only; no running deployment",
+  "testInputs": "deterministic checked-in fixtures; no randomized scenarios",
+  "checks": {
+    "pnpm install --frozen-lockfile": "passed",
+    "pnpm check": "passed",
+    "localDocumentLinks": 177,
+    "contractTests": 151,
+    "failed": 0,
+    "skipped": 0,
+    "generatedArtifacts": 33,
+    "typecheck": "passed",
+    "build": "passed",
+    "builtSchemaHttpDigestImports": "passed",
+    "privateTenantContextAndShapeImports": "rejected as expected",
+    "browserValidationHttpDigest": "passed",
+    "httpContractRoutes": 9,
+    "liveHttpRoutes": 0,
+    "rfc8785AndSha256Vectors": "passed",
+    "pinRecoveryInputAndSlotCompleteness": "passed (pure functions only)"
+  },
+  "limitations": [
+    "GitHub CI not run",
+    "M0-A/G01 not fully accepted",
+    "No HTTP server, database transactions or external dispatch",
+    "Recovery input comparisons are pure checks, not crash-recovery evidence",
+    "Port, configuration/catalog metadata and release compatibility work remains",
+    "No production authorization or Pi Agent integration"
+  ],
+  "generatedManifestSha256": "511bff89a520d1e8e7ef10a17d3519b6c52004cacf57bda67862b3f9032a731c"
+}

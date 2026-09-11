@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-09",
+  "scope": "Ephemeral independently signed nonempty Connector fixture and actual Schema registration verification",
+  "tests": {
+    "signedConnector": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreTypecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "Fixture CTK claims are not complete production Connector conformance.",
+    "Persistent Stage, approval, Enable, T1, Permit and transport/Capture successful integration remains outstanding.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-connector-docs.log",
+      "sha256": "85f560f32a9a7433b8dbea3fc4875f03d8a8337787323429b0f5d7cc58c72483"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-tests.log",
+      "sha256": "29cb54659d04c0668ee0d079953b8a64dfb1722a5158a35e945abffe6466d930"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

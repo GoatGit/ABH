@@ -1,0 +1,56 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Deployment-global persistent Pack Schema ownership",
+  "databaseManifestVersion": 50,
+  "checks": {
+    "focusedTests": 41,
+    "coreFullTests": 368,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 264
+  },
+  "coverage": [
+    "Immutable maintenance registration with original review Ref and maintenance session identity.",
+    "Global schema primary key and role/Pack composite foreign key prohibit cross-tenant physical ownership collisions.",
+    "Actual dedicated-role/schema catalog binding; batch rollback and replay.",
+    "Runtime/queue writes denied; current management admission required for Owner read.",
+    "Readiness rejects runtime table/column write grants and removed global ownership foreign key."
+  ],
+  "limitations": [
+    "Maintenance review references are recorded, not independently verified evidence.",
+    "No role/schema creation, runtime ownership write Command, reassignment or migration execution.",
+    "migration_version is fixed at zero until a separate migration result lifecycle is implemented.",
+    "Business-table readiness inventory, Migration Runner, execution evidence and Enable remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/schema-ownership-test.log",
+      "sha256": "8d87e07d2678dce1ed8fcff9958a26a385c02243d91f68d5c6a6b08c59cac63f"
+    },
+    {
+      "path": "artifacts/verification/schema-ownership-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/schema-ownership-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/schema-ownership-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/schema-ownership-core-full.log",
+      "sha256": "6b3e130df384343f7d8ee4472cc317acb749441d76d1de49a25b94af998c565f"
+    },
+    {
+      "path": "artifacts/verification/schema-ownership-docs.log",
+      "sha256": "1fa24a23ce9bc7c06af8401e32e01ea03b1b2d4314f9b9772db73c0c3ea103f5"
+    }
+  ]
+}

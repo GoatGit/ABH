@@ -1,0 +1,62 @@
+{
+  "date": "2026-09-09",
+  "scope": "Compose inspection routing, reliable consumer and management worker into shared tenant runtime configuration",
+  "tests": {
+    "targeted": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "files": [
+        "pack-inspection-runtime-installation.test.ts",
+        "runtime-host.test.ts"
+      ]
+    },
+    "fullCoreRerun": false,
+    "newDatabaseEndToEndRun": false
+  },
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApi": "passed (2 entry points)",
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-inspection-installation-tests.log",
+      "sha256": "3055aeab9a5608770b6f3f8fbd951d0de104f2e30a8922b7c58b83d9340f9dc5"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-installation-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-installation-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-installation-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-installation-docs.log",
+      "sha256": "7dc6cf19965579f437d2c1901c8736e5c48de556f75c5ef1f4d7916755838cc1"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/install-pack-inspection-runtime.ts",
+      "sha256": "c2c546ca4e299fc3b0850e3650362ff2b828987b94c23b70e8eec0bc76f8bc81"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-runtime-installation.test.ts",
+      "sha256": "22358061f14195490a0abba6eb76670fc843f9a0528d38c8a8e217b1e900a893"
+    }
+  ],
+  "remaining": [
+    "Host queue admission directory and production credentials/configuration",
+    "general exception failure evidence",
+    "doctor CLI",
+    "production backpressure",
+    "complete installation phases and verification/Enable"
+  ]
+}

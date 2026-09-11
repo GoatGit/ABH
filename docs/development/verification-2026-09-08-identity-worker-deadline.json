@@ -1,0 +1,23 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Identity locator cancellation and bounded Worker Context refresh",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 222,
+    "coreTests": 203,
+    "failed": 0,
+    "generatedArtifacts": 48,
+    "publicApiReports": 9,
+    "documentLinks": 215,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/identity-worker-deadline-check.log",
+  "logSha256": "1ba366821f03c07e0d2655fc7cfc20b2de1aa56fcf72755ec5669b2338568ccc",
+  "limitations": [
+    "Production identity, credential custody, bootstrap and installed consumer governance remain.",
+    "General tenant transaction pool acquisition is not yet bounded by its request deadline.",
+    "Host drain request, ingress shutdown, report persistence and dependency close still require bounded implementations.",
+    "V1 remains incomplete; internal tests are not production acceptance."
+  ]
+}

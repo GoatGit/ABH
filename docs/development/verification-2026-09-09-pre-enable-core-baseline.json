@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-09",
+  "scope": "Full Core regression baseline and explicit Cosign supplement before Pack Enable lifecycle implementation",
+  "tests": {
+    "coreFull": {
+      "total": 491,
+      "passed": 486,
+      "failed": 0,
+      "skipped": 5,
+      "skipReason": "ABH_TEST_COSIGN not set in baseline invocation"
+    },
+    "cosignSupplement": {
+      "total": 13,
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "files": [
+        "migration-signature.test.ts",
+        "migration-structure-signature.test.ts",
+        "pack-conformance.test.ts",
+        "pack-provenance.test.ts",
+        "pack-signature.test.ts"
+      ]
+    },
+    "note": "Supplement includes child tests and some tests already executed in baseline; counts are not summed as a single run."
+  },
+  "checks": {
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pre-enable-core-full.log",
+      "sha256": "4cd71280a78234747166e84890269d6a243a11d59cb7dd92cfbd07a642c509a3"
+    },
+    {
+      "path": "artifacts/verification/pre-enable-cosign-supplement.log",
+      "sha256": "9c2023aa38bba32cd46f53b5c33b24a85b41e8188429034d16ec44e346d8df46"
+    },
+    {
+      "path": "artifacts/verification/pre-enable-baseline-docs.log",
+      "sha256": "e11401175d7fddc32ef7b789bc0538116a54b7a6d482efe833ae2d2243df03b5"
+    }
+  ],
+  "requirementsAudit": {
+    "path": "docs/development/PACK-ENABLE-REQUIREMENTS.md",
+    "sha256": "d9ae76123a96372319f2fa670dc26aa149c5935180768c999d29ef3c6081804d"
+  },
+  "remaining": [
+    "Pack-specific deployment approval binding",
+    "Installed Pack lifecycle Owner and migration",
+    "Full applicable domain/backfill/projection verification",
+    "Capability Registry and retained references",
+    "Remaining V1 modules"
+  ]
+}

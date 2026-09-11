@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-11",
+  "subject": "tenant runtime supervision for ResponsibilityInbox projection worker",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-reporter=spec test/runtime-host.test.ts test/responsibility-inbox-projection.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "runtimeAndProjectionFocusedTests": 9,
+    "runtimeAndProjectionFocusedPassed": 9,
+    "runtimeAndProjectionFocusedFailed": 0,
+    "coreTests": 547,
+    "corePassed": 541,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "documentationLinks": 751,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "responsibility inbox projection worker is an explicit optional tenant loop",
+    "loop creation snapshots the installed context source and grant refs",
+    "runtime replacement of the installation object or context source cannot redirect a running loop",
+    "page size and interval changes after loop creation cannot bypass bounded scanning",
+    "projected grants are deep-copied before the loop starts",
+    "the loop participates in shared tenant binding",
+    "outer supervisor cancellation reaches an identity-resolution wait",
+    "real PostgreSQL runtime loop consumes three decision creation/route events once",
+    "real PostgreSQL runtime onPage reports scanned=3, handled=3 and repaired=0",
+    "explicit installation remains required; the runtime does not synthesize Service identity or grants"
+  ],
+  "limits": [
+    "the actual V1 workbench remains open",
+    "production process discovery, tenant registration and revocation remain open",
+    "operator-facing worker lifecycle governance remains open"
+  ]
+}

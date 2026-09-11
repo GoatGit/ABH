@@ -1,0 +1,20 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Routing retry enforces exact persisted DecisionPackage content",
+  "checks": {
+    "decisionTests": 29,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/frozen-package-retry.log",
+  "logSha256": "e58619426d437c23d04756bf673bba0cdb685c9bbf36cde3790e0b79e00c0e42",
+  "limitations": [
+    "Targeted Decision integration; full workspace check not repeated.",
+    "Historical missing frozen proposals require separately verified maintenance; custom loader cannot substitute unrecorded content.",
+    "Full V1 implementation remains incomplete."
+  ]
+}

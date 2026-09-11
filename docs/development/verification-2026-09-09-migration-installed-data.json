@@ -1,0 +1,53 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Installed data inspection, provenance, persistence and live recovery",
+  "checks": {
+    "focusedTests": 7,
+    "coreFullTests": 447,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Actual installed migration rows detect NULL drift while structure matches.",
+    "Late installed impact withdrawal rejects data verification.",
+    "Copied/mutated outputs cannot persist; retries return the same Artifact.",
+    "Mismatches persist; live recovery rejects changed data and prior-transaction inspections."
+  ],
+  "limitations": [
+    "Full run precedes formal data contract adoption; later focused tests recorded separately.",
+    "Declared table invariants only; complete domain, backfill, projection and Enable remain incomplete.",
+    "Observation contract and large ObjectStore persistence are not implemented."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-installed-data-test.log",
+      "sha256": "5b8df258d479a71094e5074e92aa5a4fe913228beb7bf63dd107da66569136e5"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-data-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-data-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-data-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-data-full.log",
+      "sha256": "75e4dbabb4a2024e0e476c7777defc32be81e305065e20c25f57962e1e2bf96f"
+    },
+    {
+      "path": "artifacts/verification/migration-data-contracts-docs.log",
+      "sha256": "3d945fc93cb670dda07ebaa2cd03a3dcfd44d9f747841e0bd2b2fa8587d3519f"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Dedicated migration target connection acquisition",
+  "checks": {
+    "lifecycleTests": 13,
+    "installedIntegrationParentTests": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Single dedicated pool/reserved connection and idempotent disposal.",
+    "Stalled server handshake abort/deadline closes socket.",
+    "Invalid URL and driver authentication failures return Core errors without credentials.",
+    "Real installed execution and observation inspection/recovery use connection factory."
+  ],
+  "limitations": [
+    "Trusted deployment URL only; Secret resolution and deployment configuration not provided.",
+    "Successful acquisition transfers ownership; subsequent lifecycle enforces cancellation.",
+    "Actual database/role/schema authorization still mandatory.",
+    "Full execution worker, domain/backfill/projection and Enable incomplete.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-target-connect-test.log",
+      "sha256": "41763f00961191ef2a426b61db7b1c4a765019c7390fef1c1e40c94d12133366"
+    },
+    {
+      "path": "artifacts/verification/migration-target-connect-integration.log",
+      "sha256": "ace43186048c43e99065c8537efc5d5052945153b221922fb095147b0e7fd387"
+    },
+    {
+      "path": "artifacts/verification/migration-target-connect-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-target-connect-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-target-connect-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-target-connect-docs.log",
+      "sha256": "1edad023be19ae0090f8204a42daa8e6156ec042055aa6c1123ea820bff69469"
+    }
+  ]
+}

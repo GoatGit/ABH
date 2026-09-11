@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Cosign structure expectation and registered target inspection",
+  "checks": {
+    "focusedTests": 39,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Real Cosign signatures bind organization, package, full plan, expected structure, environment, deployment version and validity period.",
+    "Digest tampering, wrong key, input mutation, copied proof, signer policy rotation and late source withdrawal rejected.",
+    "Valid signature does not hide unexpected objects on actual PostgreSQL target."
+  ],
+  "limitations": [
+    "Internal report type, no formal Contracts schema or persisted signed source reader yet.",
+    "Host supplies independent key and current source, installation and deployment authority under retained fences.",
+    "Signature authenticates expected digest, not business correctness or migration completion.",
+    "Data verification, lifecycle, readiness and Enable remain incomplete; full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-structure-signature-test.log",
+      "sha256": "7eaa827ec96ebea51e1ebd0f3ba82a5a3df9f7871c79d5be2107a004120a033b"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-signature-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-signature-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-signature-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-signature-docs.log",
+      "sha256": "6e0a9c736e73d9d5a22d8abb784f2520e20f6054e264fdc5d642a7765245c1d3"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Direct ACL coverage in signed structure inspection",
+  "checks": {
+    "focusedTests": 42,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Required ACL expectation covers every inventoried relation once with matching kind.",
+    "ACL differences contribute to combined matching and persisted observation.",
+    "Real PUBLIC SELECT grant causes signed inspection mismatch, invalidates prior matching observation, and persists/revalidates mismatch."
+  ],
+  "limitations": [
+    "Direct ACL only; membership, indirect privileges, business data and Enable lifecycle incomplete.",
+    "Views and foreign tables retain additional verification scope.",
+    "Required acl field changes signed expectation digest; old expectations need explicit regeneration.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-acl-integrated-test.log",
+      "sha256": "704a57f1dc9d249a4dc843562f3cbd56266f03e293ad2bcbc214ab2e452ff3cb"
+    },
+    {
+      "path": "artifacts/verification/migration-acl-integrated-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-acl-integrated-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-acl-integrated-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-acl-integrated-docs.log",
+      "sha256": "03eb2b0fd94b046221db641de4d01d3b199a90346537c6eed542ec51db8e9e29"
+    }
+  ]
+}

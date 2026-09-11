@@ -1,0 +1,155 @@
+{
+  "schema": "OperationPlan",
+  "value": {
+    "planRef": {
+      "type": "abh.operation-plan",
+      "id": "00000000-0000-4000-8000-000000000046",
+      "version": 1
+    },
+    "actionRef": {
+      "type": "abh.action",
+      "id": "00000000-0000-4000-8000-000000000006",
+      "version": 2
+    },
+    "planVersion": 1,
+    "pinSetRef": {
+      "type": "abh.pin-set",
+      "id": "00000000-0000-4000-8000-000000000014",
+      "version": 1
+    },
+    "pinSetDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "validatedAgainstPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "compilerRef": {
+      "kind": "Compiler",
+      "id": "hello.compiler",
+      "version": "0.1.0",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "connectorRefs": [
+      {
+        "kind": "Connector",
+        "id": "hello.connector",
+        "version": "0.1.0",
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "scopeProofRef": {
+      "type": "abh.scope-proof",
+      "id": "00000000-0000-4000-8000-000000000047",
+      "version": 1
+    },
+    "completionPolicyRef": {
+      "type": "hello.completion-policy",
+      "id": "00000000-0000-4000-8000-000000000043",
+      "version": 1
+    },
+    "impactUpperBound": {
+      "scopeRefs": [
+        {
+          "type": "abh.organization",
+          "id": "00000000-0000-4000-8000-000000000003",
+          "version": 1
+        }
+      ],
+      "resourceRequirements": [],
+      "maxMoney": [],
+      "description": "Publish one existing internal brief to the Fake destination; no financial cost."
+    },
+    "nodes": [
+      {
+        "nodeKey": "publish",
+        "connectionRef": {
+          "type": "abh.connection",
+          "id": "00000000-0000-4000-8000-000000000044",
+          "version": 1
+        },
+        "accountRef": {
+          "type": "hello.account",
+          "id": "00000000-0000-4000-8000-000000000045",
+          "version": 1
+        },
+        "resourceKey": "hello.brief",
+        "operationType": "hello.publish",
+        "payloadRef": {
+          "type": "abh.artifact",
+          "id": "00000000-0000-4000-8000-000000000041",
+          "version": 1
+        },
+        "payloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "connectorRef": {
+          "kind": "Connector",
+          "id": "hello.connector",
+          "version": "0.1.0",
+          "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "scopeRefs": [
+          {
+            "type": "abh.organization",
+            "id": "00000000-0000-4000-8000-000000000003",
+            "version": 1
+          }
+        ],
+        "completionPolicyRef": {
+          "type": "hello.completion-policy",
+          "id": "00000000-0000-4000-8000-000000000043",
+          "version": 1
+        },
+        "resourceRequirements": [],
+        "dependsOn": [],
+        "inputBindings": []
+      },
+      {
+        "nodeKey": "announce",
+        "connectionRef": {
+          "type": "abh.connection",
+          "id": "00000000-0000-4000-8000-000000000044",
+          "version": 1
+        },
+        "accountRef": {
+          "type": "hello.account",
+          "id": "00000000-0000-4000-8000-000000000045",
+          "version": 1
+        },
+        "resourceKey": "hello.brief",
+        "operationType": "hello.announce",
+        "payloadRef": {
+          "type": "abh.artifact",
+          "id": "00000000-0000-4000-8000-000000000041",
+          "version": 1
+        },
+        "payloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "connectorRef": {
+          "kind": "Connector",
+          "id": "hello.connector",
+          "version": "0.1.0",
+          "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "scopeRefs": [
+          {
+            "type": "abh.organization",
+            "id": "00000000-0000-4000-8000-000000000003",
+            "version": 1
+          }
+        ],
+        "completionPolicyRef": {
+          "type": "hello.completion-policy",
+          "id": "00000000-0000-4000-8000-000000000043",
+          "version": 1
+        },
+        "resourceRequirements": [],
+        "dependsOn": [
+          "publish"
+        ],
+        "inputBindings": [
+          {
+            "inputPath": "/briefId",
+            "parentNodeKey": "publish",
+            "outputName": "hello.external-id",
+            "valueType": "hello.external-id"
+          }
+        ]
+      }
+    ],
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+}

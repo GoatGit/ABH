@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Actual structural observation persistence",
+  "checks": {
+    "focusedTests": 5,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Original actual inspection return has private producer provenance and stable command identity.",
+    "Real Artifact persistence readback checks exact observation bytes, owner and report/Bundle references.",
+    "Copied/changed result rejected; final admission rollback and replay reauthorization exercised.",
+    "Mismatch observations persist separately from matching observations."
+  ],
+  "limitations": [
+    "Unsigned structural observation is not full migration verification or Enable.",
+    "Inline Artifact size bound applies; large-result object store not implemented.",
+    "Observation schema and durable recovery reader not formalized; host capture/installation authority remains required.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-structure-persist-test.log",
+      "sha256": "b70c858ca2003bc95db9247c902c7acc7fe551cc3452290e6dececefee3d6ad9"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-persist-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-persist-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-persist-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-structure-persist-docs.log",
+      "sha256": "5161cf8cf2adb349259f17f18eaf40708983a126aa521d03723d318ffa0dbd8a"
+    }
+  ]
+}

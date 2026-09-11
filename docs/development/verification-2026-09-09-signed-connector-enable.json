@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-09",
+  "scope": "Signed nonempty Connector actual Human Owner approval and atomic Enable command",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreTypecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "Identity, Grant, eligibility and installation governance remain test-installed.",
+    "Human approval uses domain Owner rather than HTTP ingress.",
+    "Release/Pin/T1/Permit/transport/Capture successful integration remains outstanding.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-connector-enable-docs.log",
+      "sha256": "85f560f32a9a7433b8dbea3fc4875f03d8a8337787323429b0f5d7cc58c72483"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-enable-tests.log",
+      "sha256": "76375b15801832aefd7d6c5b6cef15a97d89bae4b3a7185c82f02b5e73bd82e5"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-enable-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

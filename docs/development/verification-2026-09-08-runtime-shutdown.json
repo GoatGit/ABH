@@ -1,0 +1,21 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Runtime stop, native drain evidence and dependency close orchestration",
+  "checks": {
+    "coreTypecheck": "passed",
+    "targetedTests": 16,
+    "failed": 0,
+    "skipped": 0,
+    "documentLinks": 215,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/runtime-shutdown.log",
+  "logSha256": "72972a7c101896e3848cc39d97c49398cbd3ace542038d40705fb912b306f3b6",
+  "limitations": [
+    "Shutdown report persistence, trusted drain admission and process signal/ingress wiring remain host-installed.",
+    "Loop providers and dependency close implementations must themselves be bounded.",
+    "Full workspace check was not repeated; this is targeted regression.",
+    "Full V1 modules and retention/watermarks remain incomplete."
+  ]
+}

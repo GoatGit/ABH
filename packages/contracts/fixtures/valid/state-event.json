@@ -1,0 +1,36 @@
+{
+  "schema": "EventEnvelope",
+  "value": {
+    "eventId": "00000000-0000-4000-8000-000000000058",
+    "type": "abh.decision.approve",
+    "schemaVersion": "0.1.0",
+    "aggregateRef": {
+      "type": "abh.decision",
+      "id": "00000000-0000-4000-8000-000000000053",
+      "version": 2
+    },
+    "aggregateVersion": 2,
+    "eventOrdinal": 0,
+    "occurredAt": "2026-09-07T00:02:00Z",
+    "correlationId": "00000000-0000-4000-8000-000000000059",
+    "causationId": "00000000-0000-4000-8000-000000000057",
+    "actorRef": {
+      "type": "Human",
+      "id": "00000000-0000-4000-8000-000000000004"
+    },
+    "actingOrganizationId": "00000000-0000-4000-8000-000000000003",
+    "resourceOrganizationId": "00000000-0000-4000-8000-000000000003",
+    "payload": {
+      "changedFields": [
+        "status"
+      ],
+      "factRefs": [
+        {
+          "type": "abh.decision",
+          "id": "00000000-0000-4000-8000-000000000053",
+          "version": 2
+        }
+      ]
+    }
+  }
+}

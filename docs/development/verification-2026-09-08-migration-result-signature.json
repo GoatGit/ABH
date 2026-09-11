@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Independent Cosign raw migration execution result signature verification",
+  "checks": {
+    "focusedAggregateTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Actual persisted installed execution result signed by independent capture key and verified by Cosign.",
+    "Full record substitution, wrong organization/Pack/key and stale age reject.",
+    "Private candidate provenance and isolated report/Bundle copies prevent substitution."
+  ],
+  "limitations": [
+    "Result signature authenticates observation provenance, not actual database state, result verification or Enable.",
+    "Persisted Bundle/current signer admission and production capture governance are not yet connected to recovery.",
+    "Cross-step/nontransactional recovery, business table readiness and Enable remain incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-result-signature-test.log",
+      "sha256": "0188d9dc0e83ce867a2c9b58aa523eb8aa5d016b936a28ff91721299600672c3"
+    },
+    {
+      "path": "artifacts/verification/migration-result-signature-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-result-signature-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-result-signature-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-result-signature-docs.log",
+      "sha256": "b6741a6120c65d06bb3daab33b2eb6a74e596b7a966b5700420030ccc4a21885"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current drain admission and shutdown Context cleanup",
+  "checks": {
+    "coreTypecheck": "passed",
+    "targetedTests": 20,
+    "failed": 0,
+    "documentLinks": 215,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/drain-admission.log",
+  "logSha256": "a37e568cb0cb2846a314e9aa612e4f939871518e721c45a2e93b65775c2991c9",
+  "limitations": [
+    "Production identity issuance and installed consumer governance remain.",
+    "Adapter drain is instance-local, not an organization-wide stop authority.",
+    "Targeted regression only; V1 remains incomplete."
+  ]
+}

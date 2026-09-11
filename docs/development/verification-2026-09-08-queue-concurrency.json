@@ -1,0 +1,31 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Native queue cross-class dedupe serialization and delivery generation acknowledgement",
+  "profile": "PostgreSQL and pinned pg-boss 12.30.0/schema 40; isolated Queue role; installed admission fixtures",
+  "checks": {
+    "pnpm check": "passed",
+    "contractTests": 221,
+    "coreTests": 178,
+    "nativeQueueTests": 9,
+    "inboxOutboxTests": 10,
+    "failed": 0,
+    "skipped": 0,
+    "migrationVersions": 30,
+    "tenantTables": 56,
+    "generatedArtifacts": 48,
+    "publicApiEntryReports": 9,
+    "containersCleaned": true
+  },
+  "logs": {
+    "artifacts/verification/queue-concurrency-check.log": "53ebb0bd2b016b3187b0e2d0cbe2bf3d27217fc54931487648c671443021124b",
+    "artifacts/verification/queue-concurrency.log": "384a98d8749436050be45d00242509dde9d231dc215ff9c70182ebe33f1a74c5"
+  },
+  "lockSha256": "c8becf08479a1083837f328e401e3e1c0193d37ba0dafef922dd614bc4153b5b",
+  "limitations": [
+    "Native-row acknowledgement guard is version-specific and requires review on pg-boss schema upgrades.",
+    "Dedupe binding lasts while the native Job is retained; persistent retention watermarks and post-cleanup binding remain.",
+    "Production admission, retry governance, restricted global discovery and process hosting remain.",
+    "Full V1 modules and independent acceptance gates remain."
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "date": "2026-09-09",
+  "scope": "Independent append-only deployment revisions, legacy Stage bootstrap, Stage atomic integration and impact currentness",
+  "tests": {
+    "targetedDatabaseCosign": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    "contracts": {
+      "passed": 300,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCore": {
+      "total": 501,
+      "passed": 496,
+      "failed": 0,
+      "skipped": 5,
+      "note": "Cosign was unset in full run; separate real-crypto supplement and targeted CTK run recorded independently."
+    },
+    "signatureSupplement": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 124817,
+      "note": "Four actual Cosign files run separately; targeted CTK coverage is in the 14-test run. Do not sum overlapping runs as one suite."
+    }
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "coreTypecheck": "passed",
+    "contractsTypecheck": "passed",
+    "generation": "passed (49 files)",
+    "databaseSecurityManifest": 55,
+    "api": "passed (Contracts 9 / Core 3 entry points)",
+    "docs": "passed"
+  },
+  "initialFailures": [
+    "New permission test attempted Query.unsafe, which is intentionally unavailable; replaced with tagged SQL and verified actual 42501 denials"
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/deployment-revisions.ts",
+      "sha256": "c57db0074cc74d43e59231344b8ef5d21cff39e95b264142b2798890ade15d28"
+    },
+    {
+      "path": "packages/core/migrations/1788880000000_pack_deployment_revisions.cjs",
+      "sha256": "8e78eca30b38787622a89d6ffac0ba8d24ab77060d3a14943d93f7acdc65bd70"
+    },
+    {
+      "path": "packages/core/src/extensions/stage-pack.ts",
+      "sha256": "a759408622e01fe3241f2b1f20405b115c34c0389a00177fc7fccd08caebc07a"
+    },
+    {
+      "path": "packages/core/src/extensions/data-impact-reports.ts",
+      "sha256": "e2ec06636ca657964ddd46ccf0a911ad6d9105869c40e37d5ca8ba3ea8aa8360"
+    },
+    {
+      "path": "packages/core/src/data/manifest.ts",
+      "sha256": "2c3b029826d574482ed384b551cb10bcbb006ca0fabf4b23c9ba7e5fe83690ba"
+    },
+    {
+      "path": "packages/core/test/pack-deployment-revisions.test.ts",
+      "sha256": "12683be7bb51f666cf26417328b59fbbaac4f0cbf69a37f725f387cdfe86d0f5"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "a62984d3e923f3e896190d374b6cf75b86128d03f7074a540b6c8a668276ce65"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "3ec09eeea616792efcd2d086053bbfbb35ef2e659c1c722e27e2f90f3ec7664a"
+    },
+    {
+      "path": "packages/contracts/src/relationships.ts",
+      "sha256": "8410e8d092dc17f58e184820507ec8cd511e2094bcd0860653ef65e490de9cb5"
+    },
+    {
+      "path": "packages/contracts/catalog/core.json",
+      "sha256": "46d4137068993e685ba33d25ba2496765cf3944d645dda3877b0bf27eb2a3a30"
+    },
+    {
+      "path": "packages/contracts/test/pack-deployment-revision.test.ts",
+      "sha256": "13607bcf4141b708eba09ef63b7a72e3154b2140dbfb7824d804a97457a4b3ee"
+    }
+  ],
+  "remaining": [
+    "InstalledPack state/history lifecycle migration and Enable command",
+    "Capability registry and lifecycle runtime visibility",
+    "Full applicable migration, Domain, backfill and projection verification",
+    "Remaining V1 modules"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-deployment-revision-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-api-update.log",
+      "sha256": "d87d407069286a261262086ce46ff35ba89be24e32d2c71e159335ee6adf67a2"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-build.log",
+      "sha256": "e982cd7e93f8b9252869a90aa0515c352aa12307ef48e5adbedc8d5d9de2ca3f"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-contract-tests.log",
+      "sha256": "7dac95d48a6e827622f4f4c907b4627a93098a1ad6f48e6cb842f4f99146ee73"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-core-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-core-full.log",
+      "sha256": "898fd17a06aed1484d5d6ea7f35bb5941d033654596b0a2738e1533f19f5853f"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-docs.log",
+      "sha256": "57b328be9a6f6297b6ac19028199e3839855d9009ebe8e14c5fc63247f2f6c4c"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-drift.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-generation.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-signature-supplement.log",
+      "sha256": "a5f948237457f2ddf7a345b0fdbe5dac815f61c4ac5e31dace0aa494b0cdce06"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-tests-final.log",
+      "sha256": "eb1ddfe1909aca02309558bac85785285d96ff7eab4ff7cc02dd74c9654c09df"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-tests.log",
+      "sha256": "9610076013d9b3ba5e98dedfeb35c004b42078e7764273477e213343abd62e6e"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-typecheck.log",
+      "sha256": "1d00b82a7e578b658e46b1c0cb8228b8e86922f53c8a3a6214f2029ee0ec52b2"
+    },
+    {
+      "path": "artifacts/verification/pack-deployment-revision-docs-final.log",
+      "sha256": "57b328be9a6f6297b6ac19028199e3839855d9009ebe8e14c5fc63247f2f6c4c"
+    }
+  ]
+}

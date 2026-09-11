@@ -1,0 +1,151 @@
+{
+  "date": "2026-09-09",
+  "scope": "Atomic inspection delivery acceptance with Inbox, native queue acknowledgement and exact-version management worker gating",
+  "databaseManifestVersion": 54,
+  "tests": {
+    "contracts": {
+      "passed": 287,
+      "failed": 0,
+      "skipped": 0
+    },
+    "coreTargeted": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "coreFullRun": {
+      "total": 472,
+      "passed": 471,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 256112.714625
+    },
+    "coreFailureResolution": {
+      "test": "Artifact discovery uses the registered lookup index under runtime RLS",
+      "cause": "Test assumed the Artifact index was databaseManifest.indexes[0]; new registered indexes invalidated that assumption. Actual query plan still used the correct Artifact index.",
+      "fix": "Resolve the reviewed index by schema and name.",
+      "targetedRetest": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "fullSuiteRerunAfterTestOnlyFix": false
+    },
+    "unresolvedFailures": 0
+  },
+  "checks": {
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed",
+    "finalCoreTypecheck": "passed",
+    "finalCoreBuild": "passed",
+    "api": "passed (Contracts 9, Core 2 entry points)",
+    "generated": "49 artifacts match",
+    "docs": "passed",
+    "isolatedTestContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-contracts-tests.log",
+      "sha256": "5202b96a9c9ed36eb592f97effb3497d668996f3693b8ac5fa49a05ad58bc5de"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-core-tests.log",
+      "sha256": "3cea78385c8e75a67d4d26f7f7d67694cfa3b20a559c7d7844f4c41278e11c43"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-full-core.log",
+      "sha256": "d39edf56308d13b591665ae1baa226f6e23c33ea16349bea843123f932dfe10f"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-index-retest.log",
+      "sha256": "375a01b3ddaeb53bd4496c6f1ed13a24ff689b3910ea735ee6467e2b2b9c080d"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-typecheck.log",
+      "sha256": "04a8db62ca40ce7df1d578d5ddd1b630a8e52d08c65c7193b95c8fd4c75651e8"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-build.log",
+      "sha256": "df52243da4241f1a24264eb19c2f96c2a589a34c33b708df7c8d51595fb138bc"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-generated.log",
+      "sha256": "e0e8a3ca2a6b713303505c7d470817cf5b0cf1b27b722faea2d23a62eff18a3b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-acceptance-docs.log",
+      "sha256": "aeeb9f0536ade207c12cd259add1202d78bc6698bed833fe3f8c515be6731567"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/inspection-deliveries.ts",
+      "sha256": "0daf5bf831969c9a253b9fdb19e9f07054d07b4275c3f8f6f4a930a44cf499b1"
+    },
+    {
+      "path": "packages/core/src/extensions/inspection-job-worker.ts",
+      "sha256": "527e1f07ff22ee2ed912c966544df8775421f2253916dc1471818a40f63875ff"
+    },
+    {
+      "path": "packages/core/src/data/manifest.ts",
+      "sha256": "50efea2d4471062c76864f6461166031b9f6c0ba524fc8f89e06615e30b14c78"
+    },
+    {
+      "path": "packages/core/migrations/1788878000000_pack_inspection_deliveries.cjs",
+      "sha256": "52fc0dca9952b574031043c71ef8f4f2e601d13be99bc6ba57a1981c214e7d6c"
+    },
+    {
+      "path": "packages/core/test/inspection-delivery-storage.test.ts",
+      "sha256": "4a51772ecc705da766ebc99df7b593f04ccbc60b4c3de98c435244682ad9d919"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-delivery-fixture.ts",
+      "sha256": "cae9ced005764b0afb428d6860e8d517bf5b15ccd37398f4fa3fc04ac087f0f0"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-job-execution-fixture.ts",
+      "sha256": "9f45fb2d404cdcea3dac316dfce7b362acf4fdb2630fd38ffdc0cc307df98f63"
+    },
+    {
+      "path": "packages/core/test/artifact-discovery-index.test.ts",
+      "sha256": "84c8bb1d293fb5f3698bda9a8e0343730443bc643a593ba5731295ed7b9652be"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "65c8f6e1550a7b07afc53ff48b11555f09c390bdc8706817c8b25e59f4d89822"
+    },
+    {
+      "path": "packages/contracts/src/relationships.ts",
+      "sha256": "cfe19e3206cc10f6656a1f19576754054692fae9051b68a7949bdd02e00b1918"
+    },
+    {
+      "path": "packages/contracts/protocol/registry.yaml",
+      "sha256": "7c43e528208497b741b4fe800c6e2e36da16c09cda6ad5cb802d12331bb31a29"
+    },
+    {
+      "path": "packages/contracts/catalog/core.json",
+      "sha256": "bf49c71594a74263e69de3f902849cc68b79596b03dbb4c9b3bb1642d1da0541"
+    }
+  ],
+  "remaining": [
+    "General InspectionFailed evidence",
+    "early lost-lease recovery",
+    "cross-process cancellation",
+    "doctor",
+    "production configuration and backpressure",
+    "complete installation pipeline, domain/backfill/projection verification and Enable",
+    "retention cleanup preserving unfinished recovery dependencies"
+  ]
+}

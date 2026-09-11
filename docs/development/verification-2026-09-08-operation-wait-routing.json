@@ -1,0 +1,25 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Operation notification Job and composed Action/Operation wait routing",
+  "checks": {
+    "pnpm check": "passed",
+    "contractTests": 222,
+    "coreTests": 193,
+    "failed": 0,
+    "skipped": 0,
+    "migrationVersions": 31,
+    "tenantTables": 57,
+    "generatedArtifacts": 48,
+    "publicApiEntryReports": 9,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/operation-wait-check.log",
+  "logSha256": "9e1dc78daac747ea4b1210604c6ddd14f21211ea29d15fb490ff589af87afbd6",
+  "limitations": [
+    "Rule and consumer installation governance remains host supplied.",
+    "Mission and other unimplemented Owner routes remain.",
+    "Notification does not grant query or execution authority.",
+    "Continuous watermarks, retention lifecycle, production services and full V1 acceptance remain incomplete."
+  ]
+}

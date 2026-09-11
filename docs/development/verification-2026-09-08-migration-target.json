@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Target database-bound migration preparation",
+  "checks": {
+    "focusedTests": 22,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 296
+  },
+  "coverage": [
+    "Live dedicated-role target preflight before SQL/evidence preparation and after expensive checks.",
+    "Initial and mid-preparation BYPASSRLS escalation reject.",
+    "Combined target preflight suite covers role/database/schema/parameter privilege boundaries."
+  ],
+  "limitations": [
+    "No SQL execution or migration completion records.",
+    "Installed recovery/data-impact assembly, production supporting facts, Runner and Enable remain incomplete.",
+    "Full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-target-test.log",
+      "sha256": "5b480b6f0ce54c695496879052a74f379f22f006d87dbc5d81f0c581d5383974"
+    },
+    {
+      "path": "artifacts/verification/migration-target-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-target-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-target-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-target-docs.log",
+      "sha256": "e364c6a0080fe18a776e6b503809a40b1f8bdb448b63fce3b1a69dff333ba031"
+    }
+  ]
+}

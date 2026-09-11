@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Resolve impact inventory source references through real Artifact Owner",
+  "checks": {
+    "focusedTests": 8,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "isolatedContainersRemaining": 0,
+    "documentLinks": 244
+  },
+  "coverage": [
+    "Persist canonical baseline/target inventories as real Available artifacts and resolve exact references.",
+    "Source bytes, type, schema and normalized inventories checked.",
+    "Mismatched inventories, duplicate JSON keys, stale versions and byte corruption refuse evidence.",
+    "Existing Artifact tenant/purpose/current authorization/tombstone behavior remains verified."
+  ],
+  "limitations": [
+    "Compiler trust/completeness and owner/source authorization remain explicit deployment checks; tests use authorization Fixtures.",
+    "Only bounded inline JSON sources supported, not streaming ObjectStore.",
+    "Migration verification and Enable/Registry remain incomplete.",
+    "Focused suites rerun; full Core suite not repeated this batch."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-artifact-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/impact-artifact-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-artifact-docs.log",
+      "sha256": "148098b6ed41603cef3f690d49b48603690173ea99ad7e4941535784bb95612c"
+    },
+    {
+      "path": "artifacts/verification/impact-artifact-test.log",
+      "sha256": "09a666458b668235debd91a2d9d915db576645467c83372e02cdcbdfb91cc4e6"
+    },
+    {
+      "path": "artifacts/verification/impact-artifact-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

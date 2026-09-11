@@ -1,0 +1,62 @@
+{
+  "date": "2026-09-09",
+  "scope": "Separate recovery discovery from Start authorization; preserve independent expiry/loss grants",
+  "tests": {
+    "coreTargeted": {
+      "file": "migration-signature.test.ts",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 108428.288083
+    },
+    "fullCoreRerun": false
+  },
+  "coverage": [
+    "Expiry-only Grant settles undelivered expired Pending",
+    "Lease-loss-only Grant settles Running without restarting",
+    "Expiry-only Grant cannot prepare or start an unexpired Pending Job"
+  ],
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApi": "passed (2 entry points)",
+    "docs": "passed",
+    "isolatedTestContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-inspection-recovery-authority-tests.log",
+      "sha256": "ec171739c6fec52ba9ad5b76d75b450e60e1680cd92ce633c816db542329a9f8"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-recovery-authority-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-recovery-authority-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-recovery-authority-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-recovery-authority-docs.log",
+      "sha256": "3c08727807ae0c4ce806d4be9c3d737e24f2aecb6a6df489fa3afe0e7b3aaeaf"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/inspection-job-worker.ts",
+      "sha256": "67228decfa4d9a4015ecfc9071c4db246c64a6fe692f9ff804d8a64f34f3588b"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-job-execution-fixture.ts",
+      "sha256": "c1ae9b2ab3a19d95b5dd04b5ea626661ea229878f346540d2e46f15a06c66918"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-lease-loss-fixture.ts",
+      "sha256": "4d7bf0012dbab6da4209de61f3e996619e3dcbd04e2b43461f13719e3543f90f"
+    }
+  ]
+}

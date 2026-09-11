@@ -1,0 +1,54 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Snapshot installed Pack inspection host configuration",
+  "checks": {
+    "hostServiceTests": 13,
+    "installedIntegrationParentTests": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Pack configuration captured at loop creation, including grants, bounds and callbacks.",
+    "Original callback receivers retained including private fields.",
+    "Replacing caller configuration cannot redirect installed identity or preparation.",
+    "Real installed signed observation recovery succeeds after input callbacks/grants/page-size replacement."
+  ],
+  "limitations": [
+    "Current governance remains checked by installed callbacks; their internal state is not frozen.",
+    "Only Pack loop configuration addressed; other loops require separate audit.",
+    "Full production installation, domain/backfill/projection and Enable incomplete.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-host-snapshot-test.log",
+      "sha256": "b3b82e150fadb97fe50202be9513f75b41b534b127d9a31de711b2b7e0bbfea5"
+    },
+    {
+      "path": "artifacts/verification/pack-host-snapshot-integration.log",
+      "sha256": "b5958d5ea3e91c3f910c26d288aeb4145b1f6dc02c81696791f4153058c49f77"
+    },
+    {
+      "path": "artifacts/verification/pack-host-snapshot-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-host-snapshot-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-host-snapshot-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-host-snapshot-docs.log",
+      "sha256": "f3905c7b3234aba1da80e6e429061a377302ee3ca30bd2a9c85ab2468861a147"
+    }
+  ]
+}

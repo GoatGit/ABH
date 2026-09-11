@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Shared deferred-dispatch guard for migration execution and inspection",
+  "checks": {
+    "focusedTests": 26,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Guard shared by new-claim SQL executor, installed execution callback and inspection target.",
+    "Real installed callback query created before commit rejects when consumed after successful close.",
+    "Existing lost COMMIT acknowledgement, role elevation and deadline tests pass.",
+    "Inspection late queries/cursors, disposal failures and real installed observation persistence/recovery pass."
+  ],
+  "limitations": [
+    "Locked postgres 3.4.9 internal handler behavior; upgrade requires regression.",
+    "Trusted host boundary, not a sandbox.",
+    "Production migration worker/leases, domain/backfill/projection and Enable incomplete.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-execution-guard-test.log",
+      "sha256": "2e4c480e185b470f3b492f9b3552facb93dd88e929fe411ed26ceb12d4206513"
+    },
+    {
+      "path": "artifacts/verification/migration-execution-guard-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-execution-guard-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-execution-guard-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-execution-guard-docs.log",
+      "sha256": "e6038e30fbad6dbd74bfc6be885f398944623f7abf19094e1f1f12a2d69b5b1b"
+    }
+  ]
+}

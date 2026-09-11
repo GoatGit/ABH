@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core tool call pending reconciliation and durable failure evidence",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/run-commands.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "runCommandTests": 1,
+    "runCommandPassed": 1,
+    "runCommandFailed": 0,
+    "coreTests": 539,
+    "corePassed": 533,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractArtifacts": 51,
+    "coreApiReport": "passed",
+    "coreApiEntryPoints": 4,
+    "documentationLinks": 734,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "pending completed reconciliation validates output and stores a bounded result artifact",
+    "pending completed reconciliation performs the same one-way Pending to Completed CAS",
+    "failed reconciliation requires an available JSON no-effect evidence artifact",
+    "evidence owner is the binding invocation",
+    "evidence source set is exactly the pending tool call",
+    "evidence body is canonical ToolCallNoEffect evidence bound to terminal call ref and error digest",
+    "evidence bytes are shared-locked before verification and settled in the same transaction",
+    "ToolCallRecord persists errorDigest and failureEvidenceRef",
+    "explicit adapter failures survive terminal replay with a stable error digest",
+    "reconciliation does not invoke the original adapter or consume additional call limit"
+  ],
+  "limits": [
+    "automatic pending scan and callback recovery remain open",
+    "public InspectToolCall remains unimplemented",
+    "tool cost reservation and settlement remain open",
+    "production remote tool transport remains host-installed"
+  ]
+}

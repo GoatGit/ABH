@@ -1,0 +1,7 @@
+{
+  "schema": "DurableExecutionEnqueueResult",
+  "value": {
+    "status": "Cancelled",
+    "effect": "None"
+  }
+}

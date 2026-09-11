@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-09",
+  "scope": "Explicit Core HTTP installation for current-authorized Enabled capability discovery",
+  "tests": {
+    "capabilityQueryAndInspectionHttp": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "No full Core rerun in this batch.",
+    "Nonempty capability tests use administrative metadata fixtures, not signed nonempty runtime acceptance.",
+    "Production default governance, Gateway invocation composition and Suspend/Retire remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/capability-http-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/capability-http-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/capability-http-docs.log",
+      "sha256": "f6c82f9bb67f34c0dcd777d2c247782ffda3a1f858352b4bf1b228a60832a385"
+    },
+    {
+      "path": "artifacts/verification/capability-http-final-tests.log",
+      "sha256": "921be3f983828c187eda741617763027ff4351cdd573672e28826c50600afdbf"
+    },
+    {
+      "path": "artifacts/verification/capability-http-tests.log",
+      "sha256": "46744c8e3cf5faeedd7d86b4b31dae9ca875e0d6823103868d9ce15bcfcf8350"
+    },
+    {
+      "path": "artifacts/verification/capability-http-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Single persisted inspection Job execution orchestration",
+  "checks": {
+    "signedInstalledIntegration": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "fullCore": 469,
+    "failed": 0,
+    "skipped": 0,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "Runs an exact Pending/Waiting version; queue discovery, delivery acknowledgement and automatic restart are not implemented.",
+    "Exceptions retain already committed Running for explicit cleanup; no generic error-to-failure conversion.",
+    "Local time provides conservative scheduling; Owners use DB time for authoritative settlement.",
+    "Cross-process cancellation, early lease-loss recovery, doctor, full domain/backfill/projection verification and Enable remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-job-execution-api.log",
+      "sha256": "68391ea0bb683f05a50365093d210f5d27e84c52eb8f8123cd32e4a1f3f8d4b2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-execution-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-execution-docs.log",
+      "sha256": "0ce402aae0a51765d044cd8f14067f5a550ebf93f1c718b835a6d9475a83496d"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-execution-full-core.log",
+      "sha256": "320fe5966396492331d37d2f9083f8bd65125268d021d3926ae5cb9b814576c7"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-execution-integration.log",
+      "sha256": "9f7e1d9400296269accd176324a0d9d16abdb78843665c2cfb6f5ef1aadc8c66"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-execution-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "ObjectStoreReadResult",
+  "value": {
+    "status": "Completed",
+    "data": {
+      "object": {
+        "objectRef": {
+          "type": "abh.stored-object",
+          "id": "00000000-0000-4000-8000-000000000078",
+          "version": 1
+        },
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sizeBytes": 3,
+        "mediaType": "text/plain"
+      },
+      "range": {
+        "start": 0,
+        "endInclusive": 2
+      }
+    }
+  }
+}

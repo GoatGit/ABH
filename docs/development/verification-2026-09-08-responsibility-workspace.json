@@ -1,0 +1,27 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Workspace inheritance and isolation across responsibility, approval, authority and Command replay",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 223,
+    "coreTests": 218,
+    "failed": 0,
+    "migrationVersion": 34,
+    "generatedArtifacts": 48,
+    "publicApiReports": 9,
+    "documentLinks": 216,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/responsibility-workspace-check.log",
+  "logSha256": "2eba78df0b35b6519996fdb3e8723225726f3922bbbdee6561a2ad7c56f0d908",
+  "priorAttempt": {
+    "log": "artifacts/verification/responsibility-workspace-check-first.log",
+    "failure": "New Action test incorrectly accessed flattened fixture return through source; corrected before final full check."
+  },
+  "limitations": [
+    "Historical NULL Workspace rows cannot be reliably assigned without source evidence; no speculative backfill.",
+    "Installed current Grant, domain conditions, management authority and fence governance remain necessary.",
+    "Delegation/escalation, Exception resolution, Correction, governed unfreeze and full V1 acceptance remain unfinished."
+  ]
+}

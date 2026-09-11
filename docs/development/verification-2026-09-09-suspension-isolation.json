@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-09",
+  "scope": "Opt-in scoped suspension failure isolation with sanitized durable diagnostics and resweep retry",
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "limitations": [
+    "Production diagnostic sink still requires authorized installation.",
+    "Management discovery and unmapped registration failures remain fatal.",
+    "No full Core rerun.",
+    "Scope directory, Run Owner, Retire, compatible recovery and remaining V1 incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-isolation-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-isolation-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-isolation-docs.log",
+      "sha256": "5db590fc57ab792261b406d17aa44a70d020689ccef21cb369b346f0f0b2b747"
+    },
+    {
+      "path": "artifacts/verification/suspension-isolation-tests.log",
+      "sha256": "143392e9a60fb42af957ae9bf5d4694a62df7926d36874319b2948aa7edd50b1"
+    },
+    {
+      "path": "artifacts/verification/suspension-isolation-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

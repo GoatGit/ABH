@@ -1,0 +1,111 @@
+{
+  "version": "0.1.0",
+  "source": "docs/V1/10-ABH详细设计/02-状态与执行契约规范.md",
+  "machines": {
+    "Action": {
+      "section": "## 6. Action：生命周期与 Outcome"
+    },
+    "Operation": {
+      "section": "## 7. Operation、Attempt 与对账"
+    },
+    "Decision": {
+      "section": "## 4. Human Gateway"
+    },
+    "DecisionEffect": {
+      "section": "## 10. 辅助运行状态"
+    },
+    "ResponsibilityRequest": {
+      "section": "## 4. Human Gateway"
+    },
+    "Grant": {
+      "section": "## 5. Grant、Snapshot 与资源"
+    },
+    "ExecutionAuthority": {
+      "section": "## 5. Grant、Snapshot 与资源"
+    },
+    "Reservation": {
+      "section": "## 5. Grant、Snapshot 与资源"
+    },
+    "Commitment": {
+      "section": "## 5. Grant、Snapshot 与资源"
+    },
+    "Ledger": {
+      "section": "## 5. Grant、Snapshot 与资源"
+    },
+    "Release": {
+      "section": "## 8. 学习、能力与 Pack"
+    },
+    "InstalledPack": {
+      "section": "## 8. 学习、能力与 Pack"
+    },
+    "Artifact": {
+      "section": "## 8. 学习、能力与 Pack"
+    },
+    "AccessRecord": {
+      "section": "## 10. 辅助运行状态"
+    },
+    "DurableWait": {
+      "section": "## 10. 辅助运行状态"
+    },
+    "ExternalObservation": {
+      "section": "## 10. 辅助运行状态"
+    },
+    "Assignment": {
+      "section": "## 8. 学习、能力与 Pack"
+    },
+    "Attempt": {
+      "section": "## 7. Operation、Attempt 与对账"
+    },
+    "PackInspectionJob": {
+      "section": "## 10. 辅助运行状态"
+    },
+    "Mission": {
+      "section": "## 2. Mission"
+    },
+    "Run": {
+      "description": "Run Orchestrator execution lifecycle within a Mission.",
+      "states": {
+        "Queued": "Run accepted, initial graph prepared, waiting for worker to start execution.",
+        "Running": "Run actively executing tasks; at most one invocation per task.",
+        "Waiting": "All ready tasks blocked on external signals or wait registrations.",
+        "Paused": "Run temporarily paused; no new tasks or invocations dispatched.",
+        "Completed": "All required tasks completed successfully with verified results.",
+        "Failed": "A required task failed without a viable alternative or retry.",
+        "Cancelled": "Run cancelled by Mission or stop epoch advance; cleanup may be pending."
+      },
+      "combinations": {
+        "Queued": [
+          "RunCreated"
+        ],
+        "Running": [
+          "RunStarted"
+        ],
+        "Waiting": [
+          "RunWaiting"
+        ],
+        "Paused": [
+          "RunPaused"
+        ],
+        "Completed": [
+          "RunCompleted"
+        ],
+        "Failed": [
+          "RunFailed"
+        ],
+        "Cancelled": [
+          "RunCancelled"
+        ]
+      },
+      "outcomes": [
+        "RunCreated",
+        "RunStarted",
+        "RunWaiting",
+        "RunPaused",
+        "RunCompleted",
+        "RunFailed",
+        "RunCancelled"
+      ],
+      "section": "## 3. Run、Task 与 Invocation"
+    }
+  }
+}

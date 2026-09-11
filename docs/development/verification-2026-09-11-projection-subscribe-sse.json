@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core MissionSummary projection subscription and SSE resume",
+  "commands": [
+    "node --test --test-name-pattern \"Run lifecycle\" --test-concurrency=1 packages/core/test/run-commands.test.ts",
+    "corepack pnpm --filter @abh/adapter-fastify test",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "focusedCoreTests": "passed",
+    "fastifyAdapterTests": 13,
+    "fastifyAdapterPassed": 13,
+    "coreTests": 543,
+    "corePassed": 537,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractsArtifactsMatched": 51,
+    "apiEntryPointsMatched": 9,
+    "docsLinksChecked": 745,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "new subscriptions baseline at the latest committed projection consumer event",
+    "zero-event cursor reads historical committed effects from the beginning",
+    "Last-Event-ID resumes with PostgreSQL (created_at,id) precision",
+    "hints originate only from committed Inbox/Outbox consumer effects",
+    "each poll rechecks Mission source, projection visibility and abh.projections.read",
+    "empty grant sets are rejected before any hint is emitted",
+    "hints expose opaque event cursor, subject version, watermark and stale state",
+    "Fastify forwards Last-Event-ID and writes SSE id/event frames",
+    "SSE heartbeat interval is 15 seconds",
+    "256 undrained change frames disconnect a slow client"
+  ],
+  "limits": [
+    "explicit reset frames remain for expired or unsafe recovery logs",
+    "subscriptions for ResponsibilityInbox, ActionTimeline, OrganizationSettings and CapabilityOverview remain",
+    "retained-history gap repair beyond the consumer watermark remains",
+    "production SSE metrics and connection governance remain"
+  ]
+}

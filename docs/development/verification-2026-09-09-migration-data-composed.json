@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Persisted signed data expectation to actual registered scan",
+  "checks": {
+    "focusedTests": 6,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Real persisted signed report and Bundle drive registered target data scan.",
+    "Replacing row-count expectation fails digest binding; real duplicate rows mismatch.",
+    "Post-scan deployment change, source withdrawal and signer policy rotation reject."
+  ],
+  "limitations": [
+    "Host retains installed/deployment authority and target lifecycle.",
+    "Repeated reads/crypto not optimized; formal data contracts, installed assembly, observation persistence and Enable incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-data-composed-test.log",
+      "sha256": "73abd66d79e053665398f9892753b6df950b8c2f4d971aa5f39e3301e3fee7b7"
+    },
+    {
+      "path": "artifacts/verification/migration-data-composed-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-data-composed-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-composed-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-data-composed-docs.log",
+      "sha256": "b39975c9402be49a3a9ac8761a0be366b39cffe9e6a9af28a1327a50c0b57201"
+    }
+  ]
+}

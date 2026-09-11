@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core paid tool Resource Ledger reservation, actual-usage settlement, and inspection",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test --test-concurrency=1 packages/core/test/run-commands.test.ts",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "contractArtifacts": 51,
+    "contractReport": "matched",
+    "coreTypecheck": "passed",
+    "runCommandTests": 2,
+    "runCommandPassed": 2,
+    "runCommandFailed": 0,
+    "coreTests": 540,
+    "corePassed": 534,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "coreApiEntryPoints": 4,
+    "coreApiReport": "matched",
+    "documentationLinks": 736,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "explicit budget ledger, bounded amount, and expiry are part of InvokeToolPayload",
+    "Binding call limit and Resource Ledger reservation commit in the prepare transaction",
+    "prepare rollback removes both ToolCall and reservation evidence",
+    "Pending replay checks reservation identity and amount without double reservation",
+    "outbound admission requires a Held, unexpired reservation",
+    "canonical tool input is bounded to 64 KiB before persistence",
+    "trusted Completed results settle actual usage no greater than the reservation",
+    "capacity reservations release after completed admission",
+    "adapter ambiguity, validation failure, and explicit failure retain the reservation",
+    "Pending no-effect reconciliation releases only with verified evidence",
+    "InspectToolCall returns Held, Consumed, Released, or explicit unmetered state"
+  ],
+  "limits": [
+    "production remote tool transport and isolation remain host-installed",
+    "external Operation or tracking binding remains open",
+    "automatic Pending scan and callback recovery remain open",
+    "tool output remains bounded by Inline Artifact storage; 256 KiB Object Store staging remains open"
+  ]
+}

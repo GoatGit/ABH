@@ -1,0 +1,33 @@
+{
+  "schema": "ResolveAndPinRequest",
+  "value": {
+    "subjectRef": {
+      "type": "abh.action",
+      "id": "00000000-0000-4000-8000-000000000006",
+      "version": 2
+    },
+    "subjectInputDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "requiredBehaviorSlots": [
+      "hello.connector"
+    ],
+    "verifiedScope": [
+      {
+        "type": "abh.organization",
+        "id": "00000000-0000-4000-8000-000000000003",
+        "version": 1
+      }
+    ],
+    "requestContextRef": {
+      "type": "abh.request-context",
+      "id": "00000000-0000-4000-8000-000000000016",
+      "version": 1
+    },
+    "preparationAuthorityRefs": [
+      {
+        "type": "abh.grant",
+        "id": "00000000-0000-4000-8000-000000000001",
+        "version": 1
+      }
+    ]
+  }
+}

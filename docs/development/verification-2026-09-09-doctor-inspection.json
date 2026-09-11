@@ -1,0 +1,131 @@
+{
+  "date": "2026-09-09",
+  "scope": "Executable inspection Job CLI through the public SDK and authenticated HTTP query",
+  "tests": {
+    "contracts": {
+      "passed": 293,
+      "failed": 0,
+      "skipped": 0
+    },
+    "cli": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    "realHttpDatabaseCli": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "signatureRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "workspaceTypecheck": "passed (CLI checks JavaScript syntax)",
+    "generatedDrift": "passed (49 files)",
+    "api": "passed (Contracts 9 entries, Core 3 entries)",
+    "docs": "passed",
+    "isolatedIntegrationContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/doctor-inspection-generate.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/doctor-inspection-contracts-check.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/doctor-inspection-contracts-tests.log",
+      "sha256": "4e71d832bb7dc7a869f175363b262b1c37a94ae5fb8571a6303707daedb446bf"
+    },
+    {
+      "path": "artifacts/verification/doctor-inspection-cli-tests.log",
+      "sha256": "1d46a6c20185d63a6e01652b83dc768796ad331591e97c355d6259eed2970568"
+    },
+    {
+      "path": "artifacts/verification/doctor-inspection-integration.log",
+      "sha256": "6fe9c24084e182b282ad4ad17242e612b0d586ad11ba7b08b550f92bb6fbf8d5"
+    },
+    {
+      "path": "artifacts/verification/doctor-inspection-build.log",
+      "sha256": "03ec83b377f9a08bc38f5c585cbca2669b265489cb1f77143b4a0d2a9462273c"
+    },
+    {
+      "path": "artifacts/verification/doctor-inspection-typecheck.log",
+      "sha256": "c95e5eafad7e995b46c485a08a5379f3d5fac2ca58539be873826070409238f1"
+    },
+    {
+      "path": "artifacts/verification/doctor-inspection-api.log",
+      "sha256": "0ba9da79ee2fdcb50bea0e7bdb55d59d118afa7fbd759de1c65aa6b3af5e7f5c"
+    },
+    {
+      "path": "artifacts/verification/doctor-inspection-docs.log",
+      "sha256": "9a1efecc980becd4410a95e500d9000fc190ff760d9552f2470716822c11b4f1"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/cli/src/inspection.mjs",
+      "sha256": "26787e0f2d05128ccd66108a92600640efaa0c59918e7bde27021345b7b82203"
+    },
+    {
+      "path": "packages/cli/src/doctor.mjs",
+      "sha256": "e06a48b83a301b41c4969aeda91d5c515d4b28fa5daf4f4c59b91201d7d56010"
+    },
+    {
+      "path": "packages/cli/package.json",
+      "sha256": "c03c412bc5da2127401094c58dc91d6af070317345fa3586a427f56ee23ee7ad"
+    },
+    {
+      "path": "packages/cli/README.md",
+      "sha256": "1f6fbe20db2f08d1f0d25e17c282581e19e7e0b1e742ec8fc4863ae8af620d6d"
+    },
+    {
+      "path": "packages/cli/test/inspection.test.mjs",
+      "sha256": "20d732b491b29317a3d04d23fc9767692350e3be0378beb1c374ecb027273fd4"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-http.test.ts",
+      "sha256": "5174b181891393033838650c0ab10b8fcce3dd2ad14c1b6c022a320b4a487214"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "4a4576816368dd6464bebd11d985c84b77cd2e8501af1494593b1e2eaf8c3494"
+    },
+    {
+      "path": "packages/contracts/src/relationships.ts",
+      "sha256": "bea5deb71ee03965bf1ee45c1a912850c01a15cb4b8bb5235111f2563eff528a"
+    },
+    {
+      "path": "packages/contracts/test/cli-inspection.test.ts",
+      "sha256": "c3168b9fac26d0c0d77c6c413ae24dc378a5761818651a90c4fbb2793e88a279"
+    },
+    {
+      "path": "packages/contracts/generated/manifest.json",
+      "sha256": "b346db72117adf4758ca4ae6f886beaa3d750a7b2bb8c91674ab8bc99af50476"
+    },
+    {
+      "path": "packages/contracts/api/index.api.md",
+      "sha256": "0cf740e00d47afd527e0d91ef49d376b9ca1c8e09ed1ef977d3f3f50aa115312"
+    },
+    {
+      "path": "packages/contracts/api/schema.api.md",
+      "sha256": "b7afaf36133b276815b0f06055327b87673e5d7903c102e0fc6e739d23ae994e"
+    }
+  ],
+  "limitations": [
+    "Reported/exit 0 means a valid diagnostic was retrieved, not that the Job or installation succeeded",
+    "Integration uses an explicit test IdP and a seeded Pending Job; production identity verification remains unimplemented",
+    "No repair, queue publication, lease renewal or Job cancellation is performed"
+  ],
+  "remaining": [
+    "Complete doctor pack phase/blocker aggregation and doctor operation",
+    "Production identity and Secret Ref configuration",
+    "General inspection exception evidence",
+    "Complete installation validation and Enable",
+    "Broader V1 requirements remain incomplete"
+  ]
+}

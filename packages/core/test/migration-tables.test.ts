@@ -1,0 +1,332 @@
+import {verifyMigrationData,type MigrationDataCheck} from '../src/extensions/verify-migration-data.ts';
+import {verifyMigrationAcl,type MigrationAclCheck} from '../src/extensions/verify-migration-acl.ts';
+import {verifyMigrationViews,type MigrationViewShape,type MigrationViewCheck} from '../src/extensions/verify-migration-views.ts';
+import {verifyMigrationSequences,type MigrationSequenceShape,type MigrationSequenceCheck} from '../src/extensions/verify-migration-sequences.ts';
+import {verifyMigrationStructure,type MigrationStructureExpectation} from '../src/extensions/verify-migration-structure.ts';
+import {verifyMigrationInventory,type MigrationSchemaInventory} from '../src/extensions/verify-migration-inventory.ts';
+import assert from 'node:assert/strict';
+import {randomBytes} from 'node:crypto';
+import {test} from 'node:test';
+import postgres from 'postgres';
+import {canonicalJson,digestBytes} from '@abh/contracts/digest';
+import {verifyMigrationTables,type MigrationTableShape,type MigrationTableCheck} from '../src/extensions/verify-migration-tables.ts';
+import {createDatabaseFixture,options} from './database-fixture.ts';
+
+test('actual migration table results compare columns constraints RLS and absence',{timeout:120000},async t=>{
+ const f=await createDatabaseFixture();t.after(()=>f.close());
+ const password=randomBytes(24).toString('hex');
+ await f.admin.unsafe(`CREATE ROLE hello_migrator LOGIN NOINHERIT PASSWORD '${password}'`);
+ await f.admin`CREATE SCHEMA hello_domain AUTHORIZATION hello_migrator`;
+ const url=new URL(f.runtimeUrl);url.username='hello_migrator';url.password=password;
+ const pool=postgres(url.toString(),{max:1,onnotice:()=>{}});t.after(()=>pool.end());
+ const owners=[{schemaName:'hello_domain',databaseRole:'hello_migrator',packId:'org.hello.pack'}];
+ const shape:MigrationTableShape={schema:'hello_domain',name:'items',owner:'hello_migrator',kind:'r',rls:true,forceRls:true,
+  columns:[{name:'id',typeSchema:'pg_catalog',typeName:'int4',typeModifier:-1,notNull:true,identity:'',generated:'',defaultExpression:null},{name:'label',typeSchema:'pg_catalog',typeName:'text',typeModifier:-1,notNull:false,identity:'',generated:'',defaultExpression:"'new'::text"}],
+  indexes:[{name:'items_pkey',definition:'CREATE UNIQUE INDEX items_pkey ON hello_domain.items USING btree (id)',valid:true,ready:true,live:true,unique:true,primary:true,replicaIdentity:false}],
+  policies:[],triggers:[],partition:{key:null,bound:null,parents:[]},
+  constraints:[{name:'items_pkey',type:'p',definition:'PRIMARY KEY (id)',validated:true,deferrable:false,initiallyDeferred:false}]};
+ const checks:MigrationTableCheck[]=[{schema:'hello_domain',name:'items',expected:shape},{schema:'hello_domain',name:'removed',expected:null}];
+ const inspect=(input=checks)=>pool.begin('isolation level repeatable read read only',sql=>verifyMigrationTables(sql,owners,'org.hello.pack',input,options()));
+ await pool`CREATE TABLE hello_domain.items (id integer PRIMARY KEY,label text DEFAULT 'new')`;
+ await pool`ALTER TABLE hello_domain.items ENABLE ROW LEVEL SECURITY`;
+ await pool`ALTER TABLE hello_domain.items FORCE ROW LEVEL SECURITY`;
+ await t.test('expected authored shape matches real DDL without executing expectation expressions',async()=>{
+  const result=await inspect();assert.equal(result.matched,true);assert.deepEqual(result.results[0]!.actual,shape);assert.equal(result.results[1]!.actual,null);
+  assert.deepEqual((await inspect()).expectedDigest,result.expectedDigest);
+ });
+ await t.test('combined structure check requires every inventoried table and preserves remaining scope',async()=>{
+  const expected:MigrationStructureExpectation={inventory:[{schema:'hello_domain',relations:[{name:'items',kind:'r'}]}],tables:[checks[0]!],sequences:[],views:[],acl:[]};
+  const grants=['SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER'].map(privilege=>({column:null,grantor:'hello_migrator',grantee:'hello_migrator',privilege,grantable:false}));
+  expected.acl=[{schema:'hello_domain',name:'items',kind:'r',grants}];
+  const verify=(input=expected)=>pool.begin('isolation level repeatable read read only',sql=>verifyMigrationStructure(sql,owners,'org.hello.pack',input,options()));
+  await assert.rejects(verify({...expected,acl:[]}),{code:'PRECONDITION_FAILED'});
+  await assert.rejects(verify({...expected,acl:[expected.acl[0]!,expected.acl[0]!]}),{code:'INVALID_ARGUMENT'});
+  const result=await verify();assert.equal(result.matched,true);assert.deepEqual(result.requiresAdditionalVerification,[]);
+  await assert.rejects(verify({...expected,tables:[]}),{code:'PRECONDITION_FAILED'});
+  await assert.rejects(verify({...expected,tables:[{...checks[0]!,expected:null}]}),{code:'PRECONDITION_FAILED'});
+  await assert.rejects(verify({...expected,tables:[checks[0]!,checks[0]!]}),{code:'INVALID_ARGUMENT'});
+  await pool`CREATE SEQUENCE hello_domain.declared_sequence`;
+  const extended:MigrationStructureExpectation={...expected,inventory:[{schema:'hello_domain',relations:[...expected.inventory[0]!.relations,{name:'declared_sequence',kind:'S'}]}]};
+  await assert.rejects(verify(extended),{code:'PRECONDITION_FAILED'});
+  extended.sequences=[{schema:'hello_domain',name:'declared_sequence',expected:{schema:'hello_domain',name:'declared_sequence',owner:'hello_migrator',typeSchema:'pg_catalog',typeName:'int8',start:'1',increment:'1',minimum:'1',maximum:'9223372036854775807',cache:'1',cycle:false,ownedBy:null}}];
+  extended.acl=[...expected.acl,{schema:'hello_domain',name:'declared_sequence',kind:'S',grants:['SELECT','UPDATE','USAGE'].map(privilege=>({...grants[0]!,privilege}))}];
+  const withSequence=await verify(extended);assert.equal(withSequence.matched,true);assert.deepEqual(withSequence.requiresAdditionalVerification,[]);
+  assert.equal((await verify()).matched,false);
+  await pool`DROP SEQUENCE hello_domain.declared_sequence`;
+  await pool`CREATE VIEW hello_domain.declared_view AS SELECT 1 AS id`;
+  const withView:MigrationStructureExpectation={...expected,inventory:[{schema:'hello_domain',relations:[...expected.inventory[0]!.relations,{name:'declared_view',kind:'v'}]}]};
+  await assert.rejects(verify(withView),{code:'PRECONDITION_FAILED'});
+  withView.views=[{schema:'hello_domain',name:'declared_view',expected:{schema:'hello_domain',name:'declared_view',owner:'hello_migrator',kind:'v',definition:' SELECT 1 AS id;',options:[],populated:true,rules:[],indexes:[],triggers:[],columns:[{name:'id',typeSchema:'pg_catalog',typeName:'int4',typeModifier:-1}]}}];
+  withView.acl=[...expected.acl,{schema:'hello_domain',name:'declared_view',kind:'v',grants}];
+  const viewed=await verify(withView);assert.equal(viewed.matched,true);assert.equal(viewed.views!.matched,true);assert.deepEqual(viewed.requiresAdditionalVerification,[{schema:'hello_domain',name:'declared_view',kind:'v'}]);
+  await assert.rejects(verify({...withView,views:[withView.views[0]!,withView.views[0]!]}),{code:'INVALID_ARGUMENT'});
+  await pool`CREATE OR REPLACE VIEW hello_domain.declared_view AS SELECT 2 AS id`;
+  assert.equal((await verify(withView)).matched,false);
+  await pool`DROP VIEW hello_domain.declared_view`;
+
+  await pool`ALTER TABLE hello_domain.items ALTER COLUMN label DROP DEFAULT`;
+  try{assert.equal((await verify()).matched,false);}finally{await pool`ALTER TABLE hello_domain.items ALTER COLUMN label SET DEFAULT 'new'`;}
+ });
+ await t.test('sequence definitions preserve bigint precision and detect generation and ownership drift',async()=>{
+  await pool`CREATE SEQUENCE hello_domain.checked_seq`;
+  const expected:MigrationSequenceShape={schema:'hello_domain',name:'checked_seq',owner:'hello_migrator',typeSchema:'pg_catalog',typeName:'int8',start:'1',increment:'1',minimum:'1',maximum:'9223372036854775807',cache:'1',cycle:false,ownedBy:null};
+  const input:MigrationSequenceCheck[]=[{schema:expected.schema,name:expected.name,expected}];
+  const verify=(checks=input)=>pool.begin('isolation level repeatable read read only',sql=>verifyMigrationSequences(sql,owners,'org.hello.pack',checks,options()));
+  const before=await pool`SELECT last_value::text,is_called FROM hello_domain.checked_seq`;
+  assert.deepEqual((await verify()).results[0]!.actual,expected);assert.equal((await verify()).matched,true);
+  assert.deepEqual(await pool`SELECT last_value::text,is_called FROM hello_domain.checked_seq`,before);
+  await pool`ALTER SEQUENCE hello_domain.checked_seq AS integer INCREMENT BY 3 MINVALUE -10 MAXVALUE 100 START WITH 4 CACHE 8 CYCLE OWNED BY hello_domain.items.id`;
+  assert.deepEqual((await verify()).results[0]!.differences,['typeName','start','increment','minimum','maximum','cache','cycle','ownedBy']);
+  const changed={...expected,typeName:'int4' as const,start:'4',increment:'3',minimum:'-10',maximum:'100',cache:'8',cycle:true,ownedBy:{schema:'hello_domain',table:'items',column:'id',dependency:'a' as const}};
+  assert.equal((await verify([{...input[0]!,expected:changed}])).matched,true);
+  await pool`ALTER SEQUENCE hello_domain.checked_seq OWNED BY NONE`;
+  assert.deepEqual((await verify([{...input[0]!,expected:changed}])).results[0]!.differences,['ownedBy']);
+  await pool`CREATE TABLE hello_domain.identity_items (id bigint GENERATED ALWAYS AS IDENTITY)`;
+  assert.equal((await verify([{schema:'hello_domain',name:'identity_items_id_seq',expected:{...expected,name:'identity_items_id_seq',ownedBy:{schema:'hello_domain',table:'identity_items',column:'id',dependency:'i'}}}])).matched,true);
+  await assert.rejects(verify([{schema:'hello_domain',name:'items',expected:null}]),{code:'PRECONDITION_FAILED'});
+  assert.equal((await verify([{schema:'hello_domain',name:'absent_seq',expected:null}])).matched,true);
+  assert.deepEqual((await verify([{...input[0]!,expected:null}])).results[0]!.differences,['existence']);
+  await assert.rejects(verify([{...input[0]!,expected:{...expected,maximum:'9223372036854775808'}}]),{code:'INVALID_ARGUMENT'});
+  await assert.rejects(verify([input[0]!,input[0]!]),{code:'INVALID_ARGUMENT'});
+  await assert.rejects(verify([{schema:'identity',name:'seq',expected:null}]),{code:'FORBIDDEN'});
+  await assert.rejects(pool.begin(sql=>verifyMigrationSequences(sql,owners,'org.hello.pack',input,options())),{code:'FORBIDDEN'});
+  await assert.rejects(pool.begin('isolation level repeatable read read only',sql=>verifyMigrationSequences(sql,owners,'org.hello.pack',input,{...options(),signal:AbortSignal.abort()})),{code:'DEPENDENCY_TIMEOUT'});
+  await pool`DROP TABLE hello_domain.identity_items`;await pool`DROP SEQUENCE hello_domain.checked_seq`;
+ });
+ await t.test('view definitions options columns and materialized population reflect real DDL',async()=>{
+  await pool`CREATE VIEW hello_domain.checked_view WITH (security_barrier=true,security_invoker=true) AS SELECT 1 AS id`;
+  const shape:MigrationViewShape={schema:'hello_domain',name:'checked_view',owner:'hello_migrator',kind:'v',definition:' SELECT 1 AS id;',options:['security_invoker=true','security_barrier=true'],populated:true,rules:[],indexes:[],triggers:[],columns:[{name:'id',typeSchema:'pg_catalog',typeName:'int4',typeModifier:-1}]};
+  const input:MigrationViewCheck[]=[{schema:shape.schema,name:shape.name,expected:shape}];
+  const verify=(checks=input)=>pool.begin('isolation level repeatable read read only',sql=>verifyMigrationViews(sql,owners,'org.hello.pack',checks,options()));
+  assert.equal((await verify()).matched,true);
+  await pool`CREATE OR REPLACE VIEW hello_domain.checked_view WITH (security_barrier=true,security_invoker=true) AS SELECT 2 AS id`;
+  assert.deepEqual((await verify()).results[0]!.differences,['definition']);
+  await pool`CREATE RULE ignore_insert AS ON INSERT TO hello_domain.checked_view DO INSTEAD NOTHING`;
+  const ruled=await verify();assert.ok(ruled.results[0]!.differences.includes('rules'));assert.equal(ruled.results[0]!.actual!.rules[0]!.enabled,'O');
+  const ruleShape=ruled.results[0]!.actual!;
+  assert.equal((await verify([{...input[0]!,expected:ruleShape}])).matched,true);
+  await pool`CREATE OR REPLACE RULE ignore_insert AS ON INSERT TO hello_domain.checked_view DO ALSO NOTHING`;
+  assert.deepEqual((await verify([{...input[0]!,expected:ruleShape}])).results[0]!.differences,['rules']);
+  await pool`DROP RULE ignore_insert ON hello_domain.checked_view`;
+  await pool`ALTER VIEW hello_domain.checked_view SET (security_invoker=false)`;
+  assert.deepEqual((await verify()).results[0]!.differences,['definition','options']);
+  await pool`DROP VIEW hello_domain.checked_view`;await pool`CREATE VIEW hello_domain.checked_view AS SELECT 'value'::text AS label`;
+  assert.deepEqual((await verify()).results[0]!.differences,['definition','options','columns']);
+  await pool`CREATE FUNCTION hello_domain.view_write() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN RETURN NEW; END'`;
+  await pool`CREATE TRIGGER checked_write INSTEAD OF INSERT ON hello_domain.checked_view FOR EACH ROW EXECUTE FUNCTION hello_domain.view_write()`;
+  const triggered=(await verify()).results[0]!.actual!;
+  assert.equal(triggered.triggers[0]!.definition,'CREATE TRIGGER checked_write INSTEAD OF INSERT ON hello_domain.checked_view FOR EACH ROW EXECUTE FUNCTION hello_domain.view_write()');
+  assert.equal(triggered.triggers[0]!.functionDigest,await digestBytes(new TextEncoder().encode(canonicalJson({schema:'hello_domain',name:'view_write',arguments:'',language:'plpgsql',owner:'hello_migrator',securityDefiner:false,leakproof:false,strict:false,volatility:'v',parallel:'u',config:null,source:'BEGIN RETURN NEW; END',binary:null}))));
+  const triggeredCheck=[{...input[0]!,expected:triggered}];assert.equal((await verify(triggeredCheck)).matched,true);
+  await pool`CREATE OR REPLACE FUNCTION hello_domain.view_write() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN NEW.label := upper(NEW.label); RETURN NEW; END'`;
+  assert.deepEqual((await verify(triggeredCheck)).results[0]!.differences,['triggers']);
+  await pool`CREATE OR REPLACE FUNCTION hello_domain.view_write() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN RETURN NEW; END'`;
+  await pool`ALTER FUNCTION hello_domain.view_write() SECURITY DEFINER`;
+  assert.deepEqual((await verify(triggeredCheck)).results[0]!.differences,['triggers']);
+  await pool`ALTER FUNCTION hello_domain.view_write() SECURITY INVOKER`;
+  assert.equal((await verify(triggeredCheck)).matched,true);
+  await pool`DROP TRIGGER checked_write ON hello_domain.checked_view`;await pool`DROP FUNCTION hello_domain.view_write()`;
+  await pool`CREATE MATERIALIZED VIEW hello_domain.checked_materialized AS SELECT 1 AS id WITH NO DATA`;
+  const materialized={...shape,name:'checked_materialized',kind:'m' as const,options:[],populated:false};
+  const check=[{schema:shape.schema,name:materialized.name,expected:materialized}];assert.equal((await verify(check)).matched,true);
+  await pool`REFRESH MATERIALIZED VIEW hello_domain.checked_materialized`;
+  assert.deepEqual((await verify(check)).results[0]!.differences,['populated']);
+  await pool`CREATE UNIQUE INDEX materialized_id ON hello_domain.checked_materialized (id)`;
+  const indexed:MigrationViewShape={...materialized,populated:true,indexes:[{name:'materialized_id',definition:'CREATE UNIQUE INDEX materialized_id ON hello_domain.checked_materialized USING btree (id)',valid:true,ready:true,live:true,unique:true,primary:false,replicaIdentity:false}]};
+  const indexCheck=[{...check[0]!,expected:indexed}];assert.equal((await verify(indexCheck)).matched,true);
+  await pool`DROP INDEX hello_domain.materialized_id`;await pool`CREATE INDEX materialized_id ON hello_domain.checked_materialized ((id+1)) WHERE id>0`;
+  assert.deepEqual((await verify(indexCheck)).results[0]!.differences,['indexes']);
+  const [indexRow]=await f.admin`SELECT 'hello_domain.materialized_id'::regclass::oid AS oid`;
+  await f.admin`UPDATE pg_index SET indisvalid=false WHERE indexrelid=${indexRow!.oid}`;
+  try{assert.equal((await verify(indexCheck)).results[0]!.actual!.indexes[0]!.valid,false);}finally{await f.admin`UPDATE pg_index SET indisvalid=true WHERE indexrelid=${indexRow!.oid}`;}
+  await assert.rejects(verify([{schema:shape.schema,name:'items',expected:null}]),{code:'PRECONDITION_FAILED'});
+  assert.equal((await verify([{schema:shape.schema,name:'missing_view',expected:null}])).matched,true);
+  await assert.rejects(verify([input[0]!,input[0]!]),{code:'INVALID_ARGUMENT'});
+  await assert.rejects(verify([{schema:'identity',name:'view',expected:null}]),{code:'FORBIDDEN'});
+  await assert.rejects(pool.begin(sql=>verifyMigrationViews(sql,owners,'org.hello.pack',input,options())),{code:'FORBIDDEN'});
+  await assert.rejects(pool.begin('isolation level repeatable read read only',sql=>verifyMigrationViews(sql,owners,'org.hello.pack',input,{...options(),signal:AbortSignal.abort()})),{code:'DEPENDENCY_TIMEOUT'});
+  await pool`DROP VIEW hello_domain.checked_view`;await pool`DROP MATERIALIZED VIEW hello_domain.checked_materialized`;
+ });
+ await t.test('direct ACLs include owner defaults PUBLIC column grants and grant options',async()=>{
+  await f.admin`CREATE ROLE hello_reader NOLOGIN`;
+  const base={column:null,grantor:'hello_migrator',grantee:'hello_migrator',grantable:false};
+  const input:MigrationAclCheck[]=[{schema:'hello_domain',name:'items',kind:'r',grants:['SELECT','INSERT','UPDATE','DELETE','TRUNCATE','REFERENCES','TRIGGER'].map(privilege=>({...base,privilege}))}];
+  const verify=(checks=input)=>pool.begin('isolation level repeatable read read only',sql=>verifyMigrationAcl(sql,owners,'org.hello.pack',checks,options()));
+  assert.equal((await verify()).matched,true);
+  await pool`GRANT SELECT ON hello_domain.items TO PUBLIC`;
+  assert.deepEqual((await verify()).results[0]!.unexpected,[{...base,grantee:'PUBLIC',privilege:'SELECT'}]);
+  await pool`REVOKE SELECT ON hello_domain.items FROM PUBLIC`;
+  await pool`GRANT UPDATE(label) ON hello_domain.items TO hello_reader WITH GRANT OPTION`;
+  const columnGrant={...base,column:'label',grantee:'hello_reader',privilege:'UPDATE',grantable:true};
+  assert.deepEqual((await verify()).results[0]!.unexpected,[columnGrant]);
+  const expanded=[{...input[0]!,grants:[...input[0]!.grants,columnGrant]}];assert.equal((await verify(expanded)).matched,true);
+  await pool`REVOKE GRANT OPTION FOR UPDATE(label) ON hello_domain.items FROM hello_reader`;
+  const changed=await verify(expanded);assert.equal(changed.matched,false);assert.deepEqual(changed.results[0]!.missing,[columnGrant]);assert.deepEqual(changed.results[0]!.unexpected,[{...columnGrant,grantable:false}]);
+  await pool`REVOKE UPDATE(label) ON hello_domain.items FROM hello_reader`;
+  await pool`CREATE SEQUENCE hello_domain.acl_seq`;
+  const sequence:MigrationAclCheck={schema:'hello_domain',name:'acl_seq',kind:'S',grants:['SELECT','UPDATE','USAGE'].map(privilege=>({...base,privilege}))};const sequenceResult=await verify([sequence]);assert.equal(sequenceResult.matched,true,JSON.stringify(sequenceResult));
+  await pool`GRANT USAGE ON SEQUENCE hello_domain.acl_seq TO PUBLIC`;assert.equal((await verify([sequence])).matched,false);
+  await assert.rejects(verify([{...sequence,kind:'r'}]),{code:'PRECONDITION_FAILED'});
+  await assert.rejects(verify([input[0]!,input[0]!]),{code:'INVALID_ARGUMENT'});
+  await assert.rejects(verify([{...input[0]!,schema:'identity'}]),{code:'FORBIDDEN'});
+  await pool`DROP SEQUENCE hello_domain.acl_seq`;await f.admin`DROP ROLE hello_reader`;
+  assert.equal((await verify()).matched,true);
+ });
+ await t.test('actual data invariants detect nulls duplicates and row loss without hiding RLS rows',async()=>{
+  await pool`CREATE TABLE hello_domain.data_check (id integer,label text)`;
+  await pool`INSERT INTO hello_domain.data_check VALUES (1,'first'),(2,'second')`;
+  const input:MigrationDataCheck[]=[{schema:'hello_domain',table:'data_check',rowCount:'2',nonNull:['id','label'],uniqueKeys:[['id']]}];
+  const verify=(checks=input)=>pool.begin('isolation level repeatable read read only',sql=>verifyMigrationData(sql,owners,'org.hello.pack',checks,options()));
+  assert.equal((await verify()).matched,true);
+  let catalogReached=false;
+  await pool.begin('isolation level repeatable read read only',async sql=>{
+   const guarded:import('../src/data/uow.ts').Query=async(strings,...parameters)=>{
+    if(strings.join('').includes('SELECT c.oid,c.relkind,r.rolname AS owner')){
+     catalogReached=true;
+     await assert.rejects(f.admin.begin(async other=>{await other`SET LOCAL lock_timeout='100ms'`;await other`ALTER TABLE hello_domain.data_check ADD COLUMN concurrent_column integer`;}),{code:'55P03'});
+     // Writes may continue, but all checks must see the original repeatable snapshot.
+     await f.admin`INSERT INTO hello_domain.data_check VALUES (3,'concurrent')`;
+    }
+    return sql(strings,...parameters);
+   };
+   assert.equal((await verifyMigrationData(guarded,owners,'org.hello.pack',input,options())).matched,true);
+  });
+  assert.equal(catalogReached,true);assert.equal((await verify()).matched,false);
+  await pool`DELETE FROM hello_domain.data_check WHERE id=3`;
+  await pool`ALTER TABLE hello_domain.data_check ADD COLUMN after_check integer`;
+  await pool`ALTER TABLE hello_domain.data_check DROP COLUMN after_check`;
+  await pool`UPDATE hello_domain.data_check SET id=1,label=NULL WHERE id=2`;
+  const bad=await verify();assert.equal(bad.matched,false);assert.equal(bad.results[0]!.rowCount,'2');assert.deepEqual(bad.results[0]!.nulls,[{column:'id',count:'0'},{column:'label',count:'1'}]);assert.deepEqual(bad.results[0]!.duplicates,[{columns:['id'],groups:'1'}]);
+  await pool`DELETE FROM hello_domain.data_check WHERE label IS NULL`;assert.equal((await verify()).results[0]!.rowCount,'1');
+  await pool`INSERT INTO hello_domain.data_check VALUES (NULL,NULL),(NULL,NULL)`;
+  const nullKeys=await verify([{...input[0]!,rowCount:'3',nonNull:[],uniqueKeys:[['id','label']]}]);assert.equal(nullKeys.matched,false);assert.deepEqual(nullKeys.results[0]!.duplicates,[{columns:['id','label'],groups:'1'}]);
+  await pool`DELETE FROM hello_domain.data_check WHERE id IS NULL`;
+  await pool`ALTER TABLE hello_domain.data_check ENABLE ROW LEVEL SECURITY`;
+  await pool`ALTER TABLE hello_domain.data_check FORCE ROW LEVEL SECURITY`;
+  await assert.rejects(verify([{...input[0]!,rowCount:'0'}]),{code:'FORBIDDEN'});
+  await pool`ALTER TABLE hello_domain.data_check NO FORCE ROW LEVEL SECURITY`;
+  assert.equal((await verify([{...input[0]!,rowCount:'1'}])).matched,true);
+  await assert.rejects(verify([{...input[0]!,nonNull:['missing']}]),{code:'PRECONDITION_FAILED'});
+  await assert.rejects(verify([{...input[0]!,nonNull:['id; DROP TABLE hello_domain.data_check']}]),{code:'INVALID_ARGUMENT'});
+  await assert.rejects(verify([{...input[0]!,uniqueKeys:[['id','label'],['label','id']]}]),{code:'INVALID_ARGUMENT'});
+  await assert.rejects(verify([{...input[0]!,schema:'identity'}]),{code:'FORBIDDEN'});
+  await pool`CREATE TABLE hello_domain.data_child () INHERITS (hello_domain.data_check)`;
+  await assert.rejects(verify(),{code:'PRECONDITION_FAILED'});await pool`DROP TABLE hello_domain.data_child`;
+  await assert.rejects(pool.begin(sql=>verifyMigrationData(sql,owners,'org.hello.pack',input,options())),{code:'FORBIDDEN'});
+  await assert.rejects(pool.begin('isolation level repeatable read read only',sql=>verifyMigrationData(sql,owners,'org.hello.pack',input,{...options(),signal:AbortSignal.abort()})),{code:'DEPENDENCY_TIMEOUT'});
+  await pool`DROP TABLE hello_domain.data_check`;
+ });
+ await t.test('complete relation inventory detects unexpected objects and wrong kinds',async()=>{
+  const expected:MigrationSchemaInventory[]=[{schema:'hello_domain',relations:[{name:'items',kind:'r'}]}];
+  const inventory=(input=expected)=>pool.begin('isolation level repeatable read read only',sql=>verifyMigrationInventory(sql,owners,'org.hello.pack',input,options()));
+  assert.equal((await inventory()).matched,true);
+  await pool`CREATE TABLE hello_domain.extra (id integer)`;
+  await pool`CREATE SEQUENCE hello_domain.extra_seq`;
+  await pool`CREATE VIEW hello_domain.extra_view AS SELECT 1 AS id`;
+  const found=await inventory();assert.equal(found.matched,false);assert.deepEqual(found.results[0]!.unexpected.map(r=>[r.name,r.kind]),[['extra','r'],['extra_seq','S'],['extra_view','v']]);
+  const wrong=await inventory([{schema:'hello_domain',relations:[{name:'items',kind:'v'},{name:'absent',kind:'r'}]}]);
+  assert.deepEqual(wrong.results[0]!.changed,[{name:'items',expectedKind:'v',actualKind:'r'}]);assert.deepEqual(wrong.results[0]!.missing,[{name:'absent',kind:'r'}]);
+  assert.equal((await inventory([{schema:'hello_domain',relations:[]}])).matched,false);
+  await assert.rejects(inventory([expected[0]!,expected[0]!]),{code:'INVALID_ARGUMENT'});
+  await assert.rejects(inventory([{schema:'identity',relations:[]}]),{code:'FORBIDDEN'});
+  await pool`DROP VIEW hello_domain.extra_view`;await pool`DROP SEQUENCE hello_domain.extra_seq`;await pool`DROP TABLE hello_domain.extra`;
+  assert.equal((await inventory()).matched,true);
+ });
+ await t.test('policy bodies, roles and command changes differ even while RLS remains forced',async()=>{
+  await pool`CREATE POLICY items_access ON hello_domain.items FOR SELECT TO hello_migrator USING (id>0)`;
+  const expected={...shape,policies:[{name:'items_access',command:'r',permissive:true,roles:['hello_migrator'],using:'(id > 0)',check:null}]};
+  const input=[{...checks[0]!,expected}];assert.equal((await inspect(input)).matched,true);
+  await pool`ALTER POLICY items_access ON hello_domain.items TO PUBLIC USING (true)`;
+  const changed=await inspect(input);assert.equal(changed.matched,false);assert.deepEqual(changed.results[0]!.differences,['policies']);assert.equal(changed.results[0]!.actual!.forceRls,true);
+  await pool`DROP POLICY items_access ON hello_domain.items`;
+  await pool`CREATE POLICY items_access ON hello_domain.items AS RESTRICTIVE FOR UPDATE TO hello_migrator USING (id>0) WITH CHECK (id>1)`;
+  const altered=(await inspect(input)).results[0]!.actual!.policies[0]!;assert.equal(altered.command,'w');assert.equal(altered.permissive,false);assert.equal(altered.check,'(id > 1)');
+  await pool`DROP POLICY items_access ON hello_domain.items`;
+ });
+ await t.test('expression, partial and invalid index changes produce index differences',async()=>{
+  await pool`CREATE INDEX items_label_idx ON hello_domain.items (lower(label)) WHERE id>0`;
+  assert.deepEqual((await inspect()).results[0]!.differences,['indexes']);
+  const expected={...shape,indexes:[{name:'items_label_idx',definition:'CREATE INDEX items_label_idx ON hello_domain.items USING btree (lower(label)) WHERE (id > 0)',valid:true,ready:true,live:true,unique:false,primary:false,replicaIdentity:false},...shape.indexes]};
+  assert.equal((await inspect([{...checks[0]!,expected}])).matched,true);
+  await pool`DROP INDEX hello_domain.items_label_idx`;
+  await pool`CREATE INDEX items_label_idx ON hello_domain.items (upper(label)) WHERE id>1`;
+  assert.deepEqual((await inspect([{...checks[0]!,expected}])).results[0]!.differences,['indexes']);
+
+  const [index]=await f.admin`SELECT indexrelid FROM pg_index WHERE indexrelid='hello_domain.items_label_idx'::regclass`;
+  await f.admin`UPDATE pg_index SET indisvalid=false WHERE indexrelid=${index!.indexrelid}`;
+  try{assert.equal((await inspect()).results[0]!.actual!.indexes[0]!.valid,false);}finally{await f.admin`UPDATE pg_index SET indisvalid=true WHERE indexrelid=${index!.indexrelid}`;}
+  await pool`DROP INDEX hello_domain.items_label_idx`;
+  assert.equal((await inspect()).matched,true);
+ });
+ await t.test('trigger definition, enable mode and same-name function changes are checked',async()=>{
+  const body='BEGIN RETURN NEW; END';
+  await pool`CREATE FUNCTION hello_domain.before_item() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN RETURN NEW; END'`;
+  await pool`CREATE TRIGGER items_before BEFORE INSERT ON hello_domain.items FOR EACH ROW EXECUTE FUNCTION hello_domain.before_item()`;
+  const functionDigest=await digestBytes(new TextEncoder().encode(canonicalJson({schema:'hello_domain',name:'before_item',arguments:'',language:'plpgsql',owner:'hello_migrator',securityDefiner:false,leakproof:false,strict:false,volatility:'v',parallel:'u',config:null,source:body,binary:null})));
+  const expected={...shape,triggers:[{name:'items_before',definition:'CREATE TRIGGER items_before BEFORE INSERT ON hello_domain.items FOR EACH ROW EXECUTE FUNCTION hello_domain.before_item()',enabled:'O',functionDigest}]};
+  const input=[{...checks[0]!,expected}];assert.equal((await inspect(input)).matched,true);
+  await pool`ALTER TABLE hello_domain.items DISABLE TRIGGER items_before`;
+  assert.deepEqual((await inspect(input)).results[0]!.differences,['triggers']);
+  await pool`ALTER TABLE hello_domain.items ENABLE TRIGGER items_before`;
+  await pool`CREATE OR REPLACE FUNCTION hello_domain.before_item() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN NEW.label := upper(NEW.label); RETURN NEW; END'`;
+  assert.deepEqual((await inspect(input)).results[0]!.differences,['triggers']);
+  await pool`CREATE OR REPLACE FUNCTION hello_domain.before_item() RETURNS trigger LANGUAGE plpgsql AS 'BEGIN RETURN NEW; END'`;
+  await pool`ALTER FUNCTION hello_domain.before_item() SECURITY DEFINER`;
+  assert.deepEqual((await inspect(input)).results[0]!.differences,['triggers']);
+  await pool`ALTER FUNCTION hello_domain.before_item() SECURITY INVOKER`;
+  assert.equal((await inspect(input)).matched,true);
+  await pool`DROP TRIGGER items_before ON hello_domain.items`;await pool`DROP FUNCTION hello_domain.before_item()`;
+ });
+ await t.test('partition keys, parent identity and bounds match actual range partition DDL',async()=>{
+  await pool`CREATE TABLE hello_domain.events (id integer) PARTITION BY RANGE (id)`;
+  await pool`CREATE TABLE hello_domain.events_early PARTITION OF hello_domain.events FOR VALUES FROM (0) TO (10)`;
+  const base:MigrationTableShape={...shape,name:'events',kind:'p',rls:false,forceRls:false,columns:[{...shape.columns[0]!,notNull:false}],constraints:[],indexes:[],partition:{key:'RANGE (id)',bound:null,parents:[]}};
+  const child:MigrationTableShape={...base,name:'events_early',kind:'r',partition:{key:null,bound:'FOR VALUES FROM (0) TO (10)',parents:[{schema:'hello_domain',name:'events',detachPending:false}]}};
+  const input=[{schema:'hello_domain',name:'events',expected:base},{schema:'hello_domain',name:'events_early',expected:child}];
+  assert.equal((await inspect(input)).matched,true);
+  const wrongKey=[{...input[0]!,expected:{...base,partition:{...base.partition,key:'HASH (id)'}}}];
+  assert.deepEqual((await inspect(wrongKey)).results[0]!.differences,['partition']);
+  await pool`CREATE TABLE hello_domain.events_default PARTITION OF hello_domain.events DEFAULT`;
+  assert.equal((await inspect([{schema:'hello_domain',name:'events_default',expected:{...child,name:'events_default',partition:{...child.partition,bound:'DEFAULT'}}}])).matched,true);
+  await pool`CREATE TABLE hello_domain.events_list (id integer) PARTITION BY LIST (id)`;
+  await pool`CREATE TABLE hello_domain.events_selected PARTITION OF hello_domain.events_list FOR VALUES IN (1, 2)`;
+  assert.equal((await inspect([{schema:'hello_domain',name:'events_selected',expected:{...child,name:'events_selected',partition:{key:null,bound:'FOR VALUES IN (1, 2)',parents:[{schema:'hello_domain',name:'events_list',detachPending:false}]}}}])).matched,true);
+  await pool`ALTER TABLE hello_domain.events DETACH PARTITION hello_domain.events_early`;
+  await pool`ALTER TABLE hello_domain.events ATTACH PARTITION hello_domain.events_early FOR VALUES FROM (10) TO (20)`;
+  assert.deepEqual((await inspect(input)).results[1]!.differences,['partition']);
+  await pool`CREATE TABLE hello_domain.events_other (id integer) PARTITION BY RANGE (id)`;
+  await pool`ALTER TABLE hello_domain.events DETACH PARTITION hello_domain.events_early`;
+  await pool`ALTER TABLE hello_domain.events_other ATTACH PARTITION hello_domain.events_early FOR VALUES FROM (0) TO (10)`;
+  assert.deepEqual((await inspect(input)).results[1]!.differences,['partition']);
+  await pool`ALTER TABLE hello_domain.events_other DETACH PARTITION hello_domain.events_early`;
+  assert.deepEqual((await inspect(input)).results[1]!.actual!.partition,{key:null,bound:null,parents:[]});
+ });
+ await t.test('missing/extra columns defaults constraints and RLS yield explicit differences',async()=>{
+  await pool`ALTER TABLE hello_domain.items ALTER COLUMN label SET NOT NULL`;
+  await pool`ALTER TABLE hello_domain.items ALTER COLUMN label SET DEFAULT 'changed'`;
+  await pool`ALTER TABLE hello_domain.items ADD COLUMN extra bigint`;
+  await pool`ALTER TABLE hello_domain.items ADD CONSTRAINT id_positive CHECK(id>0) NOT VALID`;
+  await pool`ALTER TABLE hello_domain.items NO FORCE ROW LEVEL SECURITY`;
+  const result=await inspect();assert.equal(result.matched,false);assert.deepEqual(result.results[0]!.differences,['forceRls','columns','constraints']);
+  assert.equal(result.results[0]!.actual!.constraints[0]!.validated,false);
+ });
+ await t.test('expected absence and existence cannot hide an actual table or view',async()=>{
+  const result=await inspect([{...checks[0]!,expected:null},{schema:'hello_domain',name:'missing',expected:{...shape,name:'missing'}}]);
+  assert.equal(result.matched,false);assert.deepEqual(result.results.map(r=>r.differences),[['existence'],['existence']]);
+  await pool`CREATE VIEW hello_domain.not_a_table AS SELECT 1 AS id`;
+  await assert.rejects(inspect([{schema:'hello_domain',name:'not_a_table',expected:null}]),{code:'PRECONDITION_FAILED'});
+ });
+ await t.test('requires exact role, read-only repeatable read and actual schema ownership',async()=>{
+  await assert.rejects(pool.begin(sql=>verifyMigrationTables(sql,owners,'org.hello.pack',checks,options())),{code:'FORBIDDEN'});
+  await assert.rejects(f.admin.begin('isolation level repeatable read read only',sql=>verifyMigrationTables(sql,owners,'org.hello.pack',checks,options())),{code:'FORBIDDEN'});
+  await assert.rejects(inspect([{schema:'identity',name:'organizations',expected:null}]),{code:'FORBIDDEN'});
+  await f.admin`ALTER SCHEMA hello_domain OWNER TO abh_core_owner`;
+  try{await assert.rejects(inspect(),{code:'FORBIDDEN'});}finally{await f.admin`ALTER SCHEMA hello_domain OWNER TO hello_migrator`;}
+ });
+ await t.test('bounded unique expectations and cancellation reject before catalog results',async()=>{
+  await assert.rejects(inspect([{...checks[0]!,expected:{...shape,unchecked:'ignored'} as MigrationTableShape}]),{code:'INVALID_ARGUMENT'});
+  await assert.rejects(inspect([{...checks[0]!,expected:{...shape,columns:[shape.columns[0]!,shape.columns[0]!]}}]),{code:'INVALID_ARGUMENT'});
+  for(const input of [[],[checks[0]!,checks[0]!],Array(101).fill(checks[0])])await assert.rejects(inspect(input),{code:'INVALID_ARGUMENT'});
+  await assert.rejects(pool.begin('isolation level repeatable read read only',sql=>verifyMigrationTables(sql,owners,'org.hello.pack',checks,{...options(),signal:AbortSignal.abort()})),{code:'DEPENDENCY_TIMEOUT'});
+ });
+});

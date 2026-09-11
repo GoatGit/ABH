@@ -1,0 +1,77 @@
+{
+  "date": "2026-09-09",
+  "scope": "Read-only Running-version watcher for persisted inspection cancellation and scoped target/lease cleanup",
+  "tests": {
+    "targeted": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCore": {
+      "passed": 472,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 254813.227083
+    }
+  },
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApi": "passed (2 entry points)",
+    "docs": "passed",
+    "isolatedTestContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-inspection-progress-watch-tests.log",
+      "sha256": "2eaf784b32dfe3a36c6aefc8992699c6488cb8254612280e769d88a145f4e8b9"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-progress-watch-full-core.log",
+      "sha256": "b97960c1649b294e49b2e451cb4104e868f372e5e07da30cbdde7c0254bd8472"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-progress-watch-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-progress-watch-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-progress-watch-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-progress-watch-docs.log",
+      "sha256": "af9469c45020aa39f066c40a410829ad2f2845717ad9a7b0fdff8fa6141303fe"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/inspection-jobs.ts",
+      "sha256": "3e14128accbc55ea805da8311b6727af77a1c2416a6403de490f213595b53b4d"
+    },
+    {
+      "path": "packages/core/src/extensions/run-pack-inspection-job.ts",
+      "sha256": "5ad6d59e1d63dc6d7ccc92f6be0ae81dcb3bffa2b7d550e559839f8c83792c06"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-progress-cancellation-fixture.ts",
+      "sha256": "23a5837a154b92d0afefb2dd51cca72e6dec3c95933ac3dd947a59cb4044ab28"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-job-execution-fixture.ts",
+      "sha256": "59fcd253a6d690f89782a9e6f553b8b791a8e2d70e8cccafaf1c9332c7357e31"
+    },
+    {
+      "path": "packages/core/test/inspection-job-storage.test.ts",
+      "sha256": "7d03de4eb0e784ea4beafd28ed4a53e9b056158d8b2d65a2b65247f86c547015"
+    }
+  ],
+  "limitations": [
+    "Cancellation detection uses bounded database polling, not immediate remote process termination.",
+    "Cancellation accounting remains settled at the formal cancellation evidence assessment time.",
+    "General InspectionFailed, early lost-lease recovery, doctor, production configuration and complete installation/domain verification remain incomplete."
+  ]
+}

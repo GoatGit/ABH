@@ -1,0 +1,52 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Final migration observation recovery admission",
+  "checks": {
+    "focusedTests": 13,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Pre-fix regression proves missing final admission rejection.",
+    "Final admission failure rolls back new observation and denies replay without changing existing history.",
+    "Signed recovery authenticates after maintenance row lock and after observation write/lookup.",
+    "Capture key revocation on post-lookup authentication denies signed recovery."
+  ],
+  "limitations": [
+    "No atomic authority guarantee across database connections or against subsequent privileged administrator mutation.",
+    "Production authority fences/source/capture governance, actual target verification, recovery scheduling, cross-step/nontransactional recovery, readiness and Enable remain incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-recovery-final-before.log",
+      "sha256": "d91abec606242964b9f9a7a1d779ec988e885e9a124b24a82701b8f2bf9147df"
+    },
+    {
+      "path": "artifacts/verification/migration-recovery-final-test.log",
+      "sha256": "5615694e06bf01e47d29209250e6ab535c9f423c473e5ae8e9d61ecfcc762a5e"
+    },
+    {
+      "path": "artifacts/verification/migration-recovery-final-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-recovery-final-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-recovery-final-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-recovery-final-docs.log",
+      "sha256": "bd1505d6cf8e7393a7b6f2ebeef65c45a2ac9e25b0c6fd34867be33743e926bd"
+    }
+  ]
+}

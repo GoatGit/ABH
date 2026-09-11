@@ -1,0 +1,124 @@
+{
+  "date": "2026-09-09",
+  "scope": "Explicit build-time capability binding validation and current staged content assembly; no registry write",
+  "tests": {
+    "capabilitiesContentAndRealCosign": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "note": "Nonempty bindings covered with verified fixture bytes; real signed existing Pack has no provides and exercises authorized empty assembly."
+    },
+    "contracts": {
+      "passed": 303,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "coreTypecheck": "passed",
+    "contractsTypecheck": "passed",
+    "generation": "passed (49 files)",
+    "coreApi": "passed (3 entry points)",
+    "contractsApi": "passed (9 entry points)",
+    "docs": "passed"
+  },
+  "initialFailures": [
+    "Fixture kind Tool failed RegisteredName validation; corrected to abh.tool"
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/prepare-pack-capabilities.ts",
+      "sha256": "e3f3606b8c6a7ec7077c9f31231fd19c71f22f39b8fd4bf1cc231909af876b8d"
+    },
+    {
+      "path": "packages/core/src/extensions/prepare-installed-capabilities.ts",
+      "sha256": "d2040e2f33ad0540e0efb73ce4d57121d2289f80670f16115ed70d22fd2a6c8c"
+    },
+    {
+      "path": "packages/core/test/pack-capabilities.test.ts",
+      "sha256": "a550438e5d44a381bc2c8f2b86ad1dc85b3c63f3d67f8790d70afb318158f562"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "bd410eb6698a31bdd18b128bb41c37c87264201d90bcc81203cb2604326595da"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "d4cd42edf9cd5fcd4c9bcb2bafb0856d07fc41065fadb5c464b1c7d940cad92e"
+    },
+    {
+      "path": "packages/contracts/test/pack-capability-binding.test.ts",
+      "sha256": "3a98a4d4d77ae38249875ead14066bc64c1a3717ee12ba3625421896d6e8eb4c"
+    }
+  ],
+  "remaining": [
+    "Persist capability registrations and implement queries/exact resolution",
+    "Atomic Registry/Enabled state/history/deployment/Journal transition",
+    "Complete actual migration, Domain/backfill/projection validation",
+    "Remaining V1 modules"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-capability-binding-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-api-update.log",
+      "sha256": "cbace512b733947aef68a16f9ea0f6876a69c91b8f1b20666b301f9fe76eb5ee"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-build.log",
+      "sha256": "e982cd7e93f8b9252869a90aa0515c352aa12307ef48e5adbedc8d5d9de2ca3f"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-contract-tests.log",
+      "sha256": "7809bee517ba19dcb9f861e2209aae4b734a4d53804f0c69f84872480def1af2"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-core-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-docs.log",
+      "sha256": "86a7918a4fd5f69156edebafef8d724c3f267c4d6b599803b5cdc5fcdf738bef"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-drift.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-generation.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-integration.log",
+      "sha256": "febad534f39988fba1d77f553778f97b2ff115c4d60acc1a1ed88c3d2dd113c2"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-tests-final.log",
+      "sha256": "21b2fc489f24a4438e3c2fa09dfc506f44d1c63a9b91fb0782a30b9e5d68f2ca"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-tests.log",
+      "sha256": "1bce270396f9174c24136fb535c667fd547b3e62bb27c2e21bff0706d86c384b"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-binding-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

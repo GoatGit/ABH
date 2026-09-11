@@ -1,0 +1,1578 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:abh:contracts:0.1.0:public",
+  "title": "PublicContract",
+  "description": "M0-A Preview structural contracts; all runtime authorization checks remain mandatory.",
+  "$defs": {
+    "UUID": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "title": "UUID"
+    },
+    "Version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991,
+      "title": "Version"
+    },
+    "RegisteredName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*(?:[.][a-z][a-z0-9-]*)+$",
+      "maxLength": 200,
+      "title": "RegisteredName"
+    },
+    "ExactVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$",
+      "maxLength": 128,
+      "title": "ExactVersion"
+    },
+    "Digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Digest"
+    },
+    "Time": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{1,6})?Z$",
+      "title": "Time"
+    },
+    "Decimal": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9][0-9]{0,25})(?:\\.[0-9]{1,12})?$",
+      "not": {
+        "pattern": "^-0(?:\\.0+)?$"
+      },
+      "title": "Decimal"
+    },
+    "Money": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "$ref": "#/$defs/Decimal"
+        },
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        }
+      },
+      "required": [
+        "amount",
+        "currency"
+      ],
+      "additionalProperties": false,
+      "title": "Money"
+    },
+    "EntityRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/RegisteredName"
+        },
+        "id": {
+          "$ref": "#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "EntityRef"
+    },
+    "EntitySelector": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/RegisteredName"
+        },
+        "id": {
+          "$ref": "#/$defs/UUID"
+        }
+      },
+      "required": [
+        "type",
+        "id"
+      ],
+      "additionalProperties": false,
+      "title": "EntitySelector"
+    },
+    "CapabilityRef": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Agent",
+            "Prompt",
+            "Workflow",
+            "Tool",
+            "ModelRoute",
+            "BehaviorPolicy",
+            "Connector",
+            "Compiler",
+            "RuntimeAdapter"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/RegisteredName"
+        },
+        "version": {
+          "$ref": "#/$defs/ExactVersion"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "title": "CapabilityRef"
+    },
+    "AuthorityRef": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.mission-authority"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.execution-authority"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "AuthorityRef"
+    },
+    "SubjectRef": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.run"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.action"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "SubjectRef"
+    },
+    "Actor": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "Human",
+            "AgentInvocation",
+            "Service",
+            "ExternalPlatform"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/UUID"
+        },
+        "responsibilityRef": {
+          "$ref": "#/$defs/EntityRef"
+        }
+      },
+      "required": [
+        "type",
+        "id"
+      ],
+      "additionalProperties": false,
+      "title": "Actor"
+    },
+    "Target": {
+      "type": "object",
+      "properties": {
+        "objectRef": {
+          "$ref": "#/$defs/EntityRef"
+        },
+        "action": {
+          "$ref": "#/$defs/RegisteredName"
+        },
+        "scopeRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        }
+      },
+      "required": [
+        "objectRef",
+        "action",
+        "scopeRefs"
+      ],
+      "additionalProperties": false,
+      "title": "Target"
+    },
+    "AuthenticationStrength": {
+      "title": "AuthenticationStrength",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "level": {
+              "const": "SingleFactor"
+            }
+          },
+          "required": [
+            "level"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "level": {
+              "const": "MultiFactor"
+            },
+            "mfaVerifiedAt": {
+              "$ref": "#/$defs/Time"
+            }
+          },
+          "required": [
+            "level",
+            "mfaVerifiedAt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "level": {
+              "const": "Workload"
+            }
+          },
+          "required": [
+            "level"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "RequestContext": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "correlationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "causationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "traceId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "actingOrganizationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "resourceOrganizationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "workspaceId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "actor": {
+          "$ref": "#/$defs/Actor"
+        },
+        "purposeOfUse": {
+          "$ref": "#/$defs/RegisteredName"
+        },
+        "authnStrength": {
+          "$ref": "#/$defs/AuthenticationStrength"
+        },
+        "sessionEpoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "scopeEpoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "executionAuthorityRef": {
+          "$ref": "#/$defs/AuthorityRef"
+        },
+        "originatingRequestRef": {
+          "$ref": "#/$defs/EntityRef"
+        },
+        "contextExpiresAt": {
+          "$ref": "#/$defs/Time"
+        },
+        "receivedAt": {
+          "$ref": "#/$defs/Time"
+        },
+        "locale": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64
+        },
+        "businessTimezone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "requestId",
+        "correlationId",
+        "actingOrganizationId",
+        "resourceOrganizationId",
+        "actor",
+        "purposeOfUse",
+        "authnStrength",
+        "sessionEpoch",
+        "scopeEpoch",
+        "contextExpiresAt",
+        "receivedAt"
+      ],
+      "additionalProperties": false,
+      "description": "Server-created identity context. Structural validation does not authenticate or authorize a caller.",
+      "title": "RequestContext"
+    },
+    "AuthorizedRequestContext": {
+      "type": "object",
+      "properties": {
+        "requestId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "correlationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "causationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "traceId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$"
+        },
+        "actingOrganizationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "resourceOrganizationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "workspaceId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "actor": {
+          "$ref": "#/$defs/Actor"
+        },
+        "purposeOfUse": {
+          "$ref": "#/$defs/RegisteredName"
+        },
+        "authnStrength": {
+          "$ref": "#/$defs/AuthenticationStrength"
+        },
+        "sessionEpoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "scopeEpoch": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "executionAuthorityRef": {
+          "$ref": "#/$defs/AuthorityRef"
+        },
+        "originatingRequestRef": {
+          "$ref": "#/$defs/EntityRef"
+        },
+        "contextExpiresAt": {
+          "$ref": "#/$defs/Time"
+        },
+        "receivedAt": {
+          "$ref": "#/$defs/Time"
+        },
+        "locale": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 64
+        },
+        "businessTimezone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "authorizationSnapshotId": {
+          "$ref": "#/$defs/UUID"
+        }
+      },
+      "required": [
+        "requestId",
+        "correlationId",
+        "actingOrganizationId",
+        "resourceOrganizationId",
+        "actor",
+        "purposeOfUse",
+        "authnStrength",
+        "sessionEpoch",
+        "scopeEpoch",
+        "contextExpiresAt",
+        "receivedAt",
+        "authorizationSnapshotId"
+      ],
+      "additionalProperties": false,
+      "title": "AuthorizedRequestContext"
+    },
+    "ExecutionAuthorityBinding": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "Scope"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "Action"
+            },
+            "actionRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.action"
+                },
+                "id": {
+                  "$ref": "#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "payloadDigest": {
+              "$ref": "#/$defs/Digest"
+            }
+          },
+          "required": [
+            "kind",
+            "actionRef",
+            "payloadDigest"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "ExecutionAuthorityBinding"
+    },
+    "ExecutionAuthority": {
+      "type": "object",
+      "properties": {
+        "authorityRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.execution-authority"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "executionPrincipalRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.principal"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "allowedProposerRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "abh.principal"
+              },
+              "id": {
+                "$ref": "#/$defs/UUID"
+              },
+              "version": {
+                "$ref": "#/$defs/Version"
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "binding": {
+          "$ref": "#/$defs/ExecutionAuthorityBinding"
+        },
+        "grantRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "abh.grant"
+              },
+              "id": {
+                "$ref": "#/$defs/UUID"
+              },
+              "version": {
+                "$ref": "#/$defs/Version"
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "scopeRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "purposeRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "abh.purpose"
+              },
+              "id": {
+                "$ref": "#/$defs/UUID"
+              },
+              "version": {
+                "$ref": "#/$defs/Version"
+              }
+            },
+            "required": [
+              "type",
+              "id",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "actionTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RegisteredName"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "resourceEnvelopeRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.resource-envelope"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "validFrom": {
+          "$ref": "#/$defs/Time"
+        },
+        "validUntil": {
+          "$ref": "#/$defs/Time"
+        },
+        "stopConditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "issuanceEvidenceRef": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.request-completion-evidence"
+                },
+                "id": {
+                  "$ref": "#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.policy-evaluation"
+                },
+                "id": {
+                  "$ref": "#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "effectKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "issuedBy": {
+          "$ref": "#/$defs/Actor"
+        },
+        "sourceVersionRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "issuanceDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "supersedesAuthorityRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.execution-authority"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "status": {
+          "$ref": "urn:abh:contracts:0.1.0:states#/$defs/ExecutionAuthorityState"
+        }
+      },
+      "required": [
+        "authorityRef",
+        "resourceOrganizationId",
+        "executionPrincipalRef",
+        "allowedProposerRefs",
+        "binding",
+        "grantRefs",
+        "scopeRefs",
+        "purposeRefs",
+        "actionTypes",
+        "resourceEnvelopeRef",
+        "validFrom",
+        "validUntil",
+        "stopConditions",
+        "issuanceEvidenceRef",
+        "effectKey",
+        "issuedBy",
+        "sourceVersionRefs",
+        "issuanceDigest",
+        "status"
+      ],
+      "additionalProperties": false,
+      "title": "ExecutionAuthority",
+      "x-abh-digest-fields": [
+        "resourceOrganizationId",
+        "executionPrincipalRef",
+        "allowedProposerRefs",
+        "binding",
+        "grantRefs",
+        "scopeRefs",
+        "purposeRefs",
+        "actionTypes",
+        "resourceEnvelopeRef",
+        "validFrom",
+        "validUntil",
+        "stopConditions",
+        "issuanceEvidenceRef",
+        "effectKey",
+        "issuedBy",
+        "sourceVersionRefs",
+        "supersedesAuthorityRef"
+      ]
+    },
+    "ResolveAndPinRequest": {
+      "type": "object",
+      "properties": {
+        "subjectRef": {
+          "$ref": "#/$defs/SubjectRef"
+        },
+        "subjectInputDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "requiredBehaviorSlots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RegisteredName"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "verifiedScope": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "requestContextRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.request-context"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "preparationAuthorityRefs": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/AuthorityRef"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "abh.grant"
+                  },
+                  "id": {
+                    "$ref": "#/$defs/UUID"
+                  },
+                  "version": {
+                    "$ref": "#/$defs/Version"
+                  }
+                },
+                "required": [
+                  "type",
+                  "id",
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        }
+      },
+      "required": [
+        "subjectRef",
+        "subjectInputDigest",
+        "requiredBehaviorSlots",
+        "verifiedScope",
+        "requestContextRef",
+        "preparationAuthorityRefs"
+      ],
+      "additionalProperties": false,
+      "title": "ResolveAndPinRequest"
+    },
+    "ExecutionPin": {
+      "type": "object",
+      "properties": {
+        "behaviorSlot": {
+          "$ref": "#/$defs/RegisteredName"
+        },
+        "assignmentRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.assignment"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "releaseRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.release"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "capabilityExactRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CapabilityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "versionVector": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "allocationRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.allocation"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "behaviorSlot",
+        "assignmentRef",
+        "releaseRef",
+        "capabilityExactRefs",
+        "versionVector"
+      ],
+      "additionalProperties": false,
+      "title": "ExecutionPin"
+    },
+    "PinSet": {
+      "type": "object",
+      "properties": {
+        "pinSetRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.pin-set"
+            },
+            "id": {
+              "$ref": "#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "#/$defs/UUID"
+        },
+        "subjectRef": {
+          "$ref": "#/$defs/SubjectRef"
+        },
+        "subjectInputDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "requiredSlotsDigest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "digest": {
+          "$ref": "#/$defs/Digest"
+        },
+        "pins": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExecutionPin"
+          },
+          "minItems": 1,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "x-abh-set": true
+        }
+      },
+      "required": [
+        "pinSetRef",
+        "resourceOrganizationId",
+        "subjectRef",
+        "subjectInputDigest",
+        "requiredSlotsDigest",
+        "digest",
+        "pins"
+      ],
+      "additionalProperties": false,
+      "title": "PinSet",
+      "x-abh-digest-fields": [
+        "resourceOrganizationId",
+        "subjectRef",
+        "subjectInputDigest",
+        "requiredSlotsDigest",
+        "pins"
+      ]
+    },
+    "DevelopmentConfig": {
+      "type": "object",
+      "properties": {
+        "deployment": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "const": "Development",
+              "type": "string",
+              "default": "Development",
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Public",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/61-CLI-Distribution与运维详细设计.md",
+                "description": "Explicit development profile; production capabilities are unavailable.",
+                "example": "Development"
+              }
+            }
+          },
+          "required": [
+            "profile"
+          ],
+          "additionalProperties": false
+        },
+        "identity": {
+          "type": "object",
+          "properties": {
+            "provider": {
+              "const": "Fake",
+              "type": "string",
+              "default": "Fake",
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Public",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/61-CLI-Distribution与运维详细设计.md",
+                "description": "Test identity provider, usable only with Development.",
+                "example": "Fake"
+              }
+            }
+          },
+          "required": [
+            "provider"
+          ],
+          "additionalProperties": false
+        },
+        "database": {
+          "type": "object",
+          "properties": {
+            "runtimeUrlRef": {
+              "type": "string",
+              "pattern": "^env:ABH_[A-Z0-9_]+$",
+              "maxLength": 200,
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Reference",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/28-Data-Artifact与Audit详细设计.md",
+                "description": "Explicit environment reference for the restricted business runtime database role.",
+                "example": "env:ABH_DATABASE_RUNTIME_URL"
+              }
+            },
+            "queueUrlRef": {
+              "type": "string",
+              "pattern": "^env:ABH_[A-Z0-9_]+$",
+              "maxLength": 200,
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Reference",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/28-Data-Artifact与Audit详细设计.md",
+                "description": "Separate environment reference for the queue database role.",
+                "example": "env:ABH_DATABASE_QUEUE_URL"
+              }
+            },
+            "statementTimeoutMs": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 30000,
+              "default": 5000,
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Public",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/28-Data-Artifact与Audit详细设计.md",
+                "description": "Maximum database statement time, capped by the remaining request deadline.",
+                "example": 5000
+              }
+            },
+            "lockTimeoutMs": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5000,
+              "default": 1000,
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Public",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/28-Data-Artifact与Audit详细设计.md",
+                "description": "Maximum database lock wait; cannot exceed the statement timeout.",
+                "example": 1000
+              }
+            }
+          },
+          "required": [
+            "runtimeUrlRef",
+            "queueUrlRef"
+          ],
+          "additionalProperties": false
+        },
+        "runtime": {
+          "type": "object",
+          "properties": {
+            "businessEntry": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Public",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/61-CLI-Distribution与运维详细设计.md",
+                "description": "Local business declaration entry; this contract does not load or execute it.",
+                "example": "./business.ts"
+              }
+            },
+            "mode": {
+              "const": "ActionOnly",
+              "type": "string",
+              "default": "ActionOnly",
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Public",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/61-CLI-Distribution与运维详细设计.md",
+                "description": "Action-only dependencies; Agent, model and learning runtimes stay disabled.",
+                "example": "ActionOnly"
+              }
+            },
+            "action": {
+              "type": "object",
+              "properties": {
+                "maxOperations": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000,
+                  "default": 100,
+                  "x-abh-config": {
+                    "version": "0.1.0",
+                    "profiles": [
+                      "Development"
+                    ],
+                    "sensitivity": "Public",
+                    "apply": "Restart",
+                    "source": "docs/V1/10-ABH详细设计/25-Action-Engine详细设计.md",
+                    "description": "Maximum operations fixed when an Action is validated.",
+                    "example": 100
+                  }
+                },
+                "maxDependencies": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 32,
+                  "default": 32,
+                  "x-abh-config": {
+                    "version": "0.1.0",
+                    "profiles": [
+                      "Development"
+                    ],
+                    "sensitivity": "Public",
+                    "apply": "Restart",
+                    "source": "docs/V1/10-ABH详细设计/25-Action-Engine详细设计.md",
+                    "description": "Maximum dependencies per node in the first Action profile.",
+                    "example": 32
+                  }
+                },
+                "intentExpirySeconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 86400,
+                  "default": 86400,
+                  "x-abh-config": {
+                    "version": "0.1.0",
+                    "profiles": [
+                      "Development"
+                    ],
+                    "sensitivity": "Public",
+                    "apply": "Restart",
+                    "source": "docs/V1/10-ABH详细设计/25-Action-Engine详细设计.md",
+                    "description": "Maximum lifetime of a proposed Action intent; shorter domain expiry still applies.",
+                    "example": 86400
+                  }
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "queue": {
+              "type": "object",
+              "properties": {
+                "publishBatch": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000,
+                  "default": 100,
+                  "x-abh-config": {
+                    "version": "0.1.0",
+                    "profiles": [
+                      "Development"
+                    ],
+                    "sensitivity": "Public",
+                    "apply": "Restart",
+                    "source": "docs/V1/10-ABH详细设计/27-Durable-Execution详细设计.md",
+                    "description": "Bounded Outbox publication batch size.",
+                    "example": 100
+                  }
+                },
+                "pollIntervalMs": {
+                  "type": "integer",
+                  "minimum": 100,
+                  "maximum": 5000,
+                  "default": 500,
+                  "x-abh-config": {
+                    "version": "0.1.0",
+                    "profiles": [
+                      "Development"
+                    ],
+                    "sensitivity": "Public",
+                    "apply": "Restart",
+                    "source": "docs/V1/10-ABH详细设计/27-Durable-Execution详细设计.md",
+                    "description": "Interval for Outbox polling in milliseconds.",
+                    "example": 500
+                  }
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            },
+            "reconciliation": {
+              "type": "object",
+              "properties": {
+                "initialDelaySeconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 300,
+                  "default": 5,
+                  "x-abh-config": {
+                    "version": "0.1.0",
+                    "profiles": [
+                      "Development"
+                    ],
+                    "sensitivity": "Public",
+                    "apply": "Restart",
+                    "source": "docs/V1/10-ABH详细设计/26-Operation与Reconciliation详细设计.md",
+                    "description": "Initial delay before observing an uncertain Operation.",
+                    "example": 5
+                  }
+                },
+                "maxDelaySeconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 300,
+                  "default": 300,
+                  "x-abh-config": {
+                    "version": "0.1.0",
+                    "profiles": [
+                      "Development"
+                    ],
+                    "sensitivity": "Public",
+                    "apply": "Restart",
+                    "source": "docs/V1/10-ABH详细设计/26-Operation与Reconciliation详细设计.md",
+                    "description": "Upper bound on reconciliation backoff; not a finality or expiry rule.",
+                    "example": 300
+                  }
+                }
+              },
+              "required": [],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "businessEntry",
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        "web": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "const": false,
+              "type": "boolean",
+              "default": false,
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Public",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/61-CLI-Distribution与运维详细设计.md",
+                "description": "Workbench remains disabled until its implementation is available.",
+                "example": false
+              }
+            }
+          },
+          "required": [
+            "enabled"
+          ],
+          "additionalProperties": false
+        },
+        "observability": {
+          "type": "object",
+          "properties": {
+            "projectTelemetry": {
+              "type": "boolean",
+              "const": false,
+              "default": false,
+              "x-abh-config": {
+                "version": "0.1.0",
+                "profiles": [
+                  "Development"
+                ],
+                "sensitivity": "Public",
+                "apply": "Restart",
+                "source": "docs/V1/10-ABH详细设计/61-CLI-Distribution与运维详细设计.md",
+                "description": "No project telemetry is enabled in this profile.",
+                "example": false
+              }
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "deployment",
+        "identity",
+        "database",
+        "runtime",
+        "web"
+      ],
+      "additionalProperties": false,
+      "title": "DevelopmentConfig"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/UUID"
+    },
+    {
+      "$ref": "#/$defs/Version"
+    },
+    {
+      "$ref": "#/$defs/RegisteredName"
+    },
+    {
+      "$ref": "#/$defs/ExactVersion"
+    },
+    {
+      "$ref": "#/$defs/Digest"
+    },
+    {
+      "$ref": "#/$defs/Time"
+    },
+    {
+      "$ref": "#/$defs/Decimal"
+    },
+    {
+      "$ref": "#/$defs/Money"
+    },
+    {
+      "$ref": "#/$defs/EntityRef"
+    },
+    {
+      "$ref": "#/$defs/EntitySelector"
+    },
+    {
+      "$ref": "#/$defs/CapabilityRef"
+    },
+    {
+      "$ref": "#/$defs/AuthorityRef"
+    },
+    {
+      "$ref": "#/$defs/SubjectRef"
+    },
+    {
+      "$ref": "#/$defs/Actor"
+    },
+    {
+      "$ref": "#/$defs/Target"
+    },
+    {
+      "$ref": "#/$defs/AuthenticationStrength"
+    },
+    {
+      "$ref": "#/$defs/RequestContext"
+    },
+    {
+      "$ref": "#/$defs/AuthorizedRequestContext"
+    },
+    {
+      "$ref": "#/$defs/ExecutionAuthorityBinding"
+    },
+    {
+      "$ref": "#/$defs/ExecutionAuthority"
+    },
+    {
+      "$ref": "#/$defs/ResolveAndPinRequest"
+    },
+    {
+      "$ref": "#/$defs/ExecutionPin"
+    },
+    {
+      "$ref": "#/$defs/PinSet"
+    },
+    {
+      "$ref": "#/$defs/DevelopmentConfig"
+    }
+  ]
+}

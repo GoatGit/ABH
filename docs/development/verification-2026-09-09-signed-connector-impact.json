@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-09",
+  "scope": "Signed nonempty Connector actual inventory Artifacts, signed compiler impact and migration non-applicability evidence",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreTypecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "No Human Enable approval or successful runtime acceptance in nonempty fixture yet.",
+    "Compiler/source governance is test-installed.",
+    "Applicable migration Domain/backfill/projection verification remains incomplete.",
+    "Full Core suite not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-connector-impact-docs.log",
+      "sha256": "85f560f32a9a7433b8dbea3fc4875f03d8a8337787323429b0f5d7cc58c72483"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-impact-tests.log",
+      "sha256": "6d0f31c3c2d5eccdc906fa9ea0c6732938af0742beb60b503cd2d4340155ed87"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-impact-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

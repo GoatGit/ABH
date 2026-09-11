@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-09",
+  "scope": "Automatic committed suspension discovery and processing of explicitly installed business subscriptions",
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "limitations": [
+    "Overlapping same-scope subscriptions tested, not heterogeneous multi-workspace end-to-end.",
+    "Scope directory and production host installation remain outstanding.",
+    "Unmapped kind fails the loop; per-task failure isolation outstanding.",
+    "Run Owner, Retire, compatible recovery and remaining V1 incomplete.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-dispatch-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-dispatch-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-dispatch-docs.log",
+      "sha256": "b72703c5d7f0517714b8e93c083f0ac35a905dddb79a52af9afefee1d9eeb3de"
+    },
+    {
+      "path": "artifacts/verification/suspension-dispatch-tests.log",
+      "sha256": "1b46dd17c76aa7d5aebb1e9dcb3038ea0aebbf849f2893246f89e60faaeafab1"
+    },
+    {
+      "path": "artifacts/verification/suspension-dispatch-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

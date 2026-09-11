@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Immutable caller RequestAuthorization reception with atomic Command, Audit and Outbox",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 229,
+    "coreTests": 282,
+    "httpAdapterTests": 10,
+    "failed": 0,
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "migrations": 43,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/authorization-request-check.log",
+      "sha256": "43ae4c3f73a13e76d3e641bdf1f9bbc8d0c793fa325f3d2417aee323e1035143"
+    },
+    {
+      "path": "artifacts/verification/authorization-request-tests.log",
+      "sha256": "6148a57e90d49f7e28738824996c5c77864ccd5f9784ded2d5a3f5df7a5d2888"
+    },
+    {
+      "path": "artifacts/verification/authorization-request-generate.log",
+      "sha256": "0bc57764d623986aecba920b5efc862279c1b81774cdebce63d0a91f2c1ab97a"
+    },
+    {
+      "path": "artifacts/verification/authorization-request-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/authorization-request-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/authorization-request-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    }
+  ],
+  "limitations": [
+    "Internal reception only; RequestAuthorization HTTP is not assembled.",
+    "Authority references are assertions; reception creates no Snapshot, plan, approval or execution right.",
+    "Recovery discovery, durable preparation/compilation/responsibility progression and configured Service T1 assembly remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

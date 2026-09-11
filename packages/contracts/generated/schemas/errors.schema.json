@@ -1,0 +1,1464 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:abh:contracts:0.1.0:errors",
+  "$defs": {
+    "ErrorResponse": {
+      "title": "ErrorResponse",
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": false
+        },
+        "error": {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "MISSION_DEFINITION_INVALID"
+                },
+                "category": {
+                  "const": "Validation"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "MISSION_AUTHORITY_MISSING"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "MISSION_BLOCKED"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "GOAL_AUTHORITY_INSUFFICIENT"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "MISSION_EFFECT_PENDING"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "RUN_ALREADY_ACTIVE"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "BLOCKER_EVIDENCE_INVALID"
+                },
+                "category": {
+                  "const": "Validation"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "LAST_REQUIRED_RESPONSIBILITY"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "INVALID_ARGUMENT"
+                },
+                "category": {
+                  "const": "Validation"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "SCHEMA_UNSUPPORTED"
+                },
+                "category": {
+                  "const": "Validation"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "LIMIT_EXCEEDED"
+                },
+                "category": {
+                  "const": "Validation"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "EXECUTION_AUTHORITY_INVALID"
+                },
+                "category": {
+                  "const": "Validation"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "UNAUTHENTICATED"
+                },
+                "category": {
+                  "const": "Authentication"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "CONTEXT_EXPIRED"
+                },
+                "category": {
+                  "const": "Authentication"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "FORBIDDEN"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "PURPOSE_DENIED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "EPOCH_REVOKED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "EXECUTION_AUTHORITY_SCOPE_EXCEEDED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "POLICY_DENIED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "AUTONOMY_EXCEEDED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "RESOURCE_NOT_FOUND"
+                },
+                "category": {
+                  "const": "NotFound"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "VERSION_CONFLICT"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "IDEMPOTENCY_CONFLICT"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "ASSIGNMENT_AMBIGUOUS"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "EXECUTION_AUTHORITY_AMBIGUOUS"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "PIN_INPUT_CONFLICT"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "PRECONDITION_FAILED"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "AUTHORITY_REQUIRED"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "CAPABILITY_UNAVAILABLE"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "POLICY_INPUT_MISSING"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "OBLIGATION_CONFLICT"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "RATE_LIMITED"
+                },
+                "category": {
+                  "const": "Capacity"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "type": "boolean"
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "RESOURCE_EXHAUSTED"
+                },
+                "category": {
+                  "const": "Capacity"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "type": "boolean"
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "DEPENDENCY_UNAVAILABLE"
+                },
+                "category": {
+                  "const": "Dependency"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "type": "boolean"
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "DEPENDENCY_TIMEOUT"
+                },
+                "category": {
+                  "const": "Dependency"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "type": "boolean"
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "INTERNAL_ERROR"
+                },
+                "category": {
+                  "const": "Internal"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "TENANT_CONTEXT_REQUIRED"
+                },
+                "category": {
+                  "const": "Internal"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "ACTION_DOMAIN_INVALID"
+                },
+                "category": {
+                  "const": "Validation"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "ACTION_PLAN_SCOPE_EXCEEDED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "ACTION_CHILD_VERSION_CONFLICT"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "AUTHORIZATION_REFRESH_DENIED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "DECISION_PACKAGE_INCOMPLETE"
+                },
+                "category": {
+                  "const": "Validation"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "DECISION_STALE"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "DECIDER_NOT_ELIGIBLE"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "OPERATION_FACT_CONFLICT"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "RAW_RECEIPT_UNSUPPORTED"
+                },
+                "category": {
+                  "const": "Validation"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "RELEASE_SCOPE_MISMATCH"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "LEARNING_PURPOSE_DENIED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": [
+        "success",
+        "error"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

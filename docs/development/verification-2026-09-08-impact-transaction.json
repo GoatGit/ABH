@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current data impact admission within composing transaction",
+  "checks": {
+    "focusedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 298
+  },
+  "coverage": [
+    "Shared current authority/content/signature verification in caller transaction.",
+    "Deployment/Pack advisory locks and target source row lock persist after return.",
+    "Independent maintenance operations timeout until outer transaction completes."
+  ],
+  "limitations": [
+    "Composing callers must collect authority fences before aggregate/source locks.",
+    "Installed migration composition, production supporting facts, Runner and Enable remain incomplete.",
+    "Full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-transaction-test.log",
+      "sha256": "eff33005632f75367791558a95ed707d76a537e35ae7b9e3e94e50a7bb51ca38"
+    },
+    {
+      "path": "artifacts/verification/impact-transaction-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/impact-transaction-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-transaction-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/impact-transaction-docs.log",
+      "sha256": "45d81c2d477fbd3f3c7892d36a91fd6d3768d96559cf984c46b4a84f6197442d"
+    }
+  ]
+}

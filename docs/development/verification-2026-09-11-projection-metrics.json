@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core and @abh/adapter-fastify bounded projection production metrics",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test --test-name-pattern \"Run lifecycle\" --test-concurrency=1 packages/core/test/run-commands.test.ts",
+    "node --test packages/core/test/projection-metrics.test.ts",
+    "corepack pnpm --filter @abh/adapter-fastify test",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "runLifecycleTests": 1,
+    "runLifecyclePassed": 1,
+    "runLifecycleFailed": 0,
+    "projectionMetricsTests": 2,
+    "projectionMetricsPassed": 2,
+    "projectionMetricsFailed": 0,
+    "fastifyTests": 15,
+    "fastifyPassed": 15,
+    "fastifyFailed": 0,
+    "documentationLinks": 749
+  },
+  "coverage": [
+    "projection_lag is reported as the age of the oldest unconsumed eligible event",
+    "gap_count is a tenant-scoped count of eligible events without a consumer Inbox",
+    "rebuild_failure increments only when a projection consumer rebuild fails",
+    "sse_drop distinguishes slow client, reset and disconnected outcomes",
+    "query_redaction_count records successful server-side fieldSet redaction",
+    "metric series have no actor, subject, organization or object labels",
+    "SSE drop labels are limited to three fixed reasons",
+    "negative, fractional and overflowing metric values are rejected",
+    "a failing metric exporter does not fail projection reads, workers or SSE",
+    "worker onPage remains bounded and reports cycle work with lag and gap",
+    "real PostgreSQL reports zero lag and zero gaps after historical repair",
+    "Fastify reset behavior records reset without emitting object information"
+  ],
+  "limits": [
+    "metric snapshots are an in-process host exporter boundary, not a Prometheus server",
+    "projection subscriptions for other domains remain open",
+    "the V1 workbench remains open"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "TrustedCode installed migration preparation and late database admission",
+  "checks": {
+    "focusedTests": 2,
+    "coreTests": 396,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Actual signed release, SLSA, CTK, governance persistence, management Grant and durable staging feed compiler-signed impact and migration preparation.",
+    "Actual persisted migration evidence signatures and dedicated database session return installed SQL.",
+    "Durable SQL substitution and revoked management Grant reject.",
+    "Late BYPASSRLS elevation reproduced a missing rejection before the fix and now rejects.",
+    "Late evidence lifetime policy mutation rejects; no-SQL branches continue passing."
+  ],
+  "limitations": [
+    "Governance publishing admission, source admission, signer configuration and supporting facts still use explicit fixture callbacks.",
+    "Prepared result does not execute SQL or grant execution authority.",
+    "Production supporting facts, unified execution-time signature/authority checks, Runner, durable results/recovery, business table readiness and Enable remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/installed-migration-e2e-before.log",
+      "sha256": "2611f30d38df4e52f948267f4baa793d8a2bc066f379743621520a30a5ba2b43"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-e2e-test.log",
+      "sha256": "235d0d1048f441ccb039e72d7ed500dea04add644dd42396665ee227f49764a8"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-e2e-full.log",
+      "sha256": "09dcd466af2cafc1d16cafa61dfc476679f2fee1c41229a891c4273445382915"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-e2e-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-e2e-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-e2e-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/installed-migration-e2e-docs.log",
+      "sha256": "544b4d5d30cfd0703b697a616b52c01b4bbefaa18dbd45fae7cbd7104254a63e"
+    }
+  ]
+}

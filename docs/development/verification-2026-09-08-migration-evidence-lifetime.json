@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Per-kind migration evidence lifetime policy",
+  "checks": {
+    "focusedTests": 9,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 278
+  },
+  "coverage": [
+    "Required positive safe-integer limits for all six kinds.",
+    "Excess validity and callback policy replacement reject.",
+    "Microsecond lifetime comparisons prevent Date truncation bypass.",
+    "Expiry after final callback rejects."
+  ],
+  "limitations": [
+    "Deployment-installed policy; persistent policy governance and production signature/supporting-fact verification remain unfinished.",
+    "No Migration Runner or Enable.",
+    "Full Core suite not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-evidence-lifetime-test.log",
+      "sha256": "63a385d5662fdafe515bf9fdf6aa5864e7f3793821a52229e6a52d39d90ec592"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-lifetime-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-lifetime-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-lifetime-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-evidence-lifetime-docs.log",
+      "sha256": "981dc14f15f6fef4d5c81dd1930e125ef014dca9ff9c9e6aa4999942fd22b713"
+    }
+  ]
+}

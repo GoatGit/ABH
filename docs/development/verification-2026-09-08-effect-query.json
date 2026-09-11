@@ -1,0 +1,37 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Authorized Decision effect summary reads",
+  "checks": {
+    "decisionTests": 32,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/effect-query-tests-final.log",
+      "sha256": "2ca389b71c62141a94e7bcfadc5eeb39854a484165bf065050cd76c9de2b08fe"
+    },
+    {
+      "path": "artifacts/verification/effect-query-typecheck-final.log",
+      "sha256": "c70eec6071b0f0fe48aad06a103990e676f51ad535d84ab19aaa65f23115e37c"
+    },
+    {
+      "path": "artifacts/verification/effect-query-build-final.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/effect-query-docs.log",
+      "sha256": "d5e7ec9fa954deb6917af95efe5f26b05af72412b79c0bd02e13485c9043360b"
+    }
+  ],
+  "limitations": [
+    "Internal summary query only; full DecisionView/QueryMeta/availableActions and HTTP mapping incomplete.",
+    "Mandatory current package and effect visibility installation required.",
+    "Blocked/Abandoned, Domain effects and full V1 acceptance remain incomplete.",
+    "Targeted tests only; full workspace check not repeated."
+  ]
+}

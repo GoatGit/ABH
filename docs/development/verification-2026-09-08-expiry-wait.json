@@ -1,0 +1,23 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Responsibility expiry through actual Wait Port and Action notification consumption",
+  "checks": {
+    "actionIntegrationTests": 48,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/expiry-wait-actions.log",
+  "logSha256": "57e20154005bb9d69367696bfb377e991e1f5ef8eb422ddce013cc7ff2a8cb95",
+  "priorAttempt": {
+    "log": "artifacts/verification/expiry-wait-actions-first.log",
+    "reason": "Child test registered on outer TestContext; terminated stuck test and removed its isolated fixture, then corrected nesting."
+  },
+  "limitations": [
+    "Targeted integration verification only; no full workspace check repeated for this test/documentation change.",
+    "Native broker transport and production deployment acceptance are not proven by direct frozen-delivery consumer tests.",
+    "Full V1 implementation remains incomplete."
+  ]
+}

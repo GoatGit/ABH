@@ -1,0 +1,71 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Formal internal Pack evidence record command with transactional idempotency",
+  "checks": {
+    "contractsTests": 240,
+    "focusedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "isolatedContainersRemaining": 0
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-record-command-api-update.log",
+      "sha256": "953bf02813ad6a2c2d7e45292239cc8cf80cd847817fd12a995c76c865c1a4e9"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-contracts-tests.log",
+      "sha256": "14b287cdc27de98ebb69e486b952a4cc6531afbecfd2c977e3fbac931ed36731"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-contracts-types.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-generate.log",
+      "sha256": "0bc57764d623986aecba920b5efc862279c1b81774cdebce63d0a91f2c1ab97a"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-generated-check.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-tests.log",
+      "sha256": "381a3a8bb304fc779449aabf5400a343c06559b9419b7ba47fb147dac416ad43"
+    },
+    {
+      "path": "artifacts/verification/pack-record-command-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "limitations": [
+    "Internal evidence record command only; no public asynchronous ValidatePack endpoint.",
+    "Production deployment purpose/Grant/governance fencing still required; test admission is explicit Fixture.",
+    "Cross-process validation task recovery and persistent trust policy/Stage/Enable are incomplete.",
+    "Core full suite/workspace not rerun; full V1 remains incomplete."
+  ]
+}

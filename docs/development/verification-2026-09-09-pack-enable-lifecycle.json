@@ -1,0 +1,124 @@
+{
+  "date": "2026-09-09",
+  "scope": "Controlled Staged/version1 to Enabled/version2 storage and real initial transition inside caller Command UoW",
+  "tests": {
+    "contracts": {
+      "passed": 304,
+      "failed": 0
+    },
+    "realCosignFinal": {
+      "passed": 1,
+      "failed": 0,
+      "note": "Real signed Pack plus Human approval enters applyPackEnable, reads both versions and new deployment revision, writes command Receipt; deliberate outer failure proves rollback."
+    },
+    "fullCore": {
+      "total": 508,
+      "passed": 503,
+      "failed": 0,
+      "skipped": 5,
+      "note": "Sequential final run after Core build. Cosign not set; signed CTK test separately rerun. Other signed integration files not rerun."
+    }
+  },
+  "checks": {
+    "contractsBuild": true,
+    "coreBuild": true,
+    "contractsTypecheck": true,
+    "coreTypecheck": true,
+    "generatedArtifacts": 49,
+    "contractsApiEntries": 9,
+    "coreApiEntries": 3,
+    "docs": true,
+    "securityManifest": 58
+  },
+  "diagnostics": [
+    "Storage fixture initially omitted required actor columns, then was corrected.",
+    "Storage fixture initially invoked readiness with the admin connection instead of runtime; corrected to verify actual runtime role.",
+    "Stage replay change initially missed historical timestamp corruption; restored comparison against immutable current-row fields.",
+    "Old history migration simulation now reapplies the new lifecycle migration before readiness verification.",
+    "Status-only raw update negative test now expects a CHECK violation instead of privilege denial, matching the new column-level grant."
+  ],
+  "limitations": [
+    "No complete Enable command host or post-commit replay admission yet; caller must use executeCommand and separately authorize replay.",
+    "Runtime capability query/exact resolution, activation gating, Suspend/Retire and applicable migration verification remain incomplete.",
+    "Signed integration covers complete rollback of real Enable writes; durable post-commit current/history storage uses an explicitly admin-seeded fixture.",
+    "Signed Pack has empty provides; nonempty signed capability activation remains unverified."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-contracts-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-contracts-api.log",
+      "sha256": "ba9ae5d7d6a2a560379feb4dfb201a74755b077b70a4b12b7b88e7feb19219fe"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-contracts-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-contracts.log",
+      "sha256": "09097d7e64f3e9e239c734920f9a3ab327f0ed582a2a040827914a3a84a4b104"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-core-api-check.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-core-api.log",
+      "sha256": "69b6956e0c35e5e9332bef8220911a89bd331472682ce0b6c5de176eaf8c7ad8"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-core-build-final.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-core-full.log",
+      "sha256": "c63e9bdeb519136c6dfa48edef977bd20458536e6c06cb1c025d42ecf7ffa23b"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-docs-final.log",
+      "sha256": "e540676c2437bbea3afb16680439c43cd1a176f50f10e5f45c057e8b1420010f"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-docs.log",
+      "sha256": "f48982a5f76ec3026396091a0efa7c24f1e86a621d0ebeb7d45f4a9bc4b19e32"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-generated.log",
+      "sha256": "e0e8a3ca2a6b713303505c7d470817cf5b0cf1b27b722faea2d23a62eff18a3b"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-integration-final.log",
+      "sha256": "0263f57ae91aacbde9ba639b5143e531149305761bee5982e59999aea8ece5f6"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-integration.log",
+      "sha256": "07a4a90fd1588bdcb9ee225afae8a431411d36b707a88e25310af44123460384"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-signed-final.log",
+      "sha256": "7d6cd88b5873d5d658bef15101a13d9381e18f5e17162ff6319134407ce8d23f"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-storage.log",
+      "sha256": "5a47ce8137f594b0ea19e5909793f4df34e52cd15734c6aef5e6fab4b6d699b2"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-lifecycle-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Private migration bytes for Buffer and typed-array subclasses",
+  "checks": {
+    "focusedTests": 15,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": 274
+  },
+  "coverage": [
+    "Pre-fix regression proves Buffer and overridden slice return altered SQL after hash verification.",
+    "Intrinsic typed-array copy prevents post-yield Buffer, subclass and shared-view mutation."
+  ],
+  "limitations": [
+    "Content verification only; no migration execution authority.",
+    "Focused tests only; full suite not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-buffer-before.log",
+      "sha256": "68024c4e17bfd6b1818db8c34e745033ae3df0975fd5b75821ce7cf5fc04026a"
+    },
+    {
+      "path": "artifacts/verification/migration-buffer-test.log",
+      "sha256": "d24b9195a632820b43b20b24ff82adabed35fee05d89b793b50598c5b404b479"
+    },
+    {
+      "path": "artifacts/verification/migration-buffer-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-buffer-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-buffer-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-buffer-docs.log",
+      "sha256": "282b922c7674b252f201cb8b7ef7308eef04285daef012714d8d1f31d519f2b4"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Dedicated Pack migration role isolation and PostgreSQL catalog preflight",
+  "checks": {
+    "focusedTests": 20,
+    "coreFullTests": 359,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 262
+  },
+  "coverage": [
+    "Cross-Pack role sharing rejects in either declaration order; same-Pack multiple schemas accepted.",
+    "Actual restricted PostgreSQL connection, role attributes/memberships, database and schema privileges.",
+    "PUBLIC and column-only ACLs, system catalog writes, foreign sequences and executable SECURITY DEFINER routines reject.",
+    "Own schema DDL succeeds; Core DDL, SET ROLE and TEMP creation fail."
+  ],
+  "limitations": [
+    "Read-only internal preflight; no migration execution authority.",
+    "Persistent ownership, current evidence verification, readiness integration and Migration Runner remain incomplete.",
+    "Concurrent administrator changes, session configuration, routine review and cross-database access remain deployment responsibilities."
+  ],
+  "iterations": [
+    "Initial broader catalog check incorrectly rejected PostgreSQL pg_settings default session configuration privileges; exact view exception added and final full suite passed."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-role-test.log",
+      "sha256": "ec861854c0003d9394e70e1c4e764535e7d59c68e62d26fa55821d6ebb055fc0"
+    },
+    {
+      "path": "artifacts/verification/migration-role-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-role-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-role-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-role-core-full.log",
+      "sha256": "0c51b1d8392e51fbddb5fdad4ba31346d593bffda3523ce84f4ae31b398359da"
+    },
+    {
+      "path": "artifacts/verification/migration-role-core-final.log",
+      "sha256": "817728b1ceceffb35b55188544d67e96e4fcec853f52a02eed022c2275226fd3"
+    },
+    {
+      "path": "artifacts/verification/migration-role-debug.log",
+      "sha256": "5b57b790c049d8d9a29daea8da4ff5470121dc446fa7f072b91c72224d12eec6"
+    },
+    {
+      "path": "artifacts/verification/migration-role-docs.log",
+      "sha256": "dd516486469e9828c8af5e55b404d4983c4220247386d97b1c64edc630d59e4f"
+    }
+  ]
+}

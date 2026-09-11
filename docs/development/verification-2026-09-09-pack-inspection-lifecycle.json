@@ -1,0 +1,57 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Pack inspection Worker claim/heartbeat/cancellation/release lifecycle",
+  "checks": {
+    "finalIntegration": "passed",
+    "coreTests": 463,
+    "targetedTestsBeforeFinalCleanupClassification": 12,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "Automatic leases are explicitly installed; no durable installation Job or production service default is provided.",
+    "Exclusive control fences may delay renewal; production heartbeat capacity/latency SLO not verified.",
+    "Scoped host work must obey bounded options; this is not a sandbox for detached code.",
+    "Full domain/backfill/projection verification, ObjectStore and Enable remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-lifecycle-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lifecycle-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lifecycle-docs.log",
+      "sha256": "cfff52dc64a5b84a8d06d8f4e3d1e158a3bf69a483a315008cb7e80333e8c86c"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lifecycle-full-core.log",
+      "sha256": "775a206a94c95c7df07d337a9014f485d1f12ca970cc9a8929c6eafd7db413e7"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lifecycle-test.log",
+      "sha256": "878d2b435f2cd97afd847c89a944ee67d5cfc22561f0e9e5a3d413ebacfb279d"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-lifecycle-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "coverage": [
+    "Automatic hosted claim and real saved observation recovery release their lease at completion.",
+    "Committed heartbeats advance lease Ref version; active competing worker is reported as LeaseBusy without preparing.",
+    "Actual release/takeover cancels the old task; cleanup preserves the replacement lease.",
+    "Parent cancellation aborts stalled preparation and releases current ownership with a fresh cleanup signal.",
+    "Retired scope rejects new work; falsy thrown values and non-ownership cleanup failures propagate.",
+    "Final current Core full regression includes the cleanup error classification and all accumulated Pack changes."
+  ]
+}

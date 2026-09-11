@@ -1,0 +1,28 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Pending Decision withdrawal with immutable source proof and Action Wait notification",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 223,
+    "coreTests": 226,
+    "failed": 0,
+    "migrationVersion": 37,
+    "generatedArtifacts": 48,
+    "publicApiReports": 9,
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/decision-withdraw-check.log",
+  "logSha256": "fe361bb8619f9194b196052f23babeeeedd10353531fa714c3112df97d93ef18",
+  "priorAttempt": {
+    "log": "artifacts/verification/decision-withdraw-check-first.log",
+    "reason": "Resource fence database fixture failed to start: container host-port binding timed out. Full fresh rerun passed without relaxing checks."
+  },
+  "limitations": [
+    "Source locking, current subject-management permission and cancellation/replacement evidence require trusted installed governance.",
+    "Public HTTP/SDK hosting, automatic source cancellation and effect revocation remain unfinished.",
+    "New review-purpose metadata is explicit; historical rows are not speculatively backfilled.",
+    "Full V1 acceptance remains unfinished."
+  ]
+}

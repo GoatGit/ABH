@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-11",
+  "subject": "complete public decision payload rendered through registered JSON Forms",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r typecheck",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "workbenchTests": 12,
+    "workbenchPassed": 12,
+    "workbenchFailed": 0,
+    "workbenchTypecheck": "passed",
+    "workbenchNextBuild": "passed",
+    "decisionRouteSize": "1.66 kB",
+    "decisionFirstLoadJs": "116 kB",
+    "jsonFormsInDecisionFirstLoadBundle": false,
+    "contractsArtifacts": "51 files matched",
+    "apiEntryPointsChecked": 13,
+    "documentationLinks": 760,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "the default contract adapter registers one form per allowed Decision response",
+    "forms cover reason, condition refs and optional reauth proof from the public SubmitDecisionPayload",
+    "registered schemas are bounded and reject additional user fields",
+    "UUID condition and reauth refs use explicit client-server pattern validation",
+    "the server refetches the Decision with Strong consistency before accepting a form",
+    "submission revalidates Pending state, version, package digest and allowed response",
+    "duplicate, invalid or excessive registered forms are rejected",
+    "form input is revalidated with Ajv 2020 after JSON parsing",
+    "rejection requires a reason and forbids condition refs",
+    "idempotency keys bind reason, condition refs and reauth proof together",
+    "accepted submissions are not rendered as externally effective",
+    "JSON Forms is lazily loaded outside the Decision first-load bundle"
+  ],
+  "limits": [
+    "production reviewer qualification and Domain governance assembly remain host work",
+    "browser E2E, keyboard, screen-reader and performance verification remain open",
+    "production identity adapter installation remains a host requirement",
+    "production process and tenant lifecycle governance remain open"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Pack inspection Job storage and internal read/discovery",
+  "checks": {
+    "coreStorageIntegration": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "databaseManifestVersion": 52,
+    "fullCoreBeforeFormattingFix": {
+      "tests": 466,
+      "passed": 464,
+      "failed": 2,
+      "rootFailure": "PackInspectionJob generated SQL fragment whitespace drift; parent failure counted separately"
+    },
+    "finalDatabaseAndStorageTests": 13,
+    "finalDatabaseAndStorageFailed": 0,
+    "finalDatabaseAndStorageSkipped": 0,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "No create/transition Command Owner, Audit/Outbox, current Grant or Artifact provenance enforcement in this batch.",
+    "Storage fixtures are synthetic and do not prove an actual installed package or inspection result.",
+    "Worker, queue, doctor, full installation pipeline and Enable incomplete.",
+    "No production migration/load SLO validation.",
+    "Full Core run preceded a formatting-only CHECK fragment fix; database and storage suites passed after the fix. Full suite was not repeated after that formatting-only change."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-job-storage-api.log",
+      "sha256": "68391ea0bb683f05a50365093d210f5d27e84c52eb8f8123cd32e4a1f3f8d4b2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-storage-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-storage-docs.log",
+      "sha256": "ea778d154d7a18ecfad2b98c97d9203ce2ac0e1357ea1aabe7f5bae446799b12"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-storage-final-database.log",
+      "sha256": "1c145f9f9da62bc1cb5f1dd31d89328e48291745c4e5c6adb71dc21ce75af724"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-storage-full-core.log",
+      "sha256": "67de027cc4a89da59fa4b37bc5f7e50206ce3f292341a954d242046dcfe35a49"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-storage-test.log",
+      "sha256": "a41ef414fa1e1f4a63112f92d124053b7390d7ae4d4c42c5686b95b437e9578d"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-storage-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

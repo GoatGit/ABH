@@ -1,0 +1,156 @@
+{
+  "date": "2026-09-09",
+  "scope": "Registered Pack inspection diagnostic query with authenticated HTTP installation, explicit query authority metadata and public SDK",
+  "tests": {
+    "contracts": {
+      "passed": 292,
+      "failed": 0,
+      "skipped": 0
+    },
+    "httpAndClient": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0
+    },
+    "realMigrationSignature": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "finalCoreBuild": "passed",
+    "coreTypecheck": "passed",
+    "cliSyntax": "passed",
+    "generatedDrift": "passed (49 files)",
+    "api": "passed (Contracts 9 entries, Core 3 entries)",
+    "docs": "passed",
+    "isolatedIntegrationContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/inspection-query-generate.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-contracts-check.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-contracts-tests.log",
+      "sha256": "46925abfa3f940635332952121bd7bb6395ab296dbe43665b5e9906525bdd88a"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-http-tests.log",
+      "sha256": "8638a845a9760773feeb772a71ab23703af87c40d913f5d516a09adc50822284"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-migration-tests.log",
+      "sha256": "6f890c2bbbe138f27657c08d7d82d00c20b3de6001625560abd2836841792767"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-build.log",
+      "sha256": "0cceef904b2f2695c9f94f6a50027ff4e4cd619973752351a7f2648257332ae1"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-api.log",
+      "sha256": "0ba9da79ee2fdcb50bea0e7bdb55d59d118afa7fbd759de1c65aa6b3af5e7f5c"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-cli-typecheck.log",
+      "sha256": "db3c14fcd13e609531f66fc6e8626eaa848f143ad1a58ba3fcc219caceff97f9"
+    },
+    {
+      "path": "artifacts/verification/inspection-query-docs.log",
+      "sha256": "5e0845e84ed32d498fe1d3b36479a6e878dfd08b2e7b71b4a5522fdac46bf485"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/server/http.ts",
+      "sha256": "53c3e1633164c89d06ff2b0e3b885b56c1f06de10eb13116381f8634a24ad42f"
+    },
+    {
+      "path": "packages/core/src/client.ts",
+      "sha256": "f5e4ae779c2260509586aeee9d830d53722959e226a98e1a0de6548eb01c6600"
+    },
+    {
+      "path": "packages/core/src/extensions/inspect-pack-inspection-job.ts",
+      "sha256": "f81791e2412dafcfbab9b12b120059906bae35f6b4fb14e94e59c7da7c4e9c8a"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-http.test.ts",
+      "sha256": "03976cd947aa40e149134def7ba459c275f9553fe3d59a8b10e4b82169287df3"
+    },
+    {
+      "path": "packages/core/api/client.api.md",
+      "sha256": "1543fc4106ce0f00ef7f0b95fbeeb5244f25080a1f242701cc5e87d559a44ec6"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "d5ba5c8f728d06164a0c55a5684e764488e8c67b0a982b43b876b48319d0350b"
+    },
+    {
+      "path": "packages/contracts/protocol/registry.yaml",
+      "sha256": "cad7719ea56ecdabe795f590ab26bb80b9a5efb92cb6b41d96b01183b2f85c9e"
+    },
+    {
+      "path": "packages/contracts/scripts/protocol.mjs",
+      "sha256": "c28e8da15db7fbb356eb0d7401176fe413ea3d578b6035169674470c80a7e74a"
+    },
+    {
+      "path": "packages/contracts/scripts/foundation.mjs",
+      "sha256": "d9f10900127a5fc83c90fd3709111d779f2abfc05f626fb8976dc7c7cd30fe33"
+    },
+    {
+      "path": "packages/contracts/test/pack-inspection-diagnostic.test.ts",
+      "sha256": "885895ab73d8865d56c1971640e5ab2c0216ef41924ee06a5ed5ffb8ceb7aef7"
+    },
+    {
+      "path": "packages/contracts/test/generator.test.ts",
+      "sha256": "876265e0a0fa412b27728b9c629197446f66ddfd896fb299103b7691c55505cf"
+    },
+    {
+      "path": "packages/contracts/generated/manifest.json",
+      "sha256": "0b78e8ea928fa2e0b0731ee35dd2c18eb306f4f2a50116d9e96856cbee36c13b"
+    },
+    {
+      "path": "packages/contracts/api/index.api.md",
+      "sha256": "140f526317475eac6a0e81ca2d25a38e9aabeaf8ca30bbf6d2a70beebbba6211"
+    },
+    {
+      "path": "packages/contracts/api/http.api.md",
+      "sha256": "382a95d9275b446ae3b64e7c4018a57881ba55bcab12d382de0acaf000886599"
+    },
+    {
+      "path": "packages/contracts/api/catalog.api.md",
+      "sha256": "a4c18d40fd58aff8a95a7f568c3a2c7c3f0b905da1f76881f3f05e8d09ac8b94"
+    },
+    {
+      "path": "packages/contracts/api/schema.api.md",
+      "sha256": "d13b07f78646d2ffa9d3df637ce16475f265433458bff8196c265c016375d97c"
+    }
+  ],
+  "limitations": [
+    "HTTP fixture uses explicit test IdP and seeded Pending Job; it is not a production IdP or installation proof",
+    "Diagnostic source fingerprint is not a continuous event watermark",
+    "Diagnostic suggestions do not authorize execution or repair"
+  ],
+  "remaining": [
+    "CLI inspection/pack diagnostic command",
+    "Production IdP and credential installation",
+    "General inspection exception evidence",
+    "Complete installation validation and Enable",
+    "Broader V1 requirements remain incomplete"
+  ]
+}

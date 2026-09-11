@@ -1,0 +1,51 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Actual migration execution result Artifact and maintenance observation persistence",
+  "checks": {
+    "focusedTests": 23,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Original consumed-claim execution results bind attempt, outcome, time and stable persistence Command; copied/mutated outcomes reject.",
+    "Real signed installed execution saves canonical raw result Artifact and observation.",
+    "Injected observation write failure leaves one committed Artifact; retry reuses the same Artifact and observation without SQL replay.",
+    "Real dropped COMMIT acknowledgement persists OutcomeUnknown despite committed target data.",
+    "Capture admission rejection produces no observation; source references are deduplicated."
+  ],
+  "limitations": [
+    "Unsigned raw observation is not migration result verification or Enable authority.",
+    "Producer provenance and stable Command are in-memory; process-loss recovery requires separate actual-state and Artifact validation.",
+    "Same-actor persistence retry is covered; cross-actor capture, automatic Runner persistence responsibility, formal result schema/signing, cross-step/nontransactional recovery, business table readiness and Enable remain incomplete.",
+    "Artifact and maintenance observation are separate transactions, neither atomic with target SQL commit.",
+    "Full Core not repeated in this batch."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-result-test.log",
+      "sha256": "9c55e96841096f499e33c5df118bb64c47189ad9aa1c3fbeba7770659cca4845"
+    },
+    {
+      "path": "artifacts/verification/migration-result-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-result-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-result-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-result-docs.log",
+      "sha256": "c76e4720b5558cd5d02f33eae3b92c6a6514de5949396e33795e1e7626ebac2e"
+    }
+  ]
+}

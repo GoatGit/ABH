@@ -1,0 +1,18 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current Queue Port admission directory",
+  "checks": {
+    "coreTypecheck": "passed",
+    "inboxOutboxTests": 13,
+    "failed": 0,
+    "documentLinks": 215
+  },
+  "log": "artifacts/verification/queue-admission.log",
+  "logSha256": "256f54698148c653fde0837a0fb41541ab40567acd6cf04e8f628ac5d6f4b544",
+  "limitations": [
+    "Installed consumer governance and VerifiedContext issuance remain trusted host inputs.",
+    "Process-local ContextRefs are not durable or transferable credentials.",
+    "Targeted regression; complete V1 and production gates remain incomplete."
+  ]
+}

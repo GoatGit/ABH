@@ -1,0 +1,102 @@
+{
+  "date": "2026-09-09",
+  "scope": "Pack Enable approval consumption from persisted Human Gateway request/completion/decisions",
+  "tests": {
+    "focused": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "log": "artifacts/verification/pack-enable-approval-focused-verified.log"
+    },
+    "existingActionAndDecisionRegression": {
+      "passed": 95,
+      "failed": 0,
+      "note": "Existing suites passed in combined run; that run failed only the newly added conditional fixture using artifact instead of condition. Corrected fixture passed focused rerun. Do not report combined run as green.",
+      "log": "artifacts/verification/pack-enable-approval-tests-final.log"
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreApi": "passed (3 entry points)",
+    "docs": "passed"
+  },
+  "initialFailures": [
+    "Overbroad purpose filter broke Action consumption: removed; Pack checks source request management purpose instead",
+    "Fixture Ref typing and missing organization corrected",
+    "Grant revalidation target corrected to actual Decision",
+    "Invalid withdrawn record fixture replaced with row-status mismatch",
+    "Conditional fixture now uses abh.condition"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-enable-approval-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-focused-rerun.log",
+      "sha256": "542e0b09903ffbc74353ad9a013a74cc91215464f63b8c4ab509d110d00c859a"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-focused-verified.log",
+      "sha256": "94f27bb134c3a5c345f92a20fd5f774095ebab20a4e7753e158235ee344dfa70"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-focused.log",
+      "sha256": "8a787842f025fae6e2f4b0efb92146579582cd9d323f26098df90c45b324f80f"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-tests-final.log",
+      "sha256": "546ad3ba32ddf0ebe0bd2eda26af59aaac6259c491ed5ed8f47a932abfecf1d3"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-tests-rerun.log",
+      "sha256": "94fff8c46e59b9ae5000ee485f7abf7edd8030f9d3ad5167fbfcc45c3eece57d"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-tests.log",
+      "sha256": "a27e524f8aa5f86e6e12cc3fec490cb8efd01cfbbd1889ada0542cea569a85f5"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-typecheck-final.log",
+      "sha256": "a567c2e6ebd320895a213554ec9aa9ac8bf97c1191fad66b5ac865d5fb93971c"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-typecheck-rerun.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-typecheck-verified.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-typecheck.log",
+      "sha256": "273df64ca704de68d3efcac90d9881e03561406bbaf7cc04881da704a5e14da3"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-approval-docs.log",
+      "sha256": "f3be4e1fd55d7302cc9d17cf00829e5d715e5471c13212a7a0d093d05cd84b58"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/human/approval-proof.ts",
+      "sha256": "adc7adf4e968d710417f3d9ff9ba2fa5d6be5cb960437b8f7d56e85bcb6b7a60"
+    },
+    {
+      "path": "packages/core/test/pack-enable-approval.test.ts",
+      "sha256": "627c9ad6933b3aadbf6a0edeb1c711a6118730e9c8863c4d84b59a02f1e47d75"
+    }
+  ],
+  "remaining": [
+    "Formal Pack request command and current Pack evidence assembly",
+    "Enable Owner and lifecycle migration",
+    "Full applicable verification and capability registry",
+    "Remaining V1 modules"
+  ]
+}

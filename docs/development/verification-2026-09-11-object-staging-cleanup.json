@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core bounded Tracked and recorded object artifact cleanup with explicit tracking resolution",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core build",
+    "node --test --test-concurrency=1 packages/core/test/artifacts.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/artifacts.test.ts packages/core/test/database-diagnostic.test.ts packages/core/test/runtime-host.test.ts packages/core/test/run-commands.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "affectedTests": 20,
+    "affectedPassed": 20,
+    "affectedFailed": 0,
+    "coreTests": 542,
+    "corePassed": 536,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractsArtifactsMatched": 51,
+    "apiEntryPointsMatched": 4,
+    "docsLinksChecked": 739,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "data.object_staging_attempts is tenant-isolated, manifest-registered and least-privileged",
+    "ObjectStorePort.put Tracked results persist the returned Artifact tracking ref without inventing a StoredObjectRef",
+    "Completed put descriptors are checked against staged digest, size and media type before persistence",
+    "Completed puts that later fail readback or publication persist a Recorded object ref and remain cleanable",
+    "the host resolver must explicitly declare the StoredObjectRef before cleanup",
+    "resolved object refs become Ready and are scanned only after the configured minimum age",
+    "cleanup queueing persists a stable deletion proof id and idempotency key",
+    "current abh.artifacts.delete authorization is checked against the resolved StoredObjectRef",
+    "work leases and fencing tokens protect tracking resolution and physical deletion",
+    "delete completion must return the exact StoredObjectRef before the database advances",
+    "T2 atomically tombstones the Staged Artifact and records CleanupCompleted",
+    "unresolved Tracked metadata remains preserved rather than being guessed or deleted",
+    "runtime hosting snapshots cleanup configuration before loop startup"
+  ],
+  "limits": [
+    "production cloud or remote tracking resolution and ObjectStore adapters remain host-installed",
+    "Pending staging attempts that never received a tracking ref are not physically addressable",
+    "a process crash between an adapter returning Completed and Core recording its response remains unavoidable without a portable two-phase port",
+    "binary media staging remains out of scope for the Tool JSON path"
+  ]
+}

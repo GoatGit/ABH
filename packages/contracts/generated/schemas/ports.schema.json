@@ -1,0 +1,685 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:abh:contracts:0.1.0:ports",
+  "$defs": {
+    "IdentityProviderVerifyResult": {
+      "title": "IdentityProviderVerifyResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/VerifiedIdentity"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "DurableExecutionEnqueueResult": {
+      "title": "DurableExecutionEnqueueResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/EnqueuedJob"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Tracked"
+            },
+            "trackingRef": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/JobRef"
+            }
+          },
+          "required": [
+            "status",
+            "trackingRef"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "DurableExecutionScheduleWakeupResult": {
+      "title": "DurableExecutionScheduleWakeupResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/ScheduledWakeup"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Tracked"
+            },
+            "trackingRef": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/WaitRef"
+            }
+          },
+          "required": [
+            "status",
+            "trackingRef"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "DurableExecutionCancelWakeupResult": {
+      "title": "DurableExecutionCancelWakeupResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/CancelledWakeup"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Tracked"
+            },
+            "trackingRef": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/WaitRef"
+            }
+          },
+          "required": [
+            "status",
+            "trackingRef"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "DurableExecutionSignalResult": {
+      "title": "DurableExecutionSignalResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/SignalledWait"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Tracked"
+            },
+            "trackingRef": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/WaitRef"
+            }
+          },
+          "required": [
+            "status",
+            "trackingRef"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "DurableExecutionInspectResult": {
+      "title": "DurableExecutionInspectResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/DeliveryInspection"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "DurableExecutionDrainResult": {
+      "title": "DurableExecutionDrainResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/DrainReport"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ObjectStorePutResult": {
+      "title": "ObjectStorePutResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/ObjectDescriptor"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Tracked"
+            },
+            "trackingRef": {
+              "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/ArtifactRef"
+            }
+          },
+          "required": [
+            "status",
+            "trackingRef"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ObjectStoreReadResult": {
+      "title": "ObjectStoreReadResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/ReadObjectDescriptor"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ObjectStoreStatResult": {
+      "title": "ObjectStoreStatResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/ObjectDescriptor"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ObjectStoreDeleteResult": {
+      "title": "ObjectStoreDeleteResult",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Completed"
+            },
+            "data": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/DeletedObject"
+            }
+          },
+          "required": [
+            "status",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Cancelled"
+            },
+            "effect": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "status",
+            "effect"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Rejected"
+            },
+            "error": {
+              "$ref": "urn:abh:contracts:0.1.0:errors#/$defs/ErrorResponse"
+            }
+          },
+          "required": [
+            "status",
+            "error"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "Tracked"
+            },
+            "trackingRef": {
+              "$ref": "urn:abh:contracts:0.1.0:adapters#/$defs/StoredObjectRef"
+            }
+          },
+          "required": [
+            "status",
+            "trackingRef"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

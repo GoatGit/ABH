@@ -1,0 +1,25 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Atomic Control Decision Effect with complete Grant/Authority receipt",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 227,
+    "coreTests": 237,
+    "transportTests": 10,
+    "failed": 0,
+    "migrationVersion": 41,
+    "generatedArtifacts": 48,
+    "apiEntryPoints": 9,
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/control-effect-check.log",
+  "logSha256": "27134654b74c7bb7fa6dd6c96d5085f69390ed3aead1024e9e23f2e434477263",
+  "limitations": [
+    "Control effects only; Domain effects and Blocked/Abandoned handling remain incomplete.",
+    "Frozen production issuance parameters, current governance/source checks, queue consumption and retry worker remain required.",
+    "Applied is a historical complete commit, not a claim that current authority remains valid.",
+    "Public effect queries, full service/SDK/CLI and V1 acceptance remain incomplete."
+  ]
+}

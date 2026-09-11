@@ -1,0 +1,59 @@
+{
+  "date": "2026-09-09",
+  "scope": "Persist checked installed-Pack migration non-applicability from current signed complete inventories and actual staged content",
+  "tests": {
+    "realCosignDatabase": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "fullContractsRerun": false,
+    "migrationSignatureChainRerun": false
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreApi": "passed (3 entry points)",
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/migration-non-applicability-integration.log",
+      "sha256": "7828be26e68851a226abe8ae0d3932d3bdc546ef76b6cb7fade76253ccbd020e"
+    },
+    {
+      "path": "artifacts/verification/migration-non-applicability-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-non-applicability-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-non-applicability-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/migration-non-applicability-docs.log",
+      "sha256": "9f37c6735dfbfccbb92d8f4ece2282a3d266090ace33643afa16cddc31996044"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/record-migration-non-applicability.ts",
+      "sha256": "65c50af2ad07f38f33b7d9240c3676b136f824c803a7ff11461bedff598d9e70"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "d0773d2cf7a5601b7ead86657d93329ca12039e4f21eae78db3022ee3e02e4aa"
+    }
+  ],
+  "remaining": [
+    "Enable Owner and installation approval assembly",
+    "Full verification for applicable domain/backfill/projection changes",
+    "Complete Pack diagnostic aggregation",
+    "Remaining V1 modules"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Actual ordinary-table data invariants",
+  "checks": {
+    "focusedTests": 16,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Real row count, non-null columns, single/composite duplicate groups including NULL keys.",
+    "Actual updates/deletes create null, duplicate and row-count mismatches.",
+    "Forced RLS, inheritance, missing columns, expression injection, duplicate semantic keys, foreign schema and wrong transaction/cancellation reject."
+  ],
+  "limitations": [
+    "Standalone bounded ordinary-table checker; signed expectations, persistence and installed assembly remain to implement.",
+    "Partition/inheritance unsupported; no arbitrary predicates or complete domain verification.",
+    "Requires owner visibility; cannot verify forced-RLS business data through policy-filtered subsets.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-data-test.log",
+      "sha256": "fa2672099e90199b70a91dbff0c54c39645eeb851687783ca84337350e2d620b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-data-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-data-docs.log",
+      "sha256": "495f3c69c06061ccb1e97e7714500d18c9a4315c389bf1009ba701b0ec9260b8"
+    }
+  ]
+}

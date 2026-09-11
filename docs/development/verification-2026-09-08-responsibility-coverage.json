@@ -1,0 +1,20 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Responsibility qualification covers original Request Workspace scope",
+  "checks": {
+    "targetedIntegrationTests": 73,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/responsibility-coverage-final.log",
+  "logSha256": "6df1caee714da97263f4ba6fb3bc5bf3da8507cafe438236f781ad388cf000a7",
+  "limitations": [
+    "Targeted Decision/Action regression; full workspace check not repeated in this batch.",
+    "Installed Grant, evidence, domain continuity and declared fence governance remain required.",
+    "New Route revisions, cross-organization delegation and full V1 acceptance remain incomplete."
+  ]
+}

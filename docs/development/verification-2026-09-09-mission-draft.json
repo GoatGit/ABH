@@ -1,0 +1,88 @@
+{
+  "date": "2026-09-09",
+  "scope": "Mission Draft and immutable condition persistence with tenant isolation and current admission",
+  "tests": {
+    "contracts": {
+      "passed": 311,
+      "failed": 0,
+      "skipped": 0
+    },
+    "mission": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "database": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "generate": true,
+    "contractsBuild": true,
+    "contractsCheck": true,
+    "contractsApi": true,
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true,
+    "diffWhitespace": true
+  },
+  "limitations": [
+    "Mission activation/authority, triggers, Run, blockers, lifecycle transitions and public ingress remain incomplete.",
+    "Workflow/predicate/retention governance is trusted fixture installation.",
+    "Full V1 is not at 90 percent.",
+    "No full Core rerun after Mission migration; previous full run before Mission: 514 passed, 6 skipped."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/mission-draft-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-contracts-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-contracts-api.log",
+      "sha256": "082854ae10be99766525017dc1780a433af89f0047ad7fc107be05d94946bd25"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-contracts-check.log",
+      "sha256": "2e528027f2f9f63443148dff0950dabc753be5af02e303b3414f4d02ce02e128"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-contracts-tests.log",
+      "sha256": "1967a202874ff6ce84623745f1f2ce4170cda1e966caaee8cb6c934d353e9f8f"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-database-tests.log",
+      "sha256": "b2f07e466eb2843fbf9310d0b46cec9d480e5b84dc02be700fc32c6ea407ab8c"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-docs.log",
+      "sha256": "586d7952b9627fde3c82b9b0747ff4b5f16dd89b3545abafbd670ca038acafad"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-generate.log",
+      "sha256": "3768e5c7d844d38ea6c7e2c61758948dd2c6574668b435561963a4225cf68935"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-tests.log",
+      "sha256": "9be5a44a599de6ad7e71233e62b1de039077cae1ffe15e553c58958dfe6f3c5c"
+    },
+    {
+      "path": "artifacts/verification/mission-draft-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

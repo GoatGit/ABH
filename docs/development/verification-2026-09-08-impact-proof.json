@@ -1,0 +1,50 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Mandatory persistent compiler proof and current-key re-verification for impact reports",
+  "checks": {
+    "focusedTests": 13,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "isolatedContainersRemaining": 0,
+    "databaseManifestVersion": 49,
+    "documentLinks": 252
+  },
+  "coverage": [
+    "Private verified candidate required for report writes.",
+    "Original Cosign bundle, key fingerprint and bundle digest persist with atomic report transaction.",
+    "Current reads recover persisted proof and verify against current deployment compiler key.",
+    "Absent/corrupt proof, forged candidate, changed current key, revoked Grant/compiler and policy changes reject.",
+    "Migration readiness and restricted tenant database tests pass."
+  ],
+  "limitations": [
+    "Compiler root authority still deployment-provided; persistent revocation/rotation and signature lifetime policy incomplete.",
+    "No Enable/Registry implementation.",
+    "Focused database and real signature suites rerun; full Core suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-proof-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/impact-proof-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-proof-docs.log",
+      "sha256": "3eae2d08ef749b61d26c72cf9ae9cd03ba4a0126a87e4378dca979d0aa80233a"
+    },
+    {
+      "path": "artifacts/verification/impact-proof-test.log",
+      "sha256": "decd53f25172ed214973d56a29d434ecdf930a885aabd01a3c021e77cc70f625"
+    },
+    {
+      "path": "artifacts/verification/impact-proof-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

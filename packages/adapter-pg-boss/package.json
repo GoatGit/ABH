@@ -1,0 +1,30 @@
+{
+  "name": "@abh/adapter-pg-boss",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "24.13.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json"
+  },
+  "dependencies": {
+    "@abh/contracts": "workspace:*",
+    "pg-boss": "12.30.0",
+    "postgres": "3.4.9"
+  },
+  "devDependencies": {
+    "@testcontainers/postgresql": "12.1.0",
+    "@types/node": "24.10.1",
+    "typescript": "5.9.3"
+  }
+}

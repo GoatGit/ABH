@@ -1,0 +1,77 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Formal raw migration execution result contracts",
+  "checks": {
+    "contractsTests": 253,
+    "focusedCoreTests": 23,
+    "failed": 0,
+    "skipped": 0,
+    "contractsGeneratedArtifacts": 48,
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "contractsApiReports": 9,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Closed generated result and execution record types replace internal hand-checked shape.",
+    "Acknowledged commit requires sqlStarted, including nested result validation.",
+    "Observation/claim ordering preserves microseconds; nested destructive-step contradictions reject.",
+    "Actual signed installation, SQL execution, lost acknowledgement, persistence and recovery tests pass with unchanged envelope format."
+  ],
+  "limitations": [
+    "Raw execution result does not prove migration verification or Enable.",
+    "Result signature, target-state verification, production capture governance, automatic recovery, cross-step/nontransactional recovery, business table readiness and Enable remain incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-result-contract-generate.log",
+      "sha256": "bec6050a5253084e710e1335eb3f8899147fa958342ba034480b22cc9ed9db66"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-test.log",
+      "sha256": "d854a9e153c17b9a73e30f9bddd8d22227a0d7775541763338881b464a508f18"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-types.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-check.log",
+      "sha256": "b3cbe210508e5986509785a68024ab0c18dd472e5648d281fbbaac68f454057f"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-api.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-core-test.log",
+      "sha256": "7caafafa834fcf1a21ab49b06434932db185c59df40123d796d245303f6a8413"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-core-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-core-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-result-contract-docs.log",
+      "sha256": "9b30672524a241fb86a82787c2b0552d02866a5706f75600579d7ff794557655"
+    }
+  ]
+}

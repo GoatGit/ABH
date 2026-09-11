@@ -1,0 +1,55 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Read-only installed Pack inspection worker",
+  "checks": {
+    "coreFullBeforeWorker": 458,
+    "integrationParentTestsAfterWorker": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Service discovers real Staged pack and invokes actual same-snapshot signed structure/data recovery.",
+    "Persisted observation Ref retained after real revalidation.",
+    "Changed actor type after target acquisition rejects and closes target.",
+    "Target returned after preparation cancellation is disposed without inspection.",
+    "Task inputs snapshotted before ownership handoff."
+  ],
+  "limitations": [
+    "Full Core suite predates new Worker; final Worker changes have focused integration evidence.",
+    "Read-only sweeps may repeat observations; not an execution lease or migration SQL runner.",
+    "Host supplies exact impact/expectation preparation and durable result notification.",
+    "Production default hosting, full domain/backfill/projection and Enable incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-worker-test.log",
+      "sha256": "c8fe66c0e6550b17f52be79b3ab4f414c5f4780f85902696dfb604ec1eb1ff4c"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-worker-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-worker-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-worker-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/core-installation-full-2026-09-09.log",
+      "sha256": "121bbcd43df3d9658cd244c0219965f8d8597b243b55ada708193252a86a6dbd"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-worker-docs.log",
+      "sha256": "2c5d2e1e6d49d3a01cd1f15932b1b61ecab10eb1f655666df9c6f07f562371a2"
+    }
+  ]
+}

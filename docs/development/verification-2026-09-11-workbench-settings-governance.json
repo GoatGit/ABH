@@ -1,0 +1,50 @@
+{
+  "date": "2026-09-11",
+  "subject": "host-declared Settings governance snapshot and bounded command surface",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r typecheck",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "workbenchTests": 9,
+    "workbenchPassed": 9,
+    "workbenchFailed": 0,
+    "workbenchTypecheck": "passed",
+    "workbenchNextBuild": "passed",
+    "settingsRouteSize": "1.42 kB",
+    "settingsFirstLoadJs": "107 kB",
+    "contractsArtifacts": "51 files matched",
+    "apiEntryPointsChecked": 13,
+    "documentationLinks": 758,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "the Settings adapter is deny-by-default for both snapshot resolution and command execution",
+    "the page renders only the host-declared organization, members, purposes, connections and automation view",
+    "connection governance metadata is display-only and the contract exposes no credential field",
+    "command descriptors are bounded and use host-declared JSON Schema",
+    "the server parses bounded JSON and revalidates command input with Ajv 2020",
+    "command execution occurs only after a fresh server-side authorization snapshot",
+    "the host execute hook receives the current session, command key, request ID and validated input",
+    "request IDs require a stable nonempty token and the host owns idempotency and audit",
+    "commands are displayed as accepted only; effective governance state is not rendered optimistically",
+    "the command form is lazily loaded outside the Settings first-load bundle"
+  ],
+  "limits": [
+    "production Settings queries, commands, Domain Pack governance assembly and audit integration remain host work",
+    "the reference UI does not yet provide complete Settings lifecycle workflows",
+    "complete responsibility JSON Forms journeys remain open",
+    "ECharts is not implemented yet",
+    "browser Settings E2E is not implemented yet",
+    "browser accessibility and performance verification remain open",
+    "production identity adapter installation remains a host requirement",
+    "production process and tenant lifecycle governance remain open"
+  ]
+}

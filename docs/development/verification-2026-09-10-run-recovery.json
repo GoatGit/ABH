@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core terminal Run recovery worker",
+  "commands": [
+    "corepack pnpm contracts:check",
+    "corepack pnpm contracts:test",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test test/run-recovery.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build",
+    "corepack pnpm api:update",
+    "corepack pnpm api:check"
+  ],
+  "results": {
+    "contractArtifacts": 51,
+    "contractTests": 311,
+    "coreTests": 523,
+    "corePassed": 517,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "documentationLinks": 728,
+    "contractApiEntryPoints": 9,
+    "coreApiEntryPoints": 3
+  },
+  "coverage": [
+    "Service-only runtime purpose authorization",
+    "grant-backed internal recovery command",
+    "work-lease fencing and second-worker rejection",
+    "terminal Run requirement",
+    "nonterminal task cancellation",
+    "terminal task preservation",
+    "stale Mission activeRunRef cleanup",
+    "run and task Audit/Outbox events",
+    "no effect event for replayed recovery",
+    "bounded worker discovery and shutdown",
+    "Postgres integration behavior"
+  ],
+  "limits": [
+    "Pi Agent governed recovery and complete CTK matrix remain open",
+    "production Gateway assembly remains open",
+    "learning and independent evaluation pipelines remain open"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Authorized internal Action domain validation ingress",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 227,
+    "coreTests": 278,
+    "httpAdapterTests": 10,
+    "failed": 0,
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/action-validation-check.log",
+      "sha256": "e647efb8fe823f2b26ed2f7c87004126ea2f8d1b4fed793aaa3e610696335860"
+    },
+    {
+      "path": "artifacts/verification/action-validation-tests.log",
+      "sha256": "e6ea76132312d0e3537ade36f5e7a932c799c0eea38ca2cc81b1f79ef1869d2c"
+    },
+    {
+      "path": "artifacts/verification/action-validation-generate.log",
+      "sha256": "0bc57764d623986aecba920b5efc862279c1b81774cdebce63d0a91f2c1ab97a"
+    },
+    {
+      "path": "artifacts/verification/action-validation-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/action-validation-api-update.log",
+      "sha256": "e12e7435e79e503245017136ad94254136cabba37d1321c06b0b283142378567"
+    }
+  ],
+  "limitations": [
+    "Internal validation only; no public ValidateAction HTTP route.",
+    "Production validator evidence and source policies require explicit installation.",
+    "Plan preparation, responsibility requests and Human-to-Service durable RequestAuthorization progression remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

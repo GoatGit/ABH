@@ -1,0 +1,50 @@
+{
+  "date": "2026-09-09",
+  "scope": "Core cross-module regression after Pack runtime and capture composition; explicit Cosign supplement",
+  "tests": {
+    "coreFull": {
+      "total": 519,
+      "passed": 514,
+      "failed": 0,
+      "skipped": 5
+    },
+    "cosignInitial": {
+      "passed": 12,
+      "failed": 1,
+      "skipped": 0
+    },
+    "migrationSignatureFinal": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "fixtureFix": "Migration result acceptance window changed from 120s to 300s for the long joint fixture; explicit maxAgeMs:1 rejection retained; production verifier unchanged.",
+  "limitations": [
+    "Full suite not rerun after test-only fixture window change.",
+    "Signed fixture has empty provides; signed nonempty Connector execution and capture acceptance remains incomplete.",
+    "V1 overall remains incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-runtime-core-full.log",
+      "sha256": "1d8508aaafc4c765c100b5cf11fbb4f54b2f43691447f2c16dede9614740196c"
+    },
+    {
+      "path": "artifacts/verification/pack-runtime-cosign.log",
+      "sha256": "1bc426ba1f60a7cd5e6061a0eae233a9bb107d8f2b6b305a1682378c9d62005c"
+    },
+    {
+      "path": "artifacts/verification/pack-runtime-docs.log",
+      "sha256": "d74cb8ec55f6accb37b12097a54e9204aa8f5343c5967193e288d269a188978b"
+    },
+    {
+      "path": "artifacts/verification/pack-runtime-migration-final.log",
+      "sha256": "ae6a3a122255013f1e0dd2bea41f5e0eeb8412f219d995f3e2bcd5192073713e"
+    },
+    {
+      "path": "artifacts/verification/pack-runtime-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

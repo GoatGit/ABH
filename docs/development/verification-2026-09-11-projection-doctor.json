@@ -1,0 +1,58 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core and @abh/cli MissionSummary projection doctor",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core api:update",
+    "node --test --test-name-pattern \"Run lifecycle\" --test-concurrency=1 packages/core/test/run-commands.test.ts",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm --filter @abh/adapter-fastify test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "runLifecycleTests": 1,
+    "runLifecyclePassed": 1,
+    "runLifecycleFailed": 0,
+    "contractsTests": 312,
+    "contractsPassed": 312,
+    "contractsFailed": 0,
+    "coreTests": 543,
+    "corePassed": 537,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "cliTests": 4,
+    "cliPassed": 4,
+    "cliFailed": 0,
+    "contractArtifacts": 51,
+    "contractsApiEntryPoints": 9,
+    "coreApiEntryPoints": 4,
+    "documentationLinks": 748,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "doctor projection accepts bounded organization, subject, optional workspace and actor UUIDs",
+    "invalid CLI arguments use a fixed zero-UUID placeholder and do not query PostgreSQL",
+    "diagnostic SQL remains read-only, tenant scoped, purpose scoped and deadline bounded",
+    "health reports source version, goal revision, stop epoch, presence and staleness",
+    "health reports watermark, latest eligible event, lag and unconsumed gap count",
+    "safe asynchronous rebuild is identified by command name without invoking repair",
+    "output excludes projection payloads, SQL, driver text, connection strings and credentials",
+    "CLI supports JSON and text formatting without changing diagnostic ownership",
+    "Passed requires null error, zero violations and no remediation",
+    "PRECONDITION_FAILED carries the real positive violation count and actionable remediation",
+    "dependency and authorization failures carry bounded remediation without persisted evidence",
+    "real PostgreSQL Run lifecycle returns Passed with zero gaps for a current projection"
+  ],
+  "limits": [
+    "projection subscriptions for other domains remain open",
+    "production projection lag and gap metrics remain open",
+    "the V1 workbench remains open"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Registered target data invariant inspection",
+  "checks": {
+    "focusedTests": 40,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Persistent ownership and live same-database proof surround actual data invariant checks.",
+    "Frozen DataInvariants binding includes organization, package, full plan and expected digest.",
+    "Independent same-named server, out-of-plan schema, late authority withdrawal reject; caller mutation cannot replace checked input.",
+    "Actual NULL and duplicate data mismatch."
+  ],
+  "limitations": [
+    "Scope covers explicit listed tables; host must authorize completeness.",
+    "No actual signature verification or installed-data assembly yet.",
+    "Not domain correctness, migration completion or Enable; full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-data-registered-test.log",
+      "sha256": "b769f2d073da4ac763999b2c5d956e79b0c2096730d9b68b860ce818b90916c4"
+    },
+    {
+      "path": "artifacts/verification/migration-data-registered-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-data-registered-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-registered-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-data-registered-docs.log",
+      "sha256": "fd2a63f1c69a24f7866e064984152cbfd58f39949d521f4fc007d827f736203d"
+    }
+  ]
+}

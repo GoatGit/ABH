@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Final execution evidence capture admission",
+  "checks": {
+    "focusedTests": 14,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Artifact sourceRefs compared with original execution evidence sources.",
+    "Final capture admission after actual Artifact read rejects late withdrawal.",
+    "New Artifact rolled back and no maintenance observation written when final admission fails.",
+    "Existing-result replay also rejects late withdrawal; one observation retained.",
+    "Lost actual COMMIT response keeps committed data and OutcomeUnknown without SQL replay."
+  ],
+  "limitations": [
+    "Capture admission distinct from execution authority; host governs policy.",
+    "Full production execution worker/leases and Enable incomplete.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/execution-capture-admission-test.log",
+      "sha256": "5eca8f3aa29e6f6f83776d42a6bb1eff3dd4f3f86e189c25bac915a3f7bfbcbc"
+    },
+    {
+      "path": "artifacts/verification/execution-capture-admission-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/execution-capture-admission-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/execution-capture-admission-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/execution-capture-admission-docs.log",
+      "sha256": "5b7361d515e99254274cbc6b85ae4e78d187b1b3e6d9bfe1a550b48d73366eaf"
+    }
+  ]
+}

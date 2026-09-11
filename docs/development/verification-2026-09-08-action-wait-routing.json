@@ -1,0 +1,21 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Action wait notification routing from durable Owner facts",
+  "checks": {
+    "coreTypecheck": "passed",
+    "actionIntegrationTests": 45,
+    "failed": 0,
+    "skipped": 0,
+    "documentLinks": 215,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/action-wait-routing.log",
+  "logSha256": "d51aafd460de585b69e6c751abe277750397c8d41497903b846603579e818b48",
+  "limitations": [
+    "Installed rule/consumer governance remains configuration supplied.",
+    "Operation/Mission notification routing and complete production hosting remain.",
+    "No execution authority is issued by notification routing.",
+    "Targeted integration regression; full V1 acceptance remains incomplete."
+  ]
+}

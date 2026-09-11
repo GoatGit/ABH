@@ -1,0 +1,132 @@
+{
+  "date": "2026-09-09",
+  "scope": "Formal internal RequestPackEnable command, exact frozen Human Gateway binding, current evidence admission and independent Grant",
+  "tests": {
+    "realCosignPostgresAndApproval": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "log": "artifacts/verification/pack-request-enable-tests-verified.log"
+    },
+    "contracts": {
+      "passed": 299,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed; final Core source rebuilt",
+    "coreTypecheck": "passed",
+    "contractsTypecheck": "passed",
+    "generation": "passed (49 files)",
+    "api": "passed (Contracts 9 / Core 3 entry points)",
+    "docs": "passed"
+  },
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/request-pack-enable.ts",
+      "sha256": "2ea384660723360b89b6878b4d1e557cdce905aaa0a5e5485052a39f302ebab4"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "6a00be3810091da9ea3c6b590ccbb515361ed3b890282ad5fa3fce96c0a94b1a"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "4a0cafafa3966f239b347d5ca0a6585de67a6ee330b5e1229ec6dafe93cb89b4"
+    },
+    {
+      "path": "packages/contracts/protocol/registry.yaml",
+      "sha256": "8a48fedb4ca515b34f6f08abde0ddff832ed422c76cd05f66a621d98d87bee67"
+    },
+    {
+      "path": "packages/contracts/catalog/core.json",
+      "sha256": "46fd995425f1b482e98478860ffc3cfb4185b3776e49a06d7d7dfeed5134b82e"
+    },
+    {
+      "path": "packages/contracts/test/pack-conformance-command.test.ts",
+      "sha256": "e3591b8dcebbfca8942541b5b15954a899619a6658f3755fe1c9cd87249e18d0"
+    }
+  ],
+  "reviewFixes": [
+    "Moved routing admission before final actual evidence rereads, tested withdrawal specifically in second/final routing callback",
+    "Snapshot all installed callbacks before first await and preserve receivers"
+  ],
+  "remaining": [
+    "Enable lifecycle Owner and database state transition",
+    "Capability registry and lifecycle runtime visibility",
+    "Complete applicable migration, Domain, backfill and projection validation",
+    "Remaining V1 modules"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-request-enable-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-build.log",
+      "sha256": "092ee4cf2f5012a83b9437b74d9adb04d68fd3596445b29954a84e47c0c11ac1"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-contract-tests.log",
+      "sha256": "189a792d17a1a91eb9073b29c7bfa7a26c87d0ad47c2fc40baf4dd00d391e0b1"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-core-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-core-build-verified.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-docs.log",
+      "sha256": "8b89dd4034f775cc567dce375babec21b5e18be27b74c8ab409a8fecd18c9c93"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-drift.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-generation.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-tests-final.log",
+      "sha256": "7954ff991bcb39995af3e1d7c7155b47b8ba2ffb57e9f8705532f101db579b4b"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-tests-verified.log",
+      "sha256": "8801bdfcc06c0b5349a1f1a82a168eb7e0cf897e84581b4f3edfd23081b91ab1"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-tests.log",
+      "sha256": "03d614b19e9a1319f3daf9674fc66256b8de8aeb1189e7a3c1fb04c7aed43395"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-typecheck-verified.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-request-enable-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

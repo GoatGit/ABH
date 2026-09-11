@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Actual HTTP ingress shutdown joins authentication and Owner work before runtime dependency closure",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractsTests": 229,
+    "coreTests": 290,
+    "httpTests": 12,
+    "totalTests": 531,
+    "failed": 0,
+    "generatedFiles": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "containersRemaining": 0
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/http-ingress-adapter-build.log",
+      "sha256": "ed5c34a4c53e3b8fe955b54b0ded8726b6898815c6e18fd978ab0a85c636852f"
+    },
+    {
+      "path": "artifacts/verification/http-ingress-adapter-types.log",
+      "sha256": "0911b1e47aec8e25b948e29f6eb3f191c3fdf1e7d77a0344f2d61b19bd940cc4"
+    },
+    {
+      "path": "artifacts/verification/http-ingress-check.log",
+      "sha256": "0b3a942a92c9f0dcbaf780d03e4e4bef57e7515fd42f607312ae9160cbb56ccd"
+    },
+    {
+      "path": "artifacts/verification/http-ingress-core-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/http-ingress-runtime-tests.log",
+      "sha256": "c16787264f087f9a000defeb0641b573a04c2083ce5d98dcff2090b09498e76e"
+    },
+    {
+      "path": "artifacts/verification/http-ingress-tests.log",
+      "sha256": "51263e3de1ef2472b24626e4a6443d2a713909d405cd993798635a72ae13dedf"
+    }
+  ],
+  "limitations": [
+    "Installed authentication and Owner code must honor cancellation and settle; a permanently pending handler still blocks safe shutdown.",
+    "Drain admission, recording and dependency close callback bounds remain installation responsibilities.",
+    "Production default bootstrap, public-to-native-queue execution acceptance and full V1 remain incomplete."
+  ]
+}

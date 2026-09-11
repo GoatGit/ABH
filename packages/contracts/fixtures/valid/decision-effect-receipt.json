@@ -1,0 +1,41 @@
+{
+  "schema": "DecisionEffectReceiptRecord",
+  "value": {
+    "receiptRef": {
+      "type": "abh.command",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "resourceOrganizationId": "00000000-0000-4000-8000-000000000001",
+    "effectRef": {
+      "type": "abh.decision-effect",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "requestRef": {
+      "type": "abh.responsibility-request",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "completionEvidenceRef": {
+      "type": "abh.request-completion-evidence",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "authorityRef": {
+      "type": "abh.execution-authority",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "grantRefs": [
+      {
+        "type": "abh.grant",
+        "id": "00000000-0000-4000-8000-000000000001",
+        "version": 1
+      }
+    ],
+    "inputDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "Applied",
+    "appliedAt": "2026-09-08T00:00:00Z"
+  }
+}

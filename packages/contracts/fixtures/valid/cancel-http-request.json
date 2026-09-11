@@ -1,0 +1,12 @@
+{
+  "schema": "CancelActionHttpRequest",
+  "value": {
+    "target": {
+      "type": "abh.action",
+      "id": "00000000-0000-4000-8000-000000000006"
+    },
+    "payload": {
+      "reason": "Publication is no longer needed."
+    }
+  }
+}

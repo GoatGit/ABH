@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Live migration connection and ownership database binding",
+  "checks": {
+    "focusedTests": 36,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 270
+  },
+  "coverage": [
+    "Transient random advisory lock observed by management transaction in its current database.",
+    "Same-server different database rejects.",
+    "Independent server with matching database/role/schema names passes static privilege checks but rejects composed preflight.",
+    "Success and rejection leave no session advisory locks."
+  ],
+  "limitations": [
+    "Trusted host and database connections; not cryptographic authentication of a malicious server.",
+    "Host must discard connection if cleanup fails.",
+    "No Migration Runner or execution authority.",
+    "Focused tests only; full Core suite not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-database-binding-test.log",
+      "sha256": "37d9b7bf1074b494457cf3222cc495f9722e11de15437ffc63a65d9cd0b77ade"
+    },
+    {
+      "path": "artifacts/verification/migration-database-binding-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-database-binding-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-database-binding-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-database-binding-docs.log",
+      "sha256": "f96db62e989e518f79dfc81624983d065a3d629ed7ad0ba8deac6d2afd819b14"
+    }
+  ]
+}

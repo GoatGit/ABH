@@ -1,0 +1,28 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Authorized persisted compiler inputs and cancellation-aware candidate compilation",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 228,
+    "coreTests": 281,
+    "httpAdapterTests": 10,
+    "failed": 0,
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/compiler-assembly-check.log",
+      "sha256": "cb9344c17fef951151331a0f1390236c5408e4747cf2439a383d827725b1b439"
+    }
+  ],
+  "limitations": [
+    "Compilation returns a candidate; registration independently revalidates current authority and atomically persists the plan.",
+    "Trusted installation callbacks remain required; production compiler/content-read installation and process isolation are incomplete.",
+    "Durable Human RequestAuthorization reception, responsibility branches and Service progression remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

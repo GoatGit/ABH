@@ -1,0 +1,22 @@
+{
+  "name": "@abh/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "24.13.0"
+  },
+  "bin": {
+    "abh": "./bin/abh.mjs"
+  },
+  "scripts": {
+    "build": "node --check bin/abh.mjs && node --check src/doctor.mjs && node --check src/inspection.mjs",
+    "typecheck": "node --check bin/abh.mjs && node --check src/doctor.mjs && node --check src/inspection.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@abh/core": "workspace:*",
+    "@abh/contracts": "workspace:*"
+  }
+}

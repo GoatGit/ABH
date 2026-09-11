@@ -1,0 +1,75 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Formal CTK report and independent Cosign DSSE Pack conformance admission",
+  "checks": {
+    "contractsTests": 238,
+    "packTests": 22,
+    "failed": 0,
+    "skipped": 0,
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/ctk-report-api-update.log",
+      "sha256": "cbace512b733947aef68a16f9ea0f6876a69c91b8f1b20666b301f9fe76eb5ee"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-contracts-tests.log",
+      "sha256": "edb6ee1fbc955e18e3e43b11f6e769b9af801113d4d26183913b4e1ac457ad82"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-contracts-types.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-core-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-generate.log",
+      "sha256": "0bc57764d623986aecba920b5efc862279c1b81774cdebce63d0a91f2c1ab97a"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-generated-check.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-regression.log",
+      "sha256": "b21f9e38b9c9736c3bd6297411d6f278cf46f810fb0567e5659dfbffae75798e"
+    },
+    {
+      "path": "artifacts/verification/ctk-report-tests.log",
+      "sha256": "d78dbd486157b49cba1cb0797090ab53c3448391e69bd85d8c561f9783dbbcb1"
+    }
+  ],
+  "limitations": [
+    "Complete reports may record failures; admission separately requires exact deployment-approved cases/statuses and refuses deviations.",
+    "Offline public-key Cosign profile only. Actual conformance signing test requires ABH_TEST_COSIGN; supplied in this run.",
+    "Evidence Artifact references are structurally checked; content retrieval and verification are not implemented here.",
+    "Full conformance suites, isolated Runner/recovery and Official maintainer gates remain incomplete.",
+    "Core full suite/workspace not rerun; Loader persistent installation/enablement, defineBusiness and full V1 remain incomplete."
+  ]
+}

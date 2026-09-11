@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core MissionSummary durable event discovery, Inbox consumption and projection watermark",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core build",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreTests": 543,
+    "corePassed": 537,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractsArtifactsMatched": 51,
+    "apiEntryPointsMatched": 9,
+    "docsLinksChecked": 742,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "mission lifecycle transitions emit registered abh.mission state events from the real command identity",
+    "pending discovery scans data.outbox with an authorized service context and monotonic (created_at,id) cursor",
+    "runtime.inbox deduplication prevents the same consumer from replaying an already handled event",
+    "admission checks current consume-event grants before rebuilding the projection",
+    "the consumer reauthorizes build-mission-summary and rebuilds the source-backed projection in the same transaction",
+    "watermark and inbox facts commit atomically with the projection effect",
+    "grant revocation blocks semantic replay without changing the stored projection",
+    "a projection read remains bound to purpose and workspace isolation"
+  ],
+  "limits": [
+    "RefreshProjection scheduled job and SSE reset are not implemented",
+    "multi-page consumer gap recovery remains a host responsibility until a dedicated backfill cursor exists",
+    "ListProjection, field-set redaction and subscription cursors remain",
+    "ResponsibilityInbox, ActionTimeline, OrganizationSettings and CapabilityOverview projections remain"
+  ]
+}

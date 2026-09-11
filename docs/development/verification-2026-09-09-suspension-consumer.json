@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-09",
+  "scope": "Action Pack suspension observation consumer with actual Inbox atomicity, duplicate admission and restart replay",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "limitations": [
+    "Source mapping and business notification policy are trusted installation callbacks.",
+    "Direct committed-event consumption exercised; automatic queue routing not yet composed.",
+    "Observation preserves Action/Operation state; retirement and compatible recovery outstanding.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-consumer-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-consumer-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-consumer-docs.log",
+      "sha256": "15d57c19ba1a03343abfb40375cb5a82aa86f705d12b334393c81211167c8a5f"
+    },
+    {
+      "path": "artifacts/verification/suspension-consumer-tests.log",
+      "sha256": "5ecd739d9c4ea764e2385c75ecec42e36835ec9716c41970c7e6dd3374105483"
+    },
+    {
+      "path": "artifacts/verification/suspension-consumer-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Actual PostgreSQL migration table structure result checking",
+  "checks": {
+    "focusedTests": 6,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Hand-authored expected structure matches actual owned table DDL.",
+    "Column/default/constraint validation/RLS changes produce explicit mismatches.",
+    "Missing/present relations and views handled without fabricated success.",
+    "Dedicated role, actual schema ownership, repeatable-read read-only mode, bounded closed expectations and cancellation enforced."
+  ],
+  "limitations": [
+    "Named table structural checks only: no business data/index/policy body/trigger/partition boundary/whole-schema verification.",
+    "Host must bind actual database, persisted ownership, signed expectation/governance and connection lifecycle.",
+    "Formal structural result contracts/signatures, full data validation, readiness, recovery and Enable incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-tables-test.log",
+      "sha256": "20268e95e170da77819db5a28f12a42ed82e6dd1ad9f8ba6f712660bfd1155dd"
+    },
+    {
+      "path": "artifacts/verification/migration-tables-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-tables-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-tables-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-tables-docs.log",
+      "sha256": "634cd82063e2abdcf1cb3700756061a5a8be8645e61afb51ea63b6b3de7a1a47"
+    }
+  ]
+}

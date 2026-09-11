@@ -1,0 +1,50 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Installed structure and data inspection on one target snapshot",
+  "checks": {
+    "coreIntegrationParentTests": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Real installed migration structure and declared rows match on one target transaction.",
+    "NULL drift leaves structure matching but fails aggregate.",
+    "Structure source withdrawal during data admission rejects.",
+    "Target rollback and restart between checks rejects.",
+    "Existing signature expiry, execution and observation recovery regressions pass."
+  ],
+  "limitations": [
+    "Caller retains source/installation fences and owns target lifecycle.",
+    "Declared structure/data scope is not complete domain, backfill, projection or Enable.",
+    "Child observations retain persistence provenance; combined durable record/recovery not implemented.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-state-test.log",
+      "sha256": "82aa5755f9d9f6180244eca048839b9efe4d33655476c6f6ce4e5697b6ede60c"
+    },
+    {
+      "path": "artifacts/verification/migration-state-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-state-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-state-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-state-docs.log",
+      "sha256": "37ea180899cec892cdd9f36fc326528d5662297d3309ff09699b3d54fa3934e4"
+    }
+  ]
+}

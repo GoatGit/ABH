@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Whole plan mandatory persistent migration evidence signatures",
+  "checks": {
+    "focusedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 290
+  },
+  "coverage": [
+    "Five actual signed persisted report/Bundle pairs validate in one plan.",
+    "Missing or duplicate signature mapping rejects.",
+    "Different-kind Bundle substitution rejects cryptographically.",
+    "Supporting facts denial cannot be overridden by valid signature."
+  ],
+  "limitations": [
+    "Production supporting facts and authority fences still host/Owner assembly.",
+    "Lower-level unsigned reader remains internal; Runner must use signed composition.",
+    "No execution permit, Runner or Enable; full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-migration-plan-test.log",
+      "sha256": "141d943206be34a0f712d99a813513661e177621de6992380310fb7e942c0d0b"
+    },
+    {
+      "path": "artifacts/verification/signed-migration-plan-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/signed-migration-plan-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/signed-migration-plan-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/signed-migration-plan-docs.log",
+      "sha256": "4c18f06de18d35e965fb9c02680930b36c5bd5fcd812476fe02a426d09a10fb9"
+    }
+  ]
+}

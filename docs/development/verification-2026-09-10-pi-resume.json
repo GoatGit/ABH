@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/adapter-pi governed continue",
+  "upstream": {
+    "agent": "@earendil-works/pi-agent-core@0.85.1",
+    "ai": "@earendil-works/pi-ai@0.85.1"
+  },
+  "commands": [
+    "corepack pnpm --filter @abh/adapter-pi typecheck",
+    "corepack pnpm --filter @abh/adapter-pi test",
+    "corepack pnpm --filter @abh/adapter-pi build",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check"
+  ],
+  "results": {
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "contractArtifacts": 51,
+    "documentationLinks": 729
+  },
+  "coverage": [
+    "invoke and continue share the real Pi and gateway path",
+    "checkpoint captured only at resumable tool-result wait point",
+    "minimal transcript, event watermark, budget, turn and tool counters persisted",
+    "tool receipt refs flow into checkpoint admission",
+    "tool gateway failure when a receipt ref is absent",
+    "loaded checkpoint reference must match requested checkpoint reference",
+    "checkpoint and resume permit references required",
+    "Pi version, definition and context digest compatibility checks",
+    "current authorization admission callback",
+    "unsafe checkpoint, gateway and permit failures fail closed without leaking internals",
+    "continuation invokes native Pi continue without replaying observed tools",
+    "unbound tool blocked before real tool gateway execution",
+    "unresolved tool request reported as NoProgress"
+  ],
+  "limits": [
+    "persistent governed Artifact checkpoint owner is not implemented",
+    "full Pi upgrade compatibility matrix is not complete",
+    "production Model and Tool Gateway assembly remains open",
+    "full Core suite was not rerun in this increment"
+  ]
+}

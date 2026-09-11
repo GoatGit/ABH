@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-09",
+  "scope": "Pack dispatch/query to existing durable capture and observation-only retry handles",
+  "tests": {
+    "actions": {
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "Signed nonempty Pack successful transport and capture end-to-end acceptance remains incomplete.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-capture-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-capture-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-capture-docs.log",
+      "sha256": "e420feae6ce77351063e070c89e8c6104f94b968fefb1bcaa536c381ad013a85"
+    },
+    {
+      "path": "artifacts/verification/pack-capture-tests.log",
+      "sha256": "4e157dc07d2f101b19712bf9e420d66a83b6c60c7afa9a1bd6caafd42ef312c3"
+    },
+    {
+      "path": "artifacts/verification/pack-capture-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

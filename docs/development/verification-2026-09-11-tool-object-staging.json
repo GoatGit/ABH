@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core bounded Tool JSON output staging through host-installed ObjectStorePort",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core build",
+    "node --test --test-concurrency=1 packages/core/test/database-diagnostic.test.ts packages/core/test/artifacts.test.ts packages/core/test/run-commands.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "targetedTests": 13,
+    "targetedPassed": 13,
+    "targetedFailed": 0,
+    "coreTests": 541,
+    "corePassed": 535,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6
+  },
+  "coverage": [
+    "data.object_artifacts is tenant-isolated, manifest-registered and least-privileged",
+    "inline artifacts up to 64 KiB retain their previous transactional behavior",
+    "object-backed JSON output is bounded between 64 KiB and 256 KiB",
+    "T1 persists staged metadata before the external put",
+    "put completion is read back and SHA-256 verified before publication",
+    "T2 atomically binds the stored object and publishes the Available artifact",
+    "tool terminal CAS and paid reservation settlement remain atomic",
+    "owner, source, media type, region and retention bindings are rechecked",
+    "tracked or failed storage keeps the tool pending and its charge held",
+    "inline reads cannot substitute for an object-backed artifact",
+    "authorization, purpose and tenant isolation are enforced",
+    "pre-read and post-read authorization rechecks proxy object content",
+    "full proxy reads verify exact length and SHA-256",
+    "range proxy reads enforce endpoints, response range and returned byte count",
+    "tombstone or metadata drift between port calls fails closed"
+  ],
+  "limits": [
+    "production cloud or remote ObjectStore adapters remain host-installed",
+    "orphan cleanup for abandoned staged artifacts remains open",
+    "binary media staging remains out of scope for this tool JSON path"
+  ]
+}

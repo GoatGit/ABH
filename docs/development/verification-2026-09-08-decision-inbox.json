@@ -1,0 +1,22 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Internal Decision inbox with current qualification, read Grants and filtered keyset paging",
+  "checks": {
+    "decisionTests": 30,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/decision-inbox-final.log",
+  "logSha256": "ac384b486b3fc20ee15ba133028efe7478ca6b4d3c3d75a1ba4dc8107ea8d40c",
+  "limitations": [
+    "Mandatory installed query admission and evidence/domain visibility remain required.",
+    "Internal DecisionRecord page only; public DecisionView effects/actions, QueryMeta watermark, HTTP and SDK remain incomplete.",
+    "Query capacity, field redaction and production SLO not yet accepted.",
+    "Targeted integration only; full workspace check not repeated.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

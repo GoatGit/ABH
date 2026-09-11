@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-09",
+  "scope": "Signed Connector independent policy-issued Scope query Authority, committed budgeted Pack query, independent Capture and persistence retry",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreTypecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "Administrative identity/Grant and installed governance fixtures; no real Provider.",
+    "Only current Enabled exact Connector; suspension and compatible query recovery not covered.",
+    "Partial empty result retains unresolved Operation; terminal reconciliation not covered.",
+    "No production source changes and no full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-connector-query-docs.log",
+      "sha256": "d6a49f3d1b5ccd14a1b0b0908f7711b4ac698611e73f4d1538ce92f3cb5aa5b9"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-query-tests.log",
+      "sha256": "44fb3153f13262eb1c4f2c0ab5328ca1bc99abbe1db1090edae1d62b04eb949b"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-query-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

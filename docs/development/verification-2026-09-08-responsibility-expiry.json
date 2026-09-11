@@ -1,0 +1,24 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Whole-request responsibility expiry and tenant worker composition",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 223,
+    "coreTests": 220,
+    "failed": 0,
+    "migrationVersion": 35,
+    "generatedArtifacts": 48,
+    "publicApiReports": 9,
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/responsibility-expiry-check.log",
+  "logSha256": "09e681f789fe870f469b62feb0dcb886e0e34d9c0b7be0c0d8cf93e5539fa7be",
+  "limitations": [
+    "Independent DecisionPackage early expiry, escalation, delegation and formal production governance remain unfinished.",
+    "Existing Wait close-event support was inspected; no new end-to-end expiry notification test in this batch.",
+    "Closing an expired responsibility request never resolves technical Unknown, unfreezes resources or creates approval authority.",
+    "Complete V1 acceptance remains unfinished."
+  ]
+}

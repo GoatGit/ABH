@@ -1,0 +1,51 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Pack inspection work lease Owner assembly",
+  "checks": {
+    "finalIntegration": "passed",
+    "tests": 7,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "PackInspectionWorker heartbeat, lost-lease cancellation, persistence fencing and shutdown release are not installed yet.",
+    "Lease ownership is not execution authority, migration completeness or Enable.",
+    "Full Core suite not repeated.",
+    "Production jobs, full domain/backfill/projection verification, ObjectStore and Enable incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-leases-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-leases-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-leases-docs.log",
+      "sha256": "a8adb75dcdb26eddb3c004fdb9d627ead26954f373bbc7c9c86d58af9d4a9ab0"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-leases-test.log",
+      "sha256": "eedb40daf2d5d1c8cf6b58882aed15fb4f4b1996c6dc34adcb337b6e356d24e2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-leases-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "coverage": [
+    "Actual staged Pack identity and Service management Grant checked for lease operations.",
+    "Same-worker repeat claim remains unchanged; competing worker cannot take active ownership.",
+    "Renewal CAS and monotonic fencing across release/takeover; stale worker guard/release rejected.",
+    "Missing Grant, changed installation candidate and Human identity rejected.",
+    "Actual generic lease expiry and membership withdrawal regression."
+  ]
+}

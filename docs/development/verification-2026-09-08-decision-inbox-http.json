@@ -1,0 +1,38 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Strong Decision Inbox HTTP with current read admission and scanned-row paging",
+  "checks": {
+    "coreTests": 257,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/decision-inbox-http-core.log",
+      "sha256": "a11f97b93419d76f3a7c76b5997b5ae7f49e7510abc76227a200b0b53e28df69"
+    },
+    {
+      "path": "artifacts/verification/decision-inbox-http-typecheck-final.log",
+      "sha256": "c70eec6071b0f0fe48aad06a103990e676f51ad535d84ab19aaa65f23115e37c"
+    },
+    {
+      "path": "artifacts/verification/decision-inbox-http-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/decision-inbox-http-docs.log",
+      "sha256": "d5e7ec9fa954deb6917af95efe5f26b05af72412b79c0bd02e13485c9043360b"
+    }
+  ],
+  "limitations": [
+    "Independent current pages, not a cross-page snapshot; source fingerprint is not a continuous consumer watermark.",
+    "Projection requests refused; SSE and continuous projection watermarks remain incomplete.",
+    "Explicit installed type mapping and current governance required; production installation remains incomplete.",
+    "Full workspace contract/API checks not repeated; schemas unchanged.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

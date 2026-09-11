@@ -1,0 +1,83 @@
+{
+  "date": "2026-09-09",
+  "scope": "Explicit per-action inspection Grant installation and predeclared inspection/lease Control fences",
+  "tests": {
+    "targetAndInstallation": {
+      "passed": 20,
+      "failed": 0,
+      "skipped": 0
+    },
+    "integrationFirst": {
+      "passed": 0,
+      "failed": 1,
+      "reason": "Separate lease Grant revealed a Control fence acquired after aggregate locks; declared and prelocked inspection and lease fences before inspection."
+    },
+    "integrationFinal": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "fullContractsRerun": false
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreApi": "passed (3 entry points)",
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/inspection-grant-sets-unit.log",
+      "sha256": "820ab36353213d0fcb448211887c83b60e06b4f3c6c6cc0eb70055ce7283469c"
+    },
+    {
+      "path": "artifacts/verification/inspection-grant-sets-integration.log",
+      "sha256": "acf77d48bccc4798467cf333a3a7fe34147a42d9ae42963cf9be53faf3a406f2"
+    },
+    {
+      "path": "artifacts/verification/inspection-grant-sets-integration-final.log",
+      "sha256": "c7b13982072f2b46aca5e585a388006e4969dc1f4a62df6eb1a88c4a5edc6a16"
+    },
+    {
+      "path": "artifacts/verification/inspection-grant-sets-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/inspection-grant-sets-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/inspection-grant-sets-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/inspection-grant-sets-docs.log",
+      "sha256": "3d171c7955ca673a007edf9242823f3c099ca643098493547568b05fc3e9bed5"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/run-pack-inspection-job.ts",
+      "sha256": "bf20528040ba580da80f16612927a9a0a1fb3bbf24f8a46850c2a251fbeb6bb7"
+    },
+    {
+      "path": "packages/core/src/extensions/inspection-job-worker.ts",
+      "sha256": "66356934e0f8fd4b2357cc2b39aed97643648141f3a49c5986c64538e98bc03c"
+    },
+    {
+      "path": "packages/core/src/extensions/run-installed-migration-inspection.ts",
+      "sha256": "151a8fc34922fc3f35a7a17da7cff83870eff4c9d57cc81ed396e0e4e0d8dbb1"
+    },
+    {
+      "path": "packages/core/src/extensions/prepare-pack-inspection.ts",
+      "sha256": "bbc070f23662d25471d8f92e6234646774df68b237069966bfc641e0e4e6ec22"
+    }
+  ],
+  "remaining": [
+    "Late cleanup durable reporting",
+    "Complete Pack diagnostics and Enable",
+    "Remaining V1 modules"
+  ]
+}

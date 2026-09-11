@@ -1,0 +1,22 @@
+{
+  "schema": "DecisionSubmittedResponse",
+  "value": {
+    "success": true,
+    "data": {
+      "objectRef": {
+        "type": "abh.decision",
+        "id": "00000000-0000-4000-8000-000000000053",
+        "version": 2
+      },
+      "commandId": "00000000-0000-4000-8000-000000000057",
+      "status": "Approved",
+      "effectTrackingRefs": [
+        {
+          "type": "abh.decision-effect",
+          "id": "00000000-0000-4000-8000-000000000054",
+          "version": 1
+        }
+      ]
+    }
+  }
+}

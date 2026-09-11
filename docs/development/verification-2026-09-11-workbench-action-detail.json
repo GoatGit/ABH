@@ -1,0 +1,57 @@
+{
+  "date": "2026-09-11",
+  "subject": "workbench action list, detail and reason-bound cancellation",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r typecheck",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "workbenchTests": 4,
+    "workbenchPassed": 4,
+    "workbenchFailed": 0,
+    "workbenchTypecheck": "passed",
+    "workbenchNextBuildRoutes": [
+      "/",
+      "/actions",
+      "/actions/[id]",
+      "/decisions/[id]",
+      "/inbox",
+      "/missions/[id]"
+    ],
+    "workbenchNextBuild": "passed",
+    "contractsArtifacts": "51 files matched",
+    "apiEntryPointsChecked": 13,
+    "documentationLinks": 753,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "action list filters by mission, lifecycle, outcome and cursor",
+    "action list and detail request Strong consistency",
+    "detail renders server-authorized action state, authorization summary, visible operations and unresolved refs",
+    "Unknown is presented as awaiting confirmation rather than success or failure",
+    "cancel is offered only when the server view exposes abh.actions.cancel",
+    "cancel requires a bounded reason and server If-Match validation",
+    "cancel idempotency key binds action id, version and protected reason digest",
+    "accepted cancellation is not rendered as already effective",
+    "compensation is not fabricated automatically"
+  ],
+  "limits": [
+    "compensation proposal creation remains open",
+    "TanStack Query is not installed yet",
+    "SSE subscription UI is not implemented yet",
+    "JSON Forms is not implemented yet",
+    "ECharts is not implemented yet",
+    "organization switcher is not implemented yet",
+    "Settings journey is not implemented yet",
+    "production identity adapter installation remains a host requirement",
+    "browser E2E, accessibility and performance verification remain open",
+    "production process and tenant lifecycle governance remain open"
+  ]
+}

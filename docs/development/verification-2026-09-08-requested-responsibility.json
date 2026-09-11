@@ -1,0 +1,44 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Persisted authorization request to governed responsibility creation",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 229,
+    "coreTests": 284,
+    "httpAdapterTests": 10,
+    "failed": 0,
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "migrations": 43,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/requested-responsibility-check.log",
+      "sha256": "46b1f02b84b8ae26a6c5621e9eae602f2bbcf19de06a087e1cbe7e4ec481d42d"
+    },
+    {
+      "path": "artifacts/verification/requested-responsibility-final-tests.log",
+      "sha256": "4aa102147617dcaade6d13ac0ec8f1c15028c6ab34add16ae9e17fde9c4b46d7"
+    },
+    {
+      "path": "artifacts/verification/requested-responsibility-generate.log",
+      "sha256": "0bc57764d623986aecba920b5efc862279c1b81774cdebce63d0a91f2c1ab97a"
+    },
+    {
+      "path": "artifacts/verification/requested-responsibility-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/requested-responsibility-api-update.log",
+      "sha256": "e12e7435e79e503245017136ad94254136cabba37d1321c06b0b283142378567"
+    }
+  ],
+  "limitations": [
+    "Opens a trusted governed proposal through actual Decision Owner; installation must prove required seats and evidence coverage.",
+    "Automatic responsibility policy selection, Wait registration and authorization resumption remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

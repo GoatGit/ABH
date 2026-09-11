@@ -1,0 +1,52 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Tenant-local staged installation recovery discovery",
+  "checks": {
+    "integrationParentTests": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Real StagePack installation appears as a validated immutable candidate.",
+    "Bounded deployment-version paging preserves continuation after hidden rows.",
+    "Empty page still requires current Grant and deployment admission.",
+    "Cross-organization fixture is excluded.",
+    "Late policy withdrawal and in-transaction Grant revocation reject; rollback preserves subsequent access.",
+    "Callback input mutation does not change returned installation.",
+    "Existing signed installation, actual migration and observation recovery regression passes."
+  ],
+  "limitations": [
+    "Additional storage fixtures prove discovery, not signature/execute admission.",
+    "Internal cursor and discovery hints, not work leases or Enable authority.",
+    "Production installation worker, impact selection and full domain/backfill/projection remain incomplete.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/staged-pack-discovery-test.log",
+      "sha256": "24fa64ea93dac05074dbfeaafb7a6792a871b1f9eceaaa646d7043c609514114"
+    },
+    {
+      "path": "artifacts/verification/staged-pack-discovery-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/staged-pack-discovery-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/staged-pack-discovery-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/staged-pack-discovery-docs.log",
+      "sha256": "0bf9a685ac68182b403f0cbaf287bd71408e8251108b56ab16808bb7a54b80e3"
+    }
+  ]
+}

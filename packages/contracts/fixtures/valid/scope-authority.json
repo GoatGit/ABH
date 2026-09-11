@@ -1,0 +1,77 @@
+{
+  "schema": "ExecutionAuthority",
+  "value": {
+    "authorityRef": {
+      "type": "abh.execution-authority",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "resourceOrganizationId": "00000000-0000-4000-8000-000000000003",
+    "executionPrincipalRef": {
+      "type": "abh.principal",
+      "id": "00000000-0000-4000-8000-000000000005",
+      "version": 1
+    },
+    "allowedProposerRefs": [
+      {
+        "type": "abh.principal",
+        "id": "00000000-0000-4000-8000-000000000004",
+        "version": 1
+      }
+    ],
+    "binding": {
+      "kind": "Scope"
+    },
+    "grantRefs": [
+      {
+        "type": "abh.grant",
+        "id": "00000000-0000-4000-8000-000000000007",
+        "version": 1
+      }
+    ],
+    "scopeRefs": [
+      {
+        "type": "abh.organization",
+        "id": "00000000-0000-4000-8000-000000000003",
+        "version": 1
+      }
+    ],
+    "purposeRefs": [
+      {
+        "type": "abh.purpose",
+        "id": "00000000-0000-4000-8000-000000000008",
+        "version": 1
+      }
+    ],
+    "actionTypes": [
+      "hello.publish"
+    ],
+    "resourceEnvelopeRef": {
+      "type": "abh.resource-envelope",
+      "id": "00000000-0000-4000-8000-000000000009",
+      "version": 1
+    },
+    "validFrom": "2026-09-07T00:00:00Z",
+    "validUntil": "2026-09-07T01:00:00Z",
+    "stopConditions": [],
+    "issuanceEvidenceRef": {
+      "type": "abh.request-completion-evidence",
+      "id": "00000000-0000-4000-8000-000000000010",
+      "version": 1
+    },
+    "effectKey": "publish-approved-brief",
+    "issuedBy": {
+      "type": "Service",
+      "id": "00000000-0000-4000-8000-000000000011"
+    },
+    "sourceVersionRefs": [
+      {
+        "type": "abh.grant",
+        "id": "00000000-0000-4000-8000-000000000007",
+        "version": 1
+      }
+    ],
+    "issuanceDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "status": "Active"
+  }
+}

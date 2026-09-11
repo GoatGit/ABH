@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Actual packaged DDL through installed migration and structural persistence",
+  "checks": {
+    "focusedTests": 38,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Signed Pack contains actual CREATE TABLE with primary key and text default; expected structure signed before execution.",
+    "Before execution missing table rejects, actual execution commits, installed structural check and observation readback match authored shape.",
+    "Real default alteration produces column mismatch.",
+    "Owned table TOAST accepted only through parent catalog linkage; foreign TOAST ownership rejects.",
+    "Dedicated execution, lost COMMIT response, rollback/Unknown, claim replay and privilege regression suites run."
+  ],
+  "limitations": [
+    "Structural verification is not business-data verification or Enable.",
+    "Production governance/connection lifecycle and complete migration orchestration remain incomplete.",
+    "Full Core not repeated after change."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-installed-ddl-test.log",
+      "sha256": "d5d2f166512dc508951b92705e6b84b126c891eea816ec73f5ee9b581aa2500d"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-ddl-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-ddl-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-ddl-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-ddl-docs.log",
+      "sha256": "5bcc0aa881c9a9fb46ed3ee4c866567b05e23090d68875c12fed53d1f4c1c9e1"
+    }
+  ]
+}

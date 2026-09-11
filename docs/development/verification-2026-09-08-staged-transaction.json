@@ -1,0 +1,46 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Staged Pack recovery in composing management transaction",
+  "checks": {
+    "focusedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 284
+  },
+  "coverage": [
+    "Shared recovery path preserves current real Grant/governance/content validation.",
+    "Pack advisory lock remains held after recovery until composing transaction ends.",
+    "Independent maintenance transaction times out before outer completion and acquires lock afterward."
+  ],
+  "limitations": [
+    "Content recovery only, no migration execution authority.",
+    "Full Core not rerun; production migration evidence and Runner remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/staged-transaction-test.log",
+      "sha256": "39a123ad4cfde1c069ecf049f13141787cedab1707f4817d780734f8c2bc50c1"
+    },
+    {
+      "path": "artifacts/verification/staged-transaction-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/staged-transaction-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/staged-transaction-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/staged-transaction-docs.log",
+      "sha256": "79b7bfb24dec5c85dc5d88fe35076ba8e660bf75076b28d98424d99b2ed2b9e3"
+    }
+  ]
+}

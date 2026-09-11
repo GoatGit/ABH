@@ -1,0 +1,23 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Terminal reconciliation contradiction and resource dispatch freeze",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 222,
+    "coreTests": 206,
+    "failed": 0,
+    "generatedArtifacts": 48,
+    "publicApiReports": 9,
+    "documentLinks": 215,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/terminal-conflict-check.log",
+  "logSha256": "48367e52df34de95360c8c2f92e61a89b6153f17f2f504243374259b505e39a1",
+  "limitations": [
+    "Human Exception routing, Correction/Domain Result versions and governed unfreeze are not implemented.",
+    "Late Receipt does not itself schedule comparison; an installed admitted reconciliation caller is required.",
+    "Already committed dispatch exits may remain in flight; no automatic compensation or liability release.",
+    "Local integration evidence does not prove production acceptance or complete V1."
+  ]
+}

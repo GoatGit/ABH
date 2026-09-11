@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Deferred query dispatch guard for migration inspection",
+  "checks": {
+    "focusedTests": 11,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Queries created while active reject if consumed after disposal: tagged, unsafe/simple, values and cursor.",
+    "Cursor rejection uses the current query rejection callback.",
+    "Driver file loader rejected before asynchronous file dispatch.",
+    "Existing cancellation, deadline, disposal and actual installed migration persistence/recovery pass."
+  ],
+  "limitations": [
+    "Guard relies on locked postgres 3.4.9 PendingQuery handler behavior; driver upgrades require regression.",
+    "Trusted callback boundary, not a sandbox.",
+    "Production installation scheduling, domain/backfill/projection and Enable incomplete.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-lazy-query-test.log",
+      "sha256": "e3ff81ab612deb65fc4ae9861f624a227e85397edebf3ddff735a3ca6c555c0d"
+    },
+    {
+      "path": "artifacts/verification/migration-lazy-query-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-lazy-query-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-lazy-query-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-lazy-query-docs.log",
+      "sha256": "9e153bb0edf266670e0d3703600e4a15e533fd4115cdd98c34e07f59997b666c"
+    }
+  ]
+}

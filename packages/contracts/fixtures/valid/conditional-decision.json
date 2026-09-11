@@ -1,0 +1,14 @@
+{
+  "schema": "SubmitDecisionPayload",
+  "value": {
+    "packageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "response": "Approved",
+    "conditionRefs": [
+      {
+        "type": "abh.condition",
+        "id": "00000000-0000-4000-8000-000000000052",
+        "version": 1
+      }
+    ]
+  }
+}

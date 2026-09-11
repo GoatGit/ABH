@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Signed governance reservations agree with durable installed Pack identities",
+  "checks": {
+    "focusedTests": 13,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "isolatedContainersRemaining": 0,
+    "documentLinks": 232
+  },
+  "coverage": [
+    "Real signed governance cannot reserve a conflicting digest for an installed Pack ID/version.",
+    "Rejected publication leaves policy version, event and receipt unchanged.",
+    "Same version in another Pack namespace is not a collision.",
+    "Normal signed publication and competing policy CAS still pass."
+  ],
+  "fullSuite": "Not rerun; focused real PostgreSQL and Cosign tests cover the changed publication path.",
+  "limitations": [
+    "Data impact assessment, Enable/Registry, management root revocation and full V1 scope remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-reservation-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-reservation-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-reservation-docs.log",
+      "sha256": "bd3da70453ef5ac1f0e98b4c823522d13ca9c964ead07790b706a2240c53cdd3"
+    },
+    {
+      "path": "artifacts/verification/pack-reservation-test.log",
+      "sha256": "0b26f7cb3927a8017b02f79d6a86a2789f3c8eb5528a273ca880c8c62f84b6dc"
+    },
+    {
+      "path": "artifacts/verification/pack-reservation-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

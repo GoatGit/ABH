@@ -1,0 +1,38 @@
+{
+  "date": "2026-09-09",
+  "scope": "Pack inspection current-version delivery resolution; no queue acknowledgement implementation",
+  "tests": {
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "typecheck": "passed",
+    "build": "passed",
+    "api": "passed",
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-inspection-delivery-storage.log",
+      "sha256": "0b0d11a805e6c0645b2f4ee659f609befc1a3db841597bdcef425e754b90c109"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-delivery-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-delivery-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-delivery-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-delivery-docs.log",
+      "sha256": "0ce402aae0a51765d044cd8f14067f5a550ebf93f1c718b835a6d9475a83496d"
+    }
+  ]
+}

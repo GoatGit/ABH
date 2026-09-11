@@ -1,0 +1,43 @@
+{
+  "schema": "ReadObjectRequest",
+  "value": {
+    "context": {
+      "callId": "00000000-0000-4000-8000-000000000070",
+      "requestContextRef": {
+        "type": "abh.request-context",
+        "id": "00000000-0000-4000-8000-000000000071",
+        "version": 1
+      },
+      "target": {
+        "objectRef": {
+          "type": "abh.stored-object",
+          "id": "00000000-0000-4000-8000-000000000078",
+          "version": 1
+        },
+        "action": "abh.artifacts.read",
+        "scopeRefs": [
+          {
+            "type": "abh.organization",
+            "id": "00000000-0000-4000-8000-000000000003",
+            "version": 1
+          }
+        ]
+      },
+      "deadline": "2026-09-07T00:02:00Z"
+    },
+    "authorizedContextRef": {
+      "type": "abh.authorized-context",
+      "id": "00000000-0000-4000-8000-000000000077",
+      "version": 1
+    },
+    "objectRef": {
+      "type": "abh.stored-object",
+      "id": "00000000-0000-4000-8000-000000000078",
+      "version": 1
+    },
+    "range": {
+      "start": 0,
+      "endInclusive": 2
+    }
+  }
+}

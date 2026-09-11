@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current impact and exact installed Pack snapshot recovery",
+  "checks": {
+    "focusedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 300
+  },
+  "coverage": [
+    "Return exact snapshot already verified inside current impact admission.",
+    "Cross-check report Pack Ref and subject digest against recovered installation.",
+    "Actual payload read and copy-isolated installation/report results.",
+    "Existing real signature, current admission, tamper and lock regressions retained."
+  ],
+  "limitations": [
+    "Impact facts are not migration completion or execution authority.",
+    "Migration preparation composition, production supporting facts, Runner and Enable remain incomplete.",
+    "Full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-pack-recovery-test.log",
+      "sha256": "e368801dc0673e8589524d06d3c6f4e78de608cb247f96d08559f8331c3e2467"
+    },
+    {
+      "path": "artifacts/verification/impact-pack-recovery-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/impact-pack-recovery-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-pack-recovery-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/impact-pack-recovery-docs.log",
+      "sha256": "d7f506ae0c58f6df63d1764e3ef46f91856056667e08f4cc0be250dad9e9935d"
+    }
+  ]
+}

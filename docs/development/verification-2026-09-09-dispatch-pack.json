@@ -1,0 +1,54 @@
+{
+  "date": "2026-09-09",
+  "scope": "Internal Pack dispatch composition and final exit transaction admission rollback",
+  "tests": {
+    "initialActionAndResolution": {
+      "passed": 69,
+      "failed": 0,
+      "skipped": 0
+    },
+    "finalActions": {
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "No nonempty signed Pack successful T1/Permit/resolve/dispatch acceptance yet.",
+    "T1 must already declare the same capability fences.",
+    "Query exit composition and production default governance remain incomplete.",
+    "Full Core suite not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/dispatch-pack-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/dispatch-pack-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/dispatch-pack-docs.log",
+      "sha256": "d5a90487232f86be05d2294d337b36d2dcbedce111af88f822817a144eec2d16"
+    },
+    {
+      "path": "artifacts/verification/dispatch-pack-final-tests.log",
+      "sha256": "30559f9d87aa49c0bbee03f48aad205d40cfd4833b03685757c21014e3fdcfc1"
+    },
+    {
+      "path": "artifacts/verification/dispatch-pack-tests.log",
+      "sha256": "cac0e93b09d9b564dc903b366f30c3bff73e970ec774b3ae95bc8273ee4e4407"
+    },
+    {
+      "path": "artifacts/verification/dispatch-pack-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

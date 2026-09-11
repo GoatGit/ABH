@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-09",
+  "scope": "Bounded Capture identity refresh retaining original deadline and pending evidence",
+  "tests": {
+    "actions": {
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "Noncooperating identity implementations may continue their own work after cancellation; late results do not trigger capture.",
+    "Full Core suite and signed nonempty Pack end-to-end acceptance not run."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/capture-refresh-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/capture-refresh-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/capture-refresh-docs.log",
+      "sha256": "73bec416eb4f9c16ca181a0e38ad292d2043ec21eed3f2844e605c8c8b8f00af"
+    },
+    {
+      "path": "artifacts/verification/capture-refresh-tests.log",
+      "sha256": "402f18d3ea8e7727a78b64436dec89b7859afa292a74e45e660ca456870fb140"
+    },
+    {
+      "path": "artifacts/verification/capture-refresh-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

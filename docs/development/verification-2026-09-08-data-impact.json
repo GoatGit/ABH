@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Deterministic Pack data impact inventory comparison",
+  "checks": {
+    "focusedTests": 4,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": 234
+  },
+  "coverage": [
+    "Incomplete inventory cannot produce NotApplicable.",
+    "Empty migrations do not conceal changed definitions.",
+    "Added/changed/removed semantic definitions are deterministic across input ordering.",
+    "Declared migration requires verification even for unchanged inventories.",
+    "Duplicate/malformed inventories and tampered Manifest digests reject; caller mutations cannot replace snapshots."
+  ],
+  "limitations": [
+    "Pure internal computation; no public report schema, persistence, signature or Enable authority yet.",
+    "Trusted compiler inventory provenance and current deployment/environment binding remain required.",
+    "Full suite not rerun for this isolated new calculation module."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/data-impact-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/data-impact-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/data-impact-docs.log",
+      "sha256": "88a5d2680ba16ccb1e2a611822f68aa43d9a61aa2d4c0609e5815fb6e3f74726"
+    },
+    {
+      "path": "artifacts/verification/data-impact-test.log",
+      "sha256": "2f90e2dc37c54d2654232ae3727105e5b69c1834f00f0f7c63aae1a8c78eb917"
+    },
+    {
+      "path": "artifacts/verification/data-impact-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

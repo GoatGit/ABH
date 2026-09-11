@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-09",
+  "scope": "Committed suspension event and exact historical capability-set source for management notification preparation",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "limitations": [
+    "Management evidence reader only; no business notification routing or consumption.",
+    "No global reference proof, retirement or compatible query.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-source-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-source-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-source-docs.log",
+      "sha256": "3dd4aa7d1383fc9f0b8fb2f2f47647fc219b90122fb313aa515627297c141f3b"
+    },
+    {
+      "path": "artifacts/verification/suspension-source-tests.log",
+      "sha256": "626ceb55c530131592870812c8ad430ed8d40629a74dfb87625f310a67deb675"
+    },
+    {
+      "path": "artifacts/verification/suspension-source-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

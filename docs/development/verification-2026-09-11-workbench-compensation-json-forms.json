@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-11",
+  "subject": "host-declared compensation proposals rendered with JSON Forms",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r typecheck",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "workbenchTests": 8,
+    "workbenchPassed": 8,
+    "workbenchFailed": 0,
+    "workbenchTypecheck": "passed",
+    "workbenchNextBuild": "passed",
+    "actionDetailFirstLoadJs": "107 kB",
+    "contractsArtifacts": "51 files matched",
+    "apiEntryPointsChecked": 13,
+    "documentationLinks": 757,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "compensation is offered only for Closed Failed or PartiallySucceeded actions",
+    "default compensation adapter is deny-by-default",
+    "host adapter receives the server-read ActionView and must authorize the compensation template",
+    "templates bind action type, target refs, source refs and artifact governance metadata",
+    "template source and artifact refs must include the exact current ActionRef",
+    "JSON Forms uses an explicit Ajv 2020 instance",
+    "the server revalidates submitted input with Ajv 2020 before calling Core",
+    "idempotency keys bind source action version, template and protected proposal intent",
+    "submission uses the public two-step store-inline artifact plus actions.propose path",
+    "accepted compensation is not rendered as approved or effective",
+    "JSON Forms chunk is lazily loaded outside the action detail first-load bundle"
+  ],
+  "limits": [
+    "production compensation templates and Domain Pack governance assembly remain host work",
+    "complete responsibility JSON Forms journeys remain open",
+    "ECharts is not implemented yet",
+    "organization member, purpose, connection and automation governance UI remains open",
+    "Settings governance query and command journeys remain open",
+    "browser compensation E2E is not implemented yet",
+    "browser accessibility and performance verification remain open",
+    "production identity adapter installation remains a host requirement",
+    "production process and tenant lifecycle governance remain open"
+  ]
+}

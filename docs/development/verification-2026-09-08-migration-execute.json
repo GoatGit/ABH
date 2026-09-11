@@ -1,0 +1,62 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "One-use committed migration claims and actual transactional SQL primitive",
+  "checks": {
+    "focusedTests": 21,
+    "coreFullTests": 417,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Only original newly committed claim objects carry one-use dispatch provenance; copied, modified, consumed and recovered claims cannot execute.",
+    "Actual dedicated PostgreSQL role creates and writes its owned schema, verifies in-transaction rows and acknowledges COMMIT.",
+    "Wrong bytes and nontransactional steps do not execute; Core DDL privilege errors, result denial and late BYPASSRLS elevation roll back uncommitted DDL.",
+    "Embedded COMMIT yields Unknown; it cannot be falsely declared rolled back or automatically retried.",
+    "A TCP proxy drops real PostgreSQL COMMIT CommandComplete: committed data persists, result is Unknown, and empty observation history does not permit replay.",
+    "Deadlines destroy the exclusive connection and prevent delayed preparation from dispatching.",
+    "Disconnect regression led to removing ROLLBACK on dead reserved connections; late executor queries are guarded after lifetime end."
+  ],
+  "limitations": [
+    "This is an internal execution primitive; current prepare and beforeCommit admissions in execution tests are explicit fixtures.",
+    "Full governed signed installed admission, durable result Artifact/observations, cross-step recovery, nontransactional Runner, business table readiness and Enable remain incomplete.",
+    "Host must supply a fresh exclusive direct-role connection, honor callback cancellation and actually destroy the connection; failed disposal is explicitly reported.",
+    "COMMIT acknowledgement alone never constitutes migration verification or Enable.",
+    "Focused 21-test run preceded the final lifetime/query guards; the subsequent full 417-test run includes the final source."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-execute-test.log",
+      "sha256": "3c59405f840fa870165de56eab067418cbd3a9551d558c274b2e6c5e83746663"
+    },
+    {
+      "path": "artifacts/verification/migration-execute-full.log",
+      "sha256": "ebcce21a73ae1f9a5a1292e4cc1fb5869d292f814b1f47aa23f855b0fbc74e9b"
+    },
+    {
+      "path": "artifacts/verification/migration-execute-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-execute-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-execute-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-execute-disconnect-before.log",
+      "sha256": "81fec255731ac64704401aa81b2f09db2c5a33d6e393a8ec3bb99ddf15271ac8"
+    },
+    {
+      "path": "artifacts/verification/migration-execute-docs.log",
+      "sha256": "c0f4f0bcaf06dc7c989e75098e7ef6a9ae6e072e190d37cf408629f02cb18993"
+    }
+  ]
+}

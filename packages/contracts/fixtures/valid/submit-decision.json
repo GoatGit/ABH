@@ -1,0 +1,8 @@
+{
+  "schema": "SubmitDecisionPayload",
+  "value": {
+    "packageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "response": "Approved",
+    "conditionRefs": []
+  }
+}

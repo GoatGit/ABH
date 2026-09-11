@@ -1,0 +1,25 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Terminal Human Exception and responsibility Request binding",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 223,
+    "coreTests": 206,
+    "failed": 0,
+    "migrationVersion": 33,
+    "tenantTables": 58,
+    "generatedArtifacts": 48,
+    "publicApiReports": 9,
+    "documentLinks": 216,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/exception-check.log",
+  "logSha256": "2c3ba2d11ec9560245596807f424253dd1e440643e4844a68494b870e6403b17",
+  "limitations": [
+    "Only terminal contradiction creation and responsibility binding implemented; ResolveException resolution kinds, Correction and governed unfreeze remain.",
+    "Automatic case routing from frozen events is not installed.",
+    "Reviewer eligibility callbacks in integration tests are explicit fixtures; production governance is not proven.",
+    "Closed Request does not change technical state, release obligations or unfreeze resources; V1 remains incomplete."
+  ]
+}

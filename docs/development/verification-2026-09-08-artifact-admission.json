@@ -1,0 +1,55 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Artifact authorization callbacks cannot mutate stored facts",
+  "checks": {
+    "focusedTests": 18,
+    "coreFullTests": 395,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 282
+  },
+  "coverage": [
+    "Pre-fix actual PostgreSQL tests demonstrate metadata mutation and Tombstoned-to-Available read bypass.",
+    "Read and tombstone callbacks receive independent record copies.",
+    "Tombstone persistence rejects callback metadata injection.",
+    "Context and transaction rechecked after asynchronous authorization."
+  ],
+  "limitations": [
+    "Production migration evidence verification and Migration Runner remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/artifact-admission-before.log",
+      "sha256": "7872bb2a52ce44c2b509cf80034d7b764946a37287d4f52da859bf0802b09089"
+    },
+    {
+      "path": "artifacts/verification/artifact-admission-test.log",
+      "sha256": "11b187ba73234f71013d5be84d8dcdc87b081a8877d31bcf401fd09c9186ffb2"
+    },
+    {
+      "path": "artifacts/verification/artifact-admission-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/artifact-admission-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/artifact-admission-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/artifact-admission-full.log",
+      "sha256": "d236c90c8b7bf0cfa8e24cc8eee7e0983498439c06c36270611dc14d90daf2ac"
+    },
+    {
+      "path": "artifacts/verification/artifact-admission-docs.log",
+      "sha256": "ae6e58310094848e20cb08215aa2055ec7bb0285a397d3cc01404988f702cd1c"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "date": "2026-09-09",
+  "scope": "Independent query exit can bind governed replacement transport while preserving original Permit identity",
+  "tests": {
+    "contracts": {
+      "passed": 307,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actions": {
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "generate": true,
+    "generatedCheck": true,
+    "contractsBuild": true,
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "contractsApiUpdated": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "Replacement actual signed Pack resolution after original suspension/retirement not yet composed.",
+    "Compatibility issuance, current governance and normalization remain trusted installation.",
+    "No full Core rerun this batch.",
+    "Remaining V1 incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/compatible-query-actions-tests.log",
+      "sha256": "20ebeb83612c27a49aad717170acd225534b042fa78ac7bf6139be3db08c17fb"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-contracts-api.log",
+      "sha256": "5382df51d239c0fabb34465739029ec336b9a89fe1df3fb85463e7180d3518f6"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-contracts-tests.log",
+      "sha256": "87d75c132784b21dd2c7fb610f86e24c5cb50805577af0c607a0448b85257092"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-core-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-docs.log",
+      "sha256": "0bc95c62e3a26a7424876add1cd4265456ccc7dc1fef0bf685ad3ceca5f3b7bc"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-generate.log",
+      "sha256": "106d3847d1ca86c5b2125b1beafcb82aa58a98193da0b91dffe5492e02d6d6e1"
+    },
+    {
+      "path": "artifacts/verification/compatible-query-generated-check.log",
+      "sha256": "e0e8a3ca2a6b713303505c7d470817cf5b0cf1b27b722faea2d23a62eff18a3b"
+    }
+  ]
+}

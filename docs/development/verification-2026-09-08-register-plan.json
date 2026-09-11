@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current-Grant compiled plan registration and atomic Operation creation",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 228,
+    "coreTests": 280,
+    "httpAdapterTests": 10,
+    "failed": 0,
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/register-plan-check.log",
+      "sha256": "a97654ce1567841d918f2ff09a8df6788fac1b773ee4426e17b8b5a53bf7ab39"
+    },
+    {
+      "path": "artifacts/verification/register-plan-tests.log",
+      "sha256": "d1cf941ea04640ff6cad9d404bce5dd194fc6b2a5b3b739bcbe556fc85328235"
+    },
+    {
+      "path": "artifacts/verification/register-plan-generate.log",
+      "sha256": "0bc57764d623986aecba920b5efc862279c1b81774cdebce63d0a91f2c1ab97a"
+    },
+    {
+      "path": "artifacts/verification/register-plan-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/register-plan-api-update.log",
+      "sha256": "e12e7435e79e503245017136ad94254136cabba37d1321c06b0b283142378567"
+    },
+    {
+      "path": "artifacts/verification/register-plan-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "limitations": [
+    "Consumes trusted compiled OperationPlan; production Compiler invocation is not implemented by this entry.",
+    "Production source/scope-proof/capability-read governance must be installed.",
+    "Responsibility branches and durable Human-to-Service RequestAuthorization progression remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

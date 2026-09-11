@@ -1,0 +1,32 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Tenant-local bounded Operation recovery Worker",
+  "profile": "Internal component; no production service hosting or V1 acceptance",
+  "checks": {
+    "pnpm check": "incomplete: database fixture host-port startup timeout; other executed checks passed",
+    "databaseFixtureRetry": "11/11 passed",
+    "contractTestsPassed": 221,
+    "coreTestsPassedIncludingRetry": 175,
+    "actionTestsPassed": 45,
+    "migrationVersions": 30,
+    "forceRlsTenantTables": 56,
+    "generatedArtifacts": 48,
+    "localDocumentLinks": 215,
+    "finalBuild": "passed",
+    "publicApiCheck": "passed",
+    "containersCleaned": true
+  },
+  "logs": {
+    "artifacts/verification/m0-b-check.log": "e60ebc32ef0e06fa6fd676b399ad889fcb17f69e1e1cd6b119e1fd45b3b765fc",
+    "artifacts/verification/recovery-worker.log": "6ca114081fc7f0b3cc0d532c5fb9691617b194143c5b6fc9cf3da331852ba167",
+    "artifacts/verification/recovery-worker-database-retry.log": "f28f6f71dfe2a774a87c06031bf369e79181ee37804b2dcff862572f14024aca",
+    "artifacts/verification/recovery-worker-api.log": "4bd2f5ccb1803f0cd4b2060aa94a286ece2ea32618babc305429e5674ac36ea9"
+  },
+  "limitations": [
+    "Production hosting, restricted global tenant discovery and durable scan watermarks remain.",
+    "Observing query/reconciliation scheduling and Publisher remain.",
+    "Current fixture policy/Connector governance does not establish production admission.",
+    "Full V1 modules and independent acceptance gates remain."
+  ]
+}

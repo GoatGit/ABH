@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-09",
+  "scope": "Public typed capability query client and actual HTTP/Identity/DB integration",
+  "tests": {
+    "clientAndCapabilityQuery": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "browserBundle": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "Full Core suite not rerun in this batch.",
+    "Nonempty package fixture uses administrative metadata; real signed nonempty runtime acceptance remains outstanding.",
+    "Gateway execution composition and per-invocation governance remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/capability-client-api-update.log",
+      "sha256": "a8c9d0cd05085370f3a7efa4304f2b69e91a9884c62278e4d0468472b319776f"
+    },
+    {
+      "path": "artifacts/verification/capability-client-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/capability-client-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/capability-client-docs.log",
+      "sha256": "4358b4fae35ed0fa27f9e327b170615c280d167561cf91a0d7b665cba17fd8e8"
+    },
+    {
+      "path": "artifacts/verification/capability-client-tests.log",
+      "sha256": "dcbc45ebab69275a115967ed4674a1652cb0957d851773b70895919b75b4a7f6"
+    },
+    {
+      "path": "artifacts/verification/capability-client-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

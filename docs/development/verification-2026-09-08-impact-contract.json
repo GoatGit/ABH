@@ -1,0 +1,76 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Formal data inventory and impact contracts with relational validation",
+  "checks": {
+    "contractsTests": 247,
+    "coreFocusedTests": 4,
+    "failed": 0,
+    "skipped": 0,
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 236
+  },
+  "coverage": [
+    "Closed bounded inventory/change/impact schemas and generated Core types.",
+    "Unique semantic identities and migration paths.",
+    "Added/Changed/Removed before and after digest invariants.",
+    "Completeness, reasons, status and inventory commitment consistency.",
+    "Existing Core impact computations validate against generated contracts."
+  ],
+  "limitations": [
+    "Schema consistency does not authenticate compiler inventory completeness or provenance.",
+    "Persistent impact Owner, deployment/environment binding, migration verification and Enable remain incomplete.",
+    "Core full suite was not rerun for the isolated impact contract change."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-contract-api-update.log",
+      "sha256": "aafd10dee2fd97316f0a45576a2863f9d6d32b732efeec31ca5ab8df8bd4d939"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-core-test.log",
+      "sha256": "2a84ece0c0705f67ff990a2d3cbfd77d6faa57a0a3a2daef5e2829613cda060c"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-docs.log",
+      "sha256": "755fa4fcd4e894b718720d9a5ae42414bfc520d409553a8da4cdcfd0ec0b7fb2"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-generate.log",
+      "sha256": "bec6050a5253084e710e1335eb3f8899147fa958342ba034480b22cc9ed9db66"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-generated.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-test.log",
+      "sha256": "80adf3ee9f4920f352c4f4d50ca570b40f9ed750ef11943ad4dd3e2c4fc27c02"
+    },
+    {
+      "path": "artifacts/verification/impact-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Decision Strong HTTP GET with object-local source watermark",
+  "checks": {
+    "coreTests": 257,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/decision-http-query-core.log",
+      "sha256": "d25c4578233c4841d00e46887708ff8993816756db17397b29ad3697416850f9"
+    },
+    {
+      "path": "artifacts/verification/decision-http-query-typecheck.log",
+      "sha256": "c70eec6071b0f0fe48aad06a103990e676f51ad535d84ab19aaa65f23115e37c"
+    },
+    {
+      "path": "artifacts/verification/decision-http-query-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/decision-http-query-docs.log",
+      "sha256": "d5e7ec9fa954deb6917af95efe5f26b05af72412b79c0bd02e13485c9043360b"
+    }
+  ],
+  "limitations": [
+    "Object-local source fingerprint only, not a continuous projection/consumer watermark or retention cursor.",
+    "Projection requests rejected; ListInbox HTTP, SSE and global watermarks remain incomplete.",
+    "Production identity and source/governance installation required.",
+    "Full workspace contract/API checks not repeated; public schemas unchanged.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

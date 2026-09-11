@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core bounded raw model response and required output validation",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/model-gateway.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "modelGatewayTests": 10,
+    "modelGatewayPassed": 10,
+    "modelGatewayFailed": 0,
+    "coreTests": 539,
+    "corePassed": 533,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractArtifacts": 51,
+    "coreApiReport": "passed",
+    "documentationLinks": 732,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "adapter must return a raw response before completion",
+    "raw transport is stored through the bounded Inline Artifact Owner",
+    "response artifact owner is the exact model call",
+    "route data class and region govern stored response facts",
+    "response artifact binding is atomic with completion and budget settlement",
+    "output validator rejection leaves InFlight with no artifact and no confirmed usage",
+    "oversized raw transport leaves InFlight with held budget",
+    "capacity success still releases while storing response evidence",
+    "contract validators include optional ModelCallRecord.rawResponseRef"
+  ],
+  "limits": [
+    "actual provider transport and secret isolation remain open",
+    "hosts must install the concrete JSON Schema or contract validator",
+    "staged Object Store remains required above 64 KiB",
+    "streaming, fallback and production adapter assembly remain open"
+  ]
+}

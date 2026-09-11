@@ -1,0 +1,35 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Full Core regression after migration structure/signature/ACL integration",
+  "command": "ABH_TEST_COSIGN=<pinned local cosign-v2.6.1> TESTCONTAINERS_RYUK_DISABLED=true pnpm --filter @abh/core test",
+  "checks": {
+    "coreTests": 443,
+    "passed": 443,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 76195.041375,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Full packages/core/test/*.test.ts with real PostgreSQL, pinned Cosign, configured test concurrency 2.",
+    "Includes existing HTTP/Owner/Durable/Wait/execution and migration structural regression suites."
+  ],
+  "limitations": [
+    "Passing existing tests does not establish all V1 requirements.",
+    "Production governance/default service, Mission/Run/Pi/Gateways, ObjectStore lifecycle, Projection/Workbench, SDK/CLI and complete Pack Enable remain incomplete.",
+    "This run covers Core only; prior Contracts 255-test evidence is separate."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/core-full-2026-09-09.log",
+      "sha256": "c3ffbcf4a8b58838896e6fcbbbbf98569a306b43662f675af0b3c2da38c01498"
+    },
+    {
+      "path": "artifacts/verification/core-full-2026-09-09-docs.log",
+      "sha256": "a12295da6e4961962e9f348abf05dffcfc0b8a3ceb00443a7b89f5b4aebcd687"
+    }
+  ]
+}

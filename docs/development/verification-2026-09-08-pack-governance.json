@@ -1,0 +1,46 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current Pack governance revalidation around cryptographic content verification",
+  "checks": {
+    "packTests": 23,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "apiReports": 11,
+    "documentLinks": 222
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-governance-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/pack-governance-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-governance-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    },
+    {
+      "path": "artifacts/verification/pack-governance-regression.log",
+      "sha256": "9a334cbd5b130e49d588842a167c3dd49d2f9ee8458ba47c690022de1426ae74"
+    },
+    {
+      "path": "artifacts/verification/pack-governance-tests.log",
+      "sha256": "e580e36c1f90b95f221b8181888fa8499949177038ce2e5788ba7daccec6e344"
+    },
+    {
+      "path": "artifacts/verification/pack-governance-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "limitations": [
+    "Governance source is an installed host interface; tests use an explicit in-memory source and real Cosign.",
+    "No persistent authenticated governance source, deployment command or audit implemented.",
+    "Stage must atomically compare governance version; double-read does not provide atomic installation.",
+    "Core full suite/workspace not rerun; complete installation/enablement and V1 remain incomplete."
+  ]
+}

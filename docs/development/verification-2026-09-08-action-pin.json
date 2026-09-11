@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Grant-backed Action version preparation without execution authority",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 228,
+    "coreTests": 279,
+    "httpAdapterTests": 10,
+    "failed": 0,
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/action-pin-check.log",
+      "sha256": "697ae4f57f4909d9a81e05f3bb1472c9c73004b26a61e33fe839c4356c7c5d0f"
+    },
+    {
+      "path": "artifacts/verification/action-pin-tests.log",
+      "sha256": "acc59a37b544292dc67217328d7f750ff5129e0dae968d8f3546e67d6ce7a7c9"
+    },
+    {
+      "path": "artifacts/verification/action-pin-generate.log",
+      "sha256": "0bc57764d623986aecba920b5efc862279c1b81774cdebce63d0a91f2c1ab97a"
+    },
+    {
+      "path": "artifacts/verification/action-pin-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/action-pin-api-update.log",
+      "sha256": "3920514bdda9b3ccff6b7cd509ab67b53a06128fc469c92f14370e595f57230b"
+    },
+    {
+      "path": "artifacts/verification/action-pin-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "limitations": [
+    "Grant-backed internal pinAction only; production capability-read/source governance must be installed.",
+    "ResolveAndPinRequest keeps existing AuthorityRef alternatives for existing internal paths; a reference is not authorization.",
+    "Compiler/plan registration admission, responsibility branches and durable Human-to-Service RequestAuthorization progression remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

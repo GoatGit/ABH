@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-11",
+  "subject": "authorized mission projection rendered with semantic data and lazy ECharts",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r typecheck",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "workbenchTests": 10,
+    "workbenchPassed": 10,
+    "workbenchFailed": 0,
+    "workbenchTypecheck": "passed",
+    "workbenchNextBuild": "passed",
+    "missionRouteSize": "3.16 kB",
+    "missionFirstLoadJs": "117 kB",
+    "echartsInFirstLoadBundle": false,
+    "contractsArtifacts": "51 files matched",
+    "apiEntryPointsChecked": 13,
+    "documentationLinks": 759,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "the raw projection JSON surface is replaced by semantic status and count fields",
+    "chart input requires the exact mission ID, positive versions, bounded text, valid time and finite non-negative integer counts",
+    "unsupported projection shapes degrade to an accessible error instead of rendering inferred values",
+    "ECharts uses SVG rendering and is limited to Bar, Grid and Tooltip",
+    "the chart canvas is hidden from assistive technology while values remain in the semantic table",
+    "stream state is announced through a status region",
+    "ECharts is lazily loaded outside the Mission first-load bundle",
+    "the resize observer is disconnected and the chart instance is disposed on unmount"
+  ],
+  "limits": [
+    "browser E2E, screen-reader and production performance verification remain open",
+    "business charts beyond mission trigger and blocker counts remain open",
+    "complete responsibility JSON Forms journeys remain open",
+    "production compensation and Settings governance assembly remain host work",
+    "production identity adapter installation remains a host requirement"
+  ]
+}

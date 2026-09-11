@@ -1,0 +1,52 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Bounded saved observation selection and installed automatic recovery",
+  "checks": {
+    "finalIntegration": "passed",
+    "coreTypecheck": "passed",
+    "installedSignatureIntegration": 1,
+    "runtimeHostTests": 5,
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "Selection is a momentary recovery hint, not a durable work claim or proof of current state.",
+    "Existing evidence drift fails strict recovery; does not silently create replacement evidence.",
+    "Full Core suite not repeated.",
+    "Production jobs, observation index, execution leases, full domain/backfill/projection verification, ObjectStore and Enable incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-state-selection-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-state-selection-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-state-selection-docs.log",
+      "sha256": "862063db0f3071acf89034a6b22cabd1a2c218a1ccaaad1a03dc4f6b524fa8bf"
+    },
+    {
+      "path": "artifacts/verification/migration-state-selection-test.log",
+      "sha256": "f85eff55cda02b010bb198853257feacdf96ae62b5911f603321a54034db3fc1"
+    },
+    {
+      "path": "artifacts/verification/migration-state-selection-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "coverage": [
+    "Actual initial inspection with no saved observation and hosted recovery of unique persisted observation.",
+    "Complete missing/unique/ambiguous selection and incomplete scans with zero or one matching candidate.",
+    "Factory rejects conflicting explicit recovery and automatic discovery.",
+    "Ambiguous/incomplete factory paths never acquire the configured invalid target URL.",
+    "Worker reports both new blocking statuses and independent page counts; configuration remains captured."
+  ]
+}

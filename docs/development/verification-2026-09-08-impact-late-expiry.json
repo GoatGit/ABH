@@ -1,0 +1,45 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Reject impact proof expiry during final signer callback",
+  "checks": {
+    "integratedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "isolatedContainersRemaining": 0,
+    "documentLinks": 256
+  },
+  "coverage": [
+    "Real short-lived Cosign proof expires while final signer callback waits.",
+    "Final check rejects and no report/receipt/outbox writes survive."
+  ],
+  "limitations": [
+    "Focused integration scenario, not full Core suite.",
+    "Compiler roots, baseline catalog, migration verification and Enable still incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-late-expiry-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/impact-late-expiry-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-late-expiry-docs.log",
+      "sha256": "cb0934f7b926ca88db8e0aedf6185981fab01f9fb1f3254487cea6208a002bc8"
+    },
+    {
+      "path": "artifacts/verification/impact-late-expiry-test.log",
+      "sha256": "5875537e47ec1c893dfb0bf19325776c4bccf453cc4ef88b3331512136f6cb00"
+    },
+    {
+      "path": "artifacts/verification/impact-late-expiry-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

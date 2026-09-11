@@ -1,0 +1,37 @@
+[
+  {
+    "name": "artifact-and-migration",
+    "manifest": {
+      "apiVersion": "abh.open/v1",
+      "metadata": {
+        "id": "org.example.hello",
+        "version": "1.0.0"
+      },
+      "artifacts": [
+        {
+          "ref": "z.txt",
+          "digest": "sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+          "mediaType": "text/plain",
+          "sizeBytes": 3
+        }
+      ],
+      "migrations": [
+        {
+          "ref": "a.sql",
+          "digest": "sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+          "mediaType": "text/plain",
+          "sizeBytes": 3
+        }
+      ],
+      "integrity": {
+        "signatureRef": "sig/one.json"
+      }
+    },
+    "expected": {
+      "manifestDigest": "sha256:c32d9f69053903638a1e51fbb02004f4fff78a77b7d240ad16d75cdc3c4af0ba",
+      "artifactSetDigest": "sha256:25c856ac9ecbc637de4878c11f570b463bf6412266df7480fe16f300ce79bb8c",
+      "signaturePayload": "[\"abh-pack-v1\",\"c32d9f69053903638a1e51fbb02004f4fff78a77b7d240ad16d75cdc3c4af0ba\",\"25c856ac9ecbc637de4878c11f570b463bf6412266df7480fe16f300ce79bb8c\"]",
+      "packageDigest": "sha256:afdb565f0bc965f601b8ce9541434efe71661faf12aedce76c6422d9462b60b1"
+    }
+  }
+]

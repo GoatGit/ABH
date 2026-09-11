@@ -1,0 +1,77 @@
+{
+  "date": "2026-09-09",
+  "scope": "Internal EnablePack command, real committed state transition and current-authority replay of immutable acceptance",
+  "tests": {
+    "realCosignFinal": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "note": "Real signed Pack, short-lived formal Human request/approval, command commit, DB-confirmed proposal expiry followed by successful replay, later reviewer withdrawal, current Enable Grant revocation, exact receipt/body conflicts, actual bytes/set tampering, signed policy revision and signer-key change, concurrent replay via max2 connection pool; isolated fixture reset after committed-state assertions."
+    },
+    "fullCore": {
+      "total": 508,
+      "passed": 503,
+      "failed": 0,
+      "skipped": 5,
+      "note": "Final serial Core run after build. Cosign unset for full run; main signed Pack conformance test verified separately, other signed integration files not rerun."
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApiEntries": 3,
+    "docs": true,
+    "contractsChanged": false,
+    "securityManifestUnchanged": 58
+  },
+  "limitations": [
+    "Current implementation supports the complete NotApplicable admission branch only; applicable Domain/backfill/projection migration verification remains incomplete.",
+    "Runtime capability queries/exact resolution, Suspend/Retire and production deployment-host assembly are not implemented by this change.",
+    "Changed validation inputs cause VERSION_CONFLICT; automatic governed revalidation under changed keys/provenance/CTK requirements remains future work.",
+    "Replay currently requires the original Enabled version to remain current; future suspension/retirement states need historical-receipt behavior without granting execution.",
+    "Signed integration uses empty provides; nonempty signed capability activation remains unverified.",
+    "The trusted deployment must provide current read/signer/implementation/health admission and its fences."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/enable-pack-command-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/enable-pack-command-build-final.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/enable-pack-command-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/enable-pack-command-core-full.log",
+      "sha256": "2757d4c4ae658578f3b366f4295617c580a64ed830f02fc734e42aaae15ac935"
+    },
+    {
+      "path": "artifacts/verification/enable-pack-command-docs-final.log",
+      "sha256": "54bb4583ab6ba98ed8cb83daae8a7d0ac86ed223f63902a080cef0766d0cc70f"
+    },
+    {
+      "path": "artifacts/verification/enable-pack-command-docs.log",
+      "sha256": "e540676c2437bbea3afb16680439c43cd1a176f50f10e5f45c057e8b1420010f"
+    },
+    {
+      "path": "artifacts/verification/enable-pack-command-signed-final.log",
+      "sha256": "7f6eb52d14fa00664266682d2bcc2334435ed67257396411448e07c7e3f65266"
+    },
+    {
+      "path": "artifacts/verification/enable-pack-command-signed.log",
+      "sha256": "bb940bf8264b5e94c61775939c4bf0c3affa8c2e18b36d92f041fa7a0f16042f"
+    },
+    {
+      "path": "artifacts/verification/enable-pack-command-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/enable-pack-command-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current Exception responsibility and technical diagnosis",
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "actionTests": 45,
+    "failed": 0,
+    "documentLinks": 216,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/exception-inspect-actions.log",
+  "logSha256": "e68b43cc89698de8c49e797a2d2dd854cd49cde1437321b42125e379a0aa6f52",
+  "limitations": [
+    "Targeted Action integration regression, not a full workspace check.",
+    "Internal inspection requires installed current query admission; no public HTTP or CLI query is exposed.",
+    "ResolveException, Correction, automatic routing and governed unfreeze remain incomplete.",
+    "V1 remains incomplete."
+  ]
+}

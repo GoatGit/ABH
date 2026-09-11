@@ -1,0 +1,46 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current authorized persistent Pack impact read and shared admission",
+  "checks": {
+    "focusedTests": 19,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "isolatedContainersRemaining": 0,
+    "documentLinks": 242
+  },
+  "coverage": [
+    "Current persisted report reads share recording/replay source, deployment, policy and content verification.",
+    "Purpose, Workspace, missing/revoked Grant, compiler revocation and policy change refuse reads.",
+    "Stored report commitment and actual snapshot corruption reject before returning evidence."
+  ],
+  "limitations": [
+    "Production compiler/source provenance, migration verification and Enable/Registry remain incomplete.",
+    "Focused relevant suites rerun; full Core suite not repeated this batch."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-read-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/impact-read-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-read-docs.log",
+      "sha256": "a478d409eaaa18f30c3f7747b7493077bd2975eb90327584838ca2fb16b2a0ab"
+    },
+    {
+      "path": "artifacts/verification/impact-read-test.log",
+      "sha256": "25fce9b4b8bbd2ea210d25c6bf933254bce737184709ce4733784d25637af75b"
+    },
+    {
+      "path": "artifacts/verification/impact-read-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

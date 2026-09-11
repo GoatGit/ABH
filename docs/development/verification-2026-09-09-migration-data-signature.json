@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Independent data expectation signatures and actual registered data inspection",
+  "checks": {
+    "focusedTests": 6,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Actual Cosign signs data-specific domain including DataInvariants binding/environment/deployment/lifetime.",
+    "Structural Bundle substitution, expected digest tampering, wrong organization/key and copied proof rejected.",
+    "Input mutation does not replace verified bytes; real duplicate rows mismatch despite valid signature.",
+    "Current configuration drift and late source admission withdrawal reject."
+  ],
+  "limitations": [
+    "Data report is internal and reuses formal structure metadata constraints; separate formal data contract pending.",
+    "Host supplies bytes and current source/installation authority; no persisted data report reader yet.",
+    "Does not prove domain completeness or Enable; full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-data-signature-test.log",
+      "sha256": "57a8ab405926e8b00381618adfce3637568e17bfc717f5d15a4e8fa3d1244e0b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-signature-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-data-signature-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-signature-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-data-signature-docs.log",
+      "sha256": "5a152fa29b1dfbccb714dbf146d4e22f33f316aa79959cb89089b4f4049b9a23"
+    }
+  ]
+}

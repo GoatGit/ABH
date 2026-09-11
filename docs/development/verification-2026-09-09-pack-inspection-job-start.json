@@ -1,0 +1,78 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Fenced Pending/Waiting to Running inspection Job command",
+  "checks": {
+    "contractsTests": 274,
+    "databaseStorageAndSignedInstalledIntegration": 14,
+    "contractsTypecheck": "passed",
+    "coreTypecheck": "passed",
+    "contractsBuild": "passed",
+    "coreBuild": "passed",
+    "generatedArtifacts": 49,
+    "contractsApiReports": 9,
+    "coreApiReports": 2,
+    "databaseManifestVersion": 53,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "limitations": [
+    "Only start/resume transition implemented; Waiting and terminal command Owners, evidence provenance and elapsed-time settlement remain incomplete.",
+    "Waiting resume is tested using an explicit direct-storage fixture, not a Waiting evidence producer.",
+    "Current host environment/deployment admission remains mandatory.",
+    "No full Core rerun or production migration/load SLO validation in this batch.",
+    "Worker/queue/doctor and full installation verification/Enable remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-check.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-contracts-api.log",
+      "sha256": "4afb17510f9088b4dc052dee5a1eff3b9c934b5c4a5daccd66d04366c4c01249"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-contracts-test.log",
+      "sha256": "2d0a8ba694219273305cf210d9ec9a693361f0b70709849921134325c915f39a"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-contracts-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-core-api.log",
+      "sha256": "68391ea0bb683f05a50365093d210f5d27e84c52eb8f8123cd32e4a1f3f8d4b2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-generate.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-integration.log",
+      "sha256": "efd4e135e558ee50af42e57f8982dd894ce97e3876fdab4a75435f20a89a83dd"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-start-docs.log",
+      "sha256": "6e9f832e5fd8eb3ee0ff9efd15077ce73e8fc38ba4948cf479583fa69b8bd23b"
+    }
+  ]
+}

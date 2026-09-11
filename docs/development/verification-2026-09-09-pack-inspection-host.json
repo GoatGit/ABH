@@ -1,0 +1,55 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Optional tenant-host Pack inspection loop",
+  "checks": {
+    "hostServiceTests": 12,
+    "installedIntegrationParentTests": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Optional packInspection installation adds a supervised tenant-bound loop.",
+    "Cancellation reaches unresponsive identity source; wrong identity/purpose rejects before preparation.",
+    "Real hosted Pack loop discovers and revalidates persisted signed migration observation and exits on shutdown.",
+    "Existing runtime peer failure, ingress stop, drain and dependency close tests pass."
+  ],
+  "limitations": [
+    "Real installation test starts Pack loop only; not all production loops together.",
+    "Long fixture context lifetime increased from 60s to 180s; independent expiry tests retained.",
+    "Production configuration and identity/Secret providers incomplete.",
+    "Migration execution leases, domain/backfill/projection and Enable incomplete.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-host-test.log",
+      "sha256": "20f2169e9157d717aca85602a9845ee423b4aab2b5016eb88626649368fdbbba"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-host-integration.log",
+      "sha256": "8111387bdada0426ea1257ef59bb97185dff29d150cf9b1bff90859d312b55fb"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-host-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-host-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-host-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-host-docs.log",
+      "sha256": "662ed7cf1233d58a98c88515e936dffa9f5eb3338c1d77be67e7fa02852e63aa"
+    }
+  ]
+}

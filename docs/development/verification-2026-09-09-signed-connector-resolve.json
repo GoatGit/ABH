@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-09",
+  "scope": "Signed nonempty Connector actual Action validation, Grant-backed Pin and exact prepared resolution",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreTypecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "Identity, Grants, Domain and Release governance remain test-installed.",
+    "Resolved implementation is a test handle; T1, Permit, transport, query and Capture success are not exercised.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-connector-resolve-docs.log",
+      "sha256": "487cdfbfe046f3a7207a73f5e6f5c468275929123b8f223db475e0c951979df5"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-resolve-tests.log",
+      "sha256": "24692c10f7d1cbb6ae621575cc86b68518544dbd9241d7b24ca6e9a49ac54180"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-resolve-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

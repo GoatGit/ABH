@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-09",
+  "scope": "Two independently signed Packs, original Retire and paused Assignment, compatible query Capture and final Operation/Action convergence",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "coverage": "Includes actual two signed Pack installation, Retire recovery, Capture retry, three-receipt comparison, finality rollback/replay and Action aggregation."
+    }
+  },
+  "checks": {
+    "typecheck": true,
+    "build": true,
+    "api": true,
+    "docs": true,
+    "diffWhitespace": true
+  },
+  "limitations": [
+    "Provider and identity/Grant installation remain fixtures.",
+    "Compatibility issuance governance, normalization, comparison and settlement are trusted fixture policies, not production acceptance.",
+    "No full Core rerun; full V1 remains incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-recovery-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/signed-recovery-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/signed-recovery-docs.log",
+      "sha256": "2a915694f12302d95371ea008492aaf566718d7a49cb56473fc9a5a86bbfcf15"
+    },
+    {
+      "path": "artifacts/verification/signed-recovery-tests.log",
+      "sha256": "df9abaea668ef6ff040598cc94899197da7eb168b9c21ed5d945006ebd793d90"
+    },
+    {
+      "path": "artifacts/verification/signed-recovery-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

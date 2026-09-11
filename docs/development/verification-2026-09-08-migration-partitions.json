@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Actual migration partition key parent and boundary checks",
+  "checks": {
+    "focusedTests": 10,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Authored RANGE parent/leaf expectations match actual PostgreSQL DDL.",
+    "Range changes, different parent and detachment produce partition differences.",
+    "Wrong key, DEFAULT and LIST partition boundaries covered."
+  ],
+  "limitations": [
+    "Named objects only; no complete child inventory, concurrent detach workflow or data routing verification.",
+    "Data, governed/signed structural expectations, formal result persistence, readiness, full recovery and Enable remain incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-partitions-test.log",
+      "sha256": "42f097bd72cffd206368399b010c6b7f3fc87c85d49b970f6b22a1d88b2c1d6d"
+    },
+    {
+      "path": "artifacts/verification/migration-partitions-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-partitions-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-partitions-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-partitions-docs.log",
+      "sha256": "583fddc031e94fa6c0a8a2a6b2fbc038e55e256a68a0552fcae85608da47f8cd"
+    }
+  ]
+}

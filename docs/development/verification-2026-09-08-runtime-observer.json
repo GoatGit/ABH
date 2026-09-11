@@ -1,0 +1,40 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Bounded page callbacks across tenant runtime workers",
+  "checks": {
+    "coreTests": 256,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/runtime-observer-core.log",
+      "sha256": "822051c281d22020c2c97a06b7a950e5a120bd947eeb8988f0a70b1a3b487a03"
+    },
+    {
+      "path": "artifacts/verification/runtime-observer-lifecycle.log",
+      "sha256": "841368c65f5b07c125068338aba64ccbe9eab7f0ca8647914a0692ee6a9d010d"
+    },
+    {
+      "path": "artifacts/verification/runtime-observer-typecheck-final.log",
+      "sha256": "c70eec6071b0f0fe48aad06a103990e676f51ad535d84ab19aaa65f23115e37c"
+    },
+    {
+      "path": "artifacts/verification/runtime-observer-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/runtime-observer-docs.log",
+      "sha256": "d5e7ec9fa954deb6917af95efe5f26b05af72412b79c0bd02e13485c9043360b"
+    }
+  ],
+  "limitations": [
+    "Lifecycle-only empty-scan fixtures are not authorization evidence; real PG Wait and complete Core suite also passed.",
+    "Full workspace contract/API checks not repeated; public contracts unchanged.",
+    "Effect failure states, Domain effects, public queries and full V1 acceptance remain incomplete."
+  ]
+}

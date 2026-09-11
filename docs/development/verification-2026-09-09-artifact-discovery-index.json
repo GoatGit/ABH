@@ -1,0 +1,52 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "RLS-compatible indexed Artifact observation discovery",
+  "checks": {
+    "finalIntegration": "passed",
+    "coreTypecheck": "passed",
+    "tests": 14,
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "failed": 0,
+    "skipped": 0,
+    "databaseManifestVersion": 51,
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "Observed plan uses a local 4000-row competing-owner fixture, not production load or a measured production SLO.",
+    "Stored generated columns/index require deployment migration; production migration window not validated.",
+    "Full Core suite not repeated.",
+    "Complete production jobs, leases, domain/backfill/projection validation, ObjectStore and Enable incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/artifact-discovery-index-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/artifact-discovery-index-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/artifact-discovery-index-docs.log",
+      "sha256": "84f9e79ecfcbe9f3e9a29aaaaa0c6f67f406983d0344ddbf506601ead5df9eeb"
+    },
+    {
+      "path": "artifacts/verification/artifact-discovery-index-test.log",
+      "sha256": "bdafed8339dd8dd706dbdbc3c9a66e47c7423dc2e35f20700115ac86c0d88c28"
+    },
+    {
+      "path": "artifacts/verification/artifact-discovery-index-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "coverage": [
+    "Actual runtime/RLS query with 4000 competing owners and 100 source Refs uses organization, owner and source lookup keys.",
+    "First page, UUID continuation and equal JSON numeric representations return correct references with zero rows removed by filter.",
+    "Missing/weakened index and stored-generation removal fail database readiness.",
+    "Runtime cannot directly update generated lookup columns.",
+    "Restricted database lifecycle/security and real signed installed migration recovery pass with the new migration."
+  ]
+}

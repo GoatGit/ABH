@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Persistent ownership, verified SQL and signed evidence preparation",
+  "checks": {
+    "focusedTests": 11,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 294
+  },
+  "coverage": [
+    "Current persistent ownership required before content read.",
+    "Actual SQL and five signed evidence reports returned for one exact Manifest.",
+    "Corrupt content prevents evidence callbacks.",
+    "Post-content authority revocation rejects preparation."
+  ],
+  "limitations": [
+    "Installed Pack recovery and target role preflight remain caller assembly.",
+    "Production supporting facts, Runner and Enable remain incomplete.",
+    "No execution authority; full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-preparation-test.log",
+      "sha256": "476129a85376ad5ed35799e8020829e6a5d28ab83d572ed982e4e75c8cc723fb"
+    },
+    {
+      "path": "artifacts/verification/migration-preparation-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-preparation-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-preparation-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-preparation-docs.log",
+      "sha256": "fb96a3d6e11a4138df3f6648bc83d10b73c807a1be6fc96b02bc1e59ded58669"
+    }
+  ]
+}

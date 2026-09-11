@@ -1,0 +1,50 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Independent Cosign-signed governance issuance and persisted proof binding",
+  "checks": {
+    "focusedTestsFinal": 13,
+    "coreTestsBeforeFinalSqlNonNullConstraint": 333,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "apiReports": 11,
+    "documentLinks": 222,
+    "isolatedContainersRemaining": 0
+  },
+  "databaseManifestVersion": 46,
+  "logs": [
+    {
+      "path": "artifacts/verification/trust-signature-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/trust-signature-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/trust-signature-core.log",
+      "sha256": "4b79c009247dfb4b28e667a7434fb0074ea5d9301bb0ddbeea4dffd32c71636b"
+    },
+    {
+      "path": "artifacts/verification/trust-signature-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    },
+    {
+      "path": "artifacts/verification/trust-signature-tests.log",
+      "sha256": "ec190e692ac0b2dbbf5e4393988c09cb1c4e9b09f1a82c8e20cede9ef4833f2f"
+    },
+    {
+      "path": "artifacts/verification/trust-signature-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "limitations": [
+    "Internal signed TypeScript document, no formal public policy Schema/issuance tooling yet.",
+    "Publication callback must recheck current publisher/key authority; management Grant/audit/idempotency still missing.",
+    "No management root revocation source or cryptographic reverification on database reads.",
+    "Contracts/workspace not rerun; final SQL non-null strengthening covered by focused database tests.",
+    "Stage/Enable and full V1 remain incomplete."
+  ]
+}

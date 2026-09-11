@@ -1,0 +1,41 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Public bounded inline Artifact storage protocol HTTP and client",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 229,
+    "coreTests": 288,
+    "httpAdapterTests": 10,
+    "totalTests": 527,
+    "artifactTests": 7,
+    "failed": 0,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed",
+    "generatedArtifacts": 48,
+    "publicPaths": 10,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/artifact-http-check.log",
+      "sha256": "a35557a9fe41d673f71961124afe0dcc4b8375aaea2463e1aee0ff6de5642571"
+    },
+    {
+      "path": "artifacts/verification/artifact-http-tests.log",
+      "sha256": "ecf88bb439d25f5a630aaf65ba098cea8f9909e881814b5d4cf77bf54b0d67a2"
+    },
+    {
+      "path": "artifacts/verification/artifact-http-api-update.log",
+      "sha256": "9bff4ad294eaf064a306740295f45f3b2f013a4acfa5d5e9595aac7d29a70f32"
+    }
+  ],
+  "limitations": [
+    "Public inline storage is bounded to 64 KiB inert UTF-8, not the full streaming StoreArtifact protocol.",
+    "ObjectStore staging/scanning/quarantine/GC and production data governance remain incomplete.",
+    "High-level actions.propose automatic stable subcommands remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

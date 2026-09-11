@@ -1,0 +1,20 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Execution Authority effect verifies current approval source, frozen seat and responding principal",
+  "checks": {
+    "targetedIntegrationTests": 76,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/effect-binding.log",
+  "logSha256": "d292286f4fa251f99742bfad3a993a7c67ae3e299a5ff50fdc1ce64bc4cc34be",
+  "limitations": [
+    "Targeted Decision/Action integration; full workspace check not repeated.",
+    "Installed current Grant, management, source conditions and declared fence governance remain necessary.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

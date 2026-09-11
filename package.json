@@ -1,0 +1,25 @@
+{
+  "name": "abh-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": "24.13.0",
+    "pnpm": "10.28.2"
+  },
+  "scripts": {
+    "contracts:generate": "pnpm --filter @abh/contracts generate",
+    "contracts:check": "pnpm --filter @abh/contracts check",
+    "contracts:test": "pnpm --filter @abh/contracts test",
+    "docs:check": "node scripts/check-doc-links.mjs",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r build && pnpm -r typecheck",
+    "test": "pnpm -r build && pnpm -r test",
+    "check": "pnpm docs:check && pnpm contracts:check && pnpm typecheck && pnpm test && pnpm build && pnpm api:check",
+    "api:check": "pnpm -r --if-present api:check",
+    "api:update": "pnpm -r --if-present api:update",
+    "abh": "node packages/cli/bin/abh.mjs"
+  }
+}

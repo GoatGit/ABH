@@ -1,0 +1,80 @@
+{
+  "name": "@abh/contracts",
+  "version": "0.1.0",
+  "description": "ABH Preview machine contracts and deterministic generated validators",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "24.13.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./schema": {
+      "types": "./dist/src/schema.d.ts",
+      "import": "./dist/src/schema.js"
+    },
+    "./states": {
+      "types": "./dist/src/states.d.ts",
+      "import": "./dist/src/states.js"
+    },
+    "./errors": {
+      "types": "./dist/src/errors.d.ts",
+      "import": "./dist/src/errors.js"
+    },
+    "./http": {
+      "types": "./dist/src/http.d.ts",
+      "import": "./dist/src/http.js"
+    },
+    "./digest": {
+      "types": "./dist/src/digest.d.ts",
+      "import": "./dist/src/digest.js"
+    },
+    "./config": {
+      "types": "./dist/src/config.d.ts",
+      "import": "./dist/src/config.js"
+    },
+    "./catalog": {
+      "types": "./dist/src/catalog.d.ts",
+      "import": "./dist/src/catalog.js"
+    },
+    "./ports": {
+      "types": "./dist/src/ports.d.ts",
+      "import": "./dist/src/ports.js"
+    }
+  },
+  "files": [
+    "dist",
+    "generated/schemas",
+    "generated/openapi.json",
+    "manifests",
+    "README.md",
+    "THIRD_PARTY_NOTICES.md",
+    "third-party"
+  ],
+  "scripts": {
+    "generate": "node scripts/generate.mjs",
+    "check": "node scripts/generate.mjs --check",
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
+    "test": "node --test test/*.test.ts",
+    "build": "tsc",
+    "api:check": "node scripts/check-api.mjs",
+    "api:update": "pnpm build && node scripts/check-api.mjs --update"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "7.59.0",
+    "@types/node": "24.10.1",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "esbuild": "0.28.2",
+    "json-schema-to-typescript": "16.0.0",
+    "typescript": "5.9.3",
+    "yaml": "2.9.0"
+  },
+  "dependencies": {
+    "canonicalize": "4.0.0"
+  }
+}

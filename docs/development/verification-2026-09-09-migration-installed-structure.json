@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Installed staging/impact assembly for actual signed structural inspection",
+  "checks": {
+    "integrationTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Actual installed Pack, governance, staging, signed compiler impact and complete reviewed migration plan drive structure inspection.",
+    "Manifest and owner derive from installation, environment/deployment from current impact.",
+    "Structure source revocation and mid-inspection installed impact withdrawal reject.",
+    "Existing execution/persistence/signed recovery fixture also passes."
+  ],
+  "limitations": [
+    "Fixture uses SELECT 1 migration and empty expected schema; substantive DDL/ACL checked in separate suites.",
+    "Host still supplies current authority callbacks, fences and dedicated read-only target lifetime.",
+    "Repeated preparation has crypto/filesystem overhead; production orchestration, data verification and Enable incomplete.",
+    "Full Core not repeated after this change; preceding 443-test result is separate."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-installed-structure-test.log",
+      "sha256": "70a99ee9360b6dea1284acc00274eca94633748fc711528142e1213e3afee17d"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-structure-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-structure-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-structure-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-installed-structure-docs.log",
+      "sha256": "4849b901a608b0c774b96cef5979ba7e542728ea97968697da9692b4820fda19"
+    }
+  ]
+}

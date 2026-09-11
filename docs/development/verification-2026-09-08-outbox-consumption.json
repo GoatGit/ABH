@@ -1,0 +1,29 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Durable per-event Outbox consumer completion evidence",
+  "profile": "Internal independent Grant ingress and real PostgreSQL Inbox effects; no maintenance deletion",
+  "checks": {
+    "pnpm check": "passed",
+    "contractTests": 221,
+    "coreTests": 179,
+    "inboxOutboxTests": 11,
+    "failed": 0,
+    "skipped": 0,
+    "migrationVersions": 31,
+    "tenantTables": 57,
+    "generatedArtifacts": 48,
+    "publicApiEntryReports": 9,
+    "containersCleaned": true
+  },
+  "logs": {
+    "artifacts/verification/outbox-consumption-check.log": "0b1731cd440e619215d35fefb9eba02aa992c817613d168d7bb4c383a82ddd1b",
+    "artifacts/verification/outbox-consumption.log": "911f72592e3f0959c17caba967009af1f2581ea6b54e1dea9431170fec68c495"
+  },
+  "limitations": [
+    "Evidence covers one frozen event fanout, not a contiguous cross-event consumer watermark.",
+    "New consumer backfill, legal retention, persistent idempotency tombstones and Maintenance authority remain.",
+    "No cleanup/deletion is enabled by this completion record.",
+    "Production hosting and full V1 acceptance remain incomplete."
+  ]
+}

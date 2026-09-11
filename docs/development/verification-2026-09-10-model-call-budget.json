@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core model call Resource Ledger budget binding",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/model-gateway.test.ts",
+    "node --test packages/core/test/database.test.ts",
+    "node --test packages/core/test/database-diagnostic.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "modelGatewayTests": 7,
+    "modelGatewayPassed": 7,
+    "modelGatewayFailed": 0,
+    "databaseReadinessTests": 12,
+    "databaseReadinessPassed": 12,
+    "databaseDiagnosticTests": 2,
+    "databaseDiagnosticPassed": 2,
+    "coreTests": 536,
+    "corePassed": 530,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractArtifacts": 51,
+    "documentationLinks": 730,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "prepare creates one held ledger reservation in the same transaction",
+    "same call replay returns the existing linked reservation without duplication",
+    "changed budget amount or ledger conflicts with the original request",
+    "budget exhaustion rejects preparation before adapter dispatch",
+    "cumulative usage consumes actual input plus output tokens after adapter success",
+    "capacity usage releases completion evidence instead of consuming capacity",
+    "explicit confirmed no-effect failure releases the hold",
+    "adapter timeout or ambiguous failure retains the reservation and InFlight state",
+    "ledger locks are acquired before model aggregate terminal transitions"
+  ],
+  "limits": [
+    "actual provider transport remains open",
+    "secret broker and isolated execution remain open",
+    "reservation TTL recovery and reconciliation remain open",
+    "raw response artifact and output schema validation remain open",
+    "streaming events, fallback and recovery reconciliation remain open"
+  ]
+}

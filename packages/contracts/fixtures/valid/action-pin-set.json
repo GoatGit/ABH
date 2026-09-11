@@ -1,0 +1,49 @@
+{
+  "schema": "PinSet",
+  "value": {
+    "pinSetRef": {
+      "type": "abh.pin-set",
+      "id": "00000000-0000-4000-8000-000000000014",
+      "version": 1
+    },
+    "resourceOrganizationId": "00000000-0000-4000-8000-000000000003",
+    "subjectRef": {
+      "type": "abh.action",
+      "id": "00000000-0000-4000-8000-000000000006",
+      "version": 2
+    },
+    "subjectInputDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "requiredSlotsDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "pins": [
+      {
+        "behaviorSlot": "hello.connector",
+        "assignmentRef": {
+          "type": "abh.assignment",
+          "id": "00000000-0000-4000-8000-000000000012",
+          "version": 1
+        },
+        "releaseRef": {
+          "type": "abh.release",
+          "id": "00000000-0000-4000-8000-000000000013",
+          "version": 1
+        },
+        "capabilityExactRefs": [
+          {
+            "kind": "Connector",
+            "id": "hello.connector",
+            "version": "0.1.0",
+            "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ],
+        "versionVector": [
+          {
+            "type": "abh.assignment",
+            "id": "00000000-0000-4000-8000-000000000012",
+            "version": 1
+          }
+        ]
+      }
+    ]
+  }
+}

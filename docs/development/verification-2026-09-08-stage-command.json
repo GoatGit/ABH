@@ -1,0 +1,83 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "StagePack command and immutable installed Pack identity",
+  "checks": {
+    "contractsTests": 244,
+    "focusedTests": 13,
+    "focusedFailed": 0,
+    "focusedSkipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 228,
+    "isolatedContainersRemaining": 0
+  },
+  "fullRun": {
+    "tests": 333,
+    "passed": 332,
+    "failed": 1,
+    "skipped": 0,
+    "reason": "New tenant-isolation assertion compared postgres.js Result(0) with plain []; changed to row-count assertion.",
+    "resolution": "The affected real Cosign/PostgreSQL scenario and complete database suite were rerun: 13 passed, 0 failed, 0 skipped; implementation unchanged after full run."
+  },
+  "limitations": [
+    "Stage does not yet produce impact reports or installation step/recovery facts.",
+    "InstalledPackRecord and database rows currently allow only immutable initial Staged state; Enable/Suspend/Retire and capability Registry remain unimplemented.",
+    "Current management signer revocation/reference/retention still require explicit deployment admission.",
+    "Local filesystem snapshot storage has existing 64 MiB/local-durability limitations and no orphan GC."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/stage-command-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/stage-command-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/stage-command-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/stage-command-contract-test.log",
+      "sha256": "9815e28136743aedfae140d7a63b401ad6ae3757a2c69adb1169722f718611d3"
+    },
+    {
+      "path": "artifacts/verification/stage-command-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/stage-command-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/stage-command-core-full.log",
+      "sha256": "170935fa213afc9bb659d77bc73b4b6a0d6b3a3f63e58e02a138d5f6b94eff9e"
+    },
+    {
+      "path": "artifacts/verification/stage-command-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/stage-command-docs.log",
+      "sha256": "cf70b7a77dfe053ba6857f4664ec48e94567cb7c50bc33f3dea965d279b3f5ef"
+    },
+    {
+      "path": "artifacts/verification/stage-command-generate.log",
+      "sha256": "bec6050a5253084e710e1335eb3f8899147fa958342ba034480b22cc9ed9db66"
+    },
+    {
+      "path": "artifacts/verification/stage-command-generated.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    },
+    {
+      "path": "artifacts/verification/stage-command-test.log",
+      "sha256": "a09deb042d9a563f3922908d1f30697bce4895d83e1537ecaac67e50c79ca225"
+    }
+  ]
+}

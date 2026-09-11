@@ -1,0 +1,77 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Tenant-isolated immutable Pack validation evidence with transactional Audit/Outbox",
+  "checks": {
+    "focusedTests": 13,
+    "coreTests": 333,
+    "contractsTests": 239,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "isolatedContainersRemaining": 0
+  },
+  "databaseManifestVersion": 44,
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-report-storage-api-update.log",
+      "sha256": "fde95f6c006a6ddf42ba677ae259284f2059593856a7dfdc946311b955f92f61"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-contracts-tests.log",
+      "sha256": "620adf68936672d1a3d6f80ec33c6787b252daa3aa903a03d09f545eedcfdbb0"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-contracts-types.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-core.log",
+      "sha256": "8298e6bd51ce21312e489c0888f491ce912fa4a01240e27b5fed66da897f5f42"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-generate.log",
+      "sha256": "0bc57764d623986aecba920b5efc862279c1b81774cdebce63d0a91f2c1ab97a"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-generated-check.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-tests.log",
+      "sha256": "7926defeac31b9e4f689b924b7a449137115e69348f7bed43b1fea5d92035ee4"
+    },
+    {
+      "path": "artifacts/verification/pack-report-storage-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "limitations": [
+    "Internal Owner only; admission callback in integration tests is an explicit Fixture, not a production deployment Grant.",
+    "Formal deployment Command, purpose/Grant, idempotency and governance transaction locking remain unimplemented.",
+    "Persistent trust policy/installed Pack state, Stage/Enable, full CTK and full V1 remain incomplete.",
+    "Full workspace not rerun."
+  ]
+}

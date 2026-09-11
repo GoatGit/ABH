@@ -1,0 +1,22 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Concurrent Exception Worker routing and frozen report lookup index",
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreTests": 209,
+    "failed": 0,
+    "migrationVersion": 34,
+    "documentLinks": 216,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/exception-concurrent-core.log",
+  "logSha256": "f0c9e1e9c9bb6d00e98894d6790508e0d4863fc17e5702b684d4179d4b0fad44",
+  "limitations": [
+    "Core suite regression; no new complete workspace contract/API check in this batch.",
+    "Index creation and integration tests do not establish production capacity/SLO.",
+    "Responsibility rerouting, ResolveException, Correction and governed unfreeze remain incomplete.",
+    "Full V1 acceptance is not achieved."
+  ]
+}

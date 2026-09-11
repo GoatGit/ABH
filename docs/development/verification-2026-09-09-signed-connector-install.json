@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-09",
+  "scope": "Real signed nonempty Connector governance publication, validation, database Stage and capability registration",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreTypecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "Identity/Grant and schema/implementation admission remain test fixtures.",
+    "No Human approval, Enable or successful execution/capture in this nonempty fixture yet.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-connector-install-docs.log",
+      "sha256": "85f560f32a9a7433b8dbea3fc4875f03d8a8337787323429b0f5d7cc58c72483"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-install-tests.log",
+      "sha256": "5f291b5a263dbff6e1ddd92ccb78b75c996d9a3d779e2efb297808b4d7a2ce26"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-install-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Independent compiler signature over organization-bound impact report",
+  "checks": {
+    "integratedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "isolatedContainersRemaining": 0,
+    "documentLinks": 250
+  },
+  "coverage": [
+    "Real independent compiler key and Cosign bundle validate domain-separated complete report.",
+    "Wrong organization/compiler version/key, changed environment, forged candidate and input mutation tested."
+  ],
+  "limitations": [
+    "Mandatory report Owner integration and persistent signature evidence are not implemented yet.",
+    "Compiler root revocation, signature validity policy, completeness provenance and Enable remain incomplete.",
+    "Focused integrated scenario run, not full Core suite."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/impact-signature-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/impact-signature-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/impact-signature-docs.log",
+      "sha256": "aebdf53d630dd71b379abf155582b095c7a099ce81fb5d22742511e08ee60619"
+    },
+    {
+      "path": "artifacts/verification/impact-signature-test.log",
+      "sha256": "09208f4190349998410416261db137d657e404ce7363302099b7e72f8a908d5b"
+    },
+    {
+      "path": "artifacts/verification/impact-signature-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

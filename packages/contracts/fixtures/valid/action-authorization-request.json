@@ -1,0 +1,34 @@
+{
+  "schema": "ActionAuthorizationRequestRecord",
+  "value": {
+    "requestRef": {
+      "type": "abh.action-authorization-request",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "resourceOrganizationId": "00000000-0000-4000-8000-000000000002",
+    "actionRef": {
+      "type": "abh.action",
+      "id": "00000000-0000-4000-8000-000000000003",
+      "version": 1
+    },
+    "sourceCommandRef": {
+      "type": "abh.command",
+      "id": "00000000-0000-4000-8000-000000000004",
+      "version": 1
+    },
+    "requestedBy": {
+      "type": "Human",
+      "id": "00000000-0000-4000-8000-000000000005"
+    },
+    "executionPrincipalRef": {
+      "type": "abh.principal",
+      "id": "00000000-0000-4000-8000-000000000006",
+      "version": 1
+    },
+    "payload": {},
+    "inputDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "acceptedAt": "2026-09-08T00:00:00.000Z",
+    "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  }
+}

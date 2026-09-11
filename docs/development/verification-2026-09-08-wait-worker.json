@@ -1,0 +1,23 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Continuous installed Wait recovery with per-item ingress admission",
+  "checks": {
+    "coreTypecheck": "passed",
+    "actionTests": 45,
+    "waitTestsFinal": 13,
+    "runtimeAndProcessTests": 5,
+    "failed": 0,
+    "documentLinks": 215
+  },
+  "logs": {
+    "artifacts/verification/wait-worker.log": "d65b5ff8a223578fd933a6be75cd8cb013c9054fe6e117542884e95d7c36b7af",
+    "artifacts/verification/wait-admission.log": "76390c982e4e79a69d2637d93f8eda6a3247f7c4c69d273cc0135afb3a4f831b"
+  },
+  "limitations": [
+    "Context provisioning and cross-tenant discovery remain host-installed.",
+    "Per-page context reused inside bounded Wait Port sweep; each item rechecks current grants.",
+    "Continuous persisted watermarks and complete V1 modules remain incomplete.",
+    "Targeted regression only; full workspace check not repeated."
+  ]
+}

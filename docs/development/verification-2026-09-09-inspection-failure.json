@@ -1,0 +1,126 @@
+{
+  "date": "2026-09-09",
+  "scope": "Actual inspection execution failure evidence, independently authorized Failed Owner and explicit runner/worker installation",
+  "tests": {
+    "targetFailureAndInstallation": {
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0
+    },
+    "contracts": {
+      "passed": 293,
+      "failed": 0,
+      "skipped": 0
+    },
+    "realSignatureJobRuntimeFinal": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "coreTypecheck": "passed",
+    "generation": "passed (49 files)",
+    "contractsApi": "passed (9 entry points)",
+    "coreApi": "passed (3 entry points)",
+    "docs": "passed",
+    "isolatedIntegrationContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/inspection-failure-unit.log",
+      "sha256": "e240b841ed432d4f2bbe08a2b95ac79bb038b88c8a23ed13bf3afdf6a5c27763"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-contracts.log",
+      "sha256": "9cdb892183343edb5db36ef76f22283de39b932ed74e27b3961c2ab51466c4c1"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-integration.log",
+      "sha256": "e0755543d2255609e510289635dbc5ef896e9dd43b2c5d3de6f7e672dee18588"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-integration-final.log",
+      "sha256": "10ebc75071a8a2dbc54cf9ba0048a0d16dbec7d744bdf4ff4ebd4bbce0b4d149"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-build.log",
+      "sha256": "03ec83b377f9a08bc38f5c585cbca2669b265489cb1f77143b4a0d2a9462273c"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-generation.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-api.log",
+      "sha256": "0ba9da79ee2fdcb50bea0e7bdb55d59d118afa7fbd759de1c65aa6b3af5e7f5c"
+    },
+    {
+      "path": "artifacts/verification/inspection-failure-docs.log",
+      "sha256": "e392ad98a37d064f3716443eaf90c74e31c92c8fdbfc379fbec9aa0156d8f8d3"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/inspection-failure.ts",
+      "sha256": "3752334acc385dfde14f2431828aad16e9c0ab6a50eafd7751289d7567fbeb93"
+    },
+    {
+      "path": "packages/core/src/extensions/fail-pack-inspection.ts",
+      "sha256": "2cabaa82bc25a24a665c5e149b33bd9831f138bd04cb66105ecf5f76afc099c5"
+    },
+    {
+      "path": "packages/core/src/extensions/run-pack-inspection-job.ts",
+      "sha256": "3940a2e437f4bf625065f38999ee70b2f39e848bbfe4fc7ee8f56300052e1132"
+    },
+    {
+      "path": "packages/core/src/extensions/inspection-job-worker.ts",
+      "sha256": "0588326f346ceb494cad0fcbb54a8d9868f371992e353ed543ba00274c6dd3b8"
+    },
+    {
+      "path": "packages/core/test/inspection-failure.test.ts",
+      "sha256": "83bcc76d25f38f1aacab907be2924411d71b5f29243a392409309f5e1fe23316"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-failure-fixture.ts",
+      "sha256": "025d287f8915851f2b7f41b099b88be086141c0b849b7ad37e55bfe467299d35"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-job-execution-fixture.ts",
+      "sha256": "ea5400d62830a6b00963bf87fefa8465f217886cfb2114f6dafb2d52dfe083db"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-runtime-installation.test.ts",
+      "sha256": "1efc378288c2f0bfe8f1ec16184faacfd924d3ae9d097b4be39feda039ee440d"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "b0c6b6e044031665903d6daffca7b60a09160f3ee1b41ad41f5e766566da4035"
+    },
+    {
+      "path": "packages/contracts/src/relationships.ts",
+      "sha256": "e2c222f74794f25f1333ea21f8f88d00f48d11821af1c3740e779064972a7452"
+    },
+    {
+      "path": "packages/contracts/protocol/registry.yaml",
+      "sha256": "f5d7888580f87ef1952b8578cb4c69113af06951b7cf3cc6d33a837919273be2"
+    },
+    {
+      "path": "packages/contracts/catalog/core.json",
+      "sha256": "7cd7cf67fff6caca64671b252523b89fcd6968ae56c400d7d9a0f4011c689c5d"
+    }
+  ],
+  "remaining": [
+    "Persistent reporting of cleanup failures on late preparation results",
+    "Complete doctor pack aggregation",
+    "Production identity and Secret configuration",
+    "Complete Pack validation and Enable",
+    "Broader V1 requirements remain incomplete"
+  ]
+}

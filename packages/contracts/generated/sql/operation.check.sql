@@ -1,0 +1,2 @@
+-- Generated constraint fragment for the Operation Owner migration; not a migration.
+CONSTRAINT operation_state_check CHECK (lifecycle IS NOT NULL AND outcome IS NOT NULL AND ((lifecycle = 'Pending' AND outcome IN ('NotStarted')) OR (lifecycle = 'Dispatching' AND outcome IN ('Pending', 'Unknown')) OR (lifecycle = 'Observing' AND outcome IN ('Pending', 'Unknown')) OR (lifecycle = 'Closed' AND outcome IN ('Succeeded', 'Failed')) OR (lifecycle = 'Cancelled' AND outcome IN ('NotStarted'))))

@@ -1,0 +1,119 @@
+{
+  "date": "2026-09-09",
+  "scope": "Real shared Pack inspection runtime, isolated registered target storage readiness and bounded idempotent database conflict recovery",
+  "tests": {
+    "fullCore": {
+      "tests": 480,
+      "passed": 479,
+      "failed": 1,
+      "skipped": 0,
+      "failure": "Artifact discovery fixture container port binding timed out before business assertions"
+    },
+    "failedTestRerun": {
+      "file": "artifact-discovery-index.test.ts",
+      "passed": 1,
+      "failed": 0
+    },
+    "realEndToEnd": {
+      "passed": 1,
+      "failed": 0
+    },
+    "readinessTargeted": {
+      "passed": 1,
+      "failed": 0
+    },
+    "retryTargeted": {
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "checks": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApi": "passed (2 entry points)",
+    "docs": "passed",
+    "isolatedIntegrationContainersRemaining": 0
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-inspection-runtime-core-tests.log",
+      "sha256": "a2a4a2cae769f66132818c9096b51e6c2113ca0d2949a49e6ba77b2258e67796"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-runtime-index-rerun.log",
+      "sha256": "9fac764c5bc123294f9989edc96e480f6eb57b160ca7533a62d5fa0f829a2e49"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-runtime-e2e-tests.log",
+      "sha256": "237e3f05635113b13718a6cb39308451a6099d70c42365051209ecbb4d10c286"
+    },
+    {
+      "path": "artifacts/verification/pack-target-readiness-tests.log",
+      "sha256": "b2e84f4c820c4d425d7b9cccb335328669294e62ff3898df525ed3c14df449e7"
+    },
+    {
+      "path": "artifacts/verification/retry-conflict-tests.log",
+      "sha256": "2891b4df9cdf4ffa7849519392bce043b101aae2885f9da3b5d2c6268696ae21"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-runtime-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-runtime-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-runtime-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-runtime-docs.log",
+      "sha256": "f5907a9071f9f2735e0f8d16954c479ce1a9228e5482253a93708c57e6a16c8e"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/data/readiness.ts",
+      "sha256": "df4a2eae9ebb1e996f83944a5a9c6bc5de77b835dff3f965f2ba2f0243ca8816"
+    },
+    {
+      "path": "packages/core/src/data/retry-conflict.ts",
+      "sha256": "268cdbb76c8bb666bf9e87e471a0d4f194349fb0a254e02a55f340f93a0c9475"
+    },
+    {
+      "path": "packages/core/src/durable/publisher.ts",
+      "sha256": "fd97bc4cf0ecba7e7a1f4e120d0a945e67825200021505b1b5893c45c3a3f050"
+    },
+    {
+      "path": "packages/core/src/durable/delivery-worker.ts",
+      "sha256": "fd96c79b3fc114ff400406c9d2ad3b2dbfd52366948d1593c3d1452c379f3a62"
+    },
+    {
+      "path": "packages/core/src/durable/consumption-worker.ts",
+      "sha256": "a9af1f01a296cd07950ecb039a80f867ff4adaa8c12bdd7485e65d5c44380b1c"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-runtime-fixture.ts",
+      "sha256": "f9398380f632c08bd4905e7ad1b9a0b23b09d561ea5b854ea9fc17bf09a62d57"
+    },
+    {
+      "path": "packages/core/test/pack-inspection-job-execution-fixture.ts",
+      "sha256": "55e2c1412ea7c3cc705b9c87dce4e3be7e556c91937c05d6e124797449d13bc5"
+    },
+    {
+      "path": "packages/core/test/pack-target-readiness.test.ts",
+      "sha256": "33103b41a7ff0abc2d441d7346d982dcb16dd7834ad565b6316a99cf93716a0a"
+    },
+    {
+      "path": "packages/core/test/retry-conflict.test.ts",
+      "sha256": "b378a6ad7900362bb31fd9783c84281242ac474d7f5e9da8ae928b64bf4cf7d2"
+    }
+  ],
+  "remaining": [
+    "Production host credentials, configuration and backpressure",
+    "General inspection exception evidence and doctor CLI",
+    "Complete installation validation, domain/backfill/projection checks and Enable",
+    "Broader V1 implementation remains incomplete"
+  ]
+}

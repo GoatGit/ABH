@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Direct relation and column ACL verification",
+  "checks": {
+    "focusedTests": 15,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Actual owner default ACL expansion for tables/sequences.",
+    "PUBLIC table SELECT and sequence USAGE detected.",
+    "Column UPDATE with grant option and grant-option revocation produce explicit missing/unexpected entries."
+  ],
+  "limitations": [
+    "Standalone checker, not yet integrated into signed structure expectations.",
+    "Direct ACLs only: membership, superuser, RLS, indirect function rights and schema/database permissions need separate checks.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-acl-test.log",
+      "sha256": "b975b6a3ce6e663bcb2d922f5999d6d905ae388bbe4d7a5096a2d1bdb172f11c"
+    },
+    {
+      "path": "artifacts/verification/migration-acl-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-acl-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-acl-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-acl-docs.log",
+      "sha256": "4a62917deb572f592dd3c02b6a753e7e3b7befdab3c406064a322cbf64042b23"
+    }
+  ]
+}

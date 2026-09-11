@@ -1,0 +1,36 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Complete predecessor seats shared by Decision submission and view readiness",
+  "checks": {
+    "coreTests": 257,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/decision-dependencies-core.log",
+      "sha256": "6adcf0cbd417c5ed663ce0e02b4c8cc0a171208f658b5aa100c685ec5cd5410c"
+    },
+    {
+      "path": "artifacts/verification/decision-dependencies-typecheck.log",
+      "sha256": "c70eec6071b0f0fe48aad06a103990e676f51ad535d84ab19aaa65f23115e37c"
+    },
+    {
+      "path": "artifacts/verification/decision-dependencies-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/decision-dependencies-docs.log",
+      "sha256": "d5e7ec9fa954deb6917af95efe5f26b05af72412b79c0bd02e13485c9043360b"
+    }
+  ],
+  "limitations": [
+    "Public query metadata/watermarks and HTTP Decision queries remain incomplete.",
+    "Full workspace contract/API checks not repeated; contracts unchanged.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

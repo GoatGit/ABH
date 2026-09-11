@@ -1,0 +1,1802 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:abh:contracts:0.1.0:workflow",
+  "title": "WorkflowContract",
+  "$defs": {
+    "ActionRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.action"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "ActionRef"
+    },
+    "OperationRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.operation"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "OperationRef"
+    },
+    "PlanRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.operation-plan"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "PlanRef"
+    },
+    "DecisionRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.decision"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "DecisionRef"
+    },
+    "DecisionEffectRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.decision-effect"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "DecisionEffectRef"
+    },
+    "CommandRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.command"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "CommandRef"
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.artifact"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "ArtifactRef"
+    },
+    "PinSetRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.pin-set"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "PinSetRef"
+    },
+    "RequestRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.responsibility-request"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "RequestRef"
+    },
+    "IdempotencyKey": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[!-~]+$",
+      "title": "IdempotencyKey"
+    },
+    "NodeKey": {
+      "type": "string",
+      "maxLength": 100,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+      "title": "NodeKey"
+    },
+    "Reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "title": "Reason"
+    },
+    "NonnegativeDecimal": {
+      "allOf": [
+        {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Decimal"
+        },
+        {
+          "type": "string",
+          "pattern": "^[0-9]"
+        }
+      ],
+      "title": "NonnegativeDecimal"
+    },
+    "ResourceRequirement": {
+      "type": "object",
+      "properties": {
+        "resourceRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.resource"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "quantity": {
+          "$ref": "#/$defs/NonnegativeDecimal"
+        },
+        "unit": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        }
+      },
+      "required": [
+        "resourceRef",
+        "quantity",
+        "unit"
+      ],
+      "additionalProperties": false,
+      "title": "ResourceRequirement"
+    },
+    "ImpactUpperBound": {
+      "type": "object",
+      "properties": {
+        "scopeRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "resourceRequirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResourceRequirement"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "maxMoney": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "$ref": "#/$defs/NonnegativeDecimal"
+              },
+              "currency": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$"
+              }
+            },
+            "required": [
+              "amount",
+              "currency"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 20,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "scopeRefs",
+        "resourceRequirements",
+        "maxMoney",
+        "description"
+      ],
+      "additionalProperties": false,
+      "title": "ImpactUpperBound"
+    },
+    "ProposeActionPayload": {
+      "type": "object",
+      "properties": {
+        "actionType": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "targetRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "payloadRef": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "sourceVersionRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "sourceProposalRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": [
+        "actionType",
+        "targetRefs",
+        "payloadRef",
+        "sourceVersionRefs",
+        "sourceProposalRef"
+      ],
+      "additionalProperties": false,
+      "title": "ProposeActionPayload"
+    },
+    "ActionProposal": {
+      "type": "object",
+      "properties": {
+        "actionType": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "targetRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "payloadRef": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "sourceVersionRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "sourceProposalRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "completionPolicyRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "resourceRequirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResourceRequirement"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        }
+      },
+      "required": [
+        "actionType",
+        "targetRefs",
+        "payloadRef",
+        "sourceVersionRefs",
+        "sourceProposalRef",
+        "completionPolicyRef",
+        "resourceRequirements"
+      ],
+      "additionalProperties": false,
+      "title": "ActionProposal"
+    },
+    "CancelActionPayload": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "$ref": "#/$defs/Reason"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "additionalProperties": false,
+      "title": "CancelActionPayload"
+    },
+    "RequestAuthorizationPayload": {
+      "type": "object",
+      "properties": {
+        "authorityRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/AuthorityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "RequestAuthorizationPayload"
+    },
+    "ValidateActionPayload": {
+      "type": "object",
+      "properties": {
+        "domainValidationRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": [
+        "domainValidationRef"
+      ],
+      "additionalProperties": false,
+      "title": "ValidateActionPayload"
+    },
+    "RegisterOperationPlanPayload": {
+      "type": "object",
+      "properties": {
+        "pinSetRef": {
+          "$ref": "#/$defs/PinSetRef"
+        },
+        "pinSetDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "planRef": {
+          "$ref": "#/$defs/PlanRef"
+        },
+        "planDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "scopeProofRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": [
+        "pinSetRef",
+        "pinSetDigest",
+        "planRef",
+        "planDigest",
+        "scopeProofRef"
+      ],
+      "additionalProperties": false,
+      "title": "RegisterOperationPlanPayload"
+    },
+    "OperationInputBinding": {
+      "type": "object",
+      "properties": {
+        "inputPath": {
+          "type": "string",
+          "maxLength": 512,
+          "pattern": "^(?:/(?:[^~/]|~[01])*)+$"
+        },
+        "parentNodeKey": {
+          "$ref": "#/$defs/NodeKey"
+        },
+        "outputName": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "valueType": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        }
+      },
+      "required": [
+        "inputPath",
+        "parentNodeKey",
+        "outputName",
+        "valueType"
+      ],
+      "additionalProperties": false,
+      "title": "OperationInputBinding"
+    },
+    "OperationPlanNode": {
+      "type": "object",
+      "properties": {
+        "nodeKey": {
+          "$ref": "#/$defs/NodeKey"
+        },
+        "connectionRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.connection"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "accountRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "resourceKey": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "operationType": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "payloadRef": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "payloadDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "connectorRef": {
+          "allOf": [
+            {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/CapabilityRef"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "Connector"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          ]
+        },
+        "scopeRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "completionPolicyRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "resourceRequirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResourceRequirement"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/NodeKey"
+          },
+          "minItems": 0,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "inputBindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OperationInputBinding"
+          },
+          "minItems": 0,
+          "maxItems": 32,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "expectedExternalVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "nodeKey",
+        "connectionRef",
+        "accountRef",
+        "resourceKey",
+        "operationType",
+        "payloadRef",
+        "payloadDigest",
+        "connectorRef",
+        "scopeRefs",
+        "completionPolicyRef",
+        "resourceRequirements",
+        "dependsOn",
+        "inputBindings"
+      ],
+      "additionalProperties": false,
+      "title": "OperationPlanNode"
+    },
+    "OperationPlan": {
+      "type": "object",
+      "properties": {
+        "planRef": {
+          "$ref": "#/$defs/PlanRef"
+        },
+        "actionRef": {
+          "$ref": "#/$defs/ActionRef"
+        },
+        "planVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "pinSetRef": {
+          "$ref": "#/$defs/PinSetRef"
+        },
+        "pinSetDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "validatedAgainstPayloadDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "compilerRef": {
+          "allOf": [
+            {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/CapabilityRef"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "const": "Compiler"
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          ]
+        },
+        "connectorRefs": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/CapabilityRef"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "Connector"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "scopeProofRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "completionPolicyRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "impactUpperBound": {
+          "$ref": "#/$defs/ImpactUpperBound"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OperationPlanNode"
+          },
+          "minItems": 1,
+          "maxItems": 1000,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "planRef",
+        "actionRef",
+        "planVersion",
+        "pinSetRef",
+        "pinSetDigest",
+        "validatedAgainstPayloadDigest",
+        "compilerRef",
+        "connectorRefs",
+        "scopeProofRef",
+        "completionPolicyRef",
+        "impactUpperBound",
+        "nodes",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "actionRef",
+        "planVersion",
+        "pinSetRef",
+        "pinSetDigest",
+        "validatedAgainstPayloadDigest",
+        "compilerRef",
+        "connectorRefs",
+        "scopeProofRef",
+        "completionPolicyRef",
+        "impactUpperBound",
+        "nodes"
+      ],
+      "title": "OperationPlan"
+    },
+    "ActionRecord": {
+      "type": "object",
+      "properties": {
+        "actionRef": {
+          "$ref": "#/$defs/ActionRef"
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "missionRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.mission"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "runRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.run"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "sourceCommandRef": {
+          "$ref": "#/$defs/CommandRef"
+        },
+        "proposedBy": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+        },
+        "executionPrincipalRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.principal"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "executionAuthorityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/AuthorityRef"
+        },
+        "pinSetRef": {
+          "$ref": "#/$defs/PinSetRef"
+        },
+        "planRef": {
+          "$ref": "#/$defs/PlanRef"
+        },
+        "actionType": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "payloadArtifactRef": {
+          "$ref": "#/$defs/ArtifactRef"
+        },
+        "payloadDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "targetRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "inputVersionRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "completionPolicyRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "riskClass": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "position": {
+          "$ref": "urn:abh:contracts:0.1.0:states#/$defs/ActionPosition"
+        },
+        "cancellationRequestedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "authorizationSnapshotRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.authorization-snapshot"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "resultRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.action-result"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "actionRef",
+        "resourceOrganizationId",
+        "sourceCommandRef",
+        "proposedBy",
+        "executionPrincipalRef",
+        "actionType",
+        "payloadArtifactRef",
+        "payloadDigest",
+        "targetRefs",
+        "inputVersionRefs",
+        "completionPolicyRef",
+        "riskClass",
+        "position"
+      ],
+      "additionalProperties": false,
+      "title": "ActionRecord"
+    },
+    "DecisionResponse": {
+      "type": "string",
+      "enum": [
+        "Approved",
+        "Rejected"
+      ],
+      "title": "DecisionResponse"
+    },
+    "DecisionPackage": {
+      "type": "object",
+      "properties": {
+        "requestRef": {
+          "$ref": "#/$defs/RequestRef"
+        },
+        "routeRevision": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "slotId": {
+          "$ref": "#/$defs/NodeKey"
+        },
+        "subjectRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "proposalDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "recommendation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 0,
+          "maxItems": 20
+        },
+        "impactUpperBound": {
+          "$ref": "#/$defs/ImpactUpperBound"
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "minItems": 0,
+          "maxItems": 32
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "validUntil": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "allowedResponses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DecisionResponse"
+          },
+          "minItems": 1,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "packageDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "requestRef",
+        "routeRevision",
+        "slotId",
+        "subjectRef",
+        "proposalDigest",
+        "question",
+        "recommendation",
+        "alternatives",
+        "impactUpperBound",
+        "risks",
+        "evidenceRefs",
+        "validUntil",
+        "allowedResponses",
+        "packageDigest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "requestRef",
+        "routeRevision",
+        "slotId",
+        "subjectRef",
+        "proposalDigest",
+        "question",
+        "recommendation",
+        "alternatives",
+        "impactUpperBound",
+        "risks",
+        "evidenceRefs",
+        "validUntil",
+        "allowedResponses"
+      ],
+      "title": "DecisionPackage"
+    },
+    "SubmitDecisionPayload": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "packageDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "response": {
+              "const": "Approved"
+            },
+            "conditionRefs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "abh.condition"
+                  },
+                  "id": {
+                    "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                  },
+                  "version": {
+                    "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                  }
+                },
+                "required": [
+                  "type",
+                  "id",
+                  "version"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 100,
+              "uniqueItems": true,
+              "x-abh-set": true
+            },
+            "reason": {
+              "$ref": "#/$defs/Reason"
+            },
+            "reauthProofRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.reauth-proof"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "packageDigest",
+            "response",
+            "conditionRefs"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "packageDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "response": {
+              "const": "Rejected"
+            },
+            "conditionRefs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "abh.condition"
+                  },
+                  "id": {
+                    "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                  },
+                  "version": {
+                    "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                  }
+                },
+                "required": [
+                  "type",
+                  "id",
+                  "version"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 0,
+              "uniqueItems": true,
+              "x-abh-set": true
+            },
+            "reason": {
+              "$ref": "#/$defs/Reason"
+            },
+            "reauthProofRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.reauth-proof"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "packageDigest",
+            "response",
+            "conditionRefs",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "SubmitDecisionPayload"
+    },
+    "WithdrawDecisionPayload": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "$ref": "#/$defs/Reason"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "additionalProperties": false,
+      "title": "WithdrawDecisionPayload"
+    },
+    "DecisionEffectSummary": {
+      "type": "object",
+      "properties": {
+        "effectRef": {
+          "$ref": "#/$defs/DecisionEffectRef"
+        },
+        "status": {
+          "$ref": "urn:abh:contracts:0.1.0:states#/$defs/DecisionEffectState"
+        },
+        "receiptRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "failureRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": [
+        "effectRef",
+        "status"
+      ],
+      "additionalProperties": false,
+      "title": "DecisionEffectSummary"
+    },
+    "DecisionView": {
+      "type": "object",
+      "properties": {
+        "decisionRef": {
+          "$ref": "#/$defs/DecisionRef"
+        },
+        "package": {
+          "$ref": "#/$defs/DecisionPackage"
+        },
+        "status": {
+          "$ref": "urn:abh:contracts:0.1.0:states#/$defs/DecisionState"
+        },
+        "effectSummaries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DecisionEffectSummary"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "availableActions": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        }
+      },
+      "required": [
+        "decisionRef",
+        "package",
+        "status",
+        "effectSummaries",
+        "availableActions"
+      ],
+      "additionalProperties": false,
+      "title": "DecisionView"
+    },
+    "AuthorizationSummary": {
+      "type": "object",
+      "properties": {
+        "authorityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/AuthorityRef"
+        },
+        "snapshotRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.authorization-snapshot"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "expiresAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "requestRef": {
+          "$ref": "#/$defs/RequestRef"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "title": "AuthorizationSummary"
+    },
+    "OperationSummary": {
+      "type": "object",
+      "properties": {
+        "operationRef": {
+          "$ref": "#/$defs/OperationRef"
+        },
+        "position": {
+          "$ref": "urn:abh:contracts:0.1.0:states#/$defs/OperationPosition"
+        }
+      },
+      "required": [
+        "operationRef",
+        "position"
+      ],
+      "additionalProperties": false,
+      "title": "OperationSummary"
+    },
+    "ActionView": {
+      "type": "object",
+      "properties": {
+        "actionRef": {
+          "$ref": "#/$defs/ActionRef"
+        },
+        "actionType": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "position": {
+          "$ref": "urn:abh:contracts:0.1.0:states#/$defs/ActionPosition"
+        },
+        "authorizationSummary": {
+          "$ref": "#/$defs/AuthorizationSummary"
+        },
+        "operationSummary": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OperationSummary"
+          },
+          "minItems": 0,
+          "maxItems": 1000,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "unresolvedRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 0,
+          "maxItems": 1000,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "availableActions": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        }
+      },
+      "required": [
+        "actionRef",
+        "actionType",
+        "position",
+        "authorizationSummary",
+        "operationSummary",
+        "unresolvedRefs",
+        "availableActions"
+      ],
+      "additionalProperties": false,
+      "title": "ActionView"
+    },
+    "QueryMeta": {
+      "type": "object",
+      "properties": {
+        "nextCursor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "asOf": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "watermark": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "stale": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "asOf",
+        "watermark",
+        "stale"
+      ],
+      "additionalProperties": false,
+      "title": "QueryMeta"
+    },
+    "ActionQueryResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "$ref": "#/$defs/ActionView"
+        },
+        "meta": {
+          "$ref": "#/$defs/QueryMeta"
+        }
+      },
+      "required": [
+        "success",
+        "data",
+        "meta"
+      ],
+      "additionalProperties": false,
+      "title": "ActionQueryResponse"
+    },
+    "DecisionQueryResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "$ref": "#/$defs/DecisionView"
+        },
+        "meta": {
+          "$ref": "#/$defs/QueryMeta"
+        }
+      },
+      "required": [
+        "success",
+        "data",
+        "meta"
+      ],
+      "additionalProperties": false,
+      "title": "DecisionQueryResponse"
+    },
+    "ActionListResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ActionView"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "meta": {
+          "$ref": "#/$defs/QueryMeta"
+        }
+      },
+      "required": [
+        "success",
+        "data",
+        "meta"
+      ],
+      "additionalProperties": false,
+      "title": "ActionListResponse"
+    },
+    "DecisionInboxResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DecisionView"
+          },
+          "minItems": 0,
+          "maxItems": 100
+        },
+        "meta": {
+          "$ref": "#/$defs/QueryMeta"
+        }
+      },
+      "required": [
+        "success",
+        "data",
+        "meta"
+      ],
+      "additionalProperties": false,
+      "title": "DecisionInboxResponse"
+    },
+    "ActionAcceptedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "$ref": "#/$defs/ActionRef"
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "trackingRef": {
+              "$ref": "#/$defs/ActionRef"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "trackingRef"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "ActionAcceptedResponse"
+    },
+    "DecisionSubmittedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "$ref": "#/$defs/DecisionRef"
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "status": {
+              "$ref": "#/$defs/DecisionResponse"
+            },
+            "effectTrackingRefs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/DecisionEffectRef"
+              },
+              "minItems": 0,
+              "maxItems": 100,
+              "uniqueItems": true,
+              "x-abh-set": true
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "status",
+            "effectTrackingRefs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "DecisionSubmittedResponse"
+    },
+    "DecisionWithdrawnResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "$ref": "#/$defs/DecisionRef"
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "status": {
+              "const": "Withdrawn"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "status"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "DecisionWithdrawnResponse"
+    },
+    "EventChangeSummary": {
+      "type": "object",
+      "properties": {
+        "changedFields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "factRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        }
+      },
+      "required": [
+        "changedFields",
+        "factRefs"
+      ],
+      "additionalProperties": false,
+      "title": "EventChangeSummary"
+    },
+    "JobEnvelope": {
+      "type": "object",
+      "properties": {
+        "jobType": {
+          "enum": [
+            "abh.action.advance",
+            "abh.operation.reconcile",
+            "abh.decision.apply-effect",
+            "abh.operation.notify-wait",
+            "abh.pack-inspection-job.advance"
+          ]
+        },
+        "targetRef": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ActionRef"
+            },
+            {
+              "$ref": "#/$defs/OperationRef"
+            },
+            {
+              "$ref": "#/$defs/DecisionRef"
+            },
+            {
+              "$ref": "#/$defs/PackInspectionJobRef"
+            }
+          ]
+        },
+        "commandRef": {
+          "$ref": "#/$defs/CommandRef"
+        },
+        "dedupeKey": {
+          "$ref": "#/$defs/IdempotencyKey"
+        },
+        "notBefore": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "deadline": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "authorityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/AuthorityRef"
+        },
+        "causeRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": [
+        "jobType",
+        "targetRef",
+        "commandRef",
+        "dedupeKey",
+        "notBefore",
+        "deadline",
+        "causeRef"
+      ],
+      "additionalProperties": false,
+      "title": "JobEnvelope"
+    },
+    "InlineArtifactStoredResponse": {
+      "title": "InlineArtifactStoredResponse",
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.artifact"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "const": 2
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "PackInspectionJobRef": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "abh.pack-inspection-job"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "PackInspectionJobRef"
+    }
+  }
+}

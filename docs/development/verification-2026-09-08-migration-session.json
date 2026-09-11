@@ -1,0 +1,64 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Dedicated migration session transaction boundary",
+  "checks": {
+    "initialFocusedTests": 13,
+    "coreFullTests": 422,
+    "coreFullPassed": 421,
+    "coreFullFailed": 1,
+    "coreFullFailure": "Testcontainers host port binding timeout before Artifact test setup completed",
+    "artifactFileRerunPassed": 8,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Pre-fix regression demonstrates caller open transaction was committed by migration execution.",
+    "DISCARD ALL before preparation rejects active, read-only and failed caller transactions and cleanup rolls back prior writes.",
+    "Idle default_transaction_read_only state cleared before migration.",
+    "Final additional session tests passed in full run; signed install/result/recovery and lost COMMIT tests passed."
+  ],
+  "limitations": [
+    "Full run was not clean: 421/422 passed, one container startup timeout; affected test file separately passed 8/8.",
+    "Host must still provide fresh exclusive connection; driver cached statements and host callbacks opening new transactions remain outside this check.",
+    "Target-state verification, production governance, cross-step/nontransactional recovery, readiness and Enable remain incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-session-before.log",
+      "sha256": "fbfca0515b86c05e52006fa67aef42ec7cb123cda9a5a7ba1a5b3362b2af5c4f"
+    },
+    {
+      "path": "artifacts/verification/migration-session-test.log",
+      "sha256": "dfca3fc225c1af3e8a15ccb82b0a17c4347ccd3d490ed49225af4b9551901893"
+    },
+    {
+      "path": "artifacts/verification/migration-session-full.log",
+      "sha256": "2afb0401092d2f457966a742c5171d6365258e3eede51c085f14c16aa8e77830"
+    },
+    {
+      "path": "artifacts/verification/migration-session-artifact-rerun.log",
+      "sha256": "34fb04914bad0928f9e5778a10c27927e9b71c00fe780f9ddaffa87deb41536f"
+    },
+    {
+      "path": "artifacts/verification/migration-session-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-session-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-session-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-session-docs.log",
+      "sha256": "7bc0e12497db3874c3b37d11208d0f882d97d63c43939725c45558e4f77933ae"
+    }
+  ]
+}

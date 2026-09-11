@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Persisted signed data expectation reader",
+  "checks": {
+    "focusedTests": 6,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Real Artifact Store Command persists canonical data report and Cosign Bundle; reader locks both sources and verifies actual bytes.",
+    "Structure-report substitution, modified data report, wrong owner, absent Bundle report reference and noncanonical JSON reject.",
+    "Late source revocation, signer policy rotation and same-ref report/Bundle reject."
+  ],
+  "limitations": [
+    "Reader authenticates data expectation, not actual data completion.",
+    "Formal data report contract, direct stored-report-to-target composition, installation and data result persistence remain incomplete.",
+    "Host supplies current signer/source authority; full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-data-stored-test.log",
+      "sha256": "551204cb21201d0e856b052312a9fd031c7d288c3df36e320c81315b4a32bbe8"
+    },
+    {
+      "path": "artifacts/verification/migration-data-stored-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-data-stored-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-data-stored-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-data-stored-docs.log",
+      "sha256": "ecb7aae7ce48bfc32ebe5259964873bc212eaf9ba56fee96ee81e331fb918366"
+    }
+  ]
+}

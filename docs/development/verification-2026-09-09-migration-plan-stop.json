@@ -1,0 +1,57 @@
+{
+  "date": "2026-09-09",
+  "scope": "Stop signed migration plan validation after child cancellation in source or supporting-fact callbacks",
+  "tests": {
+    "realMigrationSignatureInspection": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "fullContractsRerun": false
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreApi": "passed (3 entry points)",
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/migration-plan-stop-integration.log",
+      "sha256": "ff26d2a2df68faf9df7941ef7655f559b420825ac8e95152461e09a5a0c424ad"
+    },
+    {
+      "path": "artifacts/verification/migration-plan-stop-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-plan-stop-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-plan-stop-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/migration-plan-stop-docs.log",
+      "sha256": "322690ff1e9ccbe0e8493c115d1d4f1bb002a25434d39ed8f56eea9a7829879a"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/signed-migration-plan.ts",
+      "sha256": "7010b9bbad29cd82066c36d57156a2dcb26d36c44481cc8765f9693b5cbe9ac3"
+    },
+    {
+      "path": "packages/core/test/migration-signature.test.ts",
+      "sha256": "fa8e5a55d691a25dc43ea48dcc2b39d8878dc6f0bd6cfe0c3f912a2588ee1f2d"
+    }
+  ],
+  "remaining": [
+    "Late cleanup durable reporting",
+    "Enable Owner and approval assembly",
+    "Remaining V1 modules"
+  ]
+}

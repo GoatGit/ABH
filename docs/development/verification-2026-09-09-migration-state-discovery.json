@@ -1,0 +1,50 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Persistent combined observation discovery",
+  "checks": {
+    "finalIntegration": "passed",
+    "coreTypecheck": "passed",
+    "installedSignatureIntegration": 1,
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0
+  },
+  "limitations": [
+    "Discovery returns recovery hints; actual current signatures, authority and target state must be revalidated.",
+    "Internal UUID pagination is not a public authenticated query cursor.",
+    "No automatic choice among multiple candidates, production observation index or complete installation job service.",
+    "Full Core suite not repeated; complete domain/backfill/projection verification, ObjectStore and Enable incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-state-discovery-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-state-discovery-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-state-discovery-docs.log",
+      "sha256": "64fb9e8af858f8282267284c9defcf415935bee82e37978dfb18470b749609de"
+    },
+    {
+      "path": "artifacts/verification/migration-state-discovery-test.log",
+      "sha256": "344aa32c5eea5e8981c587a2a893dc1a44a007e57429bd4f40e27ec8de46a504"
+    },
+    {
+      "path": "artifacts/verification/migration-state-discovery-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "coverage": [
+    "Actual persisted observation discovery drives hosted current-state recovery with original Ref.",
+    "Missing Grant, read denial, final discovery denial and empty query authorization.",
+    "Exact source set validation, wrong environment exclusion, bounded UUID pagination.",
+    "Independent duplicate Artifact remains visible; tombstoned duplicate excluded."
+  ]
+}

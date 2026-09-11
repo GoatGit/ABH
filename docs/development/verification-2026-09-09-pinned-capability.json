@@ -1,0 +1,67 @@
+{
+  "date": "2026-09-09",
+  "scope": "Actual persisted PinSet exact capability membership and Assignment/Release consistency checks",
+  "tests": {
+    "actionAndReleaseRegression": {
+      "passed": 70,
+      "failed": 0
+    },
+    "releaseFinalAfterContextCheck": {
+      "passed": 8,
+      "failed": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "No complete Registry exact resolver or implementation handle yet.",
+    "Caller must separately verify business authority, Enabled installation, Schema bytes, implementation trust and health.",
+    "Assignment lifecycle currently requires the exact pinned version; later lifecycle transitions preserving old pins still require design and implementation."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pinned-capability-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pinned-capability-build-final.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pinned-capability-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pinned-capability-docs-final.log",
+      "sha256": "9a1120097ded32d0ad52489504e42d0c36aa537f5a4a155905cc255a0c648a2e"
+    },
+    {
+      "path": "artifacts/verification/pinned-capability-docs.log",
+      "sha256": "9a1120097ded32d0ad52489504e42d0c36aa537f5a4a155905cc255a0c648a2e"
+    },
+    {
+      "path": "artifacts/verification/pinned-capability-regression.log",
+      "sha256": "6ed23c4020ae6df9bccfa4ac7018ca76b23ed0e7fd883ffc904c2613b328e8a4"
+    },
+    {
+      "path": "artifacts/verification/pinned-capability-tests-final.log",
+      "sha256": "3a2c4c95be3d80e05e3c27a378c864433b0c48444a88104e4c7c55423c1b8bad"
+    },
+    {
+      "path": "artifacts/verification/pinned-capability-tests.log",
+      "sha256": "86594b62d3a10afb2bbf5acb8c5adcf431775d3e1da8092e231e004fc245690c"
+    },
+    {
+      "path": "artifacts/verification/pinned-capability-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pinned-capability-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

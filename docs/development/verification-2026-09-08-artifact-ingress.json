@@ -1,0 +1,61 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Current Grant and governance ingress for bounded inline artifact storage",
+  "checks": {
+    "coreTests": 288,
+    "contractTests": 229,
+    "artifactTests": 7,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreAndContractsBuild": "passed via API update",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 222,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/artifact-ingress-tests.log",
+      "sha256": "7eebb9f443d1aad6069c70e6f6dcb2262c231d931222967efa46c9cb73d0cf20"
+    },
+    {
+      "path": "artifacts/verification/artifact-ingress-core.log",
+      "sha256": "4fdd317a5fcbb293b3ae2d34a1924985b99a0335551d9cfd9f4c0f7e189dbe0d"
+    },
+    {
+      "path": "artifacts/verification/artifact-ingress-contracts-tests.log",
+      "sha256": "7131fd7fd1b822735ce85701ea7630bb493cd8f2785dfeb9799823647ff7f2f9"
+    },
+    {
+      "path": "artifacts/verification/artifact-ingress-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/artifact-ingress-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/artifact-ingress-api-update.log",
+      "sha256": "4f4e5ac94745089666554025933a85b04be746dd8b51b986a5e76bc8c79e5ed3"
+    },
+    {
+      "path": "artifacts/verification/artifact-ingress-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/artifact-ingress-contracts-check.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    },
+    {
+      "path": "artifacts/verification/artifact-ingress-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    }
+  ],
+  "limitations": [
+    "Entire workspace pnpm check and adapter tests not rerun this batch.",
+    "Storage ingress remains Internal; public upload protocol is not implemented here.",
+    "ObjectStore staging/scan/quarantine/GC, production data governance and high-level actions.propose remain incomplete.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

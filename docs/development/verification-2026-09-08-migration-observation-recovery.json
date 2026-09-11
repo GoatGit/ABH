@@ -1,0 +1,51 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Recover missing migration observations from persisted result Artifacts",
+  "checks": {
+    "focusedTests": 12,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Observation INSERT fault leaves Artifact committed; recovery uses only persistent attempt/Artifact references.",
+    "Current recovery authority and capture/source denial reject recovery.",
+    "Actual attempt mutation during source admission rejects under final parent row lock.",
+    "Repeated recovery and original persistence replay return the same Artifact/observation, without SQL.",
+    "Source row shared lock remains held until after maintenance observation commit."
+  ],
+  "limitations": [
+    "Fixture omits in-memory producer provenance but does not kill/restart an OS process.",
+    "Raw observation recovery is not target-state/result verification or Enable.",
+    "Production capture/source authority, signatures, recovery scheduling, cross-step/nontransactional recovery and business table readiness remain incomplete.",
+    "Maintenance and management transactions can commit independently; retry reauthorizes and never dispatches SQL.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-observation-recovery-test.log",
+      "sha256": "d4c7003852011c7681719f83fbf5bab4056681210327eabd4bbb582aad3592fd"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-recovery-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-recovery-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-recovery-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-observation-recovery-docs.log",
+      "sha256": "14f5e2fba8147af62ab3ef37459d019edf7bfccdc2006fb6b48b6e5c2e305e36"
+    }
+  ]
+}

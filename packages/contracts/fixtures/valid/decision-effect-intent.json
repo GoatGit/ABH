@@ -1,0 +1,48 @@
+{
+  "schema": "DecisionEffectIntentRecord",
+  "value": {
+    "effectRef": {
+      "type": "abh.decision-effect",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "resourceOrganizationId": "00000000-0000-4000-8000-000000000001",
+    "requestRef": {
+      "type": "abh.responsibility-request",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "routeRevision": 1,
+    "effectKey": "action-authority",
+    "decisionRefs": [
+      {
+        "type": "abh.decision",
+        "id": "00000000-0000-4000-8000-000000000001",
+        "version": 1
+      }
+    ],
+    "completionEvidenceRef": {
+      "type": "abh.request-completion-evidence",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "targetOwner": "Control",
+    "targetRef": {
+      "type": "abh.action",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "commandRef": {
+      "type": "abh.command",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "originatingCommandRef": {
+      "type": "abh.command",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "version": 1
+    },
+    "status": "Pending",
+    "recordedAt": "2026-09-08T00:00:00Z"
+  }
+}

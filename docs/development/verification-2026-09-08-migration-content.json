@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Capture migration SQL from the exact verified Pack byte stream",
+  "checks": {
+    "focusedTests": 13,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": 272
+  },
+  "coverage": [
+    "Single read verifies and captures migration bytes; source buffers and input step mutations cannot change returned SQL.",
+    "Tampered migration or unrelated Pack payload prevents SQL return.",
+    "Digest-valid malformed UTF-8 and NUL reject.",
+    "Unsupported media, oversized migration and stalled streams reject.",
+    "No migration produces no invented SQL."
+  ],
+  "limitations": [
+    "Internal content reader only; no SQL parser or execution.",
+    "Current persisted ownership, governed staging and actual evidence remain runner assembly responsibilities.",
+    "Focused tests only; full Core suite not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-content-test.log",
+      "sha256": "e922fce6004be9e94681c79ddd24d4fdc190cc05743236578753ab2cad2655b8"
+    },
+    {
+      "path": "artifacts/verification/migration-content-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-content-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-content-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-content-docs.log",
+      "sha256": "9ec695a81bf44e36049fc444819be8b34835d538f1d30f52290cb52fb7a5a00f"
+    }
+  ]
+}

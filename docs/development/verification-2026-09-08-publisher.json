@@ -1,0 +1,30 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Tenant-local Outbox Publisher and bounded publishing loop",
+  "profile": "Internal installed router/admission fixtures; real isolated PostgreSQL and pg-boss",
+  "checks": {
+    "pnpm check": "passed",
+    "coreTypecheckAfterStablePreparationChange": "passed",
+    "contractTests": 221,
+    "coreTests": 176,
+    "inboxOutboxTests": 10,
+    "failed": 0,
+    "skipped": 0,
+    "migrationVersions": 30,
+    "tenantTables": 56,
+    "generatedArtifacts": 48,
+    "publicApiEntryReports": 9,
+    "containersCleaned": true
+  },
+  "logs": {
+    "artifacts/verification/publisher-check.log": "cfb4bd99b6f57a8d52f29aebdd672e291331ef736db9f26c58a61759e22fe1e4",
+    "artifacts/verification/publisher.log": "869df407cb94212439882ab6411a6ce4b34fc24c1cf86462ea277488eb4568f4"
+  },
+  "limitations": [
+    "Production Context/Port admission and router governance remain.",
+    "Restricted global tenant discovery, persistent consumer watermarks, backpressure and production hosting remain.",
+    "Native stale acknowledgement/cross-queue conflict protection and retention lifecycle remain.",
+    "Full V1 modules and independent acceptance gates remain."
+  ]
+}

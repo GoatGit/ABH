@@ -1,0 +1,37 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "DecisionView with independently authorized available actions",
+  "checks": {
+    "decisionTests": 32,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/decision-view-tests.log",
+      "sha256": "5279606477895d9e11a9c42a7943e7d8fb686eb0ded6936fbfc8076b9f8db84f"
+    },
+    {
+      "path": "artifacts/verification/decision-view-typecheck.log",
+      "sha256": "c70eec6071b0f0fe48aad06a103990e676f51ad535d84ab19aaa65f23115e37c"
+    },
+    {
+      "path": "artifacts/verification/decision-view-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/decision-view-docs.log",
+      "sha256": "d5e7ec9fa954deb6917af95efe5f26b05af72412b79c0bd02e13485c9043360b"
+    }
+  ],
+  "limitations": [
+    "QueryMeta/continuous watermark, HTTP get/list-inbox and SDK remain incomplete.",
+    "Current source/MFA/duties and declared fence installation required.",
+    "Targeted integration tests only; full workspace check not repeated.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

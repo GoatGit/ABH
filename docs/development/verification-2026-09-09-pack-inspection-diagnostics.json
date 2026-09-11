@@ -1,0 +1,49 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Per-candidate Pack inspection blocking diagnostics",
+  "checks": {
+    "installedSignatureIntegration": 1,
+    "runtimeHostTests": 5,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Missing and Ambiguous per-candidate callbacks with correct page counts and no observations.",
+    "Host preserves original callback receiver and ignores callback replacement.",
+    "Cancellation releases a worker with a stalled diagnostic callback.",
+    "Real signed installed migration recovery with explicit target connection identity."
+  ],
+  "limitations": [
+    "Callback diagnostics are not durable installation job records or doctor queries.",
+    "Full Core suite not repeated.",
+    "Production execution leases, complete domain/backfill/projection validation and Enable incomplete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostics-test.log",
+      "sha256": "6b3b2da0b9ddb67a73c180f62f49ec77924385626837c385dc45b211ab4ceb1d"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostics-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostics-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostics-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-diagnostics-docs.log",
+      "sha256": "95a8dc685b63f793001a1ee9ce8d8a139b966ed04f30ed65ee292703a835e3b8"
+    }
+  ]
+}

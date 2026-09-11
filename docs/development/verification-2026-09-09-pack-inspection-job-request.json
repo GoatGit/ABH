@@ -1,0 +1,76 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Transactional Pending inspection Job creation command",
+  "checks": {
+    "contractsTests": 272,
+    "signedInstalledIntegration": 1,
+    "contractsTypecheck": "passed",
+    "coreTypecheck": "passed",
+    "contractsBuild": "passed",
+    "coreBuild": "passed",
+    "generatedArtifacts": 49,
+    "contractsApiReports": 9,
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "limitations": [
+    "Creates Pending with receipt/audit/outbox; state transitions, lease fencing, observation provenance and delivery integration remain incomplete.",
+    "Host must provide current deployment/environment admission; request creation is not inspection success or Enable.",
+    "Advanced progress replay fixture uses direct storage, not an implemented cancellation Owner.",
+    "Full Core suite was not rerun in this batch; signed installed integration includes the new request fixture."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-check.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-contracts-api.log",
+      "sha256": "4afb17510f9088b4dc052dee5a1eff3b9c934b5c4a5daccd66d04366c4c01249"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-contracts-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-contracts-test.log",
+      "sha256": "5f9b2d3f70829c9f2877cc3a962c13f6bd96ae617886915ce3d6b089a9afc6a6"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-contracts-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-core-api.log",
+      "sha256": "68391ea0bb683f05a50365093d210f5d27e84c52eb8f8123cd32e4a1f3f8d4b2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-core-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-generate.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-installed-test.log",
+      "sha256": "3d514491bf5f4a03342402ac451f3073ea1048c1cc8df26a55b8bd5a9f35b1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-inspection-job-request-docs.log",
+      "sha256": "c3d343a182bfec5a9bf878cbb39697972e1693b5b7c436f3bb609f07592d8e86"
+    }
+  ]
+}

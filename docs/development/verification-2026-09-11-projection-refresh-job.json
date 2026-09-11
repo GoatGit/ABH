@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core asynchronous RefreshProjection request and MissionSummary consumer watermark",
+  "commands": [
+    "node --test --test-concurrency=1 packages/core/test/run-commands.test.ts",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core build",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "focusedCoreTests": "passed",
+    "contractsBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreTests": 543,
+    "corePassed": 537,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractsArtifactsMatched": 51,
+    "apiEntryPointsMatched": 9,
+    "docsLinksChecked": 744,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "abh.projections.refresh-mission-summary returns HTTP 202 with a ProjectionRefreshReceipt",
+    "request admission rechecks abh.projections.request-mission-summary and abh.mission.manage in the transaction",
+    "refresh validation rejects stale Mission versions with VERSION_CONFLICT",
+    "unsupported projection types fail with SCHEMA_UNSUPPORTED",
+    "accepted requests append abh.mission.projection-refresh-requested without synchronously rebuilding",
+    "command replay returns the original receipt without appending another refresh event",
+    "MissionSummary consumer discovery includes refresh events and rebuilds from current source facts",
+    "installed runtime loop discovers pending MissionSummary Outbox events without queue configuration",
+    "worker scans bounded pages, waits on empty pages and continues across full pages",
+    "projection rebuild, Inbox append, Outbox audit and consumer watermark remain atomic",
+    "watermark upsert compares and persists PostgreSQL microsecond timestamps without Date truncation",
+    "conflicting concurrent watermark writers converge through one conflict target"
+  ],
+  "limits": [
+    "SubscribeChanges, SSE reset and subscription cursors remain",
+    "consumer gap backfill across retained history remains",
+    "ResponsibilityInbox, ActionTimeline, OrganizationSettings and CapabilityOverview projections remain"
+  ]
+}

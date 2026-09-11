@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Independent Cosign migration evidence signatures",
+  "checks": {
+    "focusedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": 286
+  },
+  "coverage": [
+    "Complete domain-separated evidence signature with fixed organization/kind/public key.",
+    "Tampered fields, incorrect key and excessive lifetime reject.",
+    "Private candidate rejects structural copies and actual expired proof.",
+    "Input and returned proof copies cannot mutate verified state."
+  ],
+  "limitations": [
+    "Signature persistence and mandatory read-path assembly remain incomplete.",
+    "Supporting facts and current trust root governance still require production Owners.",
+    "No Runner or Enable; full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-signature-test.log",
+      "sha256": "e89ded5cf61fe4788e3795e44655aaa8b011a48237384f015106ccfd2badf1bc"
+    },
+    {
+      "path": "artifacts/verification/migration-signature-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-signature-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-signature-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-signature-docs.log",
+      "sha256": "e53525ba7cc75ded0ab75a3c531d38ad7ff31b77c385aa35320009243fd47755"
+    }
+  ]
+}

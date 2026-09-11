@@ -1,0 +1,40 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Exact pinned Compiler host",
+  "checks": {
+    "coreTests": 281,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "apiCheck": "passed",
+    "documentLinks": 222
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/compiler-host-core.log",
+      "sha256": "fe3d4e75597883bc1c5a774afc5c8007dd0cc6307d341bcf556b7108925803b9"
+    },
+    {
+      "path": "artifacts/verification/compiler-host-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/compiler-host-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/compiler-host-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/compiler-host-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    }
+  ],
+  "limitations": [
+    "This batch ran Core tests/build/typecheck and API/docs checks; it did not rerun the entire workspace.",
+    "Trusted compiler callback host only; no adversarial process isolation or production compiler installation.",
+    "Full V1 and durable RequestAuthorization progression remain incomplete."
+  ]
+}

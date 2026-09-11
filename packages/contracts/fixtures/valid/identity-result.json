@@ -1,0 +1,23 @@
+{
+  "schema": "IdentityProviderVerifyResult",
+  "value": {
+    "status": "Completed",
+    "data": {
+      "issuer": "development.fake",
+      "subject": "test-human-4",
+      "audience": "abh.local",
+      "identityKind": "Human",
+      "authnStrength": {
+        "level": "SingleFactor"
+      },
+      "credentialEpoch": 1,
+      "verifiedAt": "2026-09-07T00:00:00Z",
+      "expiresAt": "2026-09-07T00:05:00Z",
+      "evidenceRef": {
+        "type": "abh.identity-evidence",
+        "id": "00000000-0000-4000-8000-000000000073",
+        "version": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "SubmitDecisionPayload",
+  "value": {
+    "packageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "response": "Rejected",
+    "conditionRefs": [],
+    "reason": "The source brief requires revision."
+  }
+}

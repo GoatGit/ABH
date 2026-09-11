@@ -1,0 +1,76 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Formal Pack schema ownership and migration step contracts",
+  "checks": {
+    "contractsTests": 250,
+    "coreFocusedTests": 5,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "contractsTypecheck": "passed",
+    "contractsBuild": "passed",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 260
+  },
+  "coverage": [
+    "Closed bounded ownership and migration step schemas with generated Core types.",
+    "Required evidence, identifier syntax, unique schemas and operations.",
+    "Drop/Contract and retirement evidence relationships.",
+    "Existing Core static migration admission passes against shared validators."
+  ],
+  "limitations": [
+    "Persistent ownership and database privilege verification not implemented.",
+    "Referenced review/dry-run/safety/recovery outcomes not yet verified.",
+    "Migration Runner and Enable remain incomplete.",
+    "Core focused tests only; full Core suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-contract-api-update.log",
+      "sha256": "aafd10dee2fd97316f0a45576a2863f9d6d32b732efeec31ca5ab8df8bd4d939"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-core-test.log",
+      "sha256": "944b95b0c4ff916beeceaa78544f01fc0323eaa7afcad7719a45bd02821ea022"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-docs.log",
+      "sha256": "428b2f94a6662db953449452624d1c420763ee5d720a2e226a2c3444a85b054a"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-generate.log",
+      "sha256": "bec6050a5253084e710e1335eb3f8899147fa958342ba034480b22cc9ed9db66"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-generated.log",
+      "sha256": "0a7c88d1963ba3aedd06de4d659bacee6dcadf9d6019643f58c43aaf382e5735"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-tests.log",
+      "sha256": "db52d71f1e5420319b4ff8e2421791c0920d25f3526e30f1cf6d7bd8339acc29"
+    },
+    {
+      "path": "artifacts/verification/migration-contract-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

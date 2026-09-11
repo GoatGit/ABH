@@ -1,0 +1,69 @@
+{
+  "date": "2026-09-09",
+  "scope": "Persistent suspension page recovery loop and explicit TenantRuntime installation",
+  "checks": {
+    "build": true,
+    "typecheck": true,
+    "api": true,
+    "docs": true
+  },
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "coreInitial": {
+      "total": 505,
+      "passed": 497,
+      "failed": 2,
+      "skipped": 6,
+      "failure": "Two PostgreSQL containers timed out binding ports before test bodies ran"
+    },
+    "coreAffectedRetry": {
+      "files": [
+        "pack-enable-approval.test.ts",
+        "release.test.ts"
+      ],
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "limitations": [
+    "Host supplies exact event/capability and business scope; global task discovery outstanding.",
+    "Current business identity and governance remain explicit trusted installations.",
+    "Malformed or denied page fails this loop; independent task fault isolation outstanding.",
+    "Run Owner, Retire, compatible queries and remaining V1 not complete."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/suspension-worker-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/suspension-worker-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/suspension-worker-core-retry.log",
+      "sha256": "5cc0396dad048365161d7ae7a21868402823329051bb667ce31bb705c4a30b5e"
+    },
+    {
+      "path": "artifacts/verification/suspension-worker-core-tests.log",
+      "sha256": "dfe4db287ee70762d27765e2b183fd2174fbb071ddf0103a1ad56852a3cefeef"
+    },
+    {
+      "path": "artifacts/verification/suspension-worker-docs.log",
+      "sha256": "542379e9e3fb61c62e5722704dba8135ec8e2b219e6ccf34797b9a5e544f6550"
+    },
+    {
+      "path": "artifacts/verification/suspension-worker-tests.log",
+      "sha256": "e7051c840930c604a4023fa69c41999ac6334697a0c9967a29ab81d5ee018003"
+    },
+    {
+      "path": "artifacts/verification/suspension-worker-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

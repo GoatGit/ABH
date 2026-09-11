@@ -1,0 +1,26 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Tenant runtime automatically retries unchanged Unresolved responsibility routes",
+  "checks": {
+    "coreTests": 232,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/routing-worker-core.log",
+  "logSha256": "bb3fbf8ecae60d82623f39a8f6e277ab9103830ad9387ca07cb68ef02ba72874",
+  "priorAttempt": {
+    "log": "artifacts/verification/routing-worker-decisions.log",
+    "reason": "Fixture incorrectly assumed Workspace excludes organization-wide requests; isolated fixture by existing purpose semantics."
+  },
+  "limitations": [
+    "Trusted installed proposal loader is required; automatic initial frozen package lookup is not implemented.",
+    "Repeated no-op attempts produce CommandReceipts; deployment cadence and retention capacity require production validation.",
+    "Dedicated delegation/escalation and automatic new route revisions remain incomplete.",
+    "Full workspace contract/API checks were not repeated for this internal-only change.",
+    "Full V1 acceptance remains incomplete."
+  ]
+}

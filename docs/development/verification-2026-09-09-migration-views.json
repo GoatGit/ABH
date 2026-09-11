@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "View and materialized view catalog definition inspection",
+  "checks": {
+    "focusedTests": 14,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Hand-authored real view definition, typed columns, security options and materialized population compared.",
+    "Same-name definition replacement, option changes, column type changes and REFRESH population transition detected.",
+    "Wrong kind, absence, duplicate expectation, unowned schema, incorrect transaction mode and cancellation tested."
+  ],
+  "limitations": [
+    "Standalone checker not yet integrated into signed unified expectations; views remain explicitly requiring additional verification there.",
+    "Dependencies, view triggers/rules, materialized indexes, ACLs and business data correctness not covered.",
+    "No view expression execution or materialized refresh by verifier.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-views-test.log",
+      "sha256": "a83237b73060379a28c991ec719edecd9160dfeeab75171b2bd05a1763bb94f6"
+    },
+    {
+      "path": "artifacts/verification/migration-views-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-views-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-views-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-views-docs.log",
+      "sha256": "ff83f489087448f7c677566b126ab72564915079cdab523d1bca2c1f8147b9ab"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-09",
+  "scope": "Actual bounded Schema bytes bound to PackCapabilityRegistration and Manifest",
+  "tests": {
+    "capabilitySchemaAndPreparation": {
+      "passed": 6,
+      "failed": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "docs": true
+  },
+  "limitations": [
+    "Standalone byte verifier; full runtime exact resolver, public CapabilityRef binding and trusted implementation handles remain incomplete.",
+    "Caller must verify current Enabled installation, trust, Assignment/Pin and execution authority.",
+    "Does not parse Schema or execute any package content."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/capability-schema-build-final.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/capability-schema-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/capability-schema-docs.log",
+      "sha256": "9a1120097ded32d0ad52489504e42d0c36aa537f5a4a155905cc255a0c648a2e"
+    },
+    {
+      "path": "artifacts/verification/capability-schema-tests.log",
+      "sha256": "df57ad9c287a6ad9385f924deb21847cab91588f5c951fdd7fe07819050bf728"
+    },
+    {
+      "path": "artifacts/verification/capability-schema-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/capability-schema-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

@@ -1,0 +1,1221 @@
+[
+  {
+    "name": "invalid decimal 1.2",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/amount",
+        "value": 1.2
+      }
+    ]
+  },
+  {
+    "name": "invalid decimal 1e3",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/amount",
+        "value": "1e3"
+      }
+    ]
+  },
+  {
+    "name": "invalid decimal +1",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/amount",
+        "value": "+1"
+      }
+    ]
+  },
+  {
+    "name": "invalid decimal 01",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/amount",
+        "value": "01"
+      }
+    ]
+  },
+  {
+    "name": "invalid decimal -0",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/amount",
+        "value": "-0"
+      }
+    ]
+  },
+  {
+    "name": "invalid decimal -0.000",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/amount",
+        "value": "-0.000"
+      }
+    ]
+  },
+  {
+    "name": "invalid decimal 1.1234567890123",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/amount",
+        "value": "1.1234567890123"
+      }
+    ]
+  },
+  {
+    "name": "invalid decimal 100000000000000000000000000",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/amount",
+        "value": "100000000000000000000000000"
+      }
+    ]
+  },
+  {
+    "name": "invalid decimal NaN",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/amount",
+        "value": "NaN"
+      }
+    ]
+  },
+  {
+    "name": "unknown money property is rejected without removal",
+    "base": "money",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/secret",
+        "value": "sensitive-sentinel"
+      }
+    ]
+  },
+  {
+    "name": "untrusted snapshot in request context",
+    "base": "request-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/authorizationSnapshotId",
+        "value": "00000000-0000-4000-8000-000000000015"
+      }
+    ]
+  },
+  {
+    "name": "authorized context without snapshot",
+    "base": "authorized-context",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/authorizationSnapshotId"
+      }
+    ]
+  },
+  {
+    "name": "cross-org context without workspace",
+    "base": "request-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/actingOrganizationId",
+        "value": "00000000-0000-4000-8000-000000000020"
+      }
+    ]
+  },
+  {
+    "name": "negative epoch",
+    "base": "request-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/scopeEpoch",
+        "value": -1
+      }
+    ]
+  },
+  {
+    "name": "context expires before receipt",
+    "base": "request-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/contextExpiresAt",
+        "value": "2026-09-06T23:59:59Z"
+      }
+    ]
+  },
+  {
+    "name": "non-UTC time",
+    "base": "request-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/receivedAt",
+        "value": "2026-09-07T08:00:00+08:00"
+      }
+    ]
+  },
+  {
+    "name": "invalid calendar date",
+    "base": "request-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/receivedAt",
+        "value": "2026-02-30T00:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "unverified MFA",
+    "base": "request-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/authnStrength",
+        "value": {
+          "level": "MultiFactor"
+        }
+      }
+    ]
+  },
+  {
+    "name": "AuthorityRef is a closed union",
+    "base": "request-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/executionAuthorityRef",
+        "value": {
+          "type": "abh.grant",
+          "id": "00000000-0000-4000-8000-000000000001",
+          "version": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "unversioned authority ref",
+    "base": "request-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/executionAuthorityRef",
+        "value": {
+          "type": "abh.execution-authority",
+          "id": "00000000-0000-4000-8000-000000000001",
+          "version": 0
+        }
+      }
+    ]
+  },
+  {
+    "name": "scope and action binding cannot mix",
+    "base": "scope-authority",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/binding/actionRef",
+        "value": {
+          "type": "abh.action",
+          "id": "00000000-0000-4000-8000-000000000006",
+          "version": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "action binding needs payload digest",
+    "base": "execution-authority",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/binding/payloadDigest"
+      }
+    ]
+  },
+  {
+    "name": "authority needs grant",
+    "base": "execution-authority",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/grantRefs",
+        "value": []
+      }
+    ]
+  },
+  {
+    "name": "authority needs allowed proposer",
+    "base": "execution-authority",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/allowedProposerRefs",
+        "value": []
+      }
+    ]
+  },
+  {
+    "name": "authority needs finite expiry",
+    "base": "execution-authority",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/validUntil"
+      }
+    ]
+  },
+  {
+    "name": "authority cannot expire before start",
+    "base": "execution-authority",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/validUntil",
+        "value": "2026-09-06T00:00:00Z"
+      }
+    ]
+  },
+  {
+    "name": "authority needs issuance evidence",
+    "base": "execution-authority",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/issuanceEvidenceRef"
+      }
+    ]
+  },
+  {
+    "name": "worker identity cannot be an arbitrary deployment reference",
+    "base": "execution-authority",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/executionPrincipalRef",
+        "value": {
+          "type": "abh.worker",
+          "id": "00000000-0000-4000-8000-000000000001",
+          "version": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "same grant cannot enter twice with conflicting versions",
+    "base": "execution-authority",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/grantRefs",
+        "value": [
+          {
+            "type": "abh.grant",
+            "id": "00000000-0000-4000-8000-000000000007",
+            "version": 1
+          },
+          {
+            "type": "abh.grant",
+            "id": "00000000-0000-4000-8000-000000000007",
+            "version": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "pin cannot use a semver range",
+    "base": "action-pin-set",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/pins/0/capabilityExactRefs/0/version",
+        "value": "^0.1.0"
+      }
+    ]
+  },
+  {
+    "name": "pin cannot contain a fake subject type",
+    "base": "action-pin-set",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/subjectRef",
+        "value": {
+          "type": "abh.invocation",
+          "id": "00000000-0000-4000-8000-000000000001",
+          "version": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "pin cannot be empty",
+    "base": "action-pin-set",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/pins",
+        "value": []
+      }
+    ]
+  },
+  {
+    "name": "pin set cannot contain two versions of one slot",
+    "base": "action-pin-set",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/pins",
+        "value": [
+          {
+            "behaviorSlot": "hello.connector",
+            "assignmentRef": {
+              "type": "abh.assignment",
+              "id": "00000000-0000-4000-8000-000000000012",
+              "version": 1
+            },
+            "releaseRef": {
+              "type": "abh.release",
+              "id": "00000000-0000-4000-8000-000000000013",
+              "version": 1
+            },
+            "capabilityExactRefs": [
+              {
+                "kind": "Connector",
+                "id": "hello.connector",
+                "version": "0.1.0",
+                "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ],
+            "versionVector": [
+              {
+                "type": "abh.assignment",
+                "id": "00000000-0000-4000-8000-000000000012",
+                "version": 1
+              }
+            ]
+          },
+          {
+            "behaviorSlot": "hello.connector",
+            "assignmentRef": {
+              "type": "abh.assignment",
+              "id": "00000000-0000-4000-8000-000000000012",
+              "version": 1
+            },
+            "releaseRef": {
+              "type": "abh.release",
+              "id": "00000000-0000-4000-8000-000000000013",
+              "version": 2
+            },
+            "capabilityExactRefs": [
+              {
+                "kind": "Connector",
+                "id": "hello.connector",
+                "version": "0.1.0",
+                "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              }
+            ],
+            "versionVector": [
+              {
+                "type": "abh.assignment",
+                "id": "00000000-0000-4000-8000-000000000012",
+                "version": 1
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "slot list cannot be empty",
+    "base": "pin-request",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/requiredBehaviorSlots",
+        "value": []
+      }
+    ]
+  },
+  {
+    "name": "slots cannot repeat",
+    "base": "pin-request",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/requiredBehaviorSlots",
+        "value": [
+          "hello.connector",
+          "hello.connector"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "development config cannot enable production",
+    "base": "development-config",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/deployment/profile",
+        "value": "Production"
+      }
+    ]
+  },
+  {
+    "name": "server config cannot contain migration credential",
+    "base": "development-config",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/database/migrationUrlRef",
+        "value": "env:ABH_MIGRATION_URL"
+      }
+    ]
+  },
+  {
+    "name": "secret material cannot replace connection reference",
+    "base": "development-config",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/database/runtimeUrlRef",
+        "value": "postgres://user:secret@host/db"
+      }
+    ]
+  },
+  {
+    "name": "database timeout order",
+    "base": "development-config",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/database/statementTimeoutMs",
+        "value": 100
+      },
+      {
+        "op": "set",
+        "path": "/database/lockTimeoutMs",
+        "value": 1000
+      }
+    ]
+  },
+  {
+    "name": "tenant context cannot be missing resource organization",
+    "base": "tenant-context",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/resourceOrganizationId"
+      }
+    ]
+  },
+  {
+    "name": "tenant context cannot request all organizations",
+    "base": "tenant-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/resourceOrganizationId",
+        "value": "*"
+      }
+    ]
+  },
+  {
+    "name": "tenant context cannot embed authorization snapshot",
+    "base": "tenant-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/authorizationSnapshotId",
+        "value": "00000000-0000-4000-8000-000000000015"
+      }
+    ]
+  },
+  {
+    "name": "cross-org tenant context requires workspace",
+    "base": "tenant-context",
+    "patches": [
+      {
+        "op": "set",
+        "path": "/actingOrganizationId",
+        "value": "00000000-0000-4000-8000-000000000020"
+      }
+    ]
+  },
+  {
+    "name": "empty operation plan",
+    "base": "operation-plan",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/nodes",
+        "value": []
+      }
+    ]
+  },
+  {
+    "name": "missing dependency target",
+    "base": "operation-plan",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/nodes/1/dependsOn",
+        "value": [
+          "missing"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "cyclic operation plan",
+    "base": "operation-plan",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/nodes/0/dependsOn",
+        "value": [
+          "announce"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "parent binding without dependency",
+    "base": "operation-plan",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/nodes/1/dependsOn",
+        "value": []
+      }
+    ]
+  },
+  {
+    "name": "duplicate node identity",
+    "base": "operation-plan",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/nodes/1/nodeKey",
+        "value": "publish"
+      }
+    ]
+  },
+  {
+    "name": "node outside declared scope",
+    "base": "operation-plan",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/nodes/1/scopeRefs",
+        "value": [
+          {
+            "type": "abh.organization",
+            "id": "00000000-0000-4000-8000-000000000099",
+            "version": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "unpinned node connector",
+    "base": "operation-plan",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/nodes/1/connectorRef/version",
+        "value": "0.2.0"
+      }
+    ]
+  },
+  {
+    "name": "negative impact upper bound",
+    "base": "operation-plan",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/impactUpperBound/maxMoney",
+        "value": [
+          {
+            "amount": "-1",
+            "currency": "USD"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "client may not select execution principal",
+    "base": "propose-http-request",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/payload/executionPrincipalRef",
+        "value": {
+          "type": "abh.principal",
+          "id": "00000000-0000-4000-8000-000000000099",
+          "version": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "client may not override resource requirements",
+    "base": "propose-http-request",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/payload/resourceRequirements",
+        "value": []
+      }
+    ]
+  },
+  {
+    "name": "client may not supply trusted context",
+    "base": "propose-http-request",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/context",
+        "value": {
+          "actor": {
+            "type": "Service",
+            "id": "00000000-0000-4000-8000-000000000099"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "empty action targets",
+    "base": "action-proposal",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/targetRefs",
+        "value": []
+      }
+    ]
+  },
+  {
+    "name": "action execution without authority or plan",
+    "base": "proposed-action",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/position",
+        "value": {
+          "lifecycle": "Authorized",
+          "outcome": "NotStarted"
+        }
+      }
+    ]
+  },
+  {
+    "name": "independent action with mission authority",
+    "base": "proposed-action",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/executionAuthorityRef",
+        "value": {
+          "type": "abh.mission-authority",
+          "id": "00000000-0000-4000-8000-000000000099",
+          "version": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "unregistered command type",
+    "base": "cancel-command",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/type",
+        "value": "abh.arbitrary.dispatch"
+      }
+    ]
+  },
+  {
+    "name": "update command without CAS",
+    "base": "cancel-command",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/expectedVersion"
+      }
+    ]
+  },
+  {
+    "name": "create command cannot fake expected version",
+    "base": "propose-command",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/expectedVersion",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "name": "command target mismatch",
+    "base": "cancel-command",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/target/type",
+        "value": "abh.decision"
+      }
+    ]
+  },
+  {
+    "name": "declining a decision requires a reason",
+    "base": "rejected-decision",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/reason"
+      }
+    ]
+  },
+  {
+    "name": "conditions must be registered references",
+    "base": "conditional-decision",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/conditionRefs",
+        "value": [
+          "Only if it looks okay"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "rejected decision cannot carry approval conditions",
+    "base": "rejected-decision",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/conditionRefs",
+        "value": [
+          {
+            "type": "abh.condition",
+            "id": "00000000-0000-4000-8000-000000000052",
+            "version": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "decision must expose risk field",
+    "base": "decision-package",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/risks"
+      }
+    ]
+  },
+  {
+    "name": "decision must include evidence",
+    "base": "decision-package",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/evidenceRefs",
+        "value": []
+      }
+    ]
+  },
+  {
+    "name": "applied effect without owner receipt nested in query",
+    "base": "decision-view",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/effectSummaries/0/status",
+        "value": "Applied"
+      }
+    ]
+  },
+  {
+    "name": "unknown operation cannot be closed in nested response",
+    "base": "action-query-response",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/data/operationSummary/0/position/lifecycle",
+        "value": "Closed"
+      }
+    ]
+  },
+  {
+    "name": "rejected decision cannot return approval effects",
+    "base": "decision-submitted-response",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/data/status",
+        "value": "Rejected"
+      }
+    ]
+  },
+  {
+    "name": "event aggregate version mismatch",
+    "base": "state-event",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/aggregateVersion",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "name": "event cannot carry inherited authority",
+    "base": "state-event",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/payload/authorityRef",
+        "value": {
+          "type": "abh.execution-authority",
+          "id": "00000000-0000-4000-8000-000000000001",
+          "version": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "unknown event type",
+    "base": "state-event",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/type",
+        "value": "abh.decision.unregistered"
+      }
+    ]
+  },
+  {
+    "name": "event cannot claim another aggregate",
+    "base": "state-event",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/aggregateRef/type",
+        "value": "abh.action"
+      }
+    ]
+  },
+  {
+    "name": "cross-organization event without workspace",
+    "base": "state-event",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/actingOrganizationId",
+        "value": "00000000-0000-4000-8000-000000000099"
+      }
+    ]
+  },
+  {
+    "name": "job cannot retain authorization snapshot",
+    "base": "reconcile-job",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/authorizationSnapshotId",
+        "value": "00000000-0000-4000-8000-000000000099"
+      }
+    ]
+  },
+  {
+    "name": "job target mismatch",
+    "base": "reconcile-job",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/targetRef",
+        "value": {
+          "type": "abh.action",
+          "id": "00000000-0000-4000-8000-000000000006",
+          "version": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "job requires explicit query authority",
+    "base": "reconcile-job",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/authorityRef"
+      }
+    ]
+  },
+  {
+    "name": "job deadline cannot precede scheduling",
+    "base": "reconcile-job",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/deadline",
+        "value": "2026-09-07T00:02:00Z"
+      }
+    ]
+  },
+  {
+    "name": "queue and runtime cannot share a credential reference",
+    "base": "development-config",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/database/queueUrlRef",
+        "value": "env:ABH_DATABASE_RUNTIME_URL"
+      }
+    ]
+  },
+  {
+    "name": "unimplemented telemetry cannot be enabled",
+    "base": "development-config",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/observability",
+        "value": {
+          "projectTelemetry": true
+        }
+      }
+    ]
+  },
+  {
+    "name": "configuration cannot widen maximum plan operations",
+    "base": "development-config",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/runtime/action",
+        "value": {
+          "maxOperations": 1001
+        }
+      }
+    ]
+  },
+  {
+    "name": "reconciliation delay order applies defaults",
+    "base": "development-config",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/runtime/reconciliation",
+        "value": {
+          "maxDelaySeconds": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "identity verification cannot contain raw token",
+    "base": "identity-verify",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/token",
+        "value": "sensitive-sentinel"
+      }
+    ]
+  },
+  {
+    "name": "identity evidence expiry precedes verification",
+    "base": "verified-identity",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/expiresAt",
+        "value": "2026-09-06T00:05:00Z"
+      }
+    ]
+  },
+  {
+    "name": "human verification cannot claim workload authentication",
+    "base": "verified-identity",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/authnStrength",
+        "value": {
+          "level": "Workload"
+        }
+      }
+    ]
+  },
+  {
+    "name": "invalid identity cannot hide inside result",
+    "base": "identity-result",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/data/expiresAt",
+        "value": "2026-09-06T00:05:00Z"
+      }
+    ]
+  },
+  {
+    "name": "job enqueue requires current context",
+    "base": "enqueue-job",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/context"
+      }
+    ]
+  },
+  {
+    "name": "queued job target must match context",
+    "base": "enqueue-job",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/job/targetRef/id",
+        "value": "00000000-0000-4000-8000-000000000099"
+      }
+    ]
+  },
+  {
+    "name": "uncertain enqueue requires tracking ref",
+    "base": "durable-tracked",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/trackingRef"
+      }
+    ]
+  },
+  {
+    "name": "uncertain enqueue must not return operation ref",
+    "base": "durable-tracked",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/trackingRef/type",
+        "value": "abh.operation"
+      }
+    ]
+  },
+  {
+    "name": "cancellation cannot claim uncertain effect is absent",
+    "base": "durable-cancelled",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/effect",
+        "value": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "wait cancellation version mismatch",
+    "base": "cancel-wakeup",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/expectedVersion",
+        "value": 1
+      }
+    ]
+  },
+  {
+    "name": "object write requires authorized context",
+    "base": "object-put",
+    "patches": [
+      {
+        "op": "remove",
+        "path": "/authorizedContextRef"
+      }
+    ]
+  },
+  {
+    "name": "object write cannot use arbitrary URL key",
+    "base": "object-put",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/key",
+        "value": "https://metadata.invalid"
+      }
+    ]
+  },
+  {
+    "name": "object write cannot use mismatched staged artifact",
+    "base": "object-put",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/stagedArtifactRef/id",
+        "value": "00000000-0000-4000-8000-000000000099"
+      }
+    ]
+  },
+  {
+    "name": "read range cannot decrease",
+    "base": "object-read",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/range/start",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "name": "read result range cannot exceed stored bytes",
+    "base": "object-read-result",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/data/range/endInclusive",
+        "value": 3
+      }
+    ]
+  },
+  {
+    "name": "drain cannot hide outstanding jobs",
+    "base": "drain-report",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "/drained",
+        "value": true
+      }
+    ]
+  }
+]

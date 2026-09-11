@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core MissionSummary projection source vector, authorized retrieval and monotonic recovery",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core build",
+    "node --test --test-concurrency=1 packages/core/test/run-commands.test.ts packages/core/test/database-diagnostic.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/pg-boss.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "projectionAndDiagnosticTests": 4,
+    "projectionAndDiagnosticPassed": 4,
+    "queueTests": 12,
+    "queuePassed": 12,
+    "coreTests": 543,
+    "corePassed": 537,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractsArtifactsMatched": 51,
+    "apiEntryPointsMatched": 4,
+    "docsLinksChecked": 741,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "read.projections now stores purpose names, a source version vector and built time through an Expand migration",
+    "projection retrieval binds exact projection type and rejects another purpose or workspace",
+    "MissionSummary rebuild locks the source mission and recomputes trigger and blocker counts",
+    "identical source vectors replay the stored projection without advancing its database version",
+    "changed source vectors atomically update the projection and advance its version",
+    "an older source vector cannot regress a higher mission version, goal revision, stop epoch or counts",
+    "a native pg-boss delivery is observed with bounded eventual visibility rather than an immediate race"
+  ],
+  "limits": [
+    "only MissionSummary is implemented; ResponsibilityInbox, ActionTimeline, OrganizationSettings and CapabilityOverview remain",
+    "refresh is source-backed and synchronous; the event-driven Outbox projection consumer, RefreshProjection job and SSE reset path remain",
+    "projection list pagination, field-set redaction, subscription cursors and consumer gap recovery remain",
+    "the actual Workbench remains unimplemented"
+  ]
+}

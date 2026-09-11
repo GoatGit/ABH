@@ -1,0 +1,79 @@
+{
+  "date": "2026-09-09",
+  "scope": "PackEnableProposal contract and complete semantic approval digest binding",
+  "tests": {
+    "contracts": {
+      "passed": 297,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "databaseRerun": false
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "contractsTypecheck": "passed",
+    "coreTypecheck": "passed",
+    "generation": "passed (49 files); initial field naming rejected and corrected to subjectDigest",
+    "api": "passed (Contracts 9 / Core 3 entry points)",
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-enable-proposal-generation.log",
+      "sha256": "f3fd0221c7c36fc329b5e08001ced55b3cc00ce48b3c0dc872c5135d7d870301"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-proposal-generation-final.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-proposal-tests.log",
+      "sha256": "7ee9a53a8c2c66a89fb5f2fb2efb5a9d2d7e2342e01445f900194b3aa389169a"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-proposal-build.log",
+      "sha256": "03ec83b377f9a08bc38f5c585cbca2669b265489cb1f77143b4a0d2a9462273c"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-proposal-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-proposal-core-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-proposal-drift.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-proposal-api.log",
+      "sha256": "0ba9da79ee2fdcb50bea0e7bdb55d59d118afa7fbd759de1c65aa6b3af5e7f5c"
+    },
+    {
+      "path": "artifacts/verification/pack-enable-proposal-docs.log",
+      "sha256": "5140d7903af9b80f9e1646f5d6d257d7c703a004276887f0859a50de6a675aa2"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "46d673b9ef64d5f74943ab9f6738682bf6f9ae4f20287182495df7888f0b3733"
+    },
+    {
+      "path": "packages/contracts/src/relationships.ts",
+      "sha256": "e9cb5f1f359915adbdbdcdc4dbdd85fecf2acfa9d247253728255cc44f69a7db"
+    },
+    {
+      "path": "packages/contracts/test/pack-enable-proposal.test.ts",
+      "sha256": "3a3d9de349c3d73b944488dfc0d032e1e82dbe7629ce925d0970222954438c92"
+    }
+  ],
+  "remaining": [
+    "Formal Pack approval request and proof consumption",
+    "Enable Owner and lifecycle migration",
+    "Full applicable verification and Capability Registry",
+    "Remaining V1 modules"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "date": "2026-09-09",
+  "scope": "Preserve child cancellation in installed impact recovery and preparation within a live parent transaction",
+  "tests": {
+    "realCosignDatabaseInitial": {
+      "passed": 0,
+      "failed": 1,
+      "reason": "Budget check inserted outside local variable scope; corrected."
+    },
+    "realCosignDatabaseFinal": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "fullContractsRerun": false
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreTypecheck": "passed after correcting misplaced checks",
+    "coreApi": "passed (3 entry points)",
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/installed-impact-cancellation-tests.log",
+      "sha256": "f05682f1af5fecdf33661e14d12ff9074f7ad7e2430910a6cd0bbecd2506103b"
+    },
+    {
+      "path": "artifacts/verification/installed-impact-cancellation-tests-final.log",
+      "sha256": "3208b04036d98b298b4e519a860dc80c6dace56eb199f1506721eda082adb36d"
+    },
+    {
+      "path": "artifacts/verification/installed-impact-cancellation-typecheck.log",
+      "sha256": "35f481f764dd050d3ecbbedc70be6e7e6db37165d74df809e38ab7823d484a73"
+    },
+    {
+      "path": "artifacts/verification/installed-impact-cancellation-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/installed-impact-cancellation-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/installed-impact-cancellation-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/installed-impact-cancellation-docs.log",
+      "sha256": "dd8311726fb4daa85ee538d20f89536dd14172b6bcec0cffa2079df933b5c991"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/prepare-installed-pack.ts",
+      "sha256": "0c93737686911213d489c78e657563d7fc6321799efd9a0285753dfd8302dcfe"
+    },
+    {
+      "path": "packages/core/src/extensions/data-impact-reports.ts",
+      "sha256": "816d0c01afac587c1bfd36cab8c4198dbcad6a75c52d9380c492d83bb6f95800"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "6f2837485d47a85b4b4090b73cbbc6dd69710a6e47073aabc81876eb45b31212"
+    }
+  ],
+  "remaining": [
+    "Audit child signal forwarding in lower-level migration helpers",
+    "Enable Owner and approval assembly",
+    "Remaining V1 modules"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Atomic immutable frozen route proposals and default routing recovery lookup",
+  "checks": {
+    "coreTests": 233,
+    "failed": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "migrationVersion": 39,
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/routing-proposals-core.log",
+  "logSha256": "4486b70fadad33de1cc74906164c11a3afeea34d05a757d9f5467d6f0378cf45",
+  "limitations": [
+    "Historical missing packages require explicit trusted loading; no speculative backfill.",
+    "No automatic new-route/delegation/escalation scheduling or global tenant discovery.",
+    "Full contract/API workspace check was not repeated; existing contracts reused.",
+    "Production governance, retention capacity and full V1 acceptance remain incomplete."
+  ]
+}

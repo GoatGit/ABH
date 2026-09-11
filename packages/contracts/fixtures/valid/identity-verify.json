@@ -1,0 +1,14 @@
+{
+  "schema": "IdentityVerifyRequest",
+  "value": {
+    "callId": "00000000-0000-4000-8000-000000000070",
+    "credentialRef": {
+      "type": "abh.credential",
+      "id": "00000000-0000-4000-8000-000000000072",
+      "version": 1
+    },
+    "issuer": "development.fake",
+    "audience": "abh.local",
+    "deadline": "2026-09-07T00:02:00Z"
+  }
+}

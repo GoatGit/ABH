@@ -1,0 +1,52 @@
+{
+  "date": "2026-09-09",
+  "scope": "Same-UoW capability resolution declaration, one-use consumption and ordered deployment lock composition",
+  "tests": {
+    "capabilityQuerySchemaRelease": {
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "Preparation is not execution authorization. Production dispatch/query Gateway composition remains incomplete.",
+    "Nonempty capabilities remain administrative fixtures, not signed end-to-end acceptance.",
+    "Full Core suite not rerun. Initial nested test registration timed out; corrected test hierarchy passed."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/prepared-capability-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/prepared-capability-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/prepared-capability-docs.log",
+      "sha256": "9181fba85a7e08a42b82089237d9a32799f406acbf3e8f418e09b152a261d27b"
+    },
+    {
+      "path": "artifacts/verification/prepared-capability-final-tests.log",
+      "sha256": "86cc70e527ba2374944886b62189973f8a98cf162335137bd1138cfe317a895d"
+    },
+    {
+      "path": "artifacts/verification/prepared-capability-regression.log",
+      "sha256": "414ed4b82f8bd8c7f19b27302c96245e9b82edcd93d0dd086ed1a21f0795cc6f"
+    },
+    {
+      "path": "artifacts/verification/prepared-capability-tests.log",
+      "sha256": "846c00acf27f15a0a4d690129b72196bffbc4beee5e164069c0930fc2891754f"
+    },
+    {
+      "path": "artifacts/verification/prepared-capability-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

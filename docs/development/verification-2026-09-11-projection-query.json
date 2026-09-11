@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core GetProjection redaction, ListProjection pagination and Mission result surfacing",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core build",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreTests": 543,
+    "corePassed": 537,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractsArtifactsMatched": 51,
+    "apiEntryPointsMatched": 9,
+    "docsLinksChecked": 743,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "GetProjection applies a fixed MissionSummary field allowlist after authorization",
+    "completed Mission resultRefs persist on the source record and surface through MissionSummary",
+    "businessStageRef and resultRefs participate in server-side field redaction",
+    "unknown fields, duplicate fields and unsupported projection types are rejected",
+    "ListProjection uses a descending (updated_at,id) keyset with default 25 and maximum 100",
+    "registered mission status and domain filters are bound as values; dynamic fields are not accepted",
+    "every row rechecks abh.projections.read and denied subjects are skipped without identity disclosure",
+    "scanning continues across denied rows so permission filtering does not create missing pages",
+    "pc1 cursors use AES-256-GCM binding for identity, epochs, workspace, purpose, type and filters",
+    "cursor tampering, filter changes and timestamp precision loss are covered"
+  ],
+  "limits": [
+    "RefreshProjection scheduled rebuild job remains",
+    "SubscribeChanges, SSE reset and subscription cursors remain",
+    "ResponsibilityInbox, ActionTimeline, OrganizationSettings and CapabilityOverview projections remain"
+  ]
+}

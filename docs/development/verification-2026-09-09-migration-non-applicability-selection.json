@@ -1,0 +1,61 @@
+{
+  "date": "2026-09-09",
+  "scope": "Bounded unique-candidate discovery for current migration non-applicability reports",
+  "tests": {
+    "realCosignDatabaseFinal": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCoreRerun": false,
+    "fullContractsRerun": false
+  },
+  "checks": {
+    "coreBuild": "passed",
+    "coreTypecheck": "passed",
+    "coreApi": "passed (3 entry points)",
+    "isolatedIntegrationContainersRemaining": 0,
+    "docs": "passed"
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/verification/migration-non-applicability-selection-tests.log",
+      "sha256": "1c250d4a9668d9234c3f7761fd46c28e5d7cc5ac5c807946e56695874c273658"
+    },
+    {
+      "path": "artifacts/verification/migration-non-applicability-selection-tests-final.log",
+      "sha256": "f76cceee1f0743026541f6b81fe8a13b0677bbf8fb048f22af6fe3aa919742c8"
+    },
+    {
+      "path": "artifacts/verification/migration-non-applicability-selection-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-non-applicability-selection-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-non-applicability-selection-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/migration-non-applicability-selection-docs.log",
+      "sha256": "3c486c49159fd8eebb985390d49b34e0155b6684d3ca89ddb08b934da97cb3f4"
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/core/src/extensions/select-migration-non-applicability.ts",
+      "sha256": "f382f79725736e4798c16bf369c4aaf34b01ea1b4a1c517f958fbe4949401852"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "70e9dd7e432a206e4130b6c3ad319376cf73c91941289c9b04aebb26bbd6616f"
+    }
+  ],
+  "remaining": [
+    "Enable Owner and approval assembly",
+    "Full applicable domain/backfill/projection verification",
+    "Remaining V1 modules"
+  ]
+}

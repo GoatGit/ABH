@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-11",
+  "subject": "first Business Workbench server-rendered reference path",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r typecheck",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "workbenchTests": 2,
+    "workbenchPassed": 2,
+    "workbenchFailed": 0,
+    "workbenchTypecheck": "passed",
+    "workbenchNextBuild": "passed",
+    "coreTests": 547,
+    "corePassed": 541,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractsArtifacts": "51 files matched",
+    "apiEntryPointsChecked": 13,
+    "documentationLinks": 752,
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "overview reads mission summaries and pending decisions",
+    "responsibility inbox reads authorized decision projections",
+    "decision detail renders server-confirmed decision state and supports approve/reject",
+    "mission detail reads projection and supports pause/resume",
+    "mutation ids derive stable keys from protected intent",
+    "identity is deny-by-default and requires an explicit host adapter",
+    "bounded errors avoid raw exception leakage",
+    "core projections.get is exposed through the public client"
+  ],
+  "limits": [
+    "TanStack Query is not installed yet",
+    "SSE subscription UI is not implemented yet",
+    "JSON Forms is not implemented yet",
+    "ECharts is not implemented yet",
+    "organization switcher is not implemented yet",
+    "Action Detail and Settings journeys are not implemented yet",
+    "production identity adapter installation remains a host requirement",
+    "browser E2E, accessibility and performance verification remain open",
+    "production process and tenant lifecycle governance remain open"
+  ]
+}

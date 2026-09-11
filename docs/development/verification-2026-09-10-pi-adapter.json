@@ -1,0 +1,38 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/adapter-pi",
+  "upstream": {
+    "agent": "@earendil-works/pi-agent-core@0.85.1",
+    "ai": "@earendil-works/pi-ai@0.85.1"
+  },
+  "commands": [
+    "corepack pnpm --filter @abh/adapter-pi typecheck",
+    "corepack pnpm --filter @abh/adapter-pi test",
+    "corepack pnpm --filter @abh/adapter-pi build",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check"
+  ],
+  "results": {
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "contractArtifacts": 51,
+    "documentationLinks": 726,
+    "coreTests": 515,
+    "coreSkippedExternalCosign": 6
+  },
+  "coverage": [
+    "unsupported Pi version rejection",
+    "buffer bounds validation",
+    "real Pi prompt loop with model and tool gateway injection",
+    "runtime event ordering and completion watermark",
+    "model dependency failure mapping",
+    "output artifact payload publication",
+    "pre-start external cancellation"
+  ],
+  "limits": [
+    "continue and governed resume are not implemented",
+    "production gateway and identity assembly are not installed",
+    "full cancellation, budget boundary and resume CTK matrix remains open"
+  ]
+}

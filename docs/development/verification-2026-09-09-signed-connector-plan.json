@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-09",
+  "scope": "Signed Connector actual compilation and Operation registration; preparation Action-before-Deployment lock ordering",
+  "tests": {
+    "signedConnector": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "actions": {
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "coreBuild": true,
+    "coreTypecheck": true,
+    "coreApi": true,
+    "docs": true
+  },
+  "limitations": [
+    "Explicit test Compiler, identity, Grants and Domain/Release governance.",
+    "No T1, Permit or successful transport/query/Capture in the signed chain yet.",
+    "No full Core rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/signed-connector-plan-actions.log",
+      "sha256": "e26914660c442627e43b7f777232e84aca7da74f560298bb93eef112d41a5780"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-plan-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-plan-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-plan-docs.log",
+      "sha256": "9225c38953141bca6947eeeff3d56eeb1fee0abc561dfef90fc35a3ead027b15"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-plan-tests.log",
+      "sha256": "39a3de597599a30b42a5dcd082e4eb6da520b0d99657dfb5343eafb622dc4319"
+    },
+    {
+      "path": "artifacts/verification/signed-connector-plan-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

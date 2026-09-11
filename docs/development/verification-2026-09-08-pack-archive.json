@@ -1,0 +1,59 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Bounded tar/gzip staging through full Pack proof and governance verification",
+  "checks": {
+    "focusedTests": 2,
+    "packTests": 27,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "apiReports": 11,
+    "documentLinks": 222
+  },
+  "dependency": {
+    "tar-stream": "3.2.1",
+    "license": "MIT"
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/pack-archive-api.log",
+      "sha256": "05ad1dfb3bd923ee8afdb90b318030c99cfd1ad20fe9d7fd06b52aed6842b6e8"
+    },
+    {
+      "path": "artifacts/verification/pack-archive-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/pack-archive-dependency.log",
+      "sha256": "4e5040826e09976d4386fa364a7b2f6baf254b1ae4dcbe95be8fb54baec0e118"
+    },
+    {
+      "path": "artifacts/verification/pack-archive-docs.log",
+      "sha256": "d3ef6d9d99fbf44ccc7ed9be48763b0eae052c1b544ba06ecca7c4abfa787e90"
+    },
+    {
+      "path": "artifacts/verification/pack-archive-regression.log",
+      "sha256": "ce5215d0c9b60bb5ad6b206b27fd7c4c2086173d83dcdb314932ed86d51e5df7"
+    },
+    {
+      "path": "artifacts/verification/pack-archive-tests.log",
+      "sha256": "995a4843ea0819255dc0df024731c864b4ac33f6811a98cfaea188e96f1692ee"
+    },
+    {
+      "path": "artifacts/verification/pack-archive-types-dependency.log",
+      "sha256": "95bed7346f0fb1301d8efda83fef2913490937bc6815c7415fd5f66a5d1d3bec"
+    },
+    {
+      "path": "artifacts/verification/pack-archive-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ],
+  "limitations": [
+    "Snapshot payload+proof+manifest content capped at 64 MiB; larger streaming storage not implemented.",
+    "Effective file/directory entries counted; tar extension headers bounded by expanded bytes but no separate raw-header count.",
+    "Root manifest and explicit tar/tar.gz only; bytes must be read with bounded external I/O.",
+    "Core full suite/workspace not rerun; persistent governance, Stage/Enable and full V1 incomplete."
+  ]
+}

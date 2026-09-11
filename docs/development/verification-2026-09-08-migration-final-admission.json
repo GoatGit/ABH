@@ -1,0 +1,47 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Final source and signer checks after whole-plan supporting evidence admission",
+  "checks": {
+    "focusedTests": 1,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": 292
+  },
+  "coverage": [
+    "Report Artifact re-read and current source authorization after all supporting callbacks.",
+    "Persistent Bundle reverified using current signer; original key and Bundle digests must match.",
+    "Late Review signer/report/Bundle source revocation during Compatibility checks rejects."
+  ],
+  "limitations": [
+    "Current governance fences remain mandatory; not general protection against arbitrary admin changes.",
+    "Supporting fact production Owners, Runner and Enable remain incomplete.",
+    "Full Core not rerun."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-final-admission-test.log",
+      "sha256": "3583f8523ef09fedab27e9cd45f4159c07d5d9e89753c709a8d8650625a68217"
+    },
+    {
+      "path": "artifacts/verification/migration-final-admission-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-final-admission-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-final-admission-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-final-admission-docs.log",
+      "sha256": "6e172ed59b73d65a9c6250e98a2c2e57407dbcf241222e93db05d0251fbb1943"
+    }
+  ]
+}

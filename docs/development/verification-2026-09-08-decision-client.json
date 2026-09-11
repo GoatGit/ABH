@@ -1,0 +1,50 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Browser-compatible public Decision/Action contract client and Core API gate",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 227,
+    "coreTests": 271,
+    "httpAdapterTests": 10,
+    "clientTestsIncludedInCore": 11,
+    "failed": 0,
+    "coreTypecheckIncludingBrowserOnlyLibraries": "passed",
+    "generatedArtifacts": 48,
+    "apiReports": 11,
+    "documentLinks": 221,
+    "containersCleaned": true
+  },
+  "logs": [
+    {
+      "path": "artifacts/verification/decision-client-check.log",
+      "sha256": "fd341b7d4b9988da56b761cd5bf2239f7ca78a56f95d743c86475bfce478ade8"
+    },
+    {
+      "path": "artifacts/verification/decision-client-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/decision-client-unit.log",
+      "sha256": "bd3b7d8d5e72a1fd3ac4ceca4d8592aec4d2c57b555c15bd7674aee7ebc4cff9"
+    },
+    {
+      "path": "artifacts/verification/decision-client-tests.log",
+      "sha256": "0030ed6f0dc84104d2a745b44e80f4f0f5c0e2d637476532cb932974da5e04f7"
+    },
+    {
+      "path": "artifacts/verification/decision-client-api-update.log",
+      "sha256": "97c5d91fcd60ce018b7d190603d5f822e93364778564c2eff1dcb415406d9a77"
+    },
+    {
+      "path": "artifacts/verification/decision-client-docs.log",
+      "sha256": "314e1235be38a4c370b145cd49b48c63315ef5964f04aec16af0d498d50dc5e7"
+    }
+  ],
+  "limitations": [
+    "Action client exercised against explicitly installed adapter handlers; full Core Action HTTP Owner assembly remains incomplete.",
+    "proposeFromArtifact requires existing stored Artifact/source references; no business-input upload orchestration or automatic retry.",
+    "NotSent/Unknown/Responded describe client knowledge; a registered server error does not prove write rollback.",
+    "No Mission client, defineBusiness, specialized SDKs, runnable distribution or full V1 acceptance."
+  ]
+}

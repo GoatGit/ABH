@@ -1,0 +1,519 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:abh:contracts:0.1.0:states",
+  "$defs": {
+    "MissionState": {
+      "title": "MissionState",
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Active",
+        "Paused",
+        "Blocked",
+        "Completed",
+        "Cancelled"
+      ]
+    },
+    "RunState": {
+      "title": "RunState",
+      "type": "string",
+      "enum": [
+        "Queued",
+        "Running",
+        "Waiting",
+        "Paused",
+        "Completed",
+        "Failed",
+        "Cancelled"
+      ]
+    },
+    "ActionState": {
+      "title": "ActionState",
+      "type": "string",
+      "enum": [
+        "Proposed",
+        "Validated",
+        "Authorized",
+        "Executing",
+        "Reconciling",
+        "Closed",
+        "Rejected",
+        "Expired",
+        "Cancelled"
+      ]
+    },
+    "ActionOutcome": {
+      "title": "ActionOutcome",
+      "type": "string",
+      "enum": [
+        "NotStarted",
+        "Pending",
+        "Unknown",
+        "Succeeded",
+        "PartiallySucceeded",
+        "Failed"
+      ]
+    },
+    "ActionPosition": {
+      "title": "ActionPosition",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Proposed"
+            },
+            "outcome": {
+              "enum": [
+                "NotStarted"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Validated"
+            },
+            "outcome": {
+              "enum": [
+                "NotStarted"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Authorized"
+            },
+            "outcome": {
+              "enum": [
+                "NotStarted"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Executing"
+            },
+            "outcome": {
+              "enum": [
+                "Pending",
+                "Unknown"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Reconciling"
+            },
+            "outcome": {
+              "enum": [
+                "Pending",
+                "Unknown"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Closed"
+            },
+            "outcome": {
+              "enum": [
+                "Succeeded",
+                "PartiallySucceeded",
+                "Failed"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Rejected"
+            },
+            "outcome": {
+              "enum": [
+                "NotStarted"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Expired"
+            },
+            "outcome": {
+              "enum": [
+                "NotStarted"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Cancelled"
+            },
+            "outcome": {
+              "enum": [
+                "NotStarted"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "OperationState": {
+      "title": "OperationState",
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Dispatching",
+        "Observing",
+        "Closed",
+        "Cancelled"
+      ]
+    },
+    "OperationOutcome": {
+      "title": "OperationOutcome",
+      "type": "string",
+      "enum": [
+        "NotStarted",
+        "Pending",
+        "Unknown",
+        "Succeeded",
+        "Failed"
+      ]
+    },
+    "OperationPosition": {
+      "title": "OperationPosition",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Pending"
+            },
+            "outcome": {
+              "enum": [
+                "NotStarted"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Dispatching"
+            },
+            "outcome": {
+              "enum": [
+                "Pending",
+                "Unknown"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Observing"
+            },
+            "outcome": {
+              "enum": [
+                "Pending",
+                "Unknown"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Closed"
+            },
+            "outcome": {
+              "enum": [
+                "Succeeded",
+                "Failed"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "lifecycle": {
+              "const": "Cancelled"
+            },
+            "outcome": {
+              "enum": [
+                "NotStarted"
+              ]
+            }
+          },
+          "required": [
+            "lifecycle",
+            "outcome"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "DecisionState": {
+      "title": "DecisionState",
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Approved",
+        "Rejected",
+        "Expired",
+        "Superseded",
+        "Withdrawn"
+      ]
+    },
+    "DecisionEffectState": {
+      "title": "DecisionEffectState",
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Applied",
+        "Blocked",
+        "Abandoned"
+      ]
+    },
+    "ResponsibilityRequestState": {
+      "title": "ResponsibilityRequestState",
+      "type": "string",
+      "enum": [
+        "Unresolved",
+        "Open",
+        "Closed",
+        "Withdrawn"
+      ]
+    },
+    "GrantState": {
+      "title": "GrantState",
+      "type": "string",
+      "enum": [
+        "Active",
+        "Revoked",
+        "Expired"
+      ]
+    },
+    "ExecutionAuthorityState": {
+      "title": "ExecutionAuthorityState",
+      "type": "string",
+      "enum": [
+        "Active",
+        "Revoked",
+        "Expired"
+      ]
+    },
+    "ReservationState": {
+      "title": "ReservationState",
+      "type": "string",
+      "enum": [
+        "Held",
+        "Consumed",
+        "Committed",
+        "Released",
+        "Expired"
+      ]
+    },
+    "CommitmentState": {
+      "title": "CommitmentState",
+      "type": "string",
+      "enum": [
+        "Open",
+        "Closing",
+        "Closed"
+      ]
+    },
+    "LedgerState": {
+      "title": "LedgerState",
+      "type": "string",
+      "enum": [
+        "Open",
+        "Frozen",
+        "Closed"
+      ]
+    },
+    "ReleaseState": {
+      "title": "ReleaseState",
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Ready",
+        "Retired",
+        "Revoked"
+      ]
+    },
+    "InstalledPackState": {
+      "title": "InstalledPackState",
+      "type": "string",
+      "enum": [
+        "Staged",
+        "Enabled",
+        "Suspended",
+        "Retired"
+      ]
+    },
+    "ArtifactState": {
+      "title": "ArtifactState",
+      "type": "string",
+      "enum": [
+        "Staged",
+        "Available",
+        "Quarantined",
+        "Tombstoned"
+      ]
+    },
+    "AccessRecordState": {
+      "title": "AccessRecordState",
+      "type": "string",
+      "enum": [
+        "Active",
+        "Revoked",
+        "Expired"
+      ]
+    },
+    "DurableWaitState": {
+      "title": "DurableWaitState",
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Succeeded",
+        "Cancelled"
+      ]
+    },
+    "ExternalObservationState": {
+      "title": "ExternalObservationState",
+      "type": "string",
+      "enum": [
+        "Received",
+        "Normalized",
+        "Quarantined"
+      ]
+    },
+    "AssignmentState": {
+      "title": "AssignmentState",
+      "type": "string",
+      "enum": [
+        "Shadow",
+        "Canary",
+        "Active",
+        "Paused",
+        "Retired"
+      ]
+    },
+    "AttemptState": {
+      "title": "AttemptState",
+      "type": "string",
+      "enum": [
+        "Created",
+        "Sent",
+        "Responded",
+        "TransportFailed",
+        "Interrupted"
+      ]
+    },
+    "PackInspectionJobState": {
+      "title": "PackInspectionJobState",
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Running",
+        "Waiting",
+        "Succeeded",
+        "Failed",
+        "Cancelled"
+      ]
+    }
+  }
+}

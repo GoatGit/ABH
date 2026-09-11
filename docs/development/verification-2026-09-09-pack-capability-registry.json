@@ -1,0 +1,181 @@
+{
+  "date": "2026-09-09",
+  "scope": "Immutable static capability identity reservation and complete set persistence under an independent management command; no runtime activation",
+  "tests": {
+    "targetedRealCosignDatabase": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    "ownerFinal": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "contracts": {
+      "passed": 304,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullCore": {
+      "total": 507,
+      "passed": 502,
+      "failed": 0,
+      "skipped": 5,
+      "note": "Final run after build completed. Cosign unset here; real Pack signatures covered separately by targeted test, other four signed files not rerun."
+    },
+    "diagnosticAndMigrationRerun": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "coreTypecheck": "passed",
+    "contractsTypecheck": "passed",
+    "generation": "passed (49 files)",
+    "databaseManifest": 57,
+    "coreApi": "passed (3 entry points)",
+    "contractsApi": "passed (9 entry points)",
+    "docs": "passed"
+  },
+  "initialFailures": [
+    "Initial full run launched before built CLI diagnostics reflected new manifest; targeted rerun after build passed",
+    "Initial full-run migration-journal container failed host port binding; terminal process ended and sequential rerun passed"
+  ],
+  "sources": [
+    {
+      "path": "packages/core/migrations/1788884000000_pack_capability_registry.cjs",
+      "sha256": "47d95ec2e8612598d31243724c84142e152effd89cb9054e7821847f4d39a7a8"
+    },
+    {
+      "path": "packages/core/src/extensions/capability-registry.ts",
+      "sha256": "7db753dda0ae56d2c47f7f6aa16196faea627d3f972693b63fd48a0d41f9ee5f"
+    },
+    {
+      "path": "packages/core/src/extensions/register-pack-capabilities.ts",
+      "sha256": "d03988bb94115c1b2fb8674d39c99092324438427f43d80d46cd70e28ebf0665"
+    },
+    {
+      "path": "packages/core/src/data/manifest.ts",
+      "sha256": "18aba3bd411da8d46e0ba7bddacf01cfc07515f71a7515d274132f1950e3137e"
+    },
+    {
+      "path": "packages/core/test/capability-registry.test.ts",
+      "sha256": "ab92719651ae188ae77d6dffbb14d82d5a65a23341a257db9d0a2bb5b3cda7c6"
+    },
+    {
+      "path": "packages/core/test/pack-conformance.test.ts",
+      "sha256": "16506429a3fc7c84fd6e05132898e3ff8592b07e2652c4a5e1059a0154b39729"
+    },
+    {
+      "path": "packages/contracts/schemas/facts.schema.json",
+      "sha256": "5cdab84a65e0a6634ab12d04f1094d04b4bc54a0bda7587b4679e7562060ecbf"
+    },
+    {
+      "path": "packages/contracts/src/relationships.ts",
+      "sha256": "356e05a3216c7c1bdb51a9b6636b5a9554bfa321bf5b2678c3d563def0e0dc92"
+    },
+    {
+      "path": "packages/contracts/catalog/core.json",
+      "sha256": "f73f4a3e1c89dda55c149368531c9b070e55890052a467d80d38bd339860fa59"
+    },
+    {
+      "path": "packages/contracts/protocol/registry.yaml",
+      "sha256": "4614dfabefab0d858616c15d36a6f2cc88eb67602305c5ea92a69c46b31d9b4e"
+    },
+    {
+      "path": "packages/contracts/test/pack-capability-binding.test.ts",
+      "sha256": "c0c5fde9b6e560a1872863607a4ec446b9df50477eab91c18f382fb55af6f684"
+    }
+  ],
+  "remaining": [
+    "Runtime capability query and exact resolution gated by enabled installation",
+    "Atomic Enabled state/registry activation/history/deployment/Journal transition",
+    "Complete applicable migration and Domain/backfill/projection validation",
+    "Remaining V1 modules"
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/verification/pack-capability-registry-api-check.log",
+      "sha256": "838ba96d8c6c277d997d8bc3b3d5a0c37ef9a92211b54ca7594ca7fd15ac812e"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-api-update.log",
+      "sha256": "4a39ee5e4930a5e7394ba9723f0b44723ce0f1e0a61b5b635c7442c9da92a024"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-build.log",
+      "sha256": "e982cd7e93f8b9252869a90aa0515c352aa12307ef48e5adbedc8d5d9de2ca3f"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-contract-build-final.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-contract-build.log",
+      "sha256": "cf964ef8ba0e3a0d1b7b315b1a9f49b346014efaabf46b132a619ca9e82d764c"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-contract-tests-final.log",
+      "sha256": "d2e464cb6aecb57fe509cff26a06cb85cd87b54f1bb8909210d1f811b52da6bc"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-contract-tests.log",
+      "sha256": "4de8bb27235f6eac734aa4fe00b51660e1145bee7a1ed43e4e12222a67abdb66"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-contract-typecheck.log",
+      "sha256": "c2e2c4ec3aaf701153fd76806eebceee03f461be0a6e39d8cc56d227fe1b477b"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-core-api.log",
+      "sha256": "228f5ec43d80dfe8ebbb079fff78e5de0a6fb1a88131f67a2917d35a3961d268"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-core-full-final.log",
+      "sha256": "d6a54caaf016dbbab2dea88d0ce31ff9b595f1808970d829c629f071c2795b7b"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-core-full.log",
+      "sha256": "76d4fc3847029aedab2a934423d827e33d54c9152e80470b292a0ff00abed978"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-docs.log",
+      "sha256": "bb9b7826561f373e004b1b3f1264119392e9095e809fb967ca72ad23a6aaa1b5"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-drift.log",
+      "sha256": "8d761cd3a0576296786f882b1f825d94255e1ed42e5c925722c8de386f76d99e"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-generation.log",
+      "sha256": "c681fd4842a8cf8fc0a5b787b05e8481d2706864cc354f28296024c474bcedd2"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-owner-final.log",
+      "sha256": "214a8ade08992decd28afea7a43f6c9836f99f307e5603d8744808ace57f3b81"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-regression-rerun.log",
+      "sha256": "c759ac54bf7a5f781ca1bf2dd06c6454212b8d560d368f239b1eacfe6a3e0c36"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-tests.log",
+      "sha256": "a6d58c14091fbf9e5b6df2c2d43202907247e730c74a991887831061b45eb425"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-typecheck-final.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/pack-capability-registry-docs-final.log",
+      "sha256": "bb9b7826561f373e004b1b3f1264119392e9095e809fb967ca72ad23a6aaa1b5"
+    }
+  ]
+}

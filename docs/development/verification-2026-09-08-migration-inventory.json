@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Selected owned-schema relation inventory completeness",
+  "checks": {
+    "focusedTests": 11,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Authored expected inventory matches actual schema.",
+    "Unexpected table/sequence/view, missing relation and changed kind yield explicit differences.",
+    "Empty inventory, duplicate schemas and unauthorized schema covered."
+  ],
+  "limitations": [
+    "Only selected schemas and relation kinds; no function/type/ACL/sequence parameter or data verification.",
+    "Host must compose detailed shape checks, live database binding, persistent ownership and signed expectation admission.",
+    "Formal result persistence, readiness, full recovery and Enable incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-inventory-test.log",
+      "sha256": "14772f987739237ad75676bc561dbcccf73ade52519711df7bdccf877204749b"
+    },
+    {
+      "path": "artifacts/verification/migration-inventory-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-inventory-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-inventory-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-inventory-docs.log",
+      "sha256": "0b0207af970b946927842e1d97668690cd2a3712298f20b03d3d0d170bdad8a9"
+    }
+  ]
+}

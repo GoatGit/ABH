@@ -1,0 +1,50 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Authorized recovery of persistent staged Pack identity and replay integrity",
+  "checks": {
+    "focusedTests": 13,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "isolatedContainersRemaining": 0,
+    "documentLinks": 230
+  },
+  "coverage": [
+    "Installed row identity, columns, Manifest digests and validation/snapshot/governance binding.",
+    "Persisted reference recovery under current stage-management Grant and policy locks.",
+    "Stage replay rejects installed report digest replacement and payload corruption.",
+    "Workspace, purpose, wrong version, missing/revoked Grant and changed policy rejection.",
+    "Returned installation metadata is a defensive copy."
+  ],
+  "fullSuite": "Not rerun in this batch; focused database and real Cosign integrated scenarios cover changed modules.",
+  "limitations": [
+    "Only initial immutable Staged state is implemented.",
+    "Data impact assessment, migration verification, installation recovery steps and Enable/Registry remain incomplete.",
+    "Management signer revocation/reference/retention admission remains deployment-provided."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/installed-recovery-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/installed-recovery-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/installed-recovery-docs.log",
+      "sha256": "c5c70e8ecb14f01ae845a091909f8515f12beb6077ecec35041bd237333a5d81"
+    },
+    {
+      "path": "artifacts/verification/installed-recovery-test.log",
+      "sha256": "61808297c0d80e0e8936afe81f49be0c2c99189b5d9e3374df65eb27336eb74d"
+    },
+    {
+      "path": "artifacts/verification/installed-recovery-typecheck.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    }
+  ]
+}

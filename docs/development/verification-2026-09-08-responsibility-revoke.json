@@ -1,0 +1,24 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Responsibility revocation with frozen required-seat continuity and immutable evidence",
+  "checks": {
+    "workspaceCheck": "passed",
+    "contractTests": 223,
+    "coreTests": 223,
+    "failed": 0,
+    "migrationVersion": 36,
+    "generatedArtifacts": 48,
+    "publicApiReports": 9,
+    "documentLinks": 217,
+    "containersCleaned": true
+  },
+  "log": "artifacts/verification/responsibility-revoke-check.log",
+  "logSha256": "a4d3fa63b60889613102d0a4ec43a44bd8a4b57e09bec5156563947d866bd669",
+  "limitations": [
+    "Installed continuity/candidate checks must enforce current management, approval Grant, evidence, directory-required duties and declared fences; fixtures are not production governance.",
+    "Replacement evidence never substitutes frozen seats; hidden Workspace/purpose dependencies fail closed.",
+    "Revocation events are durable but automatic routing recomputation, new Route revisions, delegation and escalation remain unfinished.",
+    "Full V1 acceptance remains unfinished."
+  ]
+}

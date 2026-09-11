@@ -1,0 +1,39 @@
+{
+  "stage": "M0-A configuration, static catalog and foundational ports; not full G01 acceptance",
+  "execution": "local",
+  "date": "2026-09-07",
+  "repositoryHead": "d038f12e12a95d960807c5ce502d79adcec3399a",
+  "workingTree": "uncommitted implementation; previous user work preserved",
+  "platform": "Darwin arm64",
+  "node": "24.13.0",
+  "pnpm": "10.28.2",
+  "contractVersion": "0.1.0",
+  "profile": "ContractOnly; no running deployment",
+  "lockSha256": "315cf2f0ca01772b498f6122ccab1b09d362b8a5fc8a33d425658dcd51780781",
+  "generatedManifestSha256": "78b4476db7248c004bbdb0ee2b1af6bcf2ed29c2b2af5f08b1332c568f6fe71b",
+  "testInputs": "deterministic fixtures; no random scenarios",
+  "checks": {
+    "pnpm install --frozen-lockfile": "passed",
+    "pnpm check": "passed",
+    "contractTests": 200,
+    "failed": 0,
+    "skipped": 0,
+    "generatedArtifacts": 42,
+    "publicApiEntryReports": 9,
+    "typecheck": "passed including Port type rejection fixtures",
+    "build": "passed",
+    "browserFoundationHelpers": "passed without runtime dependencies",
+    "builtConfigCatalogPortImports": "passed",
+    "privateTenantContextImport": "rejected as expected",
+    "localDocumentLinks": 193,
+    "isolatedApiReportDrift": "rejected; check preserved baseline and original workspace"
+  },
+  "limitations": [
+    "GitHub CI not run",
+    "No production or development business server",
+    "No database or Adapter runtime tests",
+    "No previous release compatibility certification",
+    "M0-A/G01 not fully accepted or signed",
+    "Future Agent/Model/Secret Ports and release supply-chain checks remain"
+  ]
+}

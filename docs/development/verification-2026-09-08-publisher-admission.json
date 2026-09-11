@@ -1,0 +1,18 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Publisher current Queue admission and per-call handle cleanup",
+  "checks": {
+    "coreTypecheck": "passed",
+    "inboxOutboxTests": 13,
+    "failed": 0,
+    "documentLinks": 215
+  },
+  "log": "artifacts/verification/publisher-admission.log",
+  "logSha256": "36e2b3518fd55da3f5124371e8b139598b380ad4471f0d502c9fdfb69c310ee0",
+  "limitations": [
+    "Trusted identity provisioning and installed routing/consumer governance remain.",
+    "Process-local admission handles do not replace durable queue state or business grants.",
+    "Targeted regression only; full V1 and retention watermarks remain incomplete."
+  ]
+}

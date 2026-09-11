@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core model call lifecycle and frozen route admission",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/model-gateway.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "postgresIntegrationTests": 6,
+    "postgresIntegrationPassed": 6,
+    "postgresIntegrationFailed": 0,
+    "coreTests": 535,
+    "corePassed": 529,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractArtifacts": 51,
+    "documentationLinks": 729
+  },
+  "coverage": [
+    "runtime reads but cannot update frozen model routes",
+    "exact route version and tenant admission",
+    "current purpose and allowed model enforcement",
+    "host-issued call identity",
+    "context manifest type and input digest binding",
+    "request cost intersected with route ceiling",
+    "same call id idempotent replay",
+    "changed request idempotency conflict",
+    "prepared to in-flight one-way CAS",
+    "frozen route data passed to adapter port",
+    "nonnegative usage required for completion",
+    "completed and failed transitions cannot replay",
+    "adapter ambiguity stays in-flight and reports unknown",
+    "explicit failure one-way transition",
+    "cross-tenant read isolation"
+  ],
+  "limits": [
+    "actual provider transport remains open",
+    "secret broker and isolated execution remain open",
+    "ledger reservation and settlement remain open",
+    "raw response artifact and output schema validation remain open",
+    "streaming events, fallback and recovery reconciliation remain open"
+  ]
+}

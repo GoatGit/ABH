@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-11",
+  "subject": "@abh/core and @abh/adapter-fastify authorized projection reset hints and SSE concurrency limits",
+  "commands": [
+    "node --test --test-name-pattern \"Run lifecycle\" --test-concurrency=1 packages/core/test/run-commands.test.ts",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/adapter-fastify typecheck",
+    "corepack pnpm --filter @abh/adapter-fastify test",
+    "node --test --test-concurrency=1 packages/core/test/*.test.ts",
+    "corepack pnpm --filter @abh/adapter-fastify build",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm -r build"
+  ],
+  "results": {
+    "coreTypecheck": "passed",
+    "adapterFastifyTypecheck": "passed",
+    "fastifyTests": 15,
+    "fastifyPassed": 15,
+    "fastifyFailed": 0,
+    "coreTests": 543,
+    "corePassed": 537,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "contractArtifacts": 51,
+    "contractsApiEntryPoints": 9,
+    "documentationLinks": 746,
+    "workspaceBuild": "passed"
+  },
+  "coverage": [
+    "empty grants yield reset instead of AUTHORITY_REQUIRED",
+    "unknown mission event cursor yields reset",
+    "malformed cursor yields reset instead of leaking validation internals",
+    "current-grant failure yields reset",
+    "expired context or read-side invisibility ends with reset",
+    "aborted subscription does not emit reset",
+    "change hints retain eventId, opaque cursor, version and watermark",
+    "SSE reset frame contains only reason reset and no subject or error detail",
+    "SSE preserves Last-Event-ID and opaque change cursors",
+    "SSE heartbeat remains 15 seconds",
+    "SSE disconnects a slow client at 256 undelivered events",
+    "five concurrent SSE connections per actor are admitted",
+    "the sixth actor connection receives RATE_LIMITED with HTTP 429",
+    "fifty concurrent SSE connections per organization are admitted",
+    "connection counts release on close without leaking failed authentication"
+  ],
+  "limits": [
+    "MissionSummary historical consumer gap backfill remains open",
+    "subscription for the other projection types remains open",
+    "organization limit 50 is implemented and covered by implementation inspection rather than a dedicated live test",
+    "production projection subscription metrics and operational alerting remain open",
+    "the V1 workbench remains open"
+  ]
+}

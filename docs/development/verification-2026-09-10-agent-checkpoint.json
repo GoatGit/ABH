@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-10",
+  "subject": "@abh/core persistent governed Agent checkpoints",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/agent-checkpoint.test.ts",
+    "corepack pnpm --filter @abh/adapter-pi typecheck",
+    "corepack pnpm --filter @abh/adapter-pi test",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check"
+  ],
+  "results": {
+    "postgresIntegrationTests": 6,
+    "postgresIntegrationPassed": 6,
+    "postgresIntegrationFailed": 0,
+    "coreTests": 529,
+    "corePassed": 523,
+    "coreFailed": 0,
+    "coreSkippedExternalCosign": 6,
+    "adapterPiTests": 10,
+    "adapterPiPassed": 10,
+    "contractArtifacts": 51,
+    "coreApiEntryPoints": 4,
+    "documentationLinks": 729
+  },
+  "coverage": [
+    "checkpoint and permit stored as governed inline artifacts",
+    "invocation ownership and receipt source binding",
+    "canonical JSON and checkpoint SHA-256 integrity digest",
+    "formal command receipt, audit and outbox persistence",
+    "shared source locking before permit and checkpoint reads",
+    "artifact bytes, exact version, tenant, purpose and availability checks",
+    "runtime, definition, context, authorized context and digest compatibility",
+    "permit expiry and admission callback",
+    "wrong invocation, definition, digest, permit or checkpoint rejection",
+    "tampered inline bytes fail closed",
+    "unresolved tool receipt rejection",
+    "cross-tenant isolation"
+  ],
+  "limits": [
+    "host bridge from Core owner to Pi gateway ports remains composition work",
+    "production Model and Tool Gateway assembly remains open",
+    "full Pi upgrade compatibility matrix remains open",
+    "learning and independent evaluation pipelines remain open"
+  ]
+}

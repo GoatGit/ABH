@@ -1,0 +1,54 @@
+{
+  "execution": "local",
+  "date": "2026-09-09",
+  "stage": "Current recovery authority inside maintenance observation transaction",
+  "checks": {
+    "executionTests": 14,
+    "signedInstallationParentTests": 1,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "failed": 0,
+    "skipped": 0,
+    "remainingTestContainers": 0,
+    "documentLinks": "passed"
+  },
+  "coverage": [
+    "Recovery authority and actual Artifact contents refreshed after maintenance lock and before maintenance commit.",
+    "Lock-time authority/source withdrawal and final authority withdrawal reject.",
+    "Legitimate replay returns same Artifact/observation without SQL replay.",
+    "Real signed capture and installed migration recovery regression passes."
+  ],
+  "limitations": [
+    "Recovery callbacks must be idempotent and retain authority fences.",
+    "Maintenance commit remains independent from management read transaction.",
+    "Production execution leases, full domain/backfill/projection and Enable incomplete.",
+    "Core full suite not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/execution-recovery-admission-test.log",
+      "sha256": "d323a5dcb65cd9813f3652f99c2ef1573916d226b9900cbf98f8c8cf6e816dce"
+    },
+    {
+      "path": "artifacts/verification/execution-recovery-admission-signed.log",
+      "sha256": "d2d164d5116bddbdb3132d20a3c237fd26135f07f132fd23a02e5373ff79bc44"
+    },
+    {
+      "path": "artifacts/verification/execution-recovery-admission-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/execution-recovery-admission-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/execution-recovery-admission-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/execution-recovery-admission-docs.log",
+      "sha256": "84735e9dc067f8aa8b3171a76cfb32496c2737b3629db9e16ad9c7f50d30d823"
+    }
+  ]
+}

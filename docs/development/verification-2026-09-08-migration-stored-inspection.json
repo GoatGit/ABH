@@ -1,0 +1,48 @@
+{
+  "execution": "local",
+  "date": "2026-09-08",
+  "stage": "Persisted signed expectation to actual target inspection assembly",
+  "checks": {
+    "focusedTests": 5,
+    "failed": 0,
+    "skipped": 0,
+    "coreTypecheck": "passed",
+    "coreBuild": "passed",
+    "coreApiReports": 2,
+    "documentLinks": "passed",
+    "remainingTestContainers": 0
+  },
+  "coverage": [
+    "Actual stored report and Bundle combined with registered same-database structural inspection.",
+    "Caller expectation substitution and actual unlisted sequence rejected or mismatched.",
+    "Deployment change, source withdrawal and signer rotation after structural inspection reject."
+  ],
+  "limitations": [
+    "Repeated actual Cosign verification prioritizes admission correctness; not optimized.",
+    "Host retains installation/deployment fences and target connection lifetime.",
+    "Formal Contracts, data checks, persisted actual results, recovery and Enable remain incomplete.",
+    "Full Core not repeated."
+  ],
+  "logs": [
+    {
+      "path": "artifacts/verification/migration-stored-inspection-test.log",
+      "sha256": "d93220b0bed8b694bbdaf3217692be3b85211843a0d2ab0eee38eaae874c3994"
+    },
+    {
+      "path": "artifacts/verification/migration-stored-inspection-types.log",
+      "sha256": "53f51e73701c50bb0bf2a6bbae7bd3c95adedf7b1d47e98979a30d6efb9cb1ad"
+    },
+    {
+      "path": "artifacts/verification/migration-stored-inspection-build.log",
+      "sha256": "1f22f9ba666bac5810e144a2ac6b349a92ad9acc645985cf3b253d9289ea679b"
+    },
+    {
+      "path": "artifacts/verification/migration-stored-inspection-api.log",
+      "sha256": "3b08246cf24de62c9e328318a9fde4db3613686d18d18eb500bd831550c0ae33"
+    },
+    {
+      "path": "artifacts/verification/migration-stored-inspection-docs.log",
+      "sha256": "32782bc6fabfef77361f70f562e599fc86d52f2827458dac8e424090eb916fa9"
+    }
+  ]
+}

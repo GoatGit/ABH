@@ -1,0 +1,33 @@
+{
+  "stage": "M0-A initial contract slice; not full gate acceptance",
+  "execution": "local",
+  "date": "2026-09-07",
+  "repositoryHead": "d038f12e12a95d960807c5ce502d79adcec3399a",
+  "workingTree": "uncommitted implementation and migration",
+  "platform": "Darwin arm64",
+  "node": "24.13.0",
+  "pnpm": "10.28.2",
+  "lockSha256": "2c55d253b9b8a7053059987411f6810227af9c9e749063ac800b40d5563db24f",
+  "contractVersion": "0.1.0",
+  "checks": {
+    "pnpm check": "passed",
+    "localDocumentLinks": 162,
+    "contractTests": 79,
+    "failed": 0,
+    "skipped": 0,
+    "generatedArtifacts": 28,
+    "typecheck": "passed",
+    "build": "passed",
+    "builtPackageImports": "passed",
+    "privateTenantContextImport": "rejected as expected",
+    "migratedFrameworkDocuments": 38,
+    "marketingBodyUnchangedExceptLinks": true
+  },
+  "limitations": [
+    "GitHub CI not yet run",
+    "No database or runtime recovery verification",
+    "No production HTTP server or external write capability",
+    "Pi Agent not integrated",
+    "M0-A/G01 not yet fully accepted"
+  ]
+}

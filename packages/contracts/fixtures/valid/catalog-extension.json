@@ -1,0 +1,32 @@
+{
+  "schema": "CatalogExtension",
+  "value": {
+    "namespace": "hello",
+    "version": "0.1.0",
+    "objectTypes": [
+      {
+        "name": "hello.brief",
+        "scopeKind": "Object",
+        "description": "An existing brief."
+      }
+    ],
+    "actions": [
+      {
+        "name": "hello.publish",
+        "targetTypes": [
+          "hello.brief"
+        ],
+        "purposeNames": [
+          "hello.publish"
+        ],
+        "description": "Publish an approved brief."
+      }
+    ],
+    "purposes": [
+      {
+        "name": "hello.publish",
+        "description": "Publish the selected internal brief."
+      }
+    ]
+  }
+}

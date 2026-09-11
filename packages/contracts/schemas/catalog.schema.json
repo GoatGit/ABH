@@ -1,0 +1,3720 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:abh:contracts:0.1.0:catalog",
+  "$defs": {
+    "ObjectTypeRegistration": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "scopeKind": {
+          "enum": [
+            "None",
+            "Organization",
+            "Workspace",
+            "Object"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "name",
+        "scopeKind",
+        "description"
+      ],
+      "additionalProperties": false,
+      "title": "ObjectTypeRegistration"
+    },
+    "PurposeRegistration": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "name",
+        "description"
+      ],
+      "additionalProperties": false,
+      "title": "PurposeRegistration"
+    },
+    "ActionTypeRegistration": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "targetTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "purposeNames": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+          },
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": [
+        "name",
+        "targetTypes",
+        "purposeNames",
+        "description"
+      ],
+      "additionalProperties": false,
+      "title": "ActionTypeRegistration"
+    },
+    "CatalogExtension": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "maxLength": 63
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        },
+        "objectTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ObjectTypeRegistration"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ActionTypeRegistration"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        },
+        "purposes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PurposeRegistration"
+          },
+          "minItems": 0,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true
+        }
+      },
+      "required": [
+        "namespace",
+        "version",
+        "objectTypes",
+        "actions",
+        "purposes"
+      ],
+      "additionalProperties": false,
+      "title": "CatalogExtension"
+    },
+    "PackPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)[^\\\\:\\s]+$",
+      "title": "PackPath"
+    },
+    "PackFileEntry": {
+      "type": "object",
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/PackPath"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "ref",
+        "digest",
+        "mediaType",
+        "sizeBytes"
+      ],
+      "additionalProperties": false,
+      "title": "PackFileEntry"
+    },
+    "PackCapabilityReference": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "title": "PackCapabilityReference"
+    },
+    "PackCapabilityRequirement": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "versionRange": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "versionRange"
+      ],
+      "additionalProperties": false,
+      "title": "PackCapabilityRequirement"
+    },
+    "PackResources": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "enforcement": {
+              "const": "None"
+            }
+          },
+          "required": [
+            "enforcement"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "enforcement": {
+              "const": "HostProfile"
+            },
+            "profileRef": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+            }
+          },
+          "required": [
+            "enforcement",
+            "profileRef"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "enforcement": {
+              "const": "IsolatedLimits"
+            },
+            "cpuMillis": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "memoryBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "processes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "temporaryDiskBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "outputBytes": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "wallTimeMs": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "enforcement",
+            "cpuMillis",
+            "memoryBytes",
+            "processes",
+            "temporaryDiskBytes",
+            "outputBytes",
+            "wallTimeMs"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "title": "PackResources"
+    },
+    "PackManifest": {
+      "type": "object",
+      "properties": {
+        "apiVersion": {
+          "const": "abh.open/v1"
+        },
+        "kind": {
+          "enum": [
+            "DomainPack",
+            "ConnectorPack",
+            "RuntimeAdapter",
+            "WorkbenchExtension"
+          ]
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$",
+              "maxLength": 253
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+            },
+            "license": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "license"
+          ],
+          "additionalProperties": false
+        },
+        "compatibility": {
+          "type": "object",
+          "properties": {
+            "abh": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          },
+          "required": [
+            "abh"
+          ],
+          "additionalProperties": false
+        },
+        "trust": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "Declarative",
+                "TrustedCode",
+                "Isolated"
+              ]
+            }
+          },
+          "required": [
+            "mode"
+          ],
+          "additionalProperties": false
+        },
+        "capabilities": {
+          "type": "object",
+          "properties": {
+            "provides": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/PackCapabilityReference"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "requires": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/PackCapabilityRequirement"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "provides",
+            "requires"
+          ],
+          "additionalProperties": false
+        },
+        "permissions": {
+          "type": "object",
+          "properties": {
+            "dataClasses": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "purposes": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "commands": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "toolCapabilities": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "networkEgress": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "secretClasses": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "dataClasses",
+            "purposes",
+            "commands",
+            "toolCapabilities",
+            "networkEgress",
+            "secretClasses"
+          ],
+          "additionalProperties": false
+        },
+        "resources": {
+          "$ref": "#/$defs/PackResources"
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PackFileEntry"
+          },
+          "maxItems": 1000,
+          "uniqueItems": true
+        },
+        "migrations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PackFileEntry"
+          },
+          "maxItems": 1000,
+          "uniqueItems": true
+        },
+        "conformance": {
+          "type": "object",
+          "properties": {
+            "suiteVersion": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+            }
+          },
+          "required": [
+            "suiteVersion"
+          ],
+          "additionalProperties": false
+        },
+        "integrity": {
+          "type": "object",
+          "properties": {
+            "manifestDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "artifactSetDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "packageDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "signatureFormat": {
+              "const": "application/vnd.dev.sigstore.bundle.v0.3+json"
+            },
+            "signatureRef": {
+              "$ref": "#/$defs/PackPath"
+            },
+            "provenanceRef": {
+              "$ref": "#/$defs/PackPath"
+            },
+            "conformanceRef": {
+              "$ref": "#/$defs/PackPath"
+            }
+          },
+          "required": [
+            "manifestDigest",
+            "artifactSetDigest",
+            "packageDigest",
+            "signatureFormat",
+            "signatureRef",
+            "provenanceRef",
+            "conformanceRef"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "apiVersion",
+        "kind",
+        "metadata",
+        "compatibility",
+        "trust",
+        "capabilities",
+        "permissions",
+        "resources",
+        "artifacts",
+        "migrations",
+        "conformance",
+        "integrity"
+      ],
+      "additionalProperties": false,
+      "title": "PackManifest"
+    },
+    "ConformanceCaseResult": {
+      "type": "object",
+      "properties": {
+        "caseId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "status": {
+          "enum": [
+            "Passed",
+            "Failed",
+            "Skipped",
+            "NotRun"
+          ]
+        },
+        "artifactRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "maxItems": 100
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      },
+      "required": [
+        "caseId",
+        "status",
+        "artifactRefs",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "title": "ConformanceCaseResult"
+    },
+    "ConformanceCapabilityClaim": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "version": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        },
+        "claimed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "version",
+        "claimed"
+      ],
+      "additionalProperties": false,
+      "title": "ConformanceCapabilityClaim"
+    },
+    "ConformanceEnvironment": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "enum": [
+            "Core",
+            "Domain",
+            "Connector",
+            "Adapter",
+            "Workbench"
+          ]
+        },
+        "environmentDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "fixtureSetDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "seed": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      },
+      "required": [
+        "profile",
+        "environmentDigest",
+        "fixtureSetDigest",
+        "seed"
+      ],
+      "additionalProperties": false,
+      "title": "ConformanceEnvironment"
+    },
+    "ConformanceReport": {
+      "type": "object",
+      "properties": {
+        "subjectDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "suiteVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        },
+        "status": {
+          "enum": [
+            "Complete",
+            "Incomplete"
+          ]
+        },
+        "caseResults": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ConformanceCaseResult"
+          },
+          "maxItems": 10000
+        },
+        "claimedCapabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ConformanceCapabilityClaim"
+          },
+          "maxItems": 1000
+        },
+        "knownDeviations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "caseId": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "caseId",
+              "reason"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 1000
+        },
+        "environment": {
+          "$ref": "#/$defs/ConformanceEnvironment"
+        },
+        "startedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "finishedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "artifactRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "maxItems": 1000
+        },
+        "reportDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "signatureRef": {
+          "$ref": "#/$defs/PackPath"
+        }
+      },
+      "required": [
+        "subjectDigest",
+        "suiteVersion",
+        "status",
+        "caseResults",
+        "claimedCapabilities",
+        "knownDeviations",
+        "environment",
+        "startedAt",
+        "finishedAt",
+        "artifactRefs",
+        "reportDigest",
+        "signatureRef"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "subjectDigest",
+        "suiteVersion",
+        "status",
+        "caseResults",
+        "claimedCapabilities",
+        "knownDeviations",
+        "environment",
+        "startedAt",
+        "finishedAt",
+        "artifactRefs"
+      ],
+      "title": "ConformanceReport"
+    },
+    "PackValidationReport": {
+      "type": "object",
+      "properties": {
+        "packId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "packVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        },
+        "subjectDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "manifestDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "artifactSetDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "deploymentPolicyDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "signatureBundleDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "provenanceBundleDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "conformanceBundleDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "conformanceReportDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "validatedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "validUntil": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "profile": {
+          "const": "LocalOfflinePublicKey"
+        },
+        "reportDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "packId",
+        "packVersion",
+        "subjectDigest",
+        "manifestDigest",
+        "artifactSetDigest",
+        "deploymentPolicyDigest",
+        "signatureBundleDigest",
+        "provenanceBundleDigest",
+        "conformanceBundleDigest",
+        "conformanceReportDigest",
+        "validatedAt",
+        "validUntil",
+        "profile",
+        "reportDigest"
+      ],
+      "additionalProperties": false,
+      "title": "PackValidationReport",
+      "x-abh-digest-fields": [
+        "packId",
+        "packVersion",
+        "subjectDigest",
+        "manifestDigest",
+        "artifactSetDigest",
+        "deploymentPolicyDigest",
+        "signatureBundleDigest",
+        "provenanceBundleDigest",
+        "conformanceBundleDigest",
+        "conformanceReportDigest",
+        "validatedAt",
+        "validUntil",
+        "profile"
+      ]
+    },
+    "PackDeploymentPolicy": {
+      "type": "object",
+      "properties": {
+        "abhVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        },
+        "packId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "allowedModes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "Declarative",
+              "TrustedCode",
+              "Isolated"
+            ]
+          },
+          "maxItems": 3
+        },
+        "allowedLicenses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "maxItems": 1000
+        },
+        "permissions": {
+          "type": "object",
+          "properties": {
+            "dataClasses": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "purposes": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "commands": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "toolCapabilities": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "networkEgress": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2048
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            },
+            "secretClasses": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "maxItems": 1000,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "dataClasses",
+            "purposes",
+            "commands",
+            "toolCapabilities",
+            "networkEgress",
+            "secretClasses"
+          ],
+          "additionalProperties": false
+        },
+        "hostProfileRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          },
+          "maxItems": 1000
+        },
+        "sharedNamespaces": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+          },
+          "maxItems": 1000
+        },
+        "isolated": {
+          "type": "object",
+          "properties": {
+            "available": {
+              "type": "boolean"
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpuMillis": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "memoryBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "processes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "temporaryDiskBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "outputBytes": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "wallTimeMs": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "cpuMillis",
+                "memoryBytes",
+                "processes",
+                "temporaryDiskBytes",
+                "outputBytes",
+                "wallTimeMs"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "available",
+            "limits"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "abhVersion",
+        "packId",
+        "allowedModes",
+        "allowedLicenses",
+        "permissions",
+        "hostProfileRefs",
+        "sharedNamespaces"
+      ],
+      "additionalProperties": false,
+      "title": "PackDeploymentPolicy"
+    },
+    "PackSignerPolicy": {
+      "type": "object",
+      "properties": {
+        "executable": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000]+$"
+        },
+        "mode": {
+          "const": "OfflinePublicKey"
+        },
+        "publicKeyPem": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384,
+          "pattern": "^-----BEGIN PUBLIC KEY-----\\r?\\n[\\s\\S]+\\r?\\n-----END PUBLIC KEY-----\\s*$"
+        },
+        "packId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        }
+      },
+      "required": [
+        "executable",
+        "mode",
+        "publicKeyPem",
+        "packId"
+      ],
+      "additionalProperties": false,
+      "title": "PackSignerPolicy"
+    },
+    "PackProvenancePolicy": {
+      "type": "object",
+      "properties": {
+        "executable": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000]+$"
+        },
+        "mode": {
+          "const": "OfflinePublicKey"
+        },
+        "publicKeyPem": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384,
+          "pattern": "^-----BEGIN PUBLIC KEY-----\\r?\\n[\\s\\S]+\\r?\\n-----END PUBLIC KEY-----\\s*$"
+        },
+        "packId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "subjectName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "builderId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "buildType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "uri": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "digest": {
+              "type": "object",
+              "minProperties": 1,
+              "maxProperties": 20,
+              "propertyNames": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              }
+            }
+          },
+          "required": [
+            "uri",
+            "digest"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "executable",
+        "mode",
+        "publicKeyPem",
+        "packId",
+        "subjectName",
+        "builderId",
+        "buildType",
+        "source"
+      ],
+      "additionalProperties": false,
+      "title": "PackProvenancePolicy"
+    },
+    "PackConformancePolicy": {
+      "type": "object",
+      "properties": {
+        "executable": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000]+$"
+        },
+        "mode": {
+          "const": "OfflinePublicKey"
+        },
+        "publicKeyPem": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384,
+          "pattern": "^-----BEGIN PUBLIC KEY-----\\r?\\n[\\s\\S]+\\r?\\n-----END PUBLIC KEY-----\\s*$"
+        },
+        "packId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "subjectName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "suiteVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        },
+        "environment": {
+          "$ref": "#/$defs/ConformanceEnvironment"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "caseId": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "status": {
+                "enum": [
+                  "Passed",
+                  "Skipped"
+                ]
+              }
+            },
+            "required": [
+              "caseId",
+              "status"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 10000,
+          "minItems": 1
+        },
+        "claimedCapabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ConformanceCapabilityClaim"
+          },
+          "maxItems": 1000
+        },
+        "maxAgeMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "executable",
+        "mode",
+        "publicKeyPem",
+        "packId",
+        "subjectName",
+        "suiteVersion",
+        "environment",
+        "cases",
+        "claimedCapabilities",
+        "maxAgeMs"
+      ],
+      "additionalProperties": false,
+      "title": "PackConformancePolicy"
+    },
+    "PackGovernanceSnapshot": {
+      "type": "object",
+      "properties": {
+        "policyRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.pack-trust-policy"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "policy": {
+          "$ref": "#/$defs/PackDeploymentPolicy"
+        },
+        "trust": {
+          "type": "object",
+          "properties": {
+            "signer": {
+              "$ref": "#/$defs/PackSignerPolicy"
+            },
+            "provenance": {
+              "$ref": "#/$defs/PackProvenancePolicy"
+            },
+            "conformance": {
+              "$ref": "#/$defs/PackConformancePolicy"
+            }
+          },
+          "required": [
+            "signer",
+            "provenance",
+            "conformance"
+          ],
+          "additionalProperties": false
+        },
+        "revokedPackIds": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+          },
+          "maxItems": 10000
+        },
+        "revokedDigests": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+          },
+          "maxItems": 10000
+        },
+        "reservedVersions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "packId": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+              },
+              "version": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+              },
+              "packageDigest": {
+                "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+              }
+            },
+            "required": [
+              "packId",
+              "version",
+              "packageDigest"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 10000
+        }
+      },
+      "required": [
+        "policyRef",
+        "policy",
+        "trust",
+        "revokedPackIds",
+        "revokedDigests",
+        "reservedVersions"
+      ],
+      "additionalProperties": false,
+      "title": "PackGovernanceSnapshot"
+    },
+    "SignedTrustPolicyDocument": {
+      "type": "object",
+      "properties": {
+        "organizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "issuedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "expiresAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "snapshot": {
+          "$ref": "#/$defs/PackGovernanceSnapshot"
+        }
+      },
+      "required": [
+        "organizationId",
+        "issuedAt",
+        "expiresAt",
+        "snapshot"
+      ],
+      "additionalProperties": false,
+      "title": "SignedTrustPolicyDocument"
+    },
+    "PackDataDefinition": {
+      "title": "PackDataDefinition",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "Schema",
+            "Projection",
+            "DataTransform"
+          ]
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "digest"
+      ],
+      "additionalProperties": false
+    },
+    "PackDataInventory": {
+      "title": "PackDataInventory",
+      "type": "object",
+      "properties": {
+        "complete": {
+          "type": "boolean"
+        },
+        "entries": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "$ref": "#/$defs/PackDataDefinition"
+          }
+        }
+      },
+      "required": [
+        "complete",
+        "entries"
+      ],
+      "additionalProperties": false
+    },
+    "PackDataChange": {
+      "title": "PackDataChange",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "Schema",
+            "Projection",
+            "DataTransform"
+          ]
+        },
+        "id": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "change": {
+          "enum": [
+            "Added",
+            "Changed",
+            "Removed"
+          ]
+        },
+        "beforeDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "afterDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "change"
+      ],
+      "additionalProperties": false
+    },
+    "PackDataImpact": {
+      "title": "PackDataImpact",
+      "type": "object",
+      "properties": {
+        "subjectDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "baselineDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "targetDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "status": {
+          "enum": [
+            "NotApplicable",
+            "Required",
+            "Incomplete"
+          ]
+        },
+        "changes": {
+          "type": "array",
+          "maxItems": 20000,
+          "items": {
+            "$ref": "#/$defs/PackDataChange"
+          }
+        },
+        "migrationRefs": {
+          "type": "array",
+          "maxItems": 10000,
+          "items": {
+            "$ref": "#/$defs/PackPath"
+          }
+        },
+        "reasons": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "enum": [
+              "InventoryIncomplete",
+              "DefinitionsChanged",
+              "DeclaredMigrations"
+            ]
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "subjectDigest",
+        "baselineDigest",
+        "targetDigest",
+        "status",
+        "changes",
+        "migrationRefs",
+        "reasons"
+      ],
+      "additionalProperties": false
+    },
+    "PackSchemaOwnership": {
+      "title": "PackSchemaOwnership",
+      "type": "object",
+      "properties": {
+        "packId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "schemaName": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "maxLength": 63
+        },
+        "databaseRole": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "maxLength": 63
+        }
+      },
+      "required": [
+        "packId",
+        "schemaName",
+        "databaseRole"
+      ],
+      "additionalProperties": false
+    },
+    "PackMigrationStep": {
+      "title": "PackMigrationStep",
+      "type": "object",
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/PackPath"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "schemas": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1000,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]{0,62}$",
+            "maxLength": 63
+          }
+        },
+        "databaseRole": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,62}$",
+          "maxLength": 63
+        },
+        "phase": {
+          "enum": [
+            "Expand",
+            "Backfill",
+            "Contract"
+          ]
+        },
+        "transactional": {
+          "type": "boolean"
+        },
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "Create",
+              "Alter",
+              "Drop",
+              "DataWrite"
+            ]
+          }
+        },
+        "reviewRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "dryRunRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "safetyPointRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "recoveryPlanRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "compatibilityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "retirementRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": [
+        "ref",
+        "digest",
+        "schemas",
+        "databaseRole",
+        "phase",
+        "transactional",
+        "operations",
+        "reviewRef",
+        "dryRunRef",
+        "safetyPointRef",
+        "recoveryPlanRef",
+        "compatibilityRef"
+      ],
+      "additionalProperties": false
+    },
+    "PackMigrationEvidence": {
+      "title": "PackMigrationEvidence",
+      "type": "object",
+      "properties": {
+        "organizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "packageDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "stepDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "environmentDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "deploymentVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "kind": {
+          "enum": [
+            "Review",
+            "DryRun",
+            "SafetyPoint",
+            "RecoveryPlan",
+            "Compatibility",
+            "Retirement"
+          ]
+        },
+        "status": {
+          "enum": [
+            "Passed",
+            "Failed"
+          ]
+        },
+        "issuedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "expiresAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "supportingRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        }
+      },
+      "required": [
+        "organizationId",
+        "packageDigest",
+        "stepDigest",
+        "environmentDigest",
+        "deploymentVersion",
+        "kind",
+        "status",
+        "issuedAt",
+        "expiresAt",
+        "supportingRefs"
+      ],
+      "additionalProperties": false
+    },
+    "PackMigrationAttemptRecord": {
+      "title": "PackMigrationAttemptRecord",
+      "type": "object",
+      "properties": {
+        "attemptRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.pack-migration-attempt"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "const": 1
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "organizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "packId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$",
+          "maxLength": 253
+        },
+        "packVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        },
+        "packageDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "step": {
+          "$ref": "#/$defs/PackMigrationStep"
+        },
+        "stepDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "environmentDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "deploymentVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "impactRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "claimedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        }
+      },
+      "required": [
+        "attemptRef",
+        "organizationId",
+        "packId",
+        "packVersion",
+        "packageDigest",
+        "step",
+        "stepDigest",
+        "environmentDigest",
+        "deploymentVersion",
+        "impactRef",
+        "evidenceRefs",
+        "claimedAt"
+      ],
+      "additionalProperties": false
+    },
+    "PackMigrationObservationRecord": {
+      "title": "PackMigrationObservationRecord",
+      "type": "object",
+      "properties": {
+        "observationRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.pack-migration-observation"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "const": 1
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "attemptRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.pack-migration-attempt"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "const": 1
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "kind": {
+          "enum": [
+            "CommitAcknowledged",
+            "OutcomeUnknown"
+          ]
+        },
+        "evidenceRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "observedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        }
+      },
+      "required": [
+        "observationRef",
+        "attemptRef",
+        "kind",
+        "evidenceRef",
+        "observedAt"
+      ],
+      "additionalProperties": false
+    },
+    "PackMigrationExecutionResult": {
+      "title": "PackMigrationExecutionResult",
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "CommitAcknowledged",
+            "OutcomeUnknown"
+          ]
+        },
+        "sqlStarted": {
+          "type": "boolean"
+        },
+        "connectionClosed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "sqlStarted",
+        "connectionClosed"
+      ],
+      "additionalProperties": false
+    },
+    "PackMigrationExecutionRecord": {
+      "title": "PackMigrationExecutionRecord",
+      "type": "object",
+      "properties": {
+        "attempt": {
+          "$ref": "#/$defs/PackMigrationAttemptRecord"
+        },
+        "result": {
+          "$ref": "#/$defs/PackMigrationExecutionResult"
+        },
+        "observedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        }
+      },
+      "required": [
+        "attempt",
+        "result",
+        "observedAt"
+      ],
+      "additionalProperties": false
+    },
+    "PackMigrationStructureBinding": {
+      "type": "object",
+      "description": "Exact organization, package, migration plan and expected structure binding; not migration completion authority.",
+      "properties": {
+        "organizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "packId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$",
+          "maxLength": 253
+        },
+        "packVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        },
+        "packageDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "planDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "expectedDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "organizationId",
+        "packId",
+        "packVersion",
+        "packageDigest",
+        "planDigest",
+        "expectedDigest"
+      ],
+      "additionalProperties": false,
+      "title": "PackMigrationStructureBinding"
+    },
+    "PackMigrationStructureReport": {
+      "type": "object",
+      "description": "Signed structural expectation metadata. Does not assert actual database correctness or authorize Enable.",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/PackMigrationStructureBinding"
+        },
+        "environmentDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "deploymentVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "issuedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "expiresAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        }
+      },
+      "required": [
+        "binding",
+        "environmentDigest",
+        "deploymentVersion",
+        "issuedAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false,
+      "title": "PackMigrationStructureReport",
+      "x-abh-digest-fields": [
+        "binding",
+        "environmentDigest",
+        "deploymentVersion",
+        "issuedAt",
+        "expiresAt"
+      ]
+    },
+    "PackMigrationDataBinding": {
+      "type": "object",
+      "description": "Exact organization, package, migration plan and declared data invariant binding; not complete domain verification or Enable authority.",
+      "properties": {
+        "kind": {
+          "const": "DataInvariants",
+          "type": "string"
+        },
+        "organizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "packId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9-]*)+$",
+          "maxLength": 253
+        },
+        "packVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion"
+        },
+        "packageDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "planDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "expectedDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "kind",
+        "organizationId",
+        "packId",
+        "packVersion",
+        "packageDigest",
+        "planDigest",
+        "expectedDigest"
+      ],
+      "additionalProperties": false,
+      "title": "PackMigrationDataBinding"
+    },
+    "PackMigrationDataReport": {
+      "type": "object",
+      "description": "Signed declared data invariant expectation metadata. Does not assert actual data correctness or authorize Enable.",
+      "properties": {
+        "binding": {
+          "$ref": "#/$defs/PackMigrationDataBinding"
+        },
+        "environmentDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "deploymentVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "issuedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "expiresAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        }
+      },
+      "required": [
+        "binding",
+        "environmentDigest",
+        "deploymentVersion",
+        "issuedAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false,
+      "title": "PackMigrationDataReport",
+      "x-abh-digest-fields": [
+        "binding",
+        "environmentDigest",
+        "deploymentVersion",
+        "issuedAt",
+        "expiresAt"
+      ]
+    },
+    "PackMigrationDataObservation": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/$defs/PackMigrationDataObservationResult"
+        },
+        "observedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        }
+      },
+      "required": [
+        "result",
+        "observedAt"
+      ],
+      "additionalProperties": false,
+      "title": "PackMigrationDataObservation",
+      "description": "Actual declared data invariant observation. Signature describes the expected report, not a signature over actual rows. Validation checks representation and consistency only, never live database facts, provenance or Enable authorization.",
+      "x-abh-digest-fields": [
+        "result",
+        "observedAt"
+      ]
+    },
+    "PackMigrationStructureObservation": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/$defs/PackMigrationStructureObservationResult"
+        },
+        "observedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        }
+      },
+      "required": [
+        "result",
+        "observedAt"
+      ],
+      "additionalProperties": false,
+      "title": "PackMigrationStructureObservation",
+      "description": "Actual bounded structural or combined inspection evidence. Validation proves representation and consistency only, not database facts, producer provenance, complete migration verification or Enable authority.",
+      "x-abh-digest-fields": [
+        "result",
+        "observedAt"
+      ]
+    },
+    "PackMigrationStateObservation": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "type": "object",
+          "properties": {
+            "matched": {
+              "type": "boolean"
+            },
+            "structure": {
+              "$ref": "#/$defs/PackMigrationStructureObservationResult"
+            },
+            "data": {
+              "$ref": "#/$defs/PackMigrationDataObservationResult"
+            }
+          },
+          "required": [
+            "matched",
+            "structure",
+            "data"
+          ],
+          "additionalProperties": false
+        },
+        "observedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        }
+      },
+      "required": [
+        "result",
+        "observedAt"
+      ],
+      "additionalProperties": false,
+      "title": "PackMigrationStateObservation",
+      "description": "Actual bounded structural or combined inspection evidence. Validation proves representation and consistency only, not database facts, producer provenance, complete migration verification or Enable authority.",
+      "x-abh-digest-fields": [
+        "result",
+        "observedAt"
+      ]
+    },
+    "PackMigrationDataObservationResult": {
+      "type": "object",
+      "properties": {
+        "matched": {
+          "type": "boolean"
+        },
+        "expectedDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,62}$"
+              },
+              "table": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,62}$"
+              },
+              "rowCount": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,18})$",
+                "description": "Exact nonnegative PostgreSQL bigint count; never a floating-point number."
+              },
+              "nulls": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "column": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9_]{0,62}$"
+                    },
+                    "count": {
+                      "type": "string",
+                      "pattern": "^(0|[1-9][0-9]{0,18})$",
+                      "description": "Exact nonnegative PostgreSQL bigint count; never a floating-point number."
+                    }
+                  },
+                  "required": [
+                    "column",
+                    "count"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0,
+                "maxItems": 100
+              },
+              "duplicates": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "columns": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_]{0,62}$"
+                      },
+                      "minItems": 1,
+                      "maxItems": 16,
+                      "uniqueItems": true
+                    },
+                    "groups": {
+                      "type": "string",
+                      "pattern": "^(0|[1-9][0-9]{0,18})$",
+                      "description": "Exact nonnegative PostgreSQL bigint count; never a floating-point number."
+                    }
+                  },
+                  "required": [
+                    "columns",
+                    "groups"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0,
+                "maxItems": 20
+              },
+              "matched": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "schema",
+              "table",
+              "rowCount",
+              "nulls",
+              "duplicates",
+              "matched"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 100
+        },
+        "binding": {
+          "$ref": "#/$defs/PackMigrationDataBinding"
+        },
+        "reportRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "bundleRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "signature": {
+          "type": "object",
+          "properties": {
+            "report": {
+              "$ref": "#/$defs/PackMigrationDataReport"
+            },
+            "keyDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "bundleDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "verifiedAt": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+            }
+          },
+          "required": [
+            "report",
+            "keyDigest",
+            "bundleDigest",
+            "verifiedAt"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "matched",
+        "expectedDigest",
+        "results",
+        "binding",
+        "reportRef",
+        "bundleRef",
+        "signature"
+      ],
+      "additionalProperties": false,
+      "title": "PackMigrationDataObservationResult"
+    },
+    "PackMigrationStructureObservationResult": {
+      "type": "object",
+      "properties": {
+        "matched": {
+          "type": "boolean"
+        },
+        "requiresAdditionalVerification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 63,
+                "pattern": "^[^\\u0000]+$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 63,
+                "pattern": "^[^\\u0000]+$"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "v",
+                  "m",
+                  "f"
+                ]
+              }
+            },
+            "required": [
+              "schema",
+              "name",
+              "kind"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 1000000
+        },
+        "expectedDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "inventory": {
+          "type": "object",
+          "properties": {
+            "matched": {
+              "type": "boolean"
+            },
+            "expectedDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "results": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "schema": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 63,
+                    "pattern": "^[^\\u0000]+$"
+                  },
+                  "actual": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 63,
+                          "pattern": "^[^\\u0000]+$"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "r",
+                            "p",
+                            "v",
+                            "m",
+                            "f",
+                            "S"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "kind"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 0,
+                    "maxItems": 10000
+                  },
+                  "missing": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 63,
+                          "pattern": "^[^\\u0000]+$"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "r",
+                            "p",
+                            "v",
+                            "m",
+                            "f",
+                            "S"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "kind"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 0,
+                    "maxItems": 10000
+                  },
+                  "unexpected": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 63,
+                          "pattern": "^[^\\u0000]+$"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "r",
+                            "p",
+                            "v",
+                            "m",
+                            "f",
+                            "S"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "kind"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 0,
+                    "maxItems": 10000
+                  },
+                  "changed": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 63,
+                          "pattern": "^[^\\u0000]+$"
+                        },
+                        "expectedKind": {
+                          "type": "string",
+                          "enum": [
+                            "r",
+                            "p",
+                            "v",
+                            "m",
+                            "f",
+                            "S"
+                          ]
+                        },
+                        "actualKind": {
+                          "type": "string",
+                          "enum": [
+                            "r",
+                            "p",
+                            "v",
+                            "m",
+                            "f",
+                            "S"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "expectedKind",
+                        "actualKind"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 0,
+                    "maxItems": 10000
+                  }
+                },
+                "required": [
+                  "schema",
+                  "actual",
+                  "missing",
+                  "unexpected",
+                  "changed"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 100
+            }
+          },
+          "required": [
+            "matched",
+            "expectedDigest",
+            "results"
+          ],
+          "additionalProperties": false
+        },
+        "tables": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "matched": {
+                  "type": "boolean"
+                },
+                "expectedDigest": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "schema": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 63,
+                        "pattern": "^[^\\u0000]+$"
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 63,
+                        "pattern": "^[^\\u0000]+$"
+                      },
+                      "actual": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "schema": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "owner": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "r",
+                                  "p"
+                                ]
+                              },
+                              "rls": {
+                                "type": "boolean"
+                              },
+                              "forceRls": {
+                                "type": "boolean"
+                              },
+                              "partition": {
+                                "type": "object",
+                                "properties": {
+                                  "key": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "maxLength": 1048576
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "bound": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "maxLength": 1048576
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "parents": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "schema": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 63,
+                                          "pattern": "^[^\\u0000]+$"
+                                        },
+                                        "name": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "maxLength": 63,
+                                          "pattern": "^[^\\u0000]+$"
+                                        },
+                                        "detachPending": {
+                                          "type": "boolean"
+                                        }
+                                      },
+                                      "required": [
+                                        "schema",
+                                        "name",
+                                        "detachPending"
+                                      ],
+                                      "additionalProperties": false
+                                    },
+                                    "minItems": 0,
+                                    "maxItems": 100
+                                  }
+                                },
+                                "required": [
+                                  "key",
+                                  "bound",
+                                  "parents"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "columns": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "typeSchema": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "typeName": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "typeModifier": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
+                                    },
+                                    "notNull": {
+                                      "type": "boolean"
+                                    },
+                                    "identity": {
+                                      "type": "string",
+                                      "enum": [
+                                        "",
+                                        "a",
+                                        "d"
+                                      ]
+                                    },
+                                    "generated": {
+                                      "type": "string",
+                                      "enum": [
+                                        "",
+                                        "s"
+                                      ]
+                                    },
+                                    "defaultExpression": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "maxLength": 1048576
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "name",
+                                    "typeSchema",
+                                    "typeName",
+                                    "typeModifier",
+                                    "notNull",
+                                    "identity",
+                                    "generated",
+                                    "defaultExpression"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 0,
+                                "maxItems": 1600
+                              },
+                              "indexes": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "definition": {
+                                      "type": "string",
+                                      "maxLength": 1048576
+                                    },
+                                    "valid": {
+                                      "type": "boolean"
+                                    },
+                                    "ready": {
+                                      "type": "boolean"
+                                    },
+                                    "live": {
+                                      "type": "boolean"
+                                    },
+                                    "unique": {
+                                      "type": "boolean"
+                                    },
+                                    "primary": {
+                                      "type": "boolean"
+                                    },
+                                    "replicaIdentity": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "name",
+                                    "definition",
+                                    "valid",
+                                    "ready",
+                                    "live",
+                                    "unique",
+                                    "primary",
+                                    "replicaIdentity"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 0,
+                                "maxItems": 1000
+                              },
+                              "policies": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "command": {
+                                      "type": "string",
+                                      "enum": [
+                                        "*",
+                                        "r",
+                                        "a",
+                                        "w",
+                                        "d"
+                                      ]
+                                    },
+                                    "permissive": {
+                                      "type": "boolean"
+                                    },
+                                    "roles": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 63,
+                                        "pattern": "^[^\\u0000]+$"
+                                      },
+                                      "minItems": 1,
+                                      "maxItems": 1000,
+                                      "uniqueItems": true
+                                    },
+                                    "using": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "maxLength": 1048576
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    },
+                                    "check": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string",
+                                          "maxLength": 1048576
+                                        },
+                                        {
+                                          "type": "null"
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "name",
+                                    "command",
+                                    "permissive",
+                                    "roles",
+                                    "using",
+                                    "check"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 0,
+                                "maxItems": 1000
+                              },
+                              "triggers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "definition": {
+                                      "type": "string",
+                                      "maxLength": 1048576
+                                    },
+                                    "enabled": {
+                                      "type": "string",
+                                      "enum": [
+                                        "O",
+                                        "D",
+                                        "R",
+                                        "A"
+                                      ]
+                                    },
+                                    "functionDigest": {
+                                      "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+                                    }
+                                  },
+                                  "required": [
+                                    "name",
+                                    "definition",
+                                    "enabled",
+                                    "functionDigest"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 0,
+                                "maxItems": 1000
+                              },
+                              "constraints": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "type": {
+                                      "type": "string",
+                                      "enum": [
+                                        "c",
+                                        "f",
+                                        "p",
+                                        "u",
+                                        "t",
+                                        "x"
+                                      ]
+                                    },
+                                    "definition": {
+                                      "type": "string",
+                                      "maxLength": 1048576
+                                    },
+                                    "validated": {
+                                      "type": "boolean"
+                                    },
+                                    "deferrable": {
+                                      "type": "boolean"
+                                    },
+                                    "initiallyDeferred": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "name",
+                                    "type",
+                                    "definition",
+                                    "validated",
+                                    "deferrable",
+                                    "initiallyDeferred"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 0,
+                                "maxItems": 1000
+                              }
+                            },
+                            "required": [
+                              "schema",
+                              "name",
+                              "owner",
+                              "kind",
+                              "rls",
+                              "forceRls",
+                              "partition",
+                              "columns",
+                              "indexes",
+                              "policies",
+                              "triggers",
+                              "constraints"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "differences": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "existence",
+                            "owner",
+                            "kind",
+                            "rls",
+                            "forceRls",
+                            "columns",
+                            "constraints",
+                            "indexes",
+                            "policies",
+                            "triggers",
+                            "partition"
+                          ]
+                        },
+                        "minItems": 0,
+                        "maxItems": 11,
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": [
+                      "schema",
+                      "name",
+                      "actual",
+                      "differences"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 100
+                }
+              },
+              "required": [
+                "matched",
+                "expectedDigest",
+                "results"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sequences": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "matched": {
+                  "type": "boolean"
+                },
+                "expectedDigest": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "schema": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 63,
+                        "pattern": "^[^\\u0000]+$"
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 63,
+                        "pattern": "^[^\\u0000]+$"
+                      },
+                      "actual": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "schema": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "owner": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "typeSchema": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "typeName": {
+                                "type": "string",
+                                "enum": [
+                                  "int2",
+                                  "int4",
+                                  "int8"
+                                ]
+                              },
+                              "start": {
+                                "type": "string",
+                                "pattern": "^(0|-?[1-9][0-9]{0,18})$"
+                              },
+                              "increment": {
+                                "type": "string",
+                                "pattern": "^(0|-?[1-9][0-9]{0,18})$"
+                              },
+                              "minimum": {
+                                "type": "string",
+                                "pattern": "^(0|-?[1-9][0-9]{0,18})$"
+                              },
+                              "maximum": {
+                                "type": "string",
+                                "pattern": "^(0|-?[1-9][0-9]{0,18})$"
+                              },
+                              "cache": {
+                                "type": "string",
+                                "pattern": "^(0|-?[1-9][0-9]{0,18})$"
+                              },
+                              "cycle": {
+                                "type": "boolean"
+                              },
+                              "ownedBy": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "schema": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 63,
+                                        "pattern": "^[^\\u0000]+$"
+                                      },
+                                      "table": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 63,
+                                        "pattern": "^[^\\u0000]+$"
+                                      },
+                                      "column": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 63,
+                                        "pattern": "^[^\\u0000]+$"
+                                      },
+                                      "dependency": {
+                                        "type": "string",
+                                        "enum": [
+                                          "a",
+                                          "i"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "schema",
+                                      "table",
+                                      "column",
+                                      "dependency"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "schema",
+                              "name",
+                              "owner",
+                              "typeSchema",
+                              "typeName",
+                              "start",
+                              "increment",
+                              "minimum",
+                              "maximum",
+                              "cache",
+                              "cycle",
+                              "ownedBy"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "differences": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "existence",
+                            "owner",
+                            "typeSchema",
+                            "typeName",
+                            "start",
+                            "increment",
+                            "minimum",
+                            "maximum",
+                            "cache",
+                            "cycle",
+                            "ownedBy"
+                          ]
+                        },
+                        "minItems": 0,
+                        "maxItems": 11,
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": [
+                      "schema",
+                      "name",
+                      "actual",
+                      "differences"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 100
+                }
+              },
+              "required": [
+                "matched",
+                "expectedDigest",
+                "results"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "views": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "matched": {
+                  "type": "boolean"
+                },
+                "expectedDigest": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "schema": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 63,
+                        "pattern": "^[^\\u0000]+$"
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 63,
+                        "pattern": "^[^\\u0000]+$"
+                      },
+                      "actual": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "schema": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "owner": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 63,
+                                "pattern": "^[^\\u0000]+$"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "v",
+                                  "m"
+                                ]
+                              },
+                              "definition": {
+                                "type": "string",
+                                "maxLength": 1048576
+                              },
+                              "options": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "maxLength": 1048576
+                                },
+                                "minItems": 0,
+                                "maxItems": 1000
+                              },
+                              "populated": {
+                                "type": "boolean"
+                              },
+                              "indexes": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "definition": {
+                                      "type": "string",
+                                      "maxLength": 1048576
+                                    },
+                                    "valid": {
+                                      "type": "boolean"
+                                    },
+                                    "ready": {
+                                      "type": "boolean"
+                                    },
+                                    "live": {
+                                      "type": "boolean"
+                                    },
+                                    "unique": {
+                                      "type": "boolean"
+                                    },
+                                    "primary": {
+                                      "type": "boolean"
+                                    },
+                                    "replicaIdentity": {
+                                      "type": "boolean"
+                                    }
+                                  },
+                                  "required": [
+                                    "name",
+                                    "definition",
+                                    "valid",
+                                    "ready",
+                                    "live",
+                                    "unique",
+                                    "primary",
+                                    "replicaIdentity"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 0,
+                                "maxItems": 1000
+                              },
+                              "triggers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "definition": {
+                                      "type": "string",
+                                      "maxLength": 1048576
+                                    },
+                                    "enabled": {
+                                      "type": "string",
+                                      "enum": [
+                                        "O",
+                                        "D",
+                                        "R",
+                                        "A"
+                                      ]
+                                    },
+                                    "functionDigest": {
+                                      "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+                                    }
+                                  },
+                                  "required": [
+                                    "name",
+                                    "definition",
+                                    "enabled",
+                                    "functionDigest"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 0,
+                                "maxItems": 1000
+                              },
+                              "rules": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "definition": {
+                                      "type": "string",
+                                      "maxLength": 1048576
+                                    },
+                                    "enabled": {
+                                      "type": "string",
+                                      "enum": [
+                                        "O",
+                                        "D",
+                                        "R",
+                                        "A"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "name",
+                                    "definition",
+                                    "enabled"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 0,
+                                "maxItems": 1000
+                              },
+                              "columns": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "typeSchema": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "typeName": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 63,
+                                      "pattern": "^[^\\u0000]+$"
+                                    },
+                                    "typeModifier": {
+                                      "type": "integer",
+                                      "minimum": -2147483648,
+                                      "maximum": 2147483647
+                                    }
+                                  },
+                                  "required": [
+                                    "name",
+                                    "typeSchema",
+                                    "typeName",
+                                    "typeModifier"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "minItems": 0,
+                                "maxItems": 1600
+                              }
+                            },
+                            "required": [
+                              "schema",
+                              "name",
+                              "owner",
+                              "kind",
+                              "definition",
+                              "options",
+                              "populated",
+                              "indexes",
+                              "triggers",
+                              "rules",
+                              "columns"
+                            ],
+                            "additionalProperties": false
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "differences": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "existence",
+                            "owner",
+                            "kind",
+                            "definition",
+                            "options",
+                            "populated",
+                            "columns",
+                            "indexes",
+                            "triggers",
+                            "rules"
+                          ]
+                        },
+                        "minItems": 0,
+                        "maxItems": 10,
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": [
+                      "schema",
+                      "name",
+                      "actual",
+                      "differences"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 100
+                }
+              },
+              "required": [
+                "matched",
+                "expectedDigest",
+                "results"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "acl": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "matched": {
+                  "type": "boolean"
+                },
+                "expectedDigest": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "schema": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 63,
+                        "pattern": "^[^\\u0000]+$"
+                      },
+                      "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 63,
+                        "pattern": "^[^\\u0000]+$"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "r",
+                          "p",
+                          "v",
+                          "m",
+                          "f",
+                          "S"
+                        ]
+                      },
+                      "actual": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "column": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 63,
+                                  "pattern": "^[^\\u0000]+$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "grantor": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 63,
+                              "pattern": "^[^\\u0000]+$"
+                            },
+                            "grantee": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 63,
+                              "pattern": "^[^\\u0000]+$"
+                            },
+                            "privilege": {
+                              "type": "string",
+                              "enum": [
+                                "SELECT",
+                                "INSERT",
+                                "UPDATE",
+                                "DELETE",
+                                "TRUNCATE",
+                                "REFERENCES",
+                                "TRIGGER",
+                                "USAGE"
+                              ]
+                            },
+                            "grantable": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "column",
+                            "grantor",
+                            "grantee",
+                            "privilege",
+                            "grantable"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "minItems": 0,
+                        "maxItems": 10000
+                      },
+                      "missing": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "column": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 63,
+                                  "pattern": "^[^\\u0000]+$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "grantor": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 63,
+                              "pattern": "^[^\\u0000]+$"
+                            },
+                            "grantee": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 63,
+                              "pattern": "^[^\\u0000]+$"
+                            },
+                            "privilege": {
+                              "type": "string",
+                              "enum": [
+                                "SELECT",
+                                "INSERT",
+                                "UPDATE",
+                                "DELETE",
+                                "TRUNCATE",
+                                "REFERENCES",
+                                "TRIGGER",
+                                "USAGE"
+                              ]
+                            },
+                            "grantable": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "column",
+                            "grantor",
+                            "grantee",
+                            "privilege",
+                            "grantable"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "minItems": 0,
+                        "maxItems": 10000
+                      },
+                      "unexpected": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "column": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 63,
+                                  "pattern": "^[^\\u0000]+$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "grantor": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 63,
+                              "pattern": "^[^\\u0000]+$"
+                            },
+                            "grantee": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 63,
+                              "pattern": "^[^\\u0000]+$"
+                            },
+                            "privilege": {
+                              "type": "string",
+                              "enum": [
+                                "SELECT",
+                                "INSERT",
+                                "UPDATE",
+                                "DELETE",
+                                "TRUNCATE",
+                                "REFERENCES",
+                                "TRIGGER",
+                                "USAGE"
+                              ]
+                            },
+                            "grantable": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "column",
+                            "grantor",
+                            "grantee",
+                            "privilege",
+                            "grantable"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "minItems": 0,
+                        "maxItems": 10000
+                      }
+                    },
+                    "required": [
+                      "schema",
+                      "name",
+                      "kind",
+                      "actual",
+                      "missing",
+                      "unexpected"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 1,
+                  "maxItems": 100
+                }
+              },
+              "required": [
+                "matched",
+                "expectedDigest",
+                "results"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "binding": {
+          "$ref": "#/$defs/PackMigrationStructureBinding"
+        },
+        "reportRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "bundleRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "signature": {
+          "type": "object",
+          "properties": {
+            "report": {
+              "$ref": "#/$defs/PackMigrationStructureReport"
+            },
+            "keyDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "bundleDigest": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+            },
+            "verifiedAt": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+            }
+          },
+          "required": [
+            "report",
+            "keyDigest",
+            "bundleDigest",
+            "verifiedAt"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "matched",
+        "requiresAdditionalVerification",
+        "expectedDigest",
+        "inventory",
+        "tables",
+        "sequences",
+        "views",
+        "acl",
+        "binding",
+        "reportRef",
+        "bundleRef",
+        "signature"
+      ],
+      "additionalProperties": false,
+      "title": "PackMigrationStructureObservationResult"
+    }
+  }
+}
