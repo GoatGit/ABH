@@ -1,34 +1,103 @@
+import { randomUUID } from 'node:crypto';
+
 const USAGE = `abh mission <command> [options]
 
 Commands:
-  list            List missions (requires connection and read grant)
-  get <id>        Show mission detail by UUID
-  activate <id>   Activate a Draft mission (requires authority)
-  pause <id>      Pause an Active mission
-  cancel <id>     Cancel a mission
-  verify <taskId> Submit verification for a task
+  list                       List missions (requires connection and read grant)
+  get <id>                   Show mission detail by UUID
+  activate <id> --authority <uuid> [--authority-version <n>]
+                             Activate a Draft mission (Update; reads current version, sends If-Match)
+  pause <id> [--reason <name>]     Pause an Active mission (default reason: manual.pause)
+  cancel <id> [--reason <name>]    Cancel a mission (default reason: manual.cancel)
+  verify <taskId> --invocation <uuid> --artifact <uuid>
+        [--verdict Pass|Reject|NeedsResponsibility|Inconclusive]
+        [--task-version <n>] [--invocation-version <n>] [--artifact-version <n>]
+                             Submit verification for a task (Create; idempotent)
 
 Options:
   --url <url>     ABH HTTP base URL (default: http://localhost:3000)
   --token <jwt>   Bearer token (default: ABH_TOKEN env)
   --format <fmt>  Output format: json or table (default: json)
+
+Command contract: every POST sends an Idempotency-Key; Update-mode commands read the
+current version first and send If-Match, so retried commands never double-apply.
 `;
 
-async function api(url, path, { token, method = 'GET', body } = {}) {
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const REASON_PATTERN = /^[a-z][a-z0-9-]*(?:[.][a-z][a-z0-9-]*)+$/;
+const VERDICTS = new Set(['Pass', 'Reject', 'NeedsResponsibility', 'Inconclusive']);
+const VERSION_PATTERN = /^[1-9][0-9]*$/;
+
+async function api(url, path, { token, method = 'GET', body, headers } = {}) {
   const response = await fetch(`${url.replace(/\/$/, '')}${path}`, {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      ...(body ? { 'Content-Type': 'application/json' } : {}),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(headers ?? {}),
     },
     ...(body ? { body: JSON.stringify(body) } : {}),
     signal: AbortSignal.timeout(15000),
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.message || `HTTP ${response.status}`);
+    const code = typeof data.code === 'string' ? data.code : `HTTP_${response.status}`;
+    throw new Error(data.message ? `${code}: ${data.message}` : code);
   }
   return data;
+}
+
+/** Reads the current mission version so Update commands can send a valid If-Match. */
+async function currentMissionVersion(url, token, id) {
+  const view = await api(url, `/v1/queries/abh.missions.get?id=${id}`, { token });
+  const version = view?.mission?.missionRef?.version;
+  if (!VERSION_PATTERN.test(String(version))) throw new Error('Mission view did not include a usable missionRef.version');
+  return Number(version);
+}
+
+function post(url, path, { token, idempotencyKey, ifMatchVersion, target, payload }) {
+  return api(url, path, {
+    method: 'POST',
+    token,
+    headers: {
+      'Idempotency-Key': idempotencyKey,
+      ...(ifMatchVersion !== undefined ? { 'If-Match': `"${ifMatchVersion}"` } : {}),
+    },
+    body: { target, payload },
+  });
+}
+
+function requireUuid(flags, name) {
+  const value = flags[name];
+  if (!value || !UUID_PATTERN.test(value)) {
+    throw Object.assign(new Error(`--${name} must be a UUID`), { usage: true });
+  }
+  return value;
+}
+
+function optionalVersion(flags, name) {
+  const value = flags[name] === undefined ? '1' : String(flags[name]);
+  if (!VERSION_PATTERN.test(value)) {
+    throw Object.assign(new Error(`--${name} must be a positive integer`), { usage: true });
+  }
+  return Number(value);
+}
+
+function reason(flags, fallback) {
+  const value = flags.reason === undefined ? fallback : String(flags.reason);
+  if (!REASON_PATTERN.test(value)) {
+    throw Object.assign(new Error('--reason must match a registered name such as manual.pause'), { usage: true });
+  }
+  return value;
+}
+
+function verdict(flags) {
+  const value = flags.verdict === undefined ? 'Pass' : String(flags.verdict);
+  if (!VERDICTS.has(value)) {
+    throw Object.assign(new Error('--verdict must be one of Pass, Reject, NeedsResponsibility, Inconclusive'), { usage: true });
+  }
+  return value;
 }
 
 export async function runMission(args, { env, stdout, stderr }) {
@@ -72,13 +141,17 @@ export async function runMission(args, { env, stdout, stderr }) {
     }
 
     if (command === 'activate' && positional[0]) {
-      const result = await api(url, '/v1/commands/abh.missions.activate', {
-        method: 'POST',
+      const id = positional[0];
+      const authority = requireUuid(flags, 'authority');
+      const version = await currentMissionVersion(url, token, id);
+      const result = await post(url, '/v1/commands/abh.missions.activate', {
         token,
-        body: {
-          type: 'abh.missions.activate',
-          target: { type: 'abh.mission', id: positional[0], version: 1 },
-          payload: { missionRef: { type: 'abh.mission', id: positional[0], version: 1 }, authorityRef: { type: 'abh.mission-authority', id: flags.authority, version: 1 } },
+        idempotencyKey: randomUUID(),
+        ifMatchVersion: version,
+        target: { type: 'abh.mission', id },
+        payload: {
+          missionRef: { type: 'abh.mission', id, version },
+          authorityRef: { type: 'abh.mission-authority', id: authority, version: optionalVersion(flags, 'authority-version') },
         },
       });
       stdout.write(`${JSON.stringify(result, null, 2)}\n`);
@@ -86,46 +159,44 @@ export async function runMission(args, { env, stdout, stderr }) {
     }
 
     if (command === 'pause' && positional[0]) {
-      const result = await api(url, '/v1/commands/abh.missions.pause', {
-        method: 'POST',
+      const id = positional[0];
+      const version = await currentMissionVersion(url, token, id);
+      const result = await post(url, '/v1/commands/abh.missions.pause', {
         token,
-        body: {
-          type: 'abh.missions.pause',
-          target: { type: 'abh.mission', id: positional[0], version: 1 },
-          payload: { missionRef: { type: 'abh.mission', id: positional[0], version: 1 }, reasonCode: flags.reason || 'manual.pause' },
-        },
+        idempotencyKey: randomUUID(),
+        ifMatchVersion: version,
+        target: { type: 'abh.mission', id },
+        payload: { missionRef: { type: 'abh.mission', id, version }, reasonCode: reason(flags, 'manual.pause') },
       });
       stdout.write(`${JSON.stringify(result, null, 2)}\n`);
       return 0;
     }
 
     if (command === 'cancel' && positional[0]) {
-      const result = await api(url, '/v1/commands/abh.missions.cancel', {
-        method: 'POST',
+      const id = positional[0];
+      const version = await currentMissionVersion(url, token, id);
+      const result = await post(url, '/v1/commands/abh.missions.cancel', {
         token,
-        body: {
-          type: 'abh.missions.cancel',
-          target: { type: 'abh.mission', id: positional[0], version: 1 },
-          payload: { missionRef: { type: 'abh.mission', id: positional[0], version: 1 }, reasonCode: flags.reason || 'manual.cancel' },
-        },
+        idempotencyKey: randomUUID(),
+        ifMatchVersion: version,
+        target: { type: 'abh.mission', id },
+        payload: { missionRef: { type: 'abh.mission', id, version }, reasonCode: reason(flags, 'manual.cancel') },
       });
       stdout.write(`${JSON.stringify(result, null, 2)}\n`);
       return 0;
     }
 
     if (command === 'verify' && positional[0]) {
-      const result = await api(url, '/v1/commands/abh.verification.submit', {
-        method: 'POST',
+      const taskId = positional[0];
+      const result = await post(url, '/v1/commands/abh.verification.submit', {
         token,
-        body: {
-          type: 'abh.verification.submit',
-          target: { type: 'abh.task', id: positional[0], version: 1 },
-          payload: {
-            taskRef: { type: 'abh.task', id: positional[0], version: 1 },
-            invocationRef: { type: 'abh.invocation', id: flags.invocation, version: 1 },
-            resultArtifactRef: { type: 'abh.artifact', id: flags.artifact, version: 1 },
-            verdict: flags.verdict || 'Pass',
-          },
+        idempotencyKey: randomUUID(),
+        target: { type: 'abh.task', id: taskId },
+        payload: {
+          taskRef: { type: 'abh.task', id: taskId, version: optionalVersion(flags, 'task-version') },
+          invocationRef: { type: 'abh.invocation', id: requireUuid(flags, 'invocation'), version: optionalVersion(flags, 'invocation-version') },
+          resultArtifactRef: { type: 'abh.artifact', id: requireUuid(flags, 'artifact'), version: optionalVersion(flags, 'artifact-version') },
+          verdict: verdict(flags),
         },
       });
       stdout.write(`${JSON.stringify(result, null, 2)}\n`);
@@ -135,6 +206,10 @@ export async function runMission(args, { env, stdout, stderr }) {
     stderr.write(`Unknown mission command: ${command}\n${USAGE}`);
     return 2;
   } catch (error) {
+    if (error?.usage) {
+      stderr.write(`abh mission: ${error.message}\n${USAGE}`);
+      return 2;
+    }
     stderr.write(`abh mission: ${error.message}\n`);
     return 6;
   }

@@ -2,7 +2,7 @@
 
 ABH 是面向业务智能体的运行框架：将组织责任、授权、资源约束、外部操作、结果确认与恢复连接起来，通过公开契约承载不同领域的产品。
 
-当前处于 **0.1.0 Preview / M0-D，实现推进约 90%；生产托管与最终验收未完成**。33 份 V1 设计模块中 31 份已有契约和/或实现：公共契约/状态/授权执行链、Mission 完整生命周期（Create→Activate→Pause/Cancel/Resume/Block/ReviseGoal/Close + Trigger 去重 + Blocker）、Run 公共生命周期（Start/Complete/幂等回执/ActiveRun 同步/静态 Assignment PinSet/Tasks）、Context Manifest、Verification、Learning Signal Capture、Identity/Ledger、Tool Gateway（Binding/Invoke/幂等 callKey）、Model Gateway（Route/Call）、Action/Operation/Reconciliation、Durable Execution、Artifact/Audit、Pack 生命周期（Staged→Enabled→Suspended→Retired）、Responsibility/Decision、Projection（MissionSummary 读模型）、Pi Agent 契约（AgentTaskContract/RuntimeEvent/InvocationHandle）、Pi Agent 0.85.1 运行时适配基础和 SDK/CLI。OpenAPI 33 路径通过 HTTP 暴露，`abh mission` CLI 支持 list/get/activate/pause/cancel/verify。
+当前处于 **0.1.0 Preview，本地 V1 工程闭环推进约 90%**（生产托管、真实身份/Provider、独立安全审查与真实 Domain 验收未完成；本地闭环的逐项明细口径见[缺口清单](./docs/development/V1-GAPS.md)）。33 份 V1 设计模块中 31 份已有契约和/或实现：公共契约/状态/授权执行链、Mission 完整生命周期（Create→Activate→Pause/Cancel/Resume/Block/ReviseGoal/Close + Trigger 去重 + Blocker）、Run 公共生命周期（Start/Complete/幂等回执/ActiveRun 同步/静态 Assignment PinSet/Tasks）、Context Manifest、Verification、Learning Signal Capture、Identity/Ledger、Tool Gateway（Binding/Invoke/幂等 callKey）、Model Gateway（Route/Call）、Action/Operation/Reconciliation、Durable Execution、Artifact/Audit、Pack 生命周期（Staged→Enabled→Suspended→Retired）、Responsibility/Decision、Projection（MissionSummary 读模型）、Pi Agent 契约（AgentTaskContract/RuntimeEvent/InvocationHandle）、Pi Agent 0.85.1 运行时适配基础和 SDK/CLI。OpenAPI 61 路径通过 HTTP 暴露，`abh mission` CLI 支持 list/get/activate/pause/cancel/verify，`@abh/core/server` 提供显式部署安装的服务组合入口。
 
 ## 开发
 

@@ -15,7 +15,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json"
+    "typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
+    "test": "node --test --test-concurrency=1 test/*.test.ts"
   },
   "dependencies": {
     "@abh/contracts": "workspace:*",

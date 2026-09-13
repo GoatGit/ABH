@@ -16,5 +16,6 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+      - uses: sigstore/cosign-installer@v3.9.2
       - run: pnpm install --frozen-lockfile
       - run: pnpm check

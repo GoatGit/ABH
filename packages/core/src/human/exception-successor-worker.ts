@@ -56,7 +56,7 @@ export async function runExceptionSuccessorWorker(database:Database,input:Except
   const owner=new ExceptionSuccessorOwner();
   while(!input.signal.aborted){
     try{
-      const page=await database.transaction(await current(),options(),tx=>owner.pendingSuccessors(tx,size,cursor));
+      const page=await database.transaction(await current(),options(),tx=>owner.pending(tx,size,cursor));
       let dispatched=0,unhandled=0;
       for(const resolutionRef of page){
         if(input.signal.aborted)return;

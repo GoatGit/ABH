@@ -45,11 +45,14 @@ export async function createDatabaseFixture() {
     await database?.close(); await admin.end(); await container.stop(); throw error;
   }
 }
+// One fixture serves a whole test file, so contexts must outlive wall-clock time of slow
+// machines and full migrations; tests that need expiry construct their own short contexts.
+const TEST_CONTEXT_TTL_MS = 30*60_000;
 export function context(organizationId: string = randomUUID(), actorId: string = randomUUID()) {
   return deriveVerifiedContext({ requestId: randomUUID(), correlationId: randomUUID(),
     actingOrganizationId: organizationId, resourceOrganizationId: organizationId,
     actor: { type: 'Human', id: actorId }, purposeOfUse: 'abh.action.prepare', authnStrength: { level: 'SingleFactor' },
-    sessionEpoch: 1, scopeEpoch: 1, receivedAt: new Date().toISOString(), contextExpiresAt: new Date(Date.now()+60_000).toISOString() });
+    sessionEpoch: 1, scopeEpoch: 1, receivedAt: new Date().toISOString(), contextExpiresAt: new Date(Date.now()+TEST_CONTEXT_TTL_MS).toISOString() });
 }
 export const options = () => ({ deadline: Date.now()+10_000, signal: new AbortController().signal });
 

@@ -56,3 +56,9 @@ test('abh run invokes explicit deployment installation without defaults',async t
   assert.equal(globalThis.__abhRunInstallerInput.credentials.runtimeDatabaseUrl,'postgresql://runtime');
   assert.deepEqual(calls.filter(value=>typeof value==='string'),['database','identity','service']);
 });
+
+test('the real @abh/core/server module exposes every symbol abh run composes',async()=>{
+  const server=await import('@abh/core/server');
+  for(const symbol of ['Database','IdentityIngress','assembleAbhService','runHttpService'])
+    assert.equal(typeof server[symbol],'function',`missing export: ${symbol}`);
+});

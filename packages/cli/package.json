@@ -11,8 +11,8 @@
     "abh": "./bin/abh.mjs"
   },
   "scripts": {
-    "build": "node --check bin/abh.mjs && node --check src/doctor.mjs && node --check src/init.mjs && node --check src/pack.mjs && node --check src/run.mjs && node --check src/inspection.mjs",
-    "typecheck": "node --check bin/abh.mjs && node --check src/doctor.mjs && node --check src/init.mjs && node --check src/pack.mjs && node --check src/run.mjs && node --check src/inspection.mjs",
+    "build": "node --check bin/abh.mjs && node --check src/doctor.mjs && node --check src/init.mjs && node --check src/pack.mjs && node --check src/run.mjs && node --check src/inspection.mjs && node --check src/mission.mjs",
+    "typecheck": "node --check bin/abh.mjs && node --check src/doctor.mjs && node --check src/init.mjs && node --check src/pack.mjs && node --check src/run.mjs && node --check src/inspection.mjs && node --check src/mission.mjs",
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {

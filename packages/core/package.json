@@ -28,6 +28,10 @@
       "types": "./dist/src/pack-cli.d.ts",
       "import": "./dist/src/pack-cli.js"
     },
+    "./server": {
+      "types": "./dist/src/server/index.d.ts",
+      "import": "./dist/src/server/index.js"
+    },
     "./evaluation": {
       "types": "./dist/src/mission/evaluation-dispatcher.d.ts",
       "import": "./dist/src/mission/evaluation-dispatcher.js"

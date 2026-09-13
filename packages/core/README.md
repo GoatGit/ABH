@@ -1,6 +1,6 @@
 # @abh/core
 
-ABH 服务端内部模块，按 `docs/V1` 持续实现。根入口仍只导出 `coreVersion`；浏览器兼容的 [`@abh/core/client`](src/CLIENT.md) 提供类型化 Decision/Action HTTP 调用。Decision 业务 HTTP Handler 已在内部服务装配层按显式安装开放。
+ABH 服务端内部模块，按 `docs/V1` 持续实现。根入口导出 `coreVersion` 与 `defineBusiness` 声明；浏览器兼容的 [`@abh/core/client`](src/CLIENT.md) 提供类型化 Decision/Action HTTP 调用；[`@abh/core/server`](src/server/README.md) 提供 `Database`/`IdentityIngress`/`assembleAbhService`/`runHttpService` 的服务组合入口，身份、凭证与 Mission 安装仍由部署显式提供。
 
 ## 运行与验证
 
