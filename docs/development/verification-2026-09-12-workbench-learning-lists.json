@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-12",
+  "subject": "Workbench read-only Learning candidate and evaluation list browsing",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate --check",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/learning-build-case.test.ts",
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench test:e2e",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm api:update",
+    "corepack pnpm api:check",
+    "corepack pnpm check",
+    "git diff --check"
+  ],
+  "results": {
+    "completionEstimate": "99.9%",
+    "contractsArtifacts": 51,
+    "contractOpenApiPaths": 51,
+    "contractsTests": "312 passed, 0 failed, 0 skipped",
+    "newPublicQueries": ["abh.evaluation-runs.list", "abh.learning-gates.list"],
+    "learningRegression": "1 passed, 0 failed",
+    "workbenchUnitTests": "23 passed, 0 failed",
+    "workbenchProductionE2e": "2 passed, 0 failed",
+    "cliTests": "5 passed, 0 failed",
+    "coreFullChecks": "562 tests: 556 passed, 6 skipped, 0 failed",
+    "coreSkips": "Cosign-dependent tests only",
+    "apiReports": "Contracts 9 entry points matched; Core 4 entry points matched",
+    "documentationLinks": "771 local links checked",
+    "fullWorkspaceCheck": "passed"
+  },
+  "evidence": [
+    "Production browser journey verified Overview, Mission, Run, Learning, Decision approval, late-response rejection, compensation and Organization B isolation",
+    "Learning page showed the governed candidate, queued Evaluation Run, aggregate status, as-of time and pagination contract",
+    "Organization B received no Organization A Learning data and failed closed on forbidden reads",
+    "OpenAPI, generated schemas, typed client, HTTP surface and public API reports stayed synchronized"
+  ],
+  "limits": [
+    "The Learning page remains read-only and does not adjudicate Gates, retry Evaluation Runs or release Candidates",
+    "Batch operations, continuous projections, diffs and full CLI operational flows remain open",
+    "Real evaluation hosts, production governance, hosted IdP/Provider, independent security review and domain acceptance remain outside local engineering completion"
+  ]
+}

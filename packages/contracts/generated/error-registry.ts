@@ -42,6 +42,13 @@ export const errorRegistry = {
     "retryable": false,
     "toolCategory": "Conflict"
   },
+  "TASK_COMMIT_INCOMPLETE": {
+    "code": "TASK_COMMIT_INCOMPLETE",
+    "category": "Precondition",
+    "httpStatus": 409,
+    "retryable": false,
+    "toolCategory": "Precondition"
+  },
   "BLOCKER_EVIDENCE_INVALID": {
     "code": "BLOCKER_EVIDENCE_INVALID",
     "category": "Validation",
@@ -301,6 +308,13 @@ export const errorRegistry = {
     "retryable": false,
     "toolCategory": "Conflict"
   },
+  "DELEGATION_EXCEEDS_AUTHORITY": {
+    "code": "DELEGATION_EXCEEDS_AUTHORITY",
+    "category": "Authorization",
+    "httpStatus": 403,
+    "retryable": false,
+    "toolCategory": "Authorization"
+  },
   "DECIDER_NOT_ELIGIBLE": {
     "code": "DECIDER_NOT_ELIGIBLE",
     "category": "Authorization",
@@ -308,8 +322,22 @@ export const errorRegistry = {
     "retryable": false,
     "toolCategory": "Authorization"
   },
+  "ROUTE_DEPTH_EXCEEDED": {
+    "code": "ROUTE_DEPTH_EXCEEDED",
+    "category": "Precondition",
+    "httpStatus": 409,
+    "retryable": false,
+    "toolCategory": "Precondition"
+  },
   "OPERATION_FACT_CONFLICT": {
     "code": "OPERATION_FACT_CONFLICT",
+    "category": "Conflict",
+    "httpStatus": 409,
+    "retryable": false,
+    "toolCategory": "Conflict"
+  },
+  "CORRECTION_STALE": {
+    "code": "CORRECTION_STALE",
     "category": "Conflict",
     "httpStatus": 409,
     "retryable": false,
@@ -331,6 +359,55 @@ export const errorRegistry = {
   },
   "LEARNING_PURPOSE_DENIED": {
     "code": "LEARNING_PURPOSE_DENIED",
+    "category": "Authorization",
+    "httpStatus": 403,
+    "retryable": false,
+    "toolCategory": "Authorization"
+  },
+  "CASE_EVIDENCE_INCOMPLETE": {
+    "code": "CASE_EVIDENCE_INCOMPLETE",
+    "category": "Precondition",
+    "httpStatus": 409,
+    "retryable": false,
+    "toolCategory": "Precondition"
+  },
+  "CANDIDATE_SCOPE_EXCEEDED": {
+    "code": "CANDIDATE_SCOPE_EXCEEDED",
+    "category": "Authorization",
+    "httpStatus": 403,
+    "retryable": false,
+    "toolCategory": "Authorization"
+  },
+  "EVALUATION_PROFILE_UNAVAILABLE": {
+    "code": "EVALUATION_PROFILE_UNAVAILABLE",
+    "category": "Precondition",
+    "httpStatus": 409,
+    "retryable": false,
+    "toolCategory": "Precondition"
+  },
+  "EVALUATION_PROFILE_AMBIGUOUS": {
+    "code": "EVALUATION_PROFILE_AMBIGUOUS",
+    "category": "Conflict",
+    "httpStatus": 409,
+    "retryable": false,
+    "toolCategory": "Conflict"
+  },
+  "GATE_EVIDENCE_INVALID": {
+    "code": "GATE_EVIDENCE_INVALID",
+    "category": "Precondition",
+    "httpStatus": 409,
+    "retryable": false,
+    "toolCategory": "Precondition"
+  },
+  "GATE_POLICY_INCOMPLETE": {
+    "code": "GATE_POLICY_INCOMPLETE",
+    "category": "Precondition",
+    "httpStatus": 409,
+    "retryable": false,
+    "toolCategory": "Precondition"
+  },
+  "EVALUATOR_IDENTITY_INVALID": {
+    "code": "EVALUATOR_IDENTITY_INVALID",
     "category": "Authorization",
     "httpStatus": 403,
     "retryable": false,

@@ -1,6 +1,11 @@
 import {runInspectionDoctor} from './inspection.mjs';
 import {validateContract} from '@abh/contracts/schema';
 import {inspectDatabaseReadiness,inspectProjectionHealth} from '@abh/core/diagnostics';
+import {inspectLearningCandidateReadiness} from '@abh/core/diagnostics';
+import {inspectOperationReadiness} from '@abh/core/diagnostics';
+import {inspectPackInstallReadiness} from '@abh/core/diagnostics';
+import {inspectLedgerBalanceAudit} from '@abh/core/diagnostics';
+import {inspectReleaseReadiness} from '@abh/core/diagnostics';
 
 const remediation={
  INVALID_ARGUMENT:'Use abh doctor data [--format text|json] [--timeout-ms 100..30000] and set ABH_DATABASE_RUNTIME_URL.',
@@ -10,9 +15,183 @@ const remediation={
  DEPENDENCY_UNAVAILABLE:'Check database connectivity and deployment configuration, then rerun doctor.',
 };
 const isUuid=value=>validateContract('UUID',value).success;
+const invalidGateCount=release=>release.invalidGateRefs.length;
 /** CLI owns formatting only; the Core diagnostic owns catalog access and cleanup. */
 export async function runDoctor(args,{env,stdout,stderr,signal}){
  if(args[0]==='doctor'&&args[1]==='inspection')return runInspectionDoctor(args,{env,stdout,stderr,signal});
+ if(args[0]==='doctor'&&args[1]==='pack'){
+  let format='text',timeoutMs=10000,valid=true;
+  const values={organizationId:'',packId:'',packVersion:''};
+  const seen=new Set();
+  for(let i=2;i<args.length;i++){
+   const flag=args[i],value=args[++i];
+   if(!['--organization-id','--pack-id','--pack-version','--format','--timeout-ms'].includes(flag)||value===undefined){valid=false;continue;}
+   if(seen.has(flag)){valid=false;continue;}
+   seen.add(flag);
+   if(flag==='--format'){if(['text','json'].includes(value))format=value;else valid=false;}
+   else if(flag==='--timeout-ms'){if(/^[0-9]+$/.test(value)&&Number(value)>=100&&Number(value)<=30000)timeoutMs=Number(value);else valid=false;}
+   else values[flag.slice(2).replaceAll(/-([a-z])/g,(_,letter)=>letter.toUpperCase())]=value;
+  }
+  valid=valid&&isUuid(values.organizationId)&&typeof env.ABH_DATABASE_RUNTIME_URL==='string';
+  let outcome={checkId:'pack.install-readiness',organizationId:isUuid(values.organizationId)?values.organizationId:'00000000-0000-4000-8000-000000000000',
+   status:'Failed',errorCode:'INVALID_ARGUMENT',violationCount:0,packs:[],commandRef:null,evidenceRefs:[],
+   remediation:'Use abh doctor pack --organization-id UUID --pack-id NAME --pack-version VERSION.'};
+  if(valid){
+   try{outcome=await inspectPackInstallReadiness({connectionString:env.ABH_DATABASE_RUNTIME_URL,signal,
+    timeoutMs,...values});}
+   catch{outcome={...outcome,errorCode:'DEPENDENCY_UNAVAILABLE',remediation:'Check database connectivity and deployment configuration.'};}
+  }
+  if(!validateContract('CliDoctorPackResult',outcome).success)throw new Error('DEPENDENCY_UNAVAILABLE');
+  if(format==='json')stdout.write(JSON.stringify(outcome)+'\n');
+  else{
+   stdout.write(`${outcome.checkId}: ${outcome.status}${outcome.errorCode?' ('+outcome.errorCode+')':''}\n`);
+   for(const pack of outcome.packs)
+    stdout.write(`${pack.packId}@${pack.packVersion} status=${pack.status} deployment=${pack.deploymentVersion} capabilities=${pack.registeredCapabilityCount}/${pack.expectedCapabilityCount} reasons=${pack.stopReasons.join(',')||'-'}\n`);
+   stdout.write(`${outcome.remediation??'Installed Pack evidence, capability registration and deployment pointer are consistent.'}\n`);
+  }
+  if(outcome.errorCode)stderr.write(`abh doctor pack: ${outcome.errorCode}\n`);
+  return outcome.errorCode===null?0:outcome.errorCode==='INVALID_ARGUMENT'?2:outcome.errorCode==='FORBIDDEN'?3:outcome.errorCode==='PRECONDITION_FAILED'?4:6;
+ }
+ if(args[0]==='doctor'&&args[1]==='ledger'){
+  let format='text',timeoutMs=10000,valid=true;
+  const values={organizationId:'',ledgerId:''};
+  const seen=new Set();
+  for(let i=2;i<args.length;i++){
+   const flag=args[i],value=args[++i];
+   if(!['--organization-id','--ledger-id','--format','--timeout-ms'].includes(flag)||value===undefined){valid=false;continue;}
+   if(seen.has(flag)){valid=false;continue;}
+   seen.add(flag);
+   if(flag==='--format'){if(['text','json'].includes(value))format=value;else valid=false;}
+   else if(flag==='--timeout-ms'){if(/^[0-9]+$/.test(value)&&Number(value)>=100&&Number(value)<=30000)timeoutMs=Number(value);else valid=false;}
+   else values[flag.slice(2).replaceAll(/-([a-z])/g,(_,letter)=>letter.toUpperCase())]=value;
+  }
+  valid=valid&&isUuid(values.organizationId)&&isUuid(values.ledgerId)&&typeof env.ABH_DATABASE_RUNTIME_URL==='string';
+  let outcome={checkId:'ledger.balance-audit',organizationId:isUuid(values.organizationId)?values.organizationId:'00000000-0000-4000-8000-000000000000',
+   status:'Failed',errorCode:'INVALID_ARGUMENT',violationCount:0,ledgers:[],commandRef:null,evidenceRefs:[],
+   remediation:'Use abh doctor ledger --organization-id UUID --ledger-id UUID.'};
+  if(valid){
+   try{outcome=await inspectLedgerBalanceAudit({connectionString:env.ABH_DATABASE_RUNTIME_URL,signal,
+    timeoutMs,...values});}
+   catch{outcome={...outcome,errorCode:'DEPENDENCY_UNAVAILABLE',remediation:'Check database connectivity and deployment configuration.'};}
+  }
+  if(!validateContract('CliDoctorLedgerResult',outcome).success)throw new Error('DEPENDENCY_UNAVAILABLE');
+  if(format==='json')stdout.write(JSON.stringify(outcome)+'\n');
+  else{
+   stdout.write(`${outcome.checkId}: ${outcome.status}${outcome.errorCode?' ('+outcome.errorCode+')':''}\n`);
+   for(const ledger of outcome.ledgers)
+    stdout.write(`${ledger.ledgerRef.id} entries=${ledger.entryCount} usage=${ledger.recomputed.confirmedUsage} held=${ledger.recomputed.heldReservation} commitments=${ledger.recomputed.openCommitment} reasons=${ledger.stopReasons.join(',')||'-'}\n`);
+   stdout.write(`${outcome.remediation??'Immutable entries rebuild the balances and unresolved obligations reconcile.'}\n`);
+  }
+  if(outcome.errorCode)stderr.write(`abh doctor ledger: ${outcome.errorCode}\n`);
+  return outcome.errorCode===null?0:outcome.errorCode==='INVALID_ARGUMENT'?2:outcome.errorCode==='FORBIDDEN'?3:outcome.errorCode==='PRECONDITION_FAILED'?4:6;
+ }
+ if(args[0]==='doctor'&&args[1]==='learning'&&args[2]==='--candidate'){
+  let format='text',timeoutMs=10000,limit=100,valid=true;
+  const values={organizationId:'',candidateId:undefined,assetKind:undefined,workspaceId:undefined};
+  const seen=new Set();
+  for(let i=3;i<args.length;i++){
+   const flag=args[i],value=args[++i];
+   if(!['--organization-id','--candidate-id','--asset-kind','--workspace-id','--limit','--format','--timeout-ms'].includes(flag)||value===undefined){valid=false;continue;}
+   if(seen.has(flag)){valid=false;continue;}
+   seen.add(flag);
+   if(flag==='--format'){if(['text','json'].includes(value))format=value;else valid=false;}
+   else if(flag==='--limit'){if(/^[0-9]+$/.test(value)&&Number(value)>=1&&Number(value)<=100)limit=Number(value);else valid=false;}
+   else if(flag==='--timeout-ms'){if(/^[0-9]+$/.test(value)&&Number(value)>=100&&Number(value)<=30000)timeoutMs=Number(value);else valid=false;}
+   else values[flag.slice(2).replaceAll(/-([a-z])/g,(_,letter)=>letter.toUpperCase())]=value;
+  }
+  valid=valid&&isUuid(values.organizationId)&&typeof env.ABH_DATABASE_RUNTIME_URL==='string';
+  let outcome={checkId:'learning.candidate-readiness',
+   organizationId:isUuid(values.organizationId)?values.organizationId:'00000000-0000-4000-8000-000000000000',
+   status:'Failed',errorCode:'INVALID_ARGUMENT',violationCount:0,truncated:false,candidates:[],
+   commandRef:null,evidenceRefs:[],remediation:'Use abh doctor learning --candidate --organization-id UUID.'};
+  if(valid){
+   try{outcome=await inspectLearningCandidateReadiness({connectionString:env.ABH_DATABASE_RUNTIME_URL,signal,
+    timeoutMs,limit,...values});}
+   catch{outcome={...outcome,errorCode:'DEPENDENCY_UNAVAILABLE',remediation:'Check database connectivity and deployment configuration.'};}
+  }
+  if(!validateContract('CliDoctorLearningResult',outcome).success)throw new Error('DEPENDENCY_UNAVAILABLE');
+  if(format==='json')stdout.write(JSON.stringify(outcome)+'\n');
+  else{
+   stdout.write(`${outcome.checkId}: ${outcome.status}${outcome.errorCode?' ('+outcome.errorCode+')':''}\n`);
+   for(const candidate of outcome.candidates)
+    stdout.write(`${candidate.candidateRef.id} profile=${candidate.profileRef?.id??'-'} gate=${candidate.gateRef?.id??'-'} releases=${candidate.releaseRefs.length} reasons=${candidate.stopReasons.join(',')||'-'}\n`);
+   stdout.write(`${outcome.remediation??'Candidate readiness evidence is complete.'}\n`);
+  }
+ if(outcome.errorCode)stderr.write(`abh doctor learning: ${outcome.errorCode}\n`);
+  return outcome.errorCode===null?0:outcome.errorCode==='INVALID_ARGUMENT'?2:outcome.errorCode==='FORBIDDEN'?3:outcome.errorCode==='PRECONDITION_FAILED'?4:6;
+ }
+ if(args[0]==='doctor'&&args[1]==='operation'){
+  let format='text',timeoutMs=10000,valid=true;
+  const values={organizationId:'',operationId:undefined,workspaceId:undefined};
+  const seen=new Set();
+  for(let i=2;i<args.length;i++){
+   const flag=args[i],value=args[++i];
+   if(!['--organization-id','--operation-id','--workspace-id','--format','--timeout-ms'].includes(flag)||value===undefined){valid=false;continue;}
+   if(seen.has(flag)){valid=false;continue;}
+   seen.add(flag);
+   if(flag==='--format'){if(['text','json'].includes(value))format=value;else valid=false;}
+   else if(flag==='--timeout-ms'){if(/^[0-9]+$/.test(value)&&Number(value)>=100&&Number(value)<=30000)timeoutMs=Number(value);else valid=false;}
+   else values[flag.slice(2).replaceAll(/-([a-z])/g,(_,letter)=>letter.toUpperCase())]=value;
+  }
+  valid=valid&&isUuid(values.organizationId)&&isUuid(values.operationId)&&
+   (values.workspaceId===undefined||isUuid(values.workspaceId))&&
+   typeof env.ABH_DATABASE_RUNTIME_URL==='string';
+  let outcome={checkId:'operation.readiness',
+   organizationId:isUuid(values.organizationId)?values.organizationId:'00000000-0000-4000-8000-000000000000',
+   status:'Failed',errorCode:'INVALID_ARGUMENT',violationCount:0,truncated:false,operations:[],
+   commandRef:null,evidenceRefs:[],remediation:'Use abh doctor operation --organization-id UUID --operation-id UUID.'};
+  if(valid){
+   try{outcome=await inspectOperationReadiness({connectionString:env.ABH_DATABASE_RUNTIME_URL,signal,
+    timeoutMs,...values});}
+   catch{outcome={...outcome,errorCode:'DEPENDENCY_UNAVAILABLE',remediation:'Check database connectivity and deployment configuration.'};}
+  }
+  if(!validateContract('CliDoctorOperationResult',outcome).success)throw new Error('DEPENDENCY_UNAVAILABLE');
+  if(format==='json')stdout.write(JSON.stringify(outcome)+'\n');
+  else{
+   stdout.write(`${outcome.checkId}: ${outcome.status}${outcome.errorCode?' ('+outcome.errorCode+')':''}\n`);
+   for(const operation of outcome.operations)
+    stdout.write(`operation=${operation.operationRef.id} position=${operation.position.lifecycle}/${operation.position.outcome} attempts=${operation.attemptCount} receipts=${operation.receiptCount} reconciliation=${operation.reconciliationVerdict??'-'} responsibility=${operation.remainingResponsibility?'retained':'none'} retry=${operation.safeRetry?'safe':'not-safe'} reasons=${operation.stopReasons.join(',')||'-'}\n`);
+   stdout.write(`${outcome.remediation??'Operation recovery facts are consistent; no diagnostic action was taken.'}\n`);
+  }
+  if(outcome.errorCode)stderr.write(`abh doctor operation: ${outcome.errorCode}\n`);
+  return outcome.errorCode===null?0:outcome.errorCode==='INVALID_ARGUMENT'?2:outcome.errorCode==='FORBIDDEN'?3:outcome.errorCode==='PRECONDITION_FAILED'?4:6;
+ }
+ if(args[0]==='doctor'&&args[1]==='release'){
+  let format='text',timeoutMs=10000,valid=true;
+  const values={organizationId:'',releaseId:undefined,workspaceId:undefined};
+  const seen=new Set();
+  for(let i=2;i<args.length;i++){
+   const flag=args[i],value=args[++i];
+   if(!['--organization-id','--release-id','--workspace-id','--format','--timeout-ms'].includes(flag)||value===undefined){valid=false;continue;}
+   if(seen.has(flag)){valid=false;continue;}
+   seen.add(flag);
+   if(flag==='--format'){if(['text','json'].includes(value))format=value;else valid=false;}
+   else if(flag==='--timeout-ms'){if(/^[0-9]+$/.test(value)&&Number(value)>=100&&Number(value)<=30000)timeoutMs=Number(value);else valid=false;}
+   else values[flag.slice(2).replaceAll(/-([a-z])/g,(_,letter)=>letter.toUpperCase())]=value;
+  }
+  valid=valid&&isUuid(values.organizationId)&&isUuid(values.releaseId)&&
+   (values.workspaceId===undefined||isUuid(values.workspaceId))&&
+   typeof env.ABH_DATABASE_RUNTIME_URL==='string';
+  const organizationId=isUuid(values.organizationId)?values.organizationId:'00000000-0000-4000-8000-000000000000';
+  let outcome={checkId:'release.readiness',organizationId,status:'Failed',errorCode:'INVALID_ARGUMENT',
+   violationCount:0,truncated:false,releases:[],commandRef:null,evidenceRefs:[],remediation:'Use abh doctor release --organization-id UUID --release-id UUID.'};
+  if(valid){
+   try{outcome=await inspectReleaseReadiness({connectionString:env.ABH_DATABASE_RUNTIME_URL,signal,
+    timeoutMs,...values});}
+   catch{outcome={...outcome,errorCode:'DEPENDENCY_UNAVAILABLE',releases:[],violationCount:0,
+    remediation:'Check database connectivity and deployment configuration.'};}
+  }
+  if(!validateContract('CliDoctorReleaseResult',outcome).success)throw new Error('DEPENDENCY_UNAVAILABLE');
+  if(format==='json')stdout.write(JSON.stringify(outcome)+'\n');
+  else{
+   stdout.write(`${outcome.checkId}: ${outcome.status}${outcome.errorCode?' ('+outcome.errorCode+')':''}\n`);
+   for(const release of outcome.releases)
+    stdout.write(`release=${release.releaseRef.id} status=${release.status} assets=${release.assetCount}/${release.installedCapabilityCount} assignments=${release.executionAllowedAssignmentCount}/${release.assignmentCount} pins=${release.pinSetCount} rollback=${release.rollbackCandidateRefs.length} gates=${release.gateRefs.length-invalidGateCount(release)}/${release.gateRefs.length} reasons=${release.stopReasons.join(',')||'-'}\n`);
+   stdout.write(`${outcome.remediation??'Release readiness evidence is complete.'}\n`);
+  }
+  if(outcome.errorCode)stderr.write(`abh doctor release: ${outcome.errorCode}\n`);
+  return outcome.errorCode===null?0:outcome.errorCode==='INVALID_ARGUMENT'?2:outcome.errorCode==='FORBIDDEN'?3:outcome.errorCode==='PRECONDITION_FAILED'?4:6;
+ }
  if(args[0]==='doctor'&&args[1]==='projection'){
   let format='text',timeoutMs=10000,valid=true;
   const values={organizationId:'',subjectId:'',workspaceId:undefined,actorId:undefined};

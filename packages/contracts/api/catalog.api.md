@@ -158,6 +158,26 @@ export const coreCatalog: {
         readonly scopeKind: "Object";
         readonly description: "Responsibility case bound to immutable contradictory terminal evidence.";
     }, {
+        readonly name: "abh.exception-resolution";
+        readonly owner: "HumanGateway";
+        readonly scopeKind: "None";
+        readonly description: "Immutable responsibility disposition while preserving technical Unknown evidence.";
+    }, {
+        readonly name: "abh.exception-resolution-effect";
+        readonly owner: "HumanGateway";
+        readonly scopeKind: "None";
+        readonly description: "Immutable governance effect that releases only the reviewed report hold.";
+    }, {
+        readonly name: "abh.correction-application";
+        readonly owner: "HumanGateway";
+        readonly scopeKind: "None";
+        readonly description: "Immutable Subject Owner application result for one correction candidate.";
+    }, {
+        readonly name: "abh.correction";
+        readonly owner: "HumanGateway";
+        readonly scopeKind: "Object";
+        readonly description: "Immutable human correction candidate that never auto-applies to the current subject.";
+    }, {
         readonly name: "abh.execution-authority";
         readonly owner: "Control";
         readonly scopeKind: "None";
@@ -278,10 +298,20 @@ export const coreCatalog: {
         readonly scopeKind: "None";
         readonly description: "Immutable Pack validation evidence; installation requires current deployment governance.";
     }, {
+        readonly name: "abh.ledger-correction";
+        readonly owner: "ResourceLedger";
+        readonly scopeKind: "None";
+        readonly description: "Immutable signed Ledger correction from a verified source observation.";
+    }, {
+        readonly name: "abh.unit";
+        readonly owner: "ResourceLedger";
+        readonly scopeKind: "None";
+        readonly description: "Immutable monetary or quantity measurement unit.";
+    }, {
         readonly name: "abh.period";
         readonly owner: "ResourceLedger";
         readonly scopeKind: "None";
-        readonly description: "abh.period";
+        readonly description: "Immutable accounting period bound to Ledger configuration.";
     }, {
         readonly name: "abh.pin-set";
         readonly owner: "CapabilityRelease";
@@ -382,6 +412,16 @@ export const coreCatalog: {
         readonly owner: "MissionController";
         readonly scopeKind: "None";
         readonly description: "abh.run";
+    }, {
+        readonly name: "abh.graph-revision";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Bounded Task Graph revision and dependency closure.";
+    }, {
+        readonly name: "abh.checkpoint";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Verified Run recovery index over Tasks, outputs, waits and resource usage.";
     }, {
         readonly name: "abh.secret";
         readonly owner: "Identity";
@@ -488,6 +528,16 @@ export const coreCatalog: {
         readonly scopeKind: "None";
         readonly description: "abh.invocation";
     }, {
+        readonly name: "abh.invocation-observation";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Append-only evidence from a Worker whose execution lease has expired.";
+    }, {
+        readonly name: "abh.invocation-adjudication";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Current Run Owner decision to adopt or reject late Invocation evidence.";
+    }, {
         readonly name: "abh.tool-capability";
         readonly owner: "MissionController";
         readonly scopeKind: "None";
@@ -517,6 +567,36 @@ export const coreCatalog: {
         readonly owner: "MissionController";
         readonly scopeKind: "None";
         readonly description: "abh.learning-signal";
+    }, {
+        readonly name: "abh.learning-case";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Governed evidence attribution case; does not confer knowledge qualification";
+    }, {
+        readonly name: "abh.learning-candidate";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Draft capability candidate; evaluation and release are separately authorized";
+    }, {
+        readonly name: "abh.evaluation-profile";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Immutable governance-owned evaluation suite, dataset, metric and stopping rule binding";
+    }, {
+        readonly name: "abh.evaluation-run";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Governed offline evaluation execution binding a candidate to one frozen profile and baseline";
+    }, {
+        readonly name: "abh.evaluation-result";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Immutable evaluator result for one exact evaluation run and frozen profile";
+    }, {
+        readonly name: "abh.learning-gate";
+        readonly owner: "MissionController";
+        readonly scopeKind: "None";
+        readonly description: "Immutable independent gate verdict built from exact evaluation evidence";
     }];
     readonly purposes: readonly [{
         readonly name: "abh.action.prepare";
@@ -525,11 +605,17 @@ export const coreCatalog: {
         readonly name: "abh.action.execute";
         readonly description: "Execute an authorized fixed Action plan.";
     }, {
+        readonly name: "abh.action.safety-stop";
+        readonly description: "Execute an independently authorized safety-stop Action against an occupied resource.";
+    }, {
         readonly name: "abh.operation.reconcile";
         readonly description: "Read external observations to reconcile prior operations.";
     }, {
         readonly name: "abh.decision.review";
         readonly description: "Review and respond to a responsibility decision.";
+    }, {
+        readonly name: "abh.correction.propose";
+        readonly description: "Create an immutable correction candidate for an authorized owner.";
     }, {
         readonly name: "abh.artifact.read";
         readonly description: "Read an artifact for an authorized business purpose.";
@@ -564,10 +650,30 @@ export const coreCatalog: {
         readonly name: "abh.learning.capture";
         readonly description: "Capture learning signals";
     }, {
+        readonly name: "abh.learning.evaluate";
+        readonly description: "Request governed offline capability evaluation under an independent evaluator identity.";
+    }, {
+        readonly name: "abh.learning.gate";
+        readonly description: "Build an independent learning gate verdict from immutable evaluation evidence.";
+    }, {
+        readonly name: "abh.learning.read";
+        readonly description: "Read aggregate learning evidence and governed candidate status";
+    }, {
+        readonly name: "abh.release.manage";
+        readonly description: "Configure governed capability releases from independently verified evidence";
+    }, {
         readonly name: "abh.projections.read";
         readonly description: "Read projection data";
+    }, {
+        readonly name: "abh.resource.read";
+        readonly description: "Read ledger balances, immutable entries and unresolved obligations";
     }];
     readonly actions: readonly [{
+        readonly name: "abh.action.safety-stop";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.action.safety-stop"];
+        readonly description: "StartSafetyStop";
+    }, {
         readonly name: "abh.actions.aggregate";
         readonly targetTypes: readonly ["abh.action"];
         readonly purposeNames: readonly ["abh.operation.reconcile"];
@@ -599,9 +705,9 @@ export const coreCatalog: {
         readonly description: "ProposeAction";
     }, {
         readonly name: "abh.actions.read";
-        readonly targetTypes: readonly ["abh.action"];
-        readonly purposeNames: readonly ["abh.action.prepare"];
-        readonly description: "GetAction";
+        readonly targetTypes: readonly ["abh.action", "abh.organization"];
+        readonly purposeNames: readonly ["abh.action.prepare", "abh.action.safety-stop"];
+        readonly description: "ListSafetyStops";
     }, {
         readonly name: "abh.actions.register-plan";
         readonly targetTypes: readonly ["abh.action"];
@@ -643,10 +749,30 @@ export const coreCatalog: {
         readonly purposeNames: readonly ["abh.action.prepare"];
         readonly description: "StoreInlineArtifact";
     }, {
+        readonly name: "abh.artifacts.tombstone";
+        readonly targetTypes: readonly ["abh.artifact"];
+        readonly purposeNames: readonly ["abh.artifact.manage"];
+        readonly description: "Apply retention or deletion governance to artifact metadata after physical deletion is confirmed.";
+    }, {
         readonly name: "abh.capabilities.read";
         readonly targetTypes: readonly ["abh.organization"];
         readonly purposeNames: readonly ["abh.action.execute", "abh.action.prepare", "abh.operation.reconcile"];
         readonly description: "QueryPackCapabilities";
+    }, {
+        readonly name: "abh.corrections.apply";
+        readonly targetTypes: readonly ["abh.correction"];
+        readonly purposeNames: readonly ["abh.learning.capture", "abh.mission.manage", "abh.runtime.deliver"];
+        readonly description: "ApplyCorrection";
+    }, {
+        readonly name: "abh.corrections.propose";
+        readonly targetTypes: readonly ["abh.correction"];
+        readonly purposeNames: readonly ["abh.correction.propose"];
+        readonly description: "ProposeCorrection";
+    }, {
+        readonly name: "abh.corrections.read";
+        readonly targetTypes: readonly ["abh.correction"];
+        readonly purposeNames: readonly ["abh.correction.propose"];
+        readonly description: "GetCorrection";
     }, {
         readonly name: "abh.decisions.read";
         readonly targetTypes: readonly ["abh.decision"];
@@ -668,15 +794,100 @@ export const coreCatalog: {
         readonly purposeNames: readonly ["abh.operation.reconcile"];
         readonly description: "Open a responsibility case for a currently frozen terminal contradiction.";
     }, {
+        readonly name: "abh.exceptions.resolve";
+        readonly targetTypes: readonly ["abh.exception", "abh.exception-resolution"];
+        readonly purposeNames: readonly ["abh.decision.review"];
+        readonly description: "ResolveException";
+    }, {
         readonly name: "abh.execution-authority.create";
         readonly targetTypes: readonly ["abh.execution-authority"];
         readonly purposeNames: readonly ["abh.action.execute", "abh.action.prepare", "abh.operation.reconcile"];
         readonly description: "Current management permission for finite execution delegation from Scope policy or complete Action approval.";
     }, {
+        readonly name: "abh.graph-patches.propose";
+        readonly targetTypes: readonly ["abh.run"];
+        readonly purposeNames: readonly ["abh.mission.manage", "abh.runtime.deliver"];
+        readonly description: "Propose a bounded acyclic Task Graph revision against the current base.";
+    }, {
+        readonly name: "abh.invocations.complete";
+        readonly targetTypes: readonly ["abh.invocation"];
+        readonly purposeNames: readonly ["abh.runtime.deliver"];
+        readonly description: "Persist the Invocation result and move its Task to verification or failure.";
+    }, {
+        readonly name: "abh.invocations.finalize";
+        readonly targetTypes: readonly ["abh.invocation"];
+        readonly purposeNames: readonly ["abh.runtime.deliver"];
+        readonly description: "Fix Manifest, Bindings and Contract Digest before Task enters Running.";
+    }, {
+        readonly name: "abh.invocations.observe-late";
+        readonly targetTypes: readonly ["abh.invocation"];
+        readonly purposeNames: readonly ["abh.runtime.deliver"];
+        readonly description: "Preserve expired-lease Invocation evidence without changing execution state.";
+    }, {
+        readonly name: "abh.invocations.prepare";
+        readonly targetTypes: readonly ["abh.task"];
+        readonly purposeNames: readonly ["abh.runtime.deliver"];
+        readonly description: "Create an immutable TaskSpec-bound Created Invocation under the current lease.";
+    }, {
+        readonly name: "abh.learning.build-case";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.capture"];
+        readonly description: "Attribute governed signals and current evidence into a Learning Case without knowledge qualification.";
+    }, {
+        readonly name: "abh.learning.build-gate";
+        readonly targetTypes: readonly ["abh.learning-candidate"];
+        readonly purposeNames: readonly ["abh.learning.gate"];
+        readonly description: "Build an immutable independent Gate verdict from exact evaluation evidence without creating a Release.";
+    }, {
         readonly name: "abh.learning.capture";
         readonly targetTypes: readonly ["abh.organization"];
         readonly purposeNames: readonly ["abh.learning.capture"];
         readonly description: "CaptureSignal";
+    }, {
+        readonly name: "abh.learning.capture-signal";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.capture"];
+        readonly description: "Capture a purpose-authorized learning signal with source and scope bindings.";
+    }, {
+        readonly name: "abh.learning.create-candidate";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.capture"];
+        readonly description: "Create a Draft capability candidate from an exact Learning Case without evaluation or release authority.";
+    }, {
+        readonly name: "abh.learning.evaluate";
+        readonly targetTypes: readonly ["abh.evaluation-result", "abh.evaluation-run", "abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.evaluate", "abh.learning.gate"];
+        readonly description: "RequestEvaluation";
+    }, {
+        readonly name: "abh.learning.expire-evaluation";
+        readonly targetTypes: readonly ["abh.evaluation-run"];
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly description: "Recover a timed-out evaluation run as Inconclusive without inventing evaluator evidence.";
+    }, {
+        readonly name: "abh.learning.gate";
+        readonly targetTypes: readonly ["abh.learning-gate"];
+        readonly purposeNames: readonly ["abh.learning.gate"];
+        readonly description: "GetLearningGate";
+    }, {
+        readonly name: "abh.learning.read";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.capture", "abh.learning.evaluate", "abh.learning.gate"];
+        readonly description: "ListLearningSignals";
+    }, {
+        readonly name: "abh.learning.request-evaluation";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly description: "Request an offline evaluation by freezing the registered profile for an exact candidate and baseline.";
+    }, {
+        readonly name: "abh.learning.retry-evaluation";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly description: "Retry an exact inconclusive evaluation run with frozen evaluation inputs.";
+    }, {
+        readonly name: "abh.learning.submit-evaluation-result";
+        readonly targetTypes: readonly ["abh.evaluation-run"];
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly description: "Submit immutable evaluator results and complete an exact queued evaluation run.";
     }, {
         readonly name: "abh.missions.activate";
         readonly targetTypes: readonly ["abh.mission"];
@@ -777,6 +988,11 @@ export const coreCatalog: {
         readonly targetTypes: readonly ["abh.operation"];
         readonly purposeNames: readonly ["abh.operation.reconcile"];
         readonly description: "Recover an expired possible-in-flight Permit as Unknown while retaining its resource responsibility.";
+    }, {
+        readonly name: "abh.operations.safe-retry";
+        readonly targetTypes: readonly ["abh.operation"];
+        readonly purposeNames: readonly ["abh.action.execute"];
+        readonly description: "Reauthorize a bounded retry of a deterministic transport failure with the same Provider idempotency key.";
     }, {
         readonly name: "abh.pack-inspection-jobs.accept-delivery";
         readonly targetTypes: readonly ["abh.pack-inspection-job"];
@@ -879,8 +1095,8 @@ export const coreCatalog: {
         readonly description: "Reauthorize durable MissionSummary source rebuild under Projection Owner authority.";
     }, {
         readonly name: "abh.projections.read";
-        readonly targetTypes: readonly ["abh.decision", "abh.mission"];
-        readonly purposeNames: readonly ["abh.decision.review", "abh.mission.manage", "abh.runtime.deliver"];
+        readonly targetTypes: readonly ["abh.action", "abh.decision", "abh.mission", "abh.organization", "abh.run"];
+        readonly purposeNames: readonly ["abh.action.execute", "abh.action.prepare", "abh.decision.review", "abh.mission.manage", "abh.missions.read", "abh.operation.reconcile", "abh.runs.read", "abh.runtime.deliver"];
         readonly description: "GetProjection";
     }, {
         readonly name: "abh.projections.request-mission-summary";
@@ -888,10 +1104,30 @@ export const coreCatalog: {
         readonly purposeNames: readonly ["abh.mission.manage"];
         readonly description: "RefreshMissionSummary";
     }, {
+        readonly name: "abh.release.manage";
+        readonly targetTypes: readonly ["abh.assignment", "abh.organization", "abh.release"];
+        readonly purposeNames: readonly ["abh.release.manage"];
+        readonly description: "StopStaticAssignment";
+    }, {
+        readonly name: "abh.releases.configure-learning-candidate";
+        readonly targetTypes: readonly ["abh.release"];
+        readonly purposeNames: readonly ["abh.release.manage"];
+        readonly description: "Consume a passing immutable Learning Gate and configure a governed Release and Assignment without automatic promotion.";
+    }, {
         readonly name: "abh.responsibilities.revoke";
         readonly targetTypes: readonly ["abh.responsibility-assignment"];
         readonly purposeNames: readonly ["abh.action.prepare"];
         readonly description: "Revoke a responsibility assignment after current management and continuity checks.";
+    }, {
+        readonly name: "abh.responsibility-requests.delegate-slot";
+        readonly targetTypes: readonly ["abh.responsibility-request"];
+        readonly purposeNames: readonly ["abh.action.prepare", "abh.operation.reconcile"];
+        readonly description: "Delegate one frozen responsibility seat through governed route revision.";
+    }, {
+        readonly name: "abh.responsibility-requests.escalate-slot";
+        readonly targetTypes: readonly ["abh.responsibility-request"];
+        readonly purposeNames: readonly ["abh.action.prepare", "abh.operation.reconcile"];
+        readonly description: "Escalate one unresolved responsibility seat to the next governed candidate.";
     }, {
         readonly name: "abh.responsibility-requests.expire";
         readonly targetTypes: readonly ["abh.responsibility-request"];
@@ -913,6 +1149,11 @@ export const coreCatalog: {
         readonly purposeNames: readonly ["abh.action.prepare", "abh.operation.reconcile"];
         readonly description: "Revise frozen responsibility routing with current governance and source evidence.";
     }, {
+        readonly name: "abh.runs.cancel";
+        readonly targetTypes: readonly ["abh.run"];
+        readonly purposeNames: readonly ["abh.mission.manage"];
+        readonly description: "CancelRun";
+    }, {
         readonly name: "abh.runs.complete";
         readonly targetTypes: readonly ["abh.run"];
         readonly purposeNames: readonly ["abh.mission.manage"];
@@ -932,6 +1173,16 @@ export const coreCatalog: {
         readonly targetTypes: readonly ["abh.mission"];
         readonly purposeNames: readonly ["abh.mission.manage"];
         readonly description: "StartRun";
+    }, {
+        readonly name: "abh.runs.stop-stalled";
+        readonly targetTypes: readonly ["abh.run"];
+        readonly purposeNames: readonly ["abh.runtime.deliver"];
+        readonly description: "Atomically stop a Run whose fixed no-progress deadline has expired.";
+    }, {
+        readonly name: "abh.runs.wake";
+        readonly targetTypes: readonly ["abh.run"];
+        readonly purposeNames: readonly ["abh.mission.manage", "abh.runtime.deliver"];
+        readonly description: "Resume a Waiting Run only after its durable wait has succeeded and the Mission still owns the Run.";
     }, {
         readonly name: "abh.runtime.cancel-wait";
         readonly targetTypes: readonly ["abh.durable-wait"];
@@ -1002,6 +1253,16 @@ export const coreCatalog: {
         readonly targetTypes: readonly ["abh.action", "abh.decision", "abh.operation"];
         readonly purposeNames: readonly ["abh.runtime.deliver"];
         readonly description: "DurableExecutionPort.signal";
+    }, {
+        readonly name: "abh.tasks.claim";
+        readonly targetTypes: readonly ["abh.task"];
+        readonly purposeNames: readonly ["abh.runtime.deliver"];
+        readonly description: "Claim a Ready Task under a short-lived durable execution lease.";
+    }, {
+        readonly name: "abh.tasks.commit-verified";
+        readonly targetTypes: readonly ["abh.task"];
+        readonly purposeNames: readonly ["abh.mission.manage", "abh.runtime.deliver"];
+        readonly description: "Commit a verified Task, checkpoint and the next dependency-safe Task states.";
     }, {
         readonly name: "abh.tools.invoke";
         readonly targetTypes: readonly ["abh.tool-binding"];

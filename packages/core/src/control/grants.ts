@@ -7,7 +7,8 @@ import { currentIdentity } from '../identity/owner.ts';
 import { lockFences } from './fences.ts';
 
 /** Grant admission is one input to Control; it does not issue an Action Snapshot or Dispatch Permit. */
-export async function assertCurrentGrants(tx: TenantTransaction, target: Target, grantRefs: readonly EntityRef[]): Promise<GrantRecord[]> {
+export async function assertCurrentGrants(tx: TenantTransaction, target: Target, grantRefs: readonly EntityRef[],
+  options:{lock?:boolean}={}): Promise<GrantRecord[]> {
   const c=tx.context.tenant;
   contract('Target',target);
   const catalog=createContractCatalog();
@@ -19,7 +20,7 @@ export async function assertCurrentGrants(tx: TenantTransaction, target: Target,
   // Current first-party scope binding; foreign scopes require the dedicated cross-organization verifier.
   if (target.scopeRefs.some(scope=>scope.type!=='abh.organization'||scope.id!==c.resourceOrganizationId)) throw new CoreError('FORBIDDEN');
   if (target.objectRef.type==='abh.organization' && target.objectRef.id!==c.resourceOrganizationId) throw new CoreError('FORBIDDEN');
-  const fences=await lockFences(tx,scopes);
+  const fences=options.lock===false?[]:await lockFences(tx,scopes);
   if (fences.some(fence=>fence.stopFlag)) throw new CoreError('EPOCH_REVOKED');
   const current=await currentIdentity(tx);
   if (current.scopeEpoch!==c.scopeEpoch) throw new CoreError('EPOCH_REVOKED');

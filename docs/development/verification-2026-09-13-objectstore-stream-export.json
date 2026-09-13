@@ -1,0 +1,50 @@
+{
+  "date": "2026-09-13",
+  "scope": "Single-host durable ObjectStore adapter, unbounded object artifact streaming, and authorized open-directory export",
+  "summary": "Added a filesystem ObjectStore adapter with staged streaming writes, digest/size verification, atomic publication, range reads and idempotent receipts; connected it to unbounded T1/T2 object artifact upload and authorized streamed reads; added lease-fenced artifact exports with a repeatable-read snapshot, hash-indexed manifest, JSONL records and persisted completion state.",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/artifacts.test.ts test/database.test.ts test/filesystem-object-store.test.ts test/artifact-export.test.ts",
+    "corepack pnpm docs:check",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "focusedTestsPassed": 27,
+    "focusedTestsFailed": 0,
+    "databaseManifestVersion": 75,
+    "streamedPayloadBytes": 300000,
+    "streamDigestMatched": true,
+    "t2ArtifactAvailable": true,
+    "metadataBindingPersisted": true,
+    "rangeReadSucceeded": true,
+    "putReceiptIdempotent": true,
+    "deleteReceiptIdempotent": true,
+    "exportSnapshotRepeatableRead": true,
+    "exportManifestHashVerified": true,
+    "exportRecordsJsonlPresent": true,
+    "exportedArtifactDigestMatched": true,
+    "exportDatabaseStateCompleted": true,
+    "exportCreateAndRunAuthorizeCallbacksRequired": true
+  },
+  "finalCheck": {
+    "command": "corepack pnpm check",
+    "passed": true,
+    "docsLinksChecked": 798,
+    "contractArtifactsMatched": 51,
+    "coreTests": {
+      "total": 618,
+      "passed": 611,
+      "failed": 0,
+      "skipped": 7
+    },
+    "publicApiEntryPoints": {
+      "contracts": 9,
+      "core": 6
+    }
+  },
+  "boundaries": [
+    "Cross-host distributed and managed cloud ObjectStore adapters remain open",
+    "Public HTTP and typed-client large-body upload remains open",
+    "Production hosting, external cloud acceptance, and export expiry sweeping remain open"
+  ]
+}

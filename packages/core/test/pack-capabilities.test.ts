@@ -12,11 +12,11 @@ const packRef=ref('abh.installed-pack'),capability={kind:'abh.tool',id:'org.exam
 const options=()=>({deadline:Date.now()+2000,signal:new AbortController().signal});
 const source=(body=bytes):PackContentSource=>({refs:['input.json'],open:async()=>({async *[Symbol.asyncIterator](){yield body;}})});
 const checks:PackCapabilityBindingChecks={schema:async(_b,content)=>{assert.deepEqual(JSON.parse(new TextDecoder().decode(content)),{type:'object'});},implementation:async()=>{}};
-async function fixture(){
+async function fixture(safetyStop=false){
  const raw=await packManifest();raw.artifacts=[{ref:'input.json',sizeBytes:bytes.length,mediaType:'application/json',digest:await digestBytes(bytes)}];
- const value={...raw,capabilities:{provides:[capability],requires:[]},permissions:{...raw.permissions,commands:['org.example.hello.execute']}};
+ const value={...raw,capabilities:{provides:[capability],requires:[]},permissions:{...raw.permissions,commands:['org.example.hello.execute'],...(safetyStop?{purposes:['abh.action.safety-stop']}:{})}};
  const {signaturePayload:_,...digests}=await digestPackManifest(value);const manifest={...value,integrity:{...value.integrity,...digests}} as PackManifest;
- const binding:PackCapabilityBinding={capability,schemaPath:'input.json',implementationRef:ref('abh.artifact'),healthRef:ref('abh.artifact'),permissionEnvelope:structuredClone(manifest.permissions)};
+ const binding:PackCapabilityBinding={capability,schemaPath:'input.json',implementationRef:ref('abh.artifact'),healthRef:ref('abh.artifact'),safetyStop,permissionEnvelope:structuredClone(manifest.permissions)};
  return {manifest,binding};
 }
 test('explicit capability bindings use verified bytes, exact identities and semantic registration digests',async()=>{
@@ -24,11 +24,15 @@ test('explicit capability bindings use verified bytes, exact identities and sema
  const result=await preparePackCapabilities(manifest,packRef,[binding],source(),options(),{schema:async(...args)=>{schemas++;await checks.schema(...args);},implementation:async()=>{implementations++;}});
  assert.equal(schemas,1);assert.equal(implementations,1);assert.equal(result.length,1);
  const record=result[0]!;assert.equal(record.schemaDigest,await digestBytes(bytes));assert.equal(record.subjectDigest,manifest.integrity.packageDigest);assert.deepEqual(record.packRef,packRef);assert.equal(record.registrationDigest,await digestContract('PackCapabilityRegistration',record));
- for(const patch of [{schemaDigest:'sha256:'+'b'.repeat(64)},{implementationRef:ref('abh.artifact')},{healthRef:ref('abh.artifact')},{packRef:{...packRef,version:2}},{permissionEnvelope:{...binding.permissionEnvelope,commands:[]}}])assert.notEqual(await digestContract('PackCapabilityRegistration',{...record,...patch}),record.registrationDigest);
+ assert.equal(record.safetyStop,false);
+ for(const patch of [{schemaDigest:'sha256:'+'b'.repeat(64)},{implementationRef:ref('abh.artifact')},{healthRef:ref('abh.artifact')},{packRef:{...packRef,version:2}},{permissionEnvelope:{...binding.permissionEnvelope,commands:[]}},{safetyStop:true}])assert.notEqual(await digestContract('PackCapabilityRegistration',{...record,...patch}),record.registrationDigest);
+ const safety=await fixture(true),safetyResult=await preparePackCapabilities(safety.manifest,packRef,[safety.binding],source(),options(),checks);
+ assert.deepEqual(safetyResult.map(entry=>entry.safetyStop),[true]);
 });
 test('missing, duplicate, foreign, guessed-path and expanded-permission mappings fail before source access',async()=>{
  const {manifest,binding}=await fixture();let opened=0;const input={...source(),open:async()=>{opened++;throw new Error('must not open');}};
- for(const bindings of [[],[binding,binding],[{...binding,capability:{...capability,version:'2.0.0'}}],[{...binding,schemaPath:'tool.json'}],[{...binding,permissionEnvelope:{...binding.permissionEnvelope,commands:['org.other.execute']}}]])await assert.rejects(preparePackCapabilities(manifest,packRef,bindings,input,options(),checks));
+ const unapprovedSafety={...binding,safetyStop:true};
+ for(const bindings of [[],[binding,binding],[{...binding,capability:{...capability,version:'2.0.0'}}],[{...binding,schemaPath:'tool.json'}],[{...binding,permissionEnvelope:{...binding.permissionEnvelope,commands:['org.other.execute']}}],[unapprovedSafety]])await assert.rejects(preparePackCapabilities(manifest,packRef,bindings,input,options(),checks));
  assert.equal(opened,0);
 });
 test('tampered and oversized schemas never reach compiler or implementation admission',async()=>{

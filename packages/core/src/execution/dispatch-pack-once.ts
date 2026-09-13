@@ -29,15 +29,17 @@ export async function dispatchPackOnce(database:Parameters<typeof dispatchOnce>[
  if(canonicalJson(connector.capabilityRef)!==canonicalJson(binding.exactRef))throw new CoreError('PIN_INPUT_CONFLICT');
  const scopes=checks.fenceRefs.bind(checks),target=checks.target.bind(checks);
  const pending=new WeakMap<TenantTransaction,PreparedPackCapabilityResolution<ConnectorTransport>>();
+ let safetyStop=false;
  return dispatchOnce(database,context,options,value,resolver,{
   ...checks,
   sources:checks.sources.bind(checks),artifact:checks.artifact.bind(checks),obligations:checks.obligations.bind(checks),
   fenceRefs:async(tx,action,intent,plan)=>{
    const extra=structuredClone(await scopes(tx,action,intent,plan));
+   safetyStop=intent.safetyStop===true;
    const pins=await new StaticReleaseOwner().getPinSet(tx,action.actionRef);
    if(!pins||!action.executionAuthorityRef)throw new CoreError('AUTHORITY_REQUIRED');
    const request=new ActionOwner().preparationRequest(tx,intent,[action.executionAuthorityRef]);
-   const token=await preparePackCapabilityResolution(tx,options,{exactRef:binding.exactRef,pinSet:pins,request,behaviorSlot:slot},binding,grants,admission);
+   const token=await preparePackCapabilityResolution(tx,options,{exactRef:binding.exactRef,requireSafetyStop:safetyStop,pinSet:pins,request,behaviorSlot:slot},binding,grants,admission);
    pending.set(tx,token);return [...extra,...token.fenceRefs];
   },
   target:async(tx,node,plan,payload)=>{
@@ -50,5 +52,6 @@ export async function dispatchPackOnce(database:Parameters<typeof dispatchOnce>[
   if(!token||canonicalJson(permit.connectorRef)!==canonicalJson(binding.exactRef))throw new CoreError('PIN_INPUT_CONFLICT');
   const resolved=await resolvePreparedPackCapability(tx,token);
   if(resolved.implementation!==connector)throw new CoreError('PRECONDITION_FAILED');
+  if(safetyStop&&!resolved.safetyStop)throw new CoreError('PIN_INPUT_CONFLICT');
  });
 }

@@ -34,7 +34,7 @@ test('business capability discovery sees only Enabled candidates under an indepe
   for(const target of [scope,principal,grant.grantRef])await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch) VALUES (${org},${randomUUID()},${target.type},${target.id},1)`;
   await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status) VALUES (${org},${grant.grantRef.id},${principal.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
  });
- const raw={...await packManifest(),capabilities:{provides:['1.0.0','1.1.0','2.0.0-beta.1'].map(version=>({kind:'abh.tool',id:'org.example.hello.tool',version})),requires:[]}};
+ const base=await packManifest(),raw={...base,capabilities:{provides:['1.0.0','1.1.0','2.0.0-beta.1'].map(version=>({kind:'abh.tool',id:'org.example.hello.tool',version})),requires:[]},permissions:{...base.permissions,purposes:['abh.action.safety-stop']}};
  const {signaturePayload:_,...digests}=await digestPackManifest(raw),manifest=contract('PackManifest',{...raw,integrity:{...raw.integrity,...digests}}),packRef=ref('abh.installed-pack');
  const policy={abhVersion:'0.1.0',packId:manifest.metadata.id,allowedModes:['Declarative'],allowedLicenses:['Apache-2.0'],permissions:manifest.permissions,hostProfileRefs:[],sharedNamespaces:[]};
  const common={executable:'/fixture/cosign',mode:'OfflinePublicKey',publicKeyPem:await readFile(new URL('./fixtures/pack-signature/signer.pub',import.meta.url),'utf8'),packId:manifest.metadata.id};
@@ -51,7 +51,7 @@ test('business capability discovery sees only Enabled candidates under an indepe
   const document={organizationId:org,issuedAt:grant.validFrom,expiresAt:grant.validUntil,snapshot:governance};
   await tx.owner('PackLoader')`INSERT INTO extension.trust_policies(resource_organization_id,id,version,purpose_names,record,pack_id,snapshot_digest,signature_payload,signature_bundle,signer_key_digest,verified_at,expires_at) VALUES (${org},${governance.policyRef.id},1,ARRAY['abh.pack.manage'],${JSON.stringify(governance)}::text::jsonb,${manifest.metadata.id},${governanceDigest},${canonicalJson(['abh-pack-trust-v1',document])},'{}'::jsonb,${digest},${grant.validFrom},${grant.validUntil})`;
  });
- const bindings=manifest.capabilities.provides.map(capability=>({capability,schemaPath:'input.json',implementationRef:ref('abh.artifact'),healthRef:ref('abh.artifact'),permissionEnvelope:manifest.permissions}));
+ const bindings=manifest.capabilities.provides.map((capability,index)=>({capability,schemaPath:'input.json',implementationRef:ref('abh.artifact'),healthRef:ref('abh.artifact'),safetyStop:index===2,permissionEnvelope:manifest.permissions}));
  const registrations=await preparePackCapabilities(manifest,packRef,bindings,{refs:['input.json'],open:async()=>({async *[Symbol.asyncIterator](){yield new TextEncoder().encode('abc');}})},options(),{schema:async()=>{},implementation:async()=>{}});
  const owner=new PackCapabilityRegistryOwner(),setRef=await f.database.transaction(manage,options(),tx=>owner.register(tx,{type:'abh.packs.register-capabilities',commandId:randomUUID(),idempotencyKey:randomUUID(),digest},packRef,registrations,async()=>{}));
  const set=await f.database.transaction(manage,options(),tx=>owner.readSet(tx,setRef,async()=>{}));
@@ -63,7 +63,11 @@ test('business capability discovery sees only Enabled candidates under an indepe
  const proposal=contract('PackEnableProposal',{action:'EnablePack',resourceOrganizationId:org,packRef,subjectDigest:manifest.integrity.packageDigest,expectedDeploymentVersion:1,environmentDigest:digest,validationRef:staged.validationRef,governanceRef:staged.governanceRef,governanceDigest,ctkRef:ref('abh.artifact'),impactRef:ref('abh.pack-data-impact'),migrationVerificationRef:ref('abh.artifact'),capabilitySetRef:setRef,capabilitySetDigest:set.setDigest,impactUpperBound:{scopeRefs:[scope],resourceRequirements:[],maxMoney:[],description:'Fixture'},expiresAt:grant.validUntil,proposalDigest:digest});proposal.proposalDigest=await digestContract('PackEnableProposal',proposal);
  const enabled=contract('InstalledPackRecord',{...staged,packRef:{...packRef,version:2},status:'Enabled',deploymentVersion:2,enablement:{proposal,previousPackRef:packRef,enabledPackRef:{...packRef,version:2},deploymentVersion:2,approvalRef:ref('abh.request-completion-evidence'),enabledAt:new Date().toISOString()}});
  await f.database.transaction(manage,options(),tx=>tx.owner('PackLoader')`UPDATE extension.installed_packs SET version=2,status='Enabled',deployment_version=2,record=${JSON.stringify(enabled)}::text::jsonb WHERE id=${packRef.id}`);
- const result=await invoke();assert.equal(result.candidates.length,3);assert.equal(result.complete,true);assert.equal(result.candidates[0]!.capability.version,'2.0.0-beta.1');assert.equal('implementationRef' in result.candidates[0]!,false);
+ const result=await invoke();assert.equal(result.candidates.length,3);assert.equal(result.complete,true);assert.equal(result.candidates[0]!.capability.version,'2.0.0-beta.1');
+ assert.equal(result.candidates[0]!.safetyStop,true);assert.deepEqual(result.candidates.slice(1).map(candidate=>candidate.safetyStop),[false,false]);
+ const safetyOnly=await invoke({...query,safetyStop:true});assert.deepEqual(safetyOnly.candidates.map(candidate=>candidate.safetyStop),[true]);assert.equal(safetyOnly.complete,true);
+ const normalOnly=await invoke({...query,safetyStop:false});assert.deepEqual(normalOnly.candidates.map(candidate=>candidate.safetyStop),[false,false]);assert.equal(normalOnly.complete,true);
+ assert.equal('implementationRef' in result.candidates[0]!,false);
  await t.test('HTTP discovery uses verified identity and current read Grant without exposing implementation',async()=>{
   const issuer='development.fake',audience='abh.capabilities',subject='capability-reader';
   const identityDigest=await inputDigest([issuer,subject]);
@@ -120,7 +124,27 @@ test('business capability discovery sees only Enabled candidates under an indepe
   const input={exactRef:exact,pinSet:pins,request,behaviorSlot:'org.example.slot'};
   const checks={query:admission,fenceRefs:async()=>[],current:async()=>{},source:async()=>({refs:['input.json'],open:async()=>({async *[Symbol.asyncIterator](){yield new TextEncoder().encode('abc');}})})};
   const resolve=(mapped=binding,check=checks)=>f.database.transaction(business,options(),tx=>resolvePackCapability(tx,options(),input,mapped,[grant.grantRef],check));
-  const value=await resolve();assert.equal(value.implementation,implementation);assert.deepEqual(value.assignmentRef,assignment.assignmentRef);assert.equal(new TextDecoder().decode(value.schema()),'abc');value.schema().fill(0);assert.equal(new TextDecoder().decode(value.schema()),'abc');
+  const value=await resolve();assert.equal(value.implementation,implementation);assert.equal(value.safetyStop,false);assert.deepEqual(value.assignmentRef,assignment.assignmentRef);assert.equal(new TextDecoder().decode(value.schema()),'abc');value.schema().fill(0);assert.equal(new TextDecoder().decode(value.schema()),'abc');
+  await st.test('exact resolution exposes immutable registered safety metadata',async()=>{
+   const betaRegistration=registrations[2]!,betaExact={kind:'Tool' as const,id:betaRegistration.capability.id,
+     version:betaRegistration.capability.version,digest:betaRegistration.registrationDigest};
+   const safetyRelease={releaseRef:ref('abh.release'),resourceOrganizationId:org,assets:[{behaviorSlot:'org.example.safety',capabilityExactRefs:[betaExact]}],
+     gateRefs:[ref('abh.artifact')],compatibilityRef:ref('abh.artifact'),status:'Ready' as const};
+   const safetyAssignment={assignmentRef:ref('abh.assignment'),resourceOrganizationId:org,releaseRef:safetyRelease.releaseRef,scopeRefs:[scope],
+     scopeTier:'Organization' as const,status:'Active' as const,selectable:true,executionAllowed:true,evidenceRefs:[ref('abh.decision')]};
+   const safetyRequest={subjectRef:ref('abh.action'),subjectInputDigest:digest,requiredBehaviorSlots:['org.example.safety'],verifiedScope:[scope],
+     requestContextRef:{...ref('abh.request-context'),id:business.tenant.requestId},preparationAuthorityRefs:[ref('abh.execution-authority')]};
+   const safetyPins=await f.database.transaction(business,options(),async tx=>{
+     await releaseOwner.configure(tx,{type:'abh.releases.configure-static',commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(safetyRelease)},{release:safetyRelease,assignment:safetyAssignment});
+     return releaseOwner.resolveAndPin(tx,{type:'abh.releases.resolve-pins',commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(safetyRequest)},safetyRequest);
+   });
+   const safetyBinding={exactRef:betaExact,registeredKind:'abh.tool',implementationRef:betaRegistration.implementationRef,implementation};
+   await assert.rejects(f.database.transaction(business,options(),tx=>resolvePackCapability(tx,options(),
+     {exactRef:exact,requireSafetyStop:true,pinSet:pins,request,behaviorSlot:'org.example.slot'},binding,[grant.grantRef],checks)),{code:'PIN_INPUT_CONFLICT'});
+   const safetyValue=await f.database.transaction(business,options(),tx=>resolvePackCapability(tx,options(),
+     {exactRef:betaExact,requireSafetyStop:true,pinSet:safetyPins,request:safetyRequest,behaviorSlot:'org.example.safety'},safetyBinding,[grant.grantRef],checks));
+   assert.equal(safetyValue.safetyStop,true);
+  });
   await st.test('prepared resolution consumes once in its original UoW after ordered execution locks',async()=>{
    const token=await f.database.transaction(business,options(),async tx=>{
     const declaration=await preparePackCapabilityResolution(tx,options(),input,binding,[grant.grantRef],checks);

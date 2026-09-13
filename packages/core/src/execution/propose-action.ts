@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { ActionAuthorizationRequestOwner } from './request-authorization.ts';
 import { lifecyclePurposes } from '../data/purposes.ts';
-import type { EntityRef, ProposeActionPayload } from '@abh/contracts';
+import type { EntityRef, ProposeActionPayload, ProposeSafetyStopPayload } from '@abh/contracts';
 import type { Database, TenantTransaction, TransactionOptions } from '../data/uow.ts';
 import { contract, executeCommand, inputDigest, type CommandIdentity } from '../data/journal.ts';
 import { InlineArtifactOwner } from '../data/artifacts.ts';
@@ -13,9 +13,9 @@ import { ActionOwner, type ActionDefinition, type ActionPreparationChecks } from
 
 export interface ActionProposalChecks {
   /** All current source/definition fences, acquired before aggregate locks. */
-  fenceRefs(tx: TenantTransaction, payload: ProposeActionPayload): Promise<EntityRef[]>;
+  fenceRefs(tx: TenantTransaction, payload: ActionProposalPayload): Promise<EntityRef[]>;
   /** Current proposer, target/source versions, evidence visibility and policy, including receipt replay. */
-  admit(tx: TenantTransaction, payload: ProposeActionPayload): Promise<void>;
+  admit(tx: TenantTransaction, payload: ActionProposalPayload): Promise<void>;
   /** Trusted installed definition; request fields cannot choose execution Service, limits or policy. */
   definition(tx: TenantTransaction, payload: ProposeActionPayload): Promise<ActionDefinition>;
   artifact: ActionPreparationChecks['artifact'];
@@ -30,19 +30,26 @@ export interface AutomaticProposalAuthorization {
   admit: ActionProposalChecks['admit'];
 }
 
+export type ActionProposalPayload = ProposeActionPayload | ProposeSafetyStopPayload;
+const isSafetyStopPayload = (payload: ActionProposalPayload): payload is ProposeSafetyStopPayload => 'proposal' in payload;
+
 /** Public proposal composition. Acceptance creates intent only, without authority, reservation or dispatch. */
 export async function proposeAction(database: Database, context: VerifiedContext, options: TransactionOptions, command: CommandIdentity,
-  organizationId: string, payload: ProposeActionPayload, grantRefs: readonly EntityRef[], checks: ActionProposalChecks, automatic?: AutomaticProposalAuthorization) {
-  contract('UUID', organizationId); contract('ProposeActionPayload', payload);
+  organizationId: string, payload: ActionProposalPayload, grantRefs: readonly EntityRef[], checks: ActionProposalChecks, automatic?: AutomaticProposalAuthorization) {
+  const safety = isSafetyStopPayload(payload);
+  contract('UUID', organizationId); contract(safety ? 'ProposeSafetyStopPayload' : 'ProposeActionPayload', payload);
   const input = structuredClone(payload), grants = structuredClone([...grantRefs]), identity = { ...command };
-  if (identity.type !== 'abh.actions.propose' || identity.digest !== await inputDigest({ organizationId, payload: input })) throw new CoreError('INVALID_ARGUMENT');
+  if ((safety ? identity.type !== 'abh.actions.start-safety-stop' : identity.type !== 'abh.actions.propose')
+    || identity.digest !== await inputDigest({ organizationId, payload: input })) throw new CoreError('INVALID_ARGUMENT');
   if (organizationId !== context.tenant.resourceOrganizationId) throw new CoreError('FORBIDDEN');
-  const progress = automatic && { ...automatic, grantRefs: structuredClone([...automatic.grantRefs]), purposeNames: lifecyclePurposes(automatic.purposeNames, context.tenant.purposeOfUse) };
+  if (safety && automatic) throw new CoreError('INVALID_ARGUMENT');
+  const progress = !safety && automatic ? { ...automatic, grantRefs: structuredClone([...automatic.grantRefs]), purposeNames: lifecyclePurposes(automatic.purposeNames, context.tenant.purposeOfUse) } : undefined;
+  const proposal = structuredClone(isSafetyStopPayload(input) ? input.proposal : input);
   return database.transaction(context, options, async tx => {
     const owner = new ActionOwner(), c = tx.context.tenant, scope = { type: 'abh.organization', id: organizationId, version: 1 };
     const result = await executeCommand(tx, identity, async () => {
       await lockFences(tx, [scope, { type: 'abh.principal', id: c.actor.id, version: 1 }, ...grants, ...structuredClone(await checks.fenceRefs(tx, structuredClone(input))), ...(progress ? [...progress.grantRefs, ...structuredClone(await progress.fenceRefs(tx, structuredClone(input)))] : [])]);
-      await assertCurrentGrants(tx, { objectRef: scope, scopeRefs: [scope], action: identity.type }, grants);
+      await assertCurrentGrants(tx, { objectRef: scope, scopeRefs: [scope], action: safety ? 'abh.action.safety-stop' : identity.type }, grants);
       await checks.admit(tx, structuredClone(input));
       if (progress) {
         const accepted = await assertCurrentGrants(tx, { objectRef: { type: 'abh.action', id: randomUUID(), version: 1 }, scopeRefs: [scope], action: 'abh.actions.request-authorization' }, progress.grantRefs);
@@ -50,10 +57,10 @@ export async function proposeAction(database: Database, context: VerifiedContext
         await progress.admit(tx, structuredClone(input));
       }
       // Even replay must retain current access to the actual persisted input, not merely a caller-supplied Ref.
-      await new InlineArtifactOwner().read(tx, input.payloadRef, artifact => checks.artifact(tx, structuredClone(artifact)));
+      await new InlineArtifactOwner().read(tx, proposal.payloadRef, artifact => checks.artifact(tx, structuredClone(artifact)));
     }, async () => {
-      const definition = structuredClone(await checks.definition(tx, structuredClone(input)));
-      const created = await owner.propose(tx, identity, input, definition, {
+      const definition = structuredClone(await checks.definition(tx, structuredClone(proposal)));
+      const created = await owner.propose(tx, identity, structuredClone(proposal), definition, {
         lock: async () => {}, artifact: (tx, artifact) => checks.artifact(tx, structuredClone(artifact)),
         proposal: async (tx, payload, definition) => structuredClone(await checks.proposal(tx, structuredClone(payload), structuredClone(definition))),
       });

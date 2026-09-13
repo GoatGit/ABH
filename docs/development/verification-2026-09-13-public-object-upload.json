@@ -1,0 +1,54 @@
+{
+  "date": "2026-09-13",
+  "scope": "Public HTTP and typed-client object upload, artifact-level replay reservation, route body bounds, and export expiry",
+  "summary": "Added a non-contract Fastify binary transport with route-specific limits, installed the object upload route and typed client method, and promoted upload replay from ObjectStore receipts to durable Artifact command reservations. The parser now forwards each received chunk exactly once, completes the decoded stream at the declared Content-Length, rejects missing or zero-length frames explicitly, and preserves empty-body rejection. The upload path verifies current grants and governance before T1 staging, then ObjectStore put, read-back digest/size verification and T2 publication.",
+  "commands": [
+    "corepack pnpm --filter @abh/adapter-fastify build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/adapter-fastify build",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/artifacts.test.ts test/database.test.ts test/filesystem-object-store.test.ts test/artifact-export.test.ts",
+    "corepack pnpm --filter @abh/adapter-fastify test",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/client.test.ts test/http-service.test.ts",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "artifactTestsPassed": 14,
+    "artifactTestsFailed": 0,
+    "fastifyTestsPassed": 16,
+    "fastifyTestsFailed": 0,
+    "clientAndHttpServiceTestsPassed": 24,
+    "clientAndHttpServiceTestsFailed": 0,
+    "uploadedBytes": 300000,
+    "streamDigestMatched": true,
+    "unauthenticatedRejected": true,
+    "missingOrMismatchedMetadataRejected": true,
+    "governanceDenied": true,
+    "missingReferenceRejected": true,
+    "directHttpUploadAvailable": true,
+    "artifactReplayDeepEqual": true,
+    "artifactCountAfterReplay": 1,
+    "typedClientUploadAvailable": true,
+    "routeSpecificBodyLimitVerified": true,
+    "exportExpiryVerified": true
+  },
+  "finalCheck": {
+    "command": "corepack pnpm check",
+    "status": "passed",
+    "nonDockerGates": {
+      "passed": true,
+      "docsLinks": 801,
+      "contractArtifacts": 51,
+      "contractsApiEntryPoints": 9,
+      "coreApiEntryPoints": 6,
+      "workspaceTypecheckAndBuild": true
+    },
+    "detail": "The full docs, contracts, typecheck, workspace test, build and API report gates passed after the binary framing fix."
+  },
+  "boundaries": [
+    "FilesystemObjectStore is a single-host durable production-profile adapter, not distributed or managed cloud storage",
+    "Production upload scanning and isolation remain deployment/domain governance responsibilities",
+    "Production hosting and external cloud acceptance remain externally bounded"
+  ]
+}

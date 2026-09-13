@@ -4,14 +4,15 @@ import {test} from 'node:test';
 import type {CommitmentRecord,LedgerRecord,ReservationRecord,SettlementRecord} from '@abh/contracts';
 import {LedgerOwner} from '../src/resources/ledger.ts';
 import {executeCommand,inputDigest,type CommandIdentity} from '../src/data/journal.ts';
-import {createDatabaseFixture,context,options} from './database-fixture.ts';
+import {createDatabaseFixture,context,options,seedLedgerCatalog} from './database-fixture.ts';
 
 const ref=<T extends string>(type:T,id:string=randomUUID(),version=1)=>({type,id,version});
 const command=async(type:string,value:unknown):Promise<CommandIdentity>=>({type,commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(value)});
 test('commitments atomically replace holds and deduplicate verified settlements',{timeout:120_000},async t=>{
   const f=await createDatabaseFixture();t.after(()=>f.close());const db=f.database,c=context(),owner=new LedgerOwner();
+  const catalog=await seedLedgerCatalog(db,c,'abh.unit.credit');
   const configure=async(limit='20',meteringMode:LedgerRecord['meteringMode']='cumulative')=>{
-    const input={id:randomUUID(),scopeRef:ref('abh.organization',c.tenant.resourceOrganizationId),resourceType:'abh.resource.cost',meteringMode,unit:'abh.unit.credit',periodRef:ref('abh.period'),limit};
+    const input={id:randomUUID(),scopeRef:ref('abh.organization',c.tenant.resourceOrganizationId),resourceType:'abh.resource.cost',meteringMode,unit:'abh.unit.credit',periodRef:catalog.periodRef,limit};
     const cmd=await command('abh.ledgers.configure',input);let ledger:LedgerRecord;
     await db.transaction(c,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>{ledger=await owner.configure(tx,cmd,input);return ledger.ledgerRef;}));return ledger!;
   };

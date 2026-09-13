@@ -540,6 +540,40 @@ export const protocolRegistry = {
       ]
     },
     {
+      "type": "abh.responsibility-requests.delegate-slot",
+      "name": "DelegateResponsibilitySlot",
+      "owner": "HumanGateway",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.responsibility-request",
+      "payload": "ReviseResponsibilityRoutePayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "VERSION_CONFLICT",
+        "DECISION_STALE",
+        "DECISION_PACKAGE_INCOMPLETE",
+        "PRECONDITION_FAILED",
+        "DELEGATION_EXCEEDS_AUTHORITY"
+      ]
+    },
+    {
+      "type": "abh.responsibility-requests.escalate-slot",
+      "name": "EscalateResponsibilitySlot",
+      "owner": "HumanGateway",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.responsibility-request",
+      "payload": "ReviseResponsibilityRoutePayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "VERSION_CONFLICT",
+        "DECISION_STALE",
+        "DECISION_PACKAGE_INCOMPLETE",
+        "PRECONDITION_FAILED",
+        "ROUTE_DEPTH_EXCEEDED"
+      ]
+    },
+    {
       "type": "abh.responsibilities.revoke",
       "name": "RevokeResponsibility",
       "owner": "HumanGateway",
@@ -596,6 +630,99 @@ export const protocolRegistry = {
         "PRECONDITION_FAILED",
         "VERSION_CONFLICT",
         "IDEMPOTENCY_CONFLICT"
+      ]
+    },
+    {
+      "type": "abh.exceptions.resolve",
+      "name": "ResolveException",
+      "owner": "HumanGateway",
+      "visibility": "Public",
+      "mode": "Update",
+      "targetType": "abh.exception",
+      "payload": "ResolveExceptionPayload",
+      "permission": "abh.exceptions.resolve",
+      "purposeNames": [
+        "abh.decision.review"
+      ],
+      "response": "ExceptionResolvedResponse",
+      "status": 200,
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "DECISION_STALE",
+        "OPERATION_FACT_CONFLICT",
+        "PRECONDITION_FAILED",
+        "VERSION_CONFLICT",
+        "IDEMPOTENCY_CONFLICT"
+      ]
+    },
+    {
+      "type": "abh.exceptions.apply-resolution-effect",
+      "name": "ApplyExceptionResolutionEffect",
+      "owner": "HumanGateway",
+      "visibility": "Public",
+      "mode": "Create",
+      "targetType": "abh.exception-resolution",
+      "payload": "ApplyExceptionResolutionEffectPayload",
+      "permission": "abh.exceptions.resolve",
+      "purposeNames": [
+        "abh.decision.review"
+      ],
+      "response": "ExceptionResolutionEffectResponse",
+      "status": 201,
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "DECISION_STALE",
+        "OPERATION_FACT_CONFLICT",
+        "PRECONDITION_FAILED",
+        "VERSION_CONFLICT",
+        "IDEMPOTENCY_CONFLICT"
+      ]
+    },
+    {
+      "type": "abh.corrections.propose",
+      "name": "ProposeCorrection",
+      "owner": "HumanGateway",
+      "visibility": "Public",
+      "mode": "Create",
+      "targetType": "abh.correction",
+      "payload": "ProposeCorrectionPayload",
+      "permission": "abh.corrections.propose",
+      "purposeNames": [
+        "abh.correction.propose"
+      ],
+      "response": "CorrectionProposedResponse",
+      "status": 201,
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "AUTHORITY_REQUIRED",
+        "VERSION_CONFLICT",
+        "CORRECTION_STALE",
+        "PRECONDITION_FAILED"
+      ]
+    },
+    {
+      "type": "abh.corrections.apply",
+      "name": "ApplyCorrection",
+      "owner": "HumanGateway",
+      "visibility": "Public",
+      "mode": "Update",
+      "targetType": "abh.correction",
+      "payload": "ApplyCorrectionPayload",
+      "permission": "abh.corrections.apply",
+      "purposeNames": [
+        "abh.mission.manage",
+        "abh.runtime.deliver",
+        "abh.learning.capture"
+      ],
+      "response": "CorrectionAppliedResponse",
+      "status": 200,
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "AUTHORITY_REQUIRED",
+        "VERSION_CONFLICT",
+        "CORRECTION_STALE",
+        "PRECONDITION_FAILED",
+        "GOAL_AUTHORITY_INSUFFICIENT"
       ]
     },
     {
@@ -990,6 +1117,23 @@ export const protocolRegistry = {
       ]
     },
     {
+      "type": "abh.operations.safe-retry",
+      "name": "SafeRetryOperation",
+      "owner": "OperationController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.operation",
+      "payload": "SafeRetryOperationPayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "VERSION_CONFLICT",
+        "OPERATION_FACT_CONFLICT",
+        "PRECONDITION_FAILED",
+        "POLICY_DENIED",
+        "EPOCH_REVOKED"
+      ]
+    },
+    {
       "type": "abh.actions.propose",
       "name": "ProposeAction",
       "owner": "ActionEngine",
@@ -1003,6 +1147,27 @@ export const protocolRegistry = {
       "errors": [
         "IDEMPOTENCY_CONFLICT",
         "ACTION_DOMAIN_INVALID",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.actions.start-safety-stop",
+      "name": "StartSafetyStop",
+      "owner": "ActionEngine",
+      "visibility": "Public",
+      "mode": "Create",
+      "targetType": "abh.organization",
+      "payload": "ProposeSafetyStopPayload",
+      "response": "ActionAcceptedResponse",
+      "status": 202,
+      "permission": "abh.action.safety-stop",
+      "purposeNames": [
+        "abh.action.safety-stop"
+      ],
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "ACTION_DOMAIN_INVALID",
+        "PRECONDITION_FAILED",
         "PURPOSE_DENIED"
       ]
     },
@@ -1119,6 +1284,47 @@ export const protocolRegistry = {
       ]
     },
     {
+      "type": "abh.ledger-units.register",
+      "name": "RegisterLedgerUnit",
+      "owner": "ResourceLedger",
+      "visibility": "Internal",
+      "mode": "Create",
+      "targetType": "abh.unit",
+      "payload": "RegisterLedgerUnitPayload",
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "INVALID_ARGUMENT"
+      ]
+    },
+    {
+      "type": "abh.ledger-periods.register",
+      "name": "RegisterLedgerPeriod",
+      "owner": "ResourceLedger",
+      "visibility": "Internal",
+      "mode": "Create",
+      "targetType": "abh.period",
+      "payload": "RegisterLedgerPeriodPayload",
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "INVALID_ARGUMENT"
+      ]
+    },
+    {
+      "type": "abh.ledger-corrections.apply",
+      "name": "ApplyLedgerCorrection",
+      "owner": "ResourceLedger",
+      "visibility": "Internal",
+      "mode": "Create",
+      "targetType": "abh.ledger-correction",
+      "payload": "ApplyLedgerCorrectionPayload",
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "PRECONDITION_FAILED",
+        "RESOURCE_EXHAUSTED",
+        "VERSION_CONFLICT"
+      ]
+    },
+    {
       "type": "abh.reservations.reserve",
       "name": "ReserveAll",
       "owner": "ResourceLedger",
@@ -1209,15 +1415,48 @@ export const protocolRegistry = {
       "type": "abh.assignments.pause",
       "name": "StopStaticAssignment",
       "owner": "CapabilityRelease",
-      "visibility": "Internal",
+      "visibility": "Public",
       "mode": "Update",
       "targetType": "abh.assignment",
       "payload": "StopStaticAssignmentPayload",
+      "purposeNames": [
+        "abh.release.manage"
+      ],
+      "permission": "abh.release.manage",
+      "response": "StaticAssignmentRecord",
+      "status": 200,
       "errors": [
         "IDEMPOTENCY_CONFLICT",
-        "VERSION_CONFLICT",
-        "AUTHORITY_REQUIRED",
-        "PIN_INPUT_CONFLICT"
+        "INVALID_ARGUMENT",
+        "FORBIDDEN",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED",
+        "RESOURCE_NOT_FOUND",
+        "VERSION_CONFLICT"
+      ]
+    },
+    {
+      "type": "abh.assignments.rollback",
+      "name": "RollbackStaticAssignment",
+      "owner": "CapabilityRelease",
+      "visibility": "Public",
+      "mode": "Update",
+      "targetType": "abh.assignment",
+      "payload": "RollbackStaticAssignmentPayload",
+      "purposeNames": [
+        "abh.release.manage"
+      ],
+      "permission": "abh.release.manage",
+      "response": "StaticAssignmentRecord",
+      "status": 200,
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "INVALID_ARGUMENT",
+        "FORBIDDEN",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED",
+        "RESOURCE_NOT_FOUND",
+        "VERSION_CONFLICT"
       ]
     },
     {
@@ -1625,6 +1864,154 @@ export const protocolRegistry = {
       ]
     },
     {
+      "type": "abh.runs.stop-stalled",
+      "name": "StopStalledRun",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.run",
+      "payload": "StopStalledRunPayload",
+      "purposeNames": [
+        "abh.runtime.deliver"
+      ],
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.runs.wake",
+      "name": "WakeRun",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.run",
+      "payload": "WakeRunPayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.graph-patches.propose",
+      "name": "ProposeGraphPatch",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.run",
+      "payload": "ProposeGraphPatchPayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.tasks.claim",
+      "name": "ClaimTask",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.task",
+      "payload": "ClaimTaskPayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.invocations.prepare",
+      "name": "PrepareInvocation",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.task",
+      "payload": "PrepareInvocationPayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.invocations.finalize",
+      "name": "FinalizeInvocation",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.invocation",
+      "payload": "FinalizeInvocationPayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.invocations.complete",
+      "name": "CompleteInvocation",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.invocation",
+      "payload": "CompleteInvocationPayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.invocations.observe-late",
+      "name": "ObserveLateInvocation",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Create",
+      "targetType": "abh.invocation",
+      "payload": "ObserveLateInvocationPayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.tasks.commit-verified",
+      "name": "CommitVerifiedTask",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.task",
+      "payload": "CommitVerifiedTaskPayload",
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "IDEMPOTENCY_CONFLICT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "TASK_COMMIT_INCOMPLETE",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
       "type": "abh.verification.submit",
       "name": "SubmitVerification",
       "owner": "MissionController",
@@ -1684,9 +2071,423 @@ export const protocolRegistry = {
         "LEARNING_PURPOSE_DENIED",
         "PURPOSE_DENIED"
       ]
+    },
+    {
+      "type": "abh.learning.build-case",
+      "name": "BuildCase",
+      "owner": "MissionController",
+      "visibility": "Public",
+      "mode": "Create",
+      "targetType": "abh.organization",
+      "payload": "BuildCasePayload",
+      "permission": "abh.learning.capture",
+      "purposeNames": [
+        "abh.learning.capture"
+      ],
+      "response": "LearningCaseCreatedResponse",
+      "status": 201,
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "CASE_EVIDENCE_INCOMPLETE",
+        "LEARNING_PURPOSE_DENIED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.learning.create-candidate",
+      "name": "CreateCandidate",
+      "owner": "MissionController",
+      "visibility": "Public",
+      "mode": "Create",
+      "targetType": "abh.organization",
+      "payload": "CreateCandidatePayload",
+      "permission": "abh.learning.capture",
+      "purposeNames": [
+        "abh.learning.capture"
+      ],
+      "response": "LearningCandidateCreatedResponse",
+      "status": 201,
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "CANDIDATE_SCOPE_EXCEEDED",
+        "CASE_EVIDENCE_INCOMPLETE",
+        "LEARNING_PURPOSE_DENIED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.learning.request-evaluation",
+      "name": "RequestEvaluation",
+      "owner": "MissionController",
+      "visibility": "Public",
+      "mode": "Create",
+      "targetType": "abh.organization",
+      "payload": "RequestEvaluationPayload",
+      "permission": "abh.learning.evaluate",
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "response": "EvaluationRunCreatedResponse",
+      "status": 201,
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "CANDIDATE_SCOPE_EXCEEDED",
+        "EVALUATION_PROFILE_AMBIGUOUS",
+        "EVALUATION_PROFILE_UNAVAILABLE",
+        "EVALUATOR_IDENTITY_INVALID",
+        "LEARNING_PURPOSE_DENIED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.learning.retry-evaluation",
+      "name": "RetryEvaluation",
+      "owner": "MissionController",
+      "visibility": "Public",
+      "mode": "Create",
+      "targetType": "abh.organization",
+      "payload": "RetryEvaluationPayload",
+      "permission": "abh.learning.evaluate",
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "response": "EvaluationRunCreatedResponse",
+      "status": 201,
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "CANDIDATE_SCOPE_EXCEEDED",
+        "EVALUATION_PROFILE_AMBIGUOUS",
+        "EVALUATION_PROFILE_UNAVAILABLE",
+        "EVALUATOR_IDENTITY_INVALID",
+        "LEARNING_PURPOSE_DENIED",
+        "PURPOSE_DENIED",
+        "PRECONDITION_FAILED",
+        "RESOURCE_NOT_FOUND"
+      ]
+    },
+    {
+      "type": "abh.learning.submit-evaluation-result",
+      "name": "SubmitEvaluationResult",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.evaluation-run",
+      "payload": "SubmitEvaluationResultPayload",
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "EVALUATOR_IDENTITY_INVALID",
+        "INVALID_ARGUMENT",
+        "VERSION_CONFLICT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED"
+      ]
+    },
+    {
+      "type": "abh.learning.expire-evaluation",
+      "name": "ExpireEvaluationRun",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.evaluation-run",
+      "payload": "ExpireEvaluationPayload",
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "errors": [
+        "AUTHORITY_REQUIRED",
+        "FORBIDDEN",
+        "IDEMPOTENCY_CONFLICT",
+        "INVALID_ARGUMENT",
+        "LEARNING_PURPOSE_DENIED",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED",
+        "VERSION_CONFLICT"
+      ]
+    },
+    {
+      "type": "abh.learning.build-gate",
+      "name": "BuildGate",
+      "owner": "MissionController",
+      "visibility": "Internal",
+      "mode": "Update",
+      "targetType": "abh.learning-candidate",
+      "payload": "BuildGatePayload",
+      "purposeNames": [
+        "abh.learning.gate"
+      ],
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "GATE_EVIDENCE_INVALID",
+        "GATE_POLICY_INCOMPLETE",
+        "INVALID_ARGUMENT",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED",
+        "VERSION_CONFLICT"
+      ]
+    },
+    {
+      "type": "abh.releases.configure-learning-candidate",
+      "name": "ConfigureLearningCandidateRelease",
+      "owner": "CapabilityRelease",
+      "visibility": "Public",
+      "mode": "Create",
+      "targetType": "abh.release",
+      "payload": "ConfigureLearningReleasePayload",
+      "purposeNames": [
+        "abh.release.manage"
+      ],
+      "permission": "abh.release.manage",
+      "response": "StaticAssignmentRecord",
+      "status": 201,
+      "errors": [
+        "IDEMPOTENCY_CONFLICT",
+        "INVALID_ARGUMENT",
+        "LEARNING_PURPOSE_DENIED",
+        "PRECONDITION_FAILED",
+        "PURPOSE_DENIED",
+        "VERSION_CONFLICT"
+      ]
     }
   ],
   "queries": [
+    {
+      "name": "GetAssignment",
+      "type": "abh.assignments.get",
+      "owner": "CapabilityRelease",
+      "path": "/v1/queries/abh.assignments.get",
+      "response": "StaticAssignmentRecord",
+      "permission": "abh.release.manage",
+      "targetTypes": [
+        "abh.assignment"
+      ],
+      "purposeNames": [
+        "abh.release.manage"
+      ],
+      "filters": [
+        "id"
+      ],
+      "requiredFilters": [
+        "id"
+      ],
+      "errors": []
+    },
+    {
+      "name": "ListAssignments",
+      "type": "abh.assignments.list",
+      "owner": "CapabilityRelease",
+      "path": "/v1/queries/abh.assignments.list",
+      "response": "StaticAssignmentListResult",
+      "permission": "abh.release.manage",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.release.manage"
+      ],
+      "filters": [
+        "releaseId",
+        "assignmentStatus",
+        "cursor",
+        "limit"
+      ],
+      "errors": []
+    },
+    {
+      "name": "ListLearningSignals",
+      "type": "abh.learning-signals.list",
+      "owner": "MissionController",
+      "path": "/v1/queries/abh.learning-signals.list",
+      "response": "LearningSignalListResult",
+      "permission": "abh.learning.read",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.capture"
+      ],
+      "filters": [
+        "signalType",
+        "scopeId",
+        "cursor",
+        "limit"
+      ],
+      "errors": []
+    },
+    {
+      "name": "ListLearningCases",
+      "type": "abh.learning-cases.list",
+      "owner": "MissionController",
+      "path": "/v1/queries/abh.learning-cases.list",
+      "response": "LearningCaseListResult",
+      "permission": "abh.learning.read",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.capture"
+      ],
+      "filters": [
+        "rootCauseCode",
+        "scopeId",
+        "cursor",
+        "limit"
+      ],
+      "errors": []
+    },
+    {
+      "name": "ListLearningCandidates",
+      "type": "abh.learning-candidates.list",
+      "owner": "MissionController",
+      "path": "/v1/queries/abh.learning-candidates.list",
+      "response": "LearningCandidateListResult",
+      "permission": "abh.learning.read",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.capture",
+        "abh.learning.evaluate",
+        "abh.learning.gate"
+      ],
+      "filters": [
+        "candidateStatus",
+        "assetKind",
+        "scopeId",
+        "cursor",
+        "limit"
+      ],
+      "errors": []
+    },
+    {
+      "name": "ListEvaluationRuns",
+      "type": "abh.evaluation-runs.list",
+      "owner": "MissionController",
+      "path": "/v1/queries/abh.evaluation-runs.list",
+      "response": "EvaluationRunListResult",
+      "permission": "abh.learning.read",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "filters": [
+        "candidateId",
+        "runStatus",
+        "cursor",
+        "limit"
+      ],
+      "errors": []
+    },
+    {
+      "name": "GetEvaluationRun",
+      "type": "abh.evaluation-runs.get",
+      "owner": "MissionController",
+      "path": "/v1/queries/abh.evaluation-runs.get",
+      "response": "EvaluationRunRecord",
+      "permission": "abh.learning.evaluate",
+      "targetTypes": [
+        "abh.evaluation-run"
+      ],
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "filters": [
+        "id"
+      ],
+      "requiredFilters": [
+        "id"
+      ],
+      "errors": []
+    },
+    {
+      "name": "GetEvaluationResult",
+      "type": "abh.evaluation-results.get",
+      "owner": "MissionController",
+      "path": "/v1/queries/abh.evaluation-results.get",
+      "response": "EvaluationResultRecord",
+      "permission": "abh.learning.evaluate",
+      "targetTypes": [
+        "abh.evaluation-result"
+      ],
+      "purposeNames": [
+        "abh.learning.evaluate",
+        "abh.learning.gate"
+      ],
+      "filters": [
+        "id"
+      ],
+      "requiredFilters": [
+        "id"
+      ],
+      "errors": []
+    },
+    {
+      "name": "GetLearningGate",
+      "type": "abh.learning-gates.get",
+      "owner": "MissionController",
+      "path": "/v1/queries/abh.learning-gates.get",
+      "response": "EvaluationGateArtifactRecord",
+      "permission": "abh.learning.gate",
+      "targetTypes": [
+        "abh.learning-gate"
+      ],
+      "purposeNames": [
+        "abh.learning.gate"
+      ],
+      "filters": [
+        "id"
+      ],
+      "requiredFilters": [
+        "id"
+      ],
+      "errors": []
+    },
+    {
+      "name": "ListLearningGates",
+      "type": "abh.learning-gates.list",
+      "owner": "MissionController",
+      "path": "/v1/queries/abh.learning-gates.list",
+      "response": "LearningGateListResult",
+      "permission": "abh.learning.read",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.gate"
+      ],
+      "filters": [
+        "candidateId",
+        "verdict",
+        "cursor",
+        "limit"
+      ],
+      "errors": []
+    },
+    {
+      "name": "GetCorrection",
+      "type": "abh.corrections.get",
+      "owner": "HumanGateway",
+      "path": "/v1/queries/abh.corrections.get",
+      "response": "CorrectionRecord",
+      "permission": "abh.corrections.read",
+      "targetTypes": [
+        "abh.correction"
+      ],
+      "purposeNames": [
+        "abh.correction.propose"
+      ],
+      "filters": [
+        "id"
+      ],
+      "requiredFilters": [
+        "id"
+      ],
+      "errors": []
+    },
     {
       "name": "QueryPackCapabilities",
       "type": "abh.capabilities.query",
@@ -1707,10 +2508,32 @@ export const protocolRegistry = {
         "capabilityId",
         "version",
         "versionRange",
+        "safetyStop",
         "limit"
       ],
       "requiredFilters": [
         "kind",
+        "limit"
+      ],
+      "errors": []
+    },
+    {
+      "name": "ListSafetyStops",
+      "type": "abh.safety-stops.list",
+      "owner": "OperationController",
+      "path": "/v1/safety-stops",
+      "response": "SafetyStopListResult",
+      "permission": "abh.actions.read",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.action.safety-stop"
+      ],
+      "filters": [
+        "limit"
+      ],
+      "requiredFilters": [
         "limit"
       ],
       "errors": []
@@ -1854,12 +2677,20 @@ export const protocolRegistry = {
       "permission": "abh.projections.read",
       "targetTypes": [
         "abh.mission",
-        "abh.decision"
+        "abh.decision",
+        "abh.action",
+        "abh.run",
+        "abh.organization"
       ],
       "purposeNames": [
         "abh.mission.manage",
+        "abh.missions.read",
         "abh.decision.review",
-        "abh.runtime.deliver"
+        "abh.runtime.deliver",
+        "abh.action.prepare",
+        "abh.action.execute",
+        "abh.operation.reconcile",
+        "abh.runs.read"
       ],
       "filters": [
         "id",
@@ -2011,6 +2842,61 @@ export const protocolRegistry = {
   ],
   "events": [
     {
+      "type": "abh.exception-successor-dispatch.created",
+      "aggregateType": "abh.exception-successor-dispatch",
+      "owner": "HumanGateway"
+    },
+    {
+      "type": "abh.ledger-unit.registered",
+      "aggregateType": "abh.unit",
+      "owner": "ResourceLedger"
+    },
+    {
+      "type": "abh.ledger-period.registered",
+      "aggregateType": "abh.period",
+      "owner": "ResourceLedger"
+    },
+    {
+      "type": "abh.ledger-correction.applied",
+      "aggregateType": "abh.ledger-correction",
+      "owner": "ResourceLedger"
+    },
+    {
+      "type": "abh.learning-signal.corrected",
+      "aggregateType": "abh.learning-signal",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.learning-case.created",
+      "aggregateType": "abh.learning-case",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.learning-candidate.created",
+      "aggregateType": "abh.learning-candidate",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.evaluation-run.created",
+      "aggregateType": "abh.evaluation-run",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.evaluation-run.expired",
+      "aggregateType": "abh.evaluation-run",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.evaluation-result.created",
+      "aggregateType": "abh.evaluation-result",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.learning-gate.created",
+      "aggregateType": "abh.learning-gate",
+      "owner": "MissionController"
+    },
+    {
       "type": "abh.mission.created",
       "aggregateType": "abh.mission",
       "owner": "MissionController"
@@ -2058,6 +2944,31 @@ export const protocolRegistry = {
     {
       "type": "abh.exception.created",
       "aggregateType": "abh.exception",
+      "owner": "HumanGateway"
+    },
+    {
+      "type": "abh.exception.resolved",
+      "aggregateType": "abh.exception-resolution",
+      "owner": "HumanGateway"
+    },
+    {
+      "type": "abh.exception-resolution-effect.applied",
+      "aggregateType": "abh.exception-resolution-effect",
+      "owner": "HumanGateway"
+    },
+    {
+      "type": "abh.resource-fence.report-block-released",
+      "aggregateType": "abh.resource-fence",
+      "owner": "OperationController"
+    },
+    {
+      "type": "abh.correction.proposed",
+      "aggregateType": "abh.correction",
+      "owner": "HumanGateway"
+    },
+    {
+      "type": "abh.correction.applied",
+      "aggregateType": "abh.correction-application",
       "owner": "HumanGateway"
     },
     {
@@ -2122,6 +3033,11 @@ export const protocolRegistry = {
     },
     {
       "type": "abh.assignment.selection-changed",
+      "aggregateType": "abh.assignment",
+      "owner": "CapabilityRelease"
+    },
+    {
+      "type": "abh.assignment.rollback",
       "aggregateType": "abh.assignment",
       "owner": "CapabilityRelease"
     },
@@ -2451,8 +3367,78 @@ export const protocolRegistry = {
       "owner": "MissionController"
     },
     {
+      "type": "abh.run.stalled",
+      "aggregateType": "abh.run",
+      "owner": "MissionController"
+    },
+    {
       "type": "abh.task.cancelled",
       "aggregateType": "abh.task",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.task.ready",
+      "aggregateType": "abh.task",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.task.started",
+      "aggregateType": "abh.task",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.task.verifying",
+      "aggregateType": "abh.task",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.task.verified",
+      "aggregateType": "abh.task",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.task.failed",
+      "aggregateType": "abh.task",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.checkpoint.committed",
+      "aggregateType": "abh.checkpoint",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.invocation.created",
+      "aggregateType": "abh.invocation",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.invocation.running",
+      "aggregateType": "abh.invocation",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.invocation.completed",
+      "aggregateType": "abh.invocation",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.invocation-observation.created",
+      "aggregateType": "abh.invocation-observation",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.invocation-adjudication.created",
+      "aggregateType": "abh.invocation-adjudication",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.task.skipped",
+      "aggregateType": "abh.task",
+      "owner": "MissionController"
+    },
+    {
+      "type": "abh.graph-revision.created",
+      "aggregateType": "abh.graph-revision",
       "owner": "MissionController"
     },
     {

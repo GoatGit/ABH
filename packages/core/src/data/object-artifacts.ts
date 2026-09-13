@@ -1,17 +1,26 @@
 import { randomUUID } from 'node:crypto';
-import type { ArtifactRecord, AuthorizedContextRef, Digest, EntityRef, ObjectDescriptor, PortCallContext, StoredObjectRef } from '@abh/contracts';
+import { createHash } from 'node:crypto';
+import type { ArtifactRecord, ArtifactRef, AuthorizedContextRef, Digest, EntityRef, ObjectDescriptor, PortCallContext, StoredObjectRef } from '@abh/contracts';
 import type { ObjectStorePort } from '@abh/contracts/ports';
 import { digestBytes } from '@abh/contracts/digest';
 import type { Database, TenantTransaction, TransactionOptions } from './uow.ts';
 import type { VerifiedContext } from '../internal/context.ts';
-import { appendChange,contract,inputDigest,type CommandIdentity } from './journal.ts';
+import { assertCurrentGrants } from '../control/grants.ts';
+import { lockFences } from '../control/fences.ts';
+import { appendChange,contract,executeCommand,inputDigest,type CommandIdentity } from './journal.ts';
 import { CoreError } from '../internal/errors.ts';
+import { ArtifactLineageOwner } from './artifact-lineage.ts';
 
 export type ObjectArtifactInput=Omit<import('@abh/contracts').StoreInlineArtifactPayload,'content'>;
 export type StagedObjectArtifact={
   readonly record:ArtifactRecord;
   readonly bytes:Uint8Array;
   readonly digest:Digest;
+  readonly mediaType:string;
+};
+export type StagedObjectStream={
+  readonly stagingRef:ArtifactRef;
+  readonly attemptId:string;
   readonly mediaType:string;
 };
 export type ObjectArtifactRange={readonly start:number;readonly endInclusive:number};
@@ -74,6 +83,27 @@ export class ObjectArtifactOwner {
     return this.#persist(tx,command,input,bytes,verifyReferences,attemptId);
   }
 
+  /** T1 for arbitrary-size uploads; bytes stream outside the transaction and attach() revalidates the bound descriptor. */
+  async stageStream(tx:TenantTransaction,command:CommandIdentity,input:ObjectArtifactInput,
+    verifyReferences:(refs:readonly EntityRef[])=>Promise<void>,attemptId:string=randomUUID()):Promise<StagedObjectStream> {
+    contract('EntityRef',structuredClone(input.ownerRef));contract('RegisteredName',input.dataClass);
+    if(input.mediaType.length===0||input.mediaType.length>255)throw new CoreError('INVALID_ARGUMENT');
+    await verifyReferences([input.ownerRef,input.retentionPolicyRef,...input.sourceRefs]);
+    const c=tx.context.tenant;
+    if(!input.purposeNames.includes(c.purposeOfUse))throw new CoreError('PURPOSE_DENIED');
+    const id=randomUUID();contract('UUID',attemptId);
+    const placeholderDigest='sha256:'+'0'.repeat(64);
+    const staged=contract('ArtifactRecord',{artifactRef:{type:'abh.artifact',id,version:1},resourceOrganizationId:c.resourceOrganizationId,
+      ownerRef:input.ownerRef,mediaType:input.mediaType,sizeBytes:1,contentDigest:placeholderDigest,status:'Staged',dataClass:input.dataClass,
+      purposeNames:input.purposeNames,sourceRefs:input.sourceRefs,region:input.region,retentionPolicyRef:input.retentionPolicyRef});
+    await tx.owner('ArtifactStore')`INSERT INTO data.artifacts(resource_organization_id,id,workspace_id,purpose_names,record,inline_body,content_digest,status)
+      VALUES (${c.resourceOrganizationId},${id},${c.workspaceId??null},${input.purposeNames},${JSON.stringify(staged)}::text::jsonb,NULL,${placeholderDigest},'Staged')`;
+    await tx.owner('ArtifactStore')`INSERT INTO data.object_staging_attempts(resource_organization_id,attempt_id,workspace_id,purpose_names,artifact_id,artifact_version,status)
+      VALUES (${c.resourceOrganizationId},${attemptId},${c.workspaceId??null},${input.purposeNames},${id},1,'Pending')`;
+    await appendChange(tx,{command,target:staged.artifactRef,eventType:'abh.artifact.created',changedFields:['status','contentDigest'],relatedRefs:[input.ownerRef]});
+    return {stagingRef:staged.artifactRef,attemptId,mediaType:input.mediaType};
+  }
+
   async #persist(tx:TenantTransaction,command:CommandIdentity,input:ObjectArtifactInput,bytes:Uint8Array,
     verifyReferences:(refs:readonly EntityRef[])=>Promise<void>,attemptId:string):Promise<StagedObjectArtifact>{
     await verifyReferences([input.ownerRef,input.retentionPolicyRef,...input.sourceRefs]);
@@ -92,7 +122,7 @@ export class ObjectArtifactOwner {
   }
 
   async attach(tx:TenantTransaction,stagedRef:EntityRef,completed:unknown,command:CommandIdentity,
-    attemptId?:string):Promise<ArtifactRecord>{
+    attemptId?:string,expected?:{digest:Digest;sizeBytes:number;mediaType:string}):Promise<ArtifactRecord>{
     const ref=contract('EntityRef',structuredClone(stagedRef)),supplied=contract('ObjectDescriptor',completed),
       suppliedObject=objectRef(supplied.objectRef);
     const c=tx.context.tenant;
@@ -100,23 +130,27 @@ export class ObjectArtifactOwner {
       WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${ref.id} AND deleted_at IS NULL FOR UPDATE`;
     if(!row||Number(row.version)!==ref.version||row.status!=='Staged')throw new CoreError('PRECONDITION_FAILED');
     const staged=contract('ArtifactRecord',row.record);
-    const object=descriptor(supplied,{digest:staged.contentDigest,sizeBytes:staged.sizeBytes,mediaType:staged.mediaType});
-    if(staged.artifactRef.id!==ref.id||staged.status!=='Staged'||object.digest!==staged.contentDigest
-      ||object.sizeBytes!==staged.sizeBytes||object.mediaType!==staged.mediaType)throw new CoreError('PRECONDITION_FAILED');
+    const truth=expected??{digest:staged.contentDigest,sizeBytes:staged.sizeBytes,mediaType:staged.mediaType};
+    const object=descriptor(supplied,truth);
+    if(staged.artifactRef.id!==ref.id||staged.status!=='Staged')throw new CoreError('PRECONDITION_FAILED');
+    if(expected===undefined&&(object.digest!==truth.digest||object.sizeBytes!==truth.sizeBytes||object.mediaType!==truth.mediaType))
+      throw new CoreError('PRECONDITION_FAILED');
     const purposes=structuredClone(staged.purposeNames);
     await tx.owner('ArtifactStore')`INSERT INTO data.object_artifacts(resource_organization_id,artifact_id,artifact_version,workspace_id,purpose_names,object_id,object_version,object_ref,content_digest,size_bytes,media_type)
       VALUES (${c.resourceOrganizationId},${ref.id},${ref.version+1},${c.workspaceId??null},${purposes},${suppliedObject.id},${suppliedObject.version},${JSON.stringify(object.objectRef)}::text::jsonb,
-        ${object.digest},${object.sizeBytes},${object.mediaType})`;
+        ${object.digest},${String(object.sizeBytes)}::bigint,${object.mediaType})`;
     if(attemptId!==undefined){contract('UUID',attemptId);
       const published=await tx.owner('ArtifactStore')`UPDATE data.object_staging_attempts SET status='Published',updated_at=clock_timestamp(),updated_by=${c.actor.id}
         WHERE resource_organization_id=${c.resourceOrganizationId} AND attempt_id=${attemptId} AND artifact_id=${ref.id}
           AND artifact_version=${ref.version} AND status IN ('Pending','Tracked','Recorded') RETURNING attempt_id`;
       if(!published[0])throw new CoreError('VERSION_CONFLICT');}
-    const available=contract('ArtifactRecord',{...staged,artifactRef:{...staged.artifactRef,version:2},status:'Available'});
+    const available=contract('ArtifactRecord',{...staged,artifactRef:{...staged.artifactRef,version:2},status:'Available',
+      contentDigest:truth.digest,sizeBytes:truth.sizeBytes});
     const changed=await tx.owner('ArtifactStore')`UPDATE data.artifacts SET status='Available',version=2,
-      record=${JSON.stringify(available)}::text::jsonb,updated_at=clock_timestamp(),updated_by=${c.actor.id}
+      record=${JSON.stringify(available)}::text::jsonb,content_digest=${truth.digest},updated_at=clock_timestamp(),updated_by=${c.actor.id}
       WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${ref.id} AND version=1 AND status='Staged' RETURNING id`;
     if(!changed[0])throw new CoreError('VERSION_CONFLICT');
+    await new ArtifactLineageOwner().record(tx,available);
     await appendChange(tx,{command,target:available.artifactRef,eventType:'abh.artifact.publish',changedFields:['status'],relatedRefs:staged.sourceRefs});
     return available;
   }
@@ -256,6 +290,26 @@ export class ObjectArtifactOwner {
     return {record,object};
   }
 
+  async tombstone(tx:TenantTransaction,command:CommandIdentity,artifactRef:EntityRef,evidenceRef:EntityRef,
+    authorize:(record:ArtifactRecord,object:ObjectDescriptor)=>Promise<void>):Promise<ArtifactRecord>{
+    const ref=contract('EntityRef',structuredClone(artifactRef)),evidence=contract('EntityRef',structuredClone(evidenceRef));
+    if(ref.type!=='abh.artifact'||evidence.type!=='abh.deletion-proof')throw new CoreError('INVALID_ARGUMENT');
+    const available=await this.load(tx,ref,authorize),c=tx.context.tenant;
+    const tombstoned=contract('ArtifactRecord',{...available.record,artifactRef:{...ref,version:ref.version+1},status:'Tombstoned'});
+    const changed=await tx.owner('ArtifactStore')`UPDATE data.artifacts SET status='Tombstoned',version=version+1,
+      record=${JSON.stringify(tombstoned)}::text::jsonb,updated_at=clock_timestamp(),updated_by=${c.actor.id}
+      WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${ref.id} AND version=${ref.version} AND status='Available'
+      RETURNING id`;
+    const changedBinding=await tx.owner('ArtifactStore')`UPDATE data.object_artifacts SET artifact_version=${tombstoned.artifactRef.version},
+      updated_at=clock_timestamp(),updated_by=${c.actor.id}
+      WHERE resource_organization_id=${c.resourceOrganizationId} AND artifact_id=${ref.id} AND artifact_version=${ref.version}
+      RETURNING artifact_id`;
+    if(!changed[0]||!changedBinding[0])throw new CoreError('VERSION_CONFLICT');
+    await appendChange(tx,{command,target:tombstoned.artifactRef,eventType:'abh.artifact.tombstone',
+      changedFields:['status'],relatedRefs:[evidence,available.object.objectRef]});
+    return tombstoned;
+  }
+
   /** Proxy through the installed port; no signed URL and no bypass of Artifact authorization. */
   async read(database:Database,context:VerifiedContext,options:TransactionOptions,artifactRef:EntityRef,
     objectStore:import('@abh/contracts/ports').ObjectStorePort,authorizedContextRef:AuthorizedContextRef,
@@ -289,6 +343,34 @@ export class ObjectArtifactOwner {
     return {record:rechecked.record,object:rechecked.object,bytes,
       ...(range?{range:{start:range.start,endInclusive:range.endInclusive}}:{})};
   }
+
+  /** Unbounded proxy read; callers own cancellation, backpressure and transport framing. */
+  async readStream(database:Database,context:VerifiedContext,options:TransactionOptions,artifactRef:EntityRef,
+    objectStore:import('@abh/contracts/ports').ObjectStorePort,authorizedContextRef:AuthorizedContextRef,
+    authorize:(record:ArtifactRecord,object:ObjectDescriptor)=>Promise<void>,range?:ObjectArtifactRange):
+    Promise<{record:ArtifactRecord;object:ObjectDescriptor;content:AsyncIterable<Uint8Array>;range?:ObjectArtifactRange}>{
+    const initial=await database.transaction(context,{...options,readOnly:true},tx=>this.load(tx,artifactRef,authorize));
+    if(range!==undefined&&( !Number.isInteger(range.start)||!Number.isInteger(range.endInclusive)||range.start<0
+      ||range.endInclusive<range.start||range.endInclusive>=initial.record.sizeBytes))throw new CoreError('INVALID_ARGUMENT');
+    const deadline=new Date(Math.min(options.deadline,Date.parse(context.tenant.contextExpiresAt))).toISOString();
+    const request=contract('ReadObjectRequest',{context:{callId:randomUUID(),
+      requestContextRef:{type:'abh.request-context',id:context.tenant.requestId,version:1},
+      target:{objectRef:initial.object.objectRef,scopeRefs:[{type:'abh.organization',id:context.tenant.resourceOrganizationId,version:1}],
+        action:'abh.artifacts.read'},deadline},
+      authorizedContextRef:structuredClone(authorizedContextRef),objectRef:initial.object.objectRef,
+      ...(range?{range:{start:range.start,endInclusive:range.endInclusive}}:{})});
+    const response=await objectStore.read(request,{signal:options.signal});
+    if(response.status!=='Completed')throw new CoreError('DEPENDENCY_TIMEOUT');
+    const object=descriptor(response.data.object,{digest:initial.record.contentDigest,sizeBytes:initial.record.sizeBytes,
+      mediaType:initial.record.mediaType});
+    if(response.data.range?.start!==range?.start||response.data.range?.endInclusive!==range?.endInclusive)
+      throw new CoreError('PRECONDITION_FAILED');
+    const rechecked=await database.transaction(context,{...options,readOnly:true},tx=>this.load(tx,artifactRef,authorize));
+    if(JSON.stringify(rechecked.record)!==JSON.stringify(initial.record)
+      ||JSON.stringify(rechecked.object)!==JSON.stringify(initial.object))throw new CoreError('PRECONDITION_FAILED');
+    return {record:rechecked.record,object:rechecked.object,content:response.data.content,
+      ...(range?{range:{start:range.start,endInclusive:range.endInclusive}}:{})};
+  }
 }
 
 export type ObjectStagingCleanupCandidate={
@@ -307,6 +389,24 @@ export interface StoreObjectArtifactInput {
   readonly verifyReferences:(refs:readonly EntityRef[])=>Promise<void>;
 }
 
+export interface StoreObjectStreamInput {
+  readonly payload:ObjectArtifactInput;
+  readonly content:AsyncIterable<Uint8Array>;
+  readonly declaredSizeBytes:number;
+  readonly digest:Digest;
+  readonly objectStore:ObjectStorePort;
+  readonly authorizedContextRef:AuthorizedContextRef;
+  readonly verifyReferences:(refs:readonly EntityRef[])=>Promise<void>;
+  readonly idempotencyKey?:string;
+  readonly artifactIdempotencyKey?:string;
+  readonly grantRefs?:readonly EntityRef[];
+  readonly governance?:{
+    readonly fenceRefs:(tx:TenantTransaction,input:ObjectArtifactInput)=>Promise<readonly EntityRef[]>;
+    readonly admit:(tx:TenantTransaction,input:ObjectArtifactInput)=>Promise<void>;
+    readonly references:(tx:TenantTransaction,refs:readonly EntityRef[])=>Promise<void>;
+  };
+}
+
 export type StoreObjectArtifactResult=
   {readonly status:'Available';readonly record:ArtifactRecord}|
   {readonly status:'Staged';readonly stagedArtifactRef:EntityRef;readonly trackingRef:EntityRef};
@@ -321,6 +421,17 @@ async function readBounded(content:AsyncIterable<Uint8Array>,limit:number):Promi
   const bytes=new Uint8Array(size);let offset=0;
   for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
   return bytes;
+}
+
+async function verifyStream(content:AsyncIterable<Uint8Array>,digest:Digest,sizeBytes:number):Promise<void> {
+  const hash=createHash('sha256');let size=0;
+  for await(const chunk of content) {
+    if(!(chunk instanceof Uint8Array))throw new CoreError('INVALID_ARGUMENT');
+    const bytes=new Uint8Array(chunk.buffer,chunk.byteOffset,chunk.byteLength);
+    hash.update(bytes);size+=bytes.byteLength;
+    if(!Number.isSafeInteger(size))throw new CoreError('LIMIT_EXCEEDED');
+  }
+  if(size!==sizeBytes||`sha256:${hash.digest('hex')}`!==digest)throw new CoreError('PRECONDITION_FAILED');
 }
 
 async function* bytesToStream(bytes:Uint8Array,chunkSize=65_536):AsyncIterable<Uint8Array>{
@@ -361,5 +472,95 @@ export async function storeObjectArtifact(database:import('./uow.ts').Database,
   if(bytes.byteLength!==staged.bytes.byteLength||await digestBytes(bytes)!==staged.digest)throw new CoreError('PRECONDITION_FAILED');
   const record=await database.transaction(context,options,tx=>
     owner.attach(tx,staged.record.artifactRef,result.data,{...command,commandId:randomUUID(),idempotencyKey:randomUUID()},attemptId));
+  return {status:'Available',record};
+}
+
+/** Cross-store streaming admission. The declared digest/size is never trusted; the ObjectStore must verify both. */
+export async function storeObjectArtifactStream(database:import('./uow.ts').Database,
+  context:import('../internal/context.ts').VerifiedContext,options:import('./uow.ts').TransactionOptions,
+  input:StoreObjectStreamInput):Promise<StoreObjectArtifactResult> {
+  if(!Number.isSafeInteger(input.declaredSizeBytes)||input.declaredSizeBytes<1)throw new CoreError('INVALID_ARGUMENT');
+  const command:CommandIdentity={commandId:randomUUID(),type:'abh.artifacts.store-object',
+    idempotencyKey:randomUUID(),digest:await inputDigest({operation:'object-artifact-stream'})};
+  const attemptId=randomUUID(),owner=new ObjectArtifactOwner(),staged=await database.transaction(
+    context,options,async tx=>{
+      const replay=(tx:import('./uow.ts').TenantTransaction,resultRef:EntityRef):Promise<StoreObjectArtifactResult>=>((async()=>{
+        const c=tx.context.tenant;
+        let [row]=await tx.owner('ArtifactStore')`SELECT a.status,a.id AS current_id,a.version AS current_version,
+            s.status AS attempt_status,s.tracking_ref
+          FROM data.artifacts a LEFT JOIN data.object_staging_attempts s
+            ON s.resource_organization_id=a.resource_organization_id AND s.artifact_id=a.id AND s.artifact_version=a.version
+          WHERE a.resource_organization_id=${c.resourceOrganizationId} AND a.id=${resultRef.id}
+            AND a.version=${resultRef.version} AND a.deleted_at IS NULL
+            AND (a.workspace_id IS NULL OR a.workspace_id=${c.workspaceId??null}::uuid) FOR UPDATE OF a`;
+        if(!row)[row]=await tx.owner('ArtifactStore')`SELECT a.status,a.id AS current_id,a.version AS current_version,
+            s.status AS attempt_status,s.tracking_ref
+          FROM data.artifacts a LEFT JOIN data.object_staging_attempts s
+            ON s.resource_organization_id=a.resource_organization_id AND s.artifact_id=a.id AND s.artifact_version=a.version
+          WHERE a.resource_organization_id=${c.resourceOrganizationId} AND a.id=${resultRef.id}
+            AND a.deleted_at IS NULL
+            AND (a.workspace_id IS NULL OR a.workspace_id=${c.workspaceId??null}::uuid)
+          ORDER BY a.version DESC FOR UPDATE OF a LIMIT 1`;
+        if(!row)throw new CoreError('RESOURCE_NOT_FOUND');
+        const currentRef:EntityRef={type:'abh.artifact',id:String(row.current_id),version:Number(row.current_version)};
+        if(row.status==='Available')return {status:'Available' as const,
+          record:(await owner.load(tx,currentRef,async()=>{})).record};
+        if(row.status==='Staged'&&row.attempt_status==='Tracked'&&row.tracking_ref)
+          return {status:'Staged' as const,stagedArtifactRef:structuredClone(resultRef),
+            trackingRef:contract('EntityRef',row.tracking_ref)};
+        throw new CoreError('DEPENDENCY_TIMEOUT');
+      })());
+      const authorize=async()=>{
+        if(!input.governance)return;
+        const scope={type:'abh.organization' as const,id:context.tenant.resourceOrganizationId,version:1};
+        await lockFences(tx,[scope,{type:'abh.principal' as const,id:context.tenant.actor.id,version:1},
+          ...structuredClone([...(input.grantRefs??[])]),
+          ...structuredClone(await input.governance.fenceRefs(tx,structuredClone(input.payload)))]);
+        await assertCurrentGrants(tx,{objectRef:scope,scopeRefs:[scope],action:'abh.artifacts.store-inline'},
+          structuredClone([...(input.grantRefs??[])]));
+        await input.governance.admit(tx,structuredClone(input.payload));
+        await input.governance.references(tx,structuredClone(input.payload.sourceRefs));
+      };
+      if(input.artifactIdempotencyKey!==undefined) {
+        let created:StagedObjectStream|undefined;
+        const command:CommandIdentity={commandId:randomUUID(),type:'abh.artifacts.store-inline',
+          idempotencyKey:input.artifactIdempotencyKey,
+          digest:await inputDigest({payload:input.payload,digest:input.digest,
+            declaredSizeBytes:input.declaredSizeBytes,authorizedContextRef:input.authorizedContextRef})};
+        const {receipt,replayed}=await executeCommand(tx,command,authorize,async()=>{
+          created=await owner.stageStream(tx,command,input.payload,input.verifyReferences,attemptId);
+          return created.stagingRef;
+        });
+        if(replayed)return replay(tx,receipt.resultRef);
+        return created!;
+      }
+      await authorize();
+      return owner.stageStream(tx,command,input.payload,input.verifyReferences,attemptId);
+    });
+  if('status' in staged)return staged;
+  const stream=staged;
+  const c=context.tenant,request={stagedArtifactRef:staged.stagingRef,digest:input.digest,
+    sizeBytes:input.declaredSizeBytes,mediaType:stream.mediaType,
+    idempotencyKey:input.idempotencyKey??randomUUID(),
+    authorizedContextRef:structuredClone(input.authorizedContextRef),
+    context:{callId:randomUUID(),requestContextRef:{type:'abh.request-context' as const,id:c.requestId,version:1},
+      target:{objectRef:staged.stagingRef,scopeRefs:[{type:'abh.organization' as const,id:c.resourceOrganizationId,version:1}],
+        action:'abh.artifacts.store'},deadline:new Date(options.deadline).toISOString()}};
+  const result=await input.objectStore.put(request,{signal:options.signal},input.content);
+  if(result.status==='Tracked') {
+    const trackingRef=contract('EntityRef',result.trackingRef);
+    await database.transaction(context,options,tx=>owner.track(tx,attemptId,staged.stagingRef,trackingRef));
+    return {status:'Staged',stagedArtifactRef:staged.stagingRef,trackingRef};
+  }
+  if(result.status!=='Completed')throw new CoreError('DEPENDENCY_TIMEOUT');
+  await database.transaction(context,options,tx=>owner.recordCompleted(tx,attemptId,
+    descriptor(result.data,{digest:request.digest,sizeBytes:request.sizeBytes,mediaType:stream.mediaType}).objectRef));
+  const read=await input.objectStore.read({context:request.context,authorizedContextRef:request.authorizedContextRef,
+    objectRef:result.data.objectRef},{signal:options.signal});
+  if(read.status!=='Completed')throw new CoreError('DEPENDENCY_TIMEOUT');
+  await verifyStream(read.data.content,request.digest,request.sizeBytes);
+  const record=await database.transaction(context,options,tx=>owner.attach(tx,staged.stagingRef,result.data,
+    {...command,commandId:randomUUID(),idempotencyKey:randomUUID()},attemptId,
+    {digest:request.digest,sizeBytes:request.sizeBytes,mediaType:stream.mediaType}));
   return {status:'Available',record};
 }

@@ -4,19 +4,119 @@ import {IdentityIngress} from '../src/identity/ingress.ts';
 import {storeInlineArtifact} from '../src/data/store-inline-artifact.ts';
 import {Database} from '../src/data/uow.ts';
 import assert from 'node:assert/strict';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { test } from 'node:test';
 import type { ArtifactRecord, GrantRecord, StoreInlineArtifactPayload } from '@abh/contracts';
 import { InlineArtifactOwner } from '../src/data/artifacts.ts';
+import { ArtifactLineageOwner } from '../src/data/artifact-lineage.ts';
 import { ObjectArtifactOwner } from '../src/data/object-artifacts.ts';
 import { cleanupAbandonedObjectArtifact,runObjectCleanupWorker } from '../src/data/object-cleanup-worker.ts';
 import { contract,executeCommand,inputDigest,type CommandIdentity } from '../src/data/journal.ts';
 import { storeObjectArtifact } from '../src/data/object-artifacts.ts';
+import { runArtifactRetentionWorker } from '../src/data/retention-worker.ts';
+import { FilesystemObjectStore } from '../src/adapters/filesystem-object-store.ts';
 import { deriveVerifiedContext } from '../src/internal/context.ts';
 import { CoreError } from '../src/internal/errors.ts';
 import { createDatabaseFixture,context,options } from './database-fixture.ts';
 
 const ref=<T extends string>(type:T,id:string=randomUUID(),version=1)=>({type,id,version});
+test('artifact publication persists immutable reverse lineage',{timeout:120_000},async t=>{
+ const f=await createDatabaseFixture();t.after(()=>f.close());await f.database.verify();
+ const db=f.database,c=context(),owner=new InlineArtifactOwner(),lineage=new ArtifactLineageOwner();
+ const input=(sourceRefs:readonly import('@abh/contracts').EntityRef[]):StoreInlineArtifactPayload=>({
+  ownerRef:ref('abh.tool-call'),mediaType:'application/json',content:JSON.stringify({sourceRefs}),
+  dataClass:'tool.result',purposeNames:['abh.action.prepare'],sourceRefs:[...sourceRefs],region:'local',
+  retentionPolicyRef:ref('abh.retention-policy')});
+ const store=async(sourceRefs:readonly import('@abh/contracts').EntityRef[])=>{
+  const payload=input(sourceRefs),cmd:CommandIdentity={type:'abh.artifacts.store-inline',
+   commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(payload)};
+  let record:ArtifactRecord;
+  await db.transaction(c,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>{
+   record=await owner.store(tx,cmd,payload,async()=>{});return record.artifactRef;}));
+  return record!;
+ };
+ const source=await store([]);
+ const first=await store([source.artifactRef,{type:'abh.tool-binding',id:randomUUID(),version:3}]);
+ const second=await store([source.artifactRef,{type:'abh.completion-policy',id:randomUUID(),version:1}]);
+ await db.transaction(c,options(),tx=>lineage.record(tx,first));
+ const ordered=[first.artifactRef,second.artifactRef].sort((left,right)=>left.id<right.id?-1:1);
+ const page=await db.transaction(c,options(),tx=>lineage.descendants(tx,source.artifactRef,100));
+ assert.deepEqual(page.dependencies.map(item=>item.artifactRef),ordered);
+ assert.deepEqual(page.dependencies.map(item=>item.sourceRef),[source.artifactRef,source.artifactRef]);
+ assert.ok(page.dependencies.every(item=>!Number.isNaN(Date.parse(item.observedAt))));
+ const bounded=await db.transaction(c,options(),tx=>lineage.descendants(tx,source.artifactRef,1));
+ assert.deepEqual(bounded.dependencies.map(item=>item.artifactRef),[ordered[0]]);
+ assert.equal(bounded.next,ordered[0]!.id);
+ const next=await db.transaction(c,options(),tx=>lineage.descendants(tx,source.artifactRef,1,bounded.next));
+ assert.deepEqual(next.dependencies.map(item=>item.artifactRef),[ordered[1]]);
+ assert.equal(next.next,undefined);
+ await assert.rejects(db.transaction(c,options(),tx=>lineage.descendants(tx,source.artifactRef,101)),{code:'INVALID_ARGUMENT'});
+ const otherTenant=await db.transaction(context(),options(),tx=>lineage.descendants(tx,source.artifactRef,100));
+ assert.deepEqual(otherTenant.dependencies,[]);
+ await assert.rejects(db.transaction(c,options(),tx=>tx.owner('ArtifactStore')`UPDATE data.artifact_dependencies SET source_version=source_version+1`),{code:'42501'});
+ await assert.rejects(f.admin`UPDATE data.artifact_dependencies SET source_version=source_version+1`,{code:'23514'});
+});
+test('retention worker deletes expired objects before tombstoning and preserves retained artifacts',{timeout:180_000},async t=>{
+ const f=await createDatabaseFixture();t.after(()=>f.close());await f.database.verify();
+ const base=context(),org=base.tenant.resourceOrganizationId,actor=randomUUID(),
+  scope=ref('abh.organization',org),principal=ref('abh.principal',actor),
+  grant=contract('GrantRecord',{grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:principal,
+   scopeRefs:[scope],actionTypes:['abh.artifacts.tombstone','abh.artifacts.delete'],purposeNames:['abh.artifact.manage'],
+   validFrom:new Date(Date.now()-1000).toISOString(),validUntil:new Date(Date.now()+120000).toISOString(),
+   issuanceEvidenceRef:scope,status:'Active'});
+ await f.database.transaction(base,options(),async tx=>{
+  await tx.owner('Identity')`INSERT INTO identity.organizations(resource_organization_id,id,name,home_region,status) VALUES (${org},${org},'Retention','local','Active')`;
+  await tx.owner('Identity')`INSERT INTO identity.principals(resource_organization_id,id,display_name,identity_kind,credential_epoch,status) VALUES (${org},${actor},'Retention worker','Service',1,'Active')`;
+  await tx.owner('Identity')`INSERT INTO identity.memberships(resource_organization_id,id,principal_id,membership_epoch,status) VALUES (${org},${randomUUID()},${actor},1,'Active')`;
+  await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status) VALUES (${org},${grant.grantRef.id},${actor},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
+  for(const value of [scope,principal,grant.grantRef])await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch) VALUES (${org},${randomUUID()},${value.type},${value.id},1)`;
+ });
+ const c=deriveVerifiedContext({...base.request,actor:{type:'Service',id:actor},purposeOfUse:'abh.artifact.manage'}),
+  worker=deriveVerifiedContext({...c.request,requestId:randomUUID()}),owner=new InlineArtifactOwner(),
+  authorizedContext=ref('abh.authorized-context');
+ const storeInline=async(name:string)=>{const payload:StoreInlineArtifactPayload={ownerRef:ref('abh.organization',org),
+   mediaType:'application/json',content:JSON.stringify({name}),dataClass:'tool.result',purposeNames:['abh.artifact.manage'],
+   sourceRefs:[],region:'local',retentionPolicyRef:ref('abh.retention-policy')},cmd={type:'abh.artifacts.store-inline',
+   commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(payload)};
+  let record:ArtifactRecord;
+  await f.database.transaction(c,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>{
+   record=await owner.store(tx,cmd,payload,async()=>{});return record.artifactRef;}));
+  return record!;
+ };
+ const retained=await storeInline('retain');
+ const bytes=new TextEncoder().encode(`{"output":"${'r'.repeat(70_000)}"}`),deleted:import('@abh/contracts').DeleteObjectRequest[]=[],
+  objectRef=ref('abh.stored-object'),receipt=ref('abh.deletion-proof');
+ const objectStore:import('@abh/contracts/ports').ObjectStorePort={
+  async put(request){return {status:'Completed' as const,data:{objectRef,digest:request.digest,
+    sizeBytes:bytes.byteLength,mediaType:'application/json'}};},
+  async read(){return {status:'Completed' as const,data:{objectRef,
+    object:{objectRef,digest:'sha256:'+'0'.repeat(64),sizeBytes:bytes.byteLength,mediaType:'application/json'},
+    content:(async function*(){yield bytes;})()}};},async stat(){throw new Error('unused');},
+  async delete(request){deleted.push(structuredClone(request));return {status:'Completed' as const,
+    data:{objectRef,receiptRef:receipt}};}};
+ const stored=await storeObjectArtifact(f.database,c,options(),{payload:{ownerRef:ref('abh.organization',org),
+   mediaType:'application/json',dataClass:'tool.result',purposeNames:['abh.artifact.manage'],sourceRefs:[],
+   region:'local',retentionPolicyRef:ref('abh.retention-policy')},content:new TextDecoder().decode(bytes),
+   objectStore,authorizedContextRef:authorizedContext,verifyReferences:async()=>{}});
+ assert.equal(stored.status,'Available');
+ let observed:boolean|undefined;const stop=new AbortController();
+ await runArtifactRetentionWorker(f.database,{workerId:actor,context:async()=>worker,grantRefs:[grant.grantRef],
+  signal:stop.signal,objectStore,authorizedContextRef:authorizedContext,pageSize:10,intervalMs:1,leaseSeconds:30,
+  resolveRetention:async record=>record.artifactRef.id===stored.record.artifactRef.id?
+    {expiresAt:new Date(Date.now()-1000).toISOString(),evidenceRef:ref('abh.policy-version')}:{evidenceRef:ref('abh.policy-version')},
+  onPage:async result=>{if(result.completed===1){observed=true;stop.abort();}}});
+  assert.equal(observed,true);assert.equal(deleted.length,1);assert.equal(deleted[0]!.objectRef.id,objectRef.id);
+ const tombstonedRows=await f.admin`SELECT status,version FROM data.artifacts WHERE id=${stored.record.artifactRef.id}` as {status:string;version:string}[],
+  keptRows=await f.admin`SELECT status FROM data.artifacts WHERE id=${retained.artifactRef.id}` as {status:string}[],
+  jobRows=await f.admin`SELECT state,attempts,receipt_ref FROM data.artifact_retention_jobs WHERE artifact_id=${stored.record.artifactRef.id}` as {state:string;attempts:string;receipt_ref?:{id:string}}[];
+ const tombstoned=tombstonedRows[0],kept=keptRows[0],job=jobRows[0];
+ assert.equal(tombstoned!.status,'Tombstoned');assert.equal(Number(tombstoned!.version),3);
+ assert.equal(kept!.status,'Available');assert.equal(job!.state,'Completed');assert.equal(Number(job!.attempts),1);
+ assert.equal(job!.receipt_ref?.id,receipt.id);
+ await assert.rejects(new ObjectArtifactOwner().read(f.database,c,options(),
+  {type:'abh.artifact',id:stored.record.artifactRef.id,version:3},
+  objectStore,authorizedContext,async()=>{}),{code:'PRECONDITION_FAILED'});
+})
 test('object artifacts persist metadata only and verify external object bindings',{timeout:120_000},async t=>{
  const f=await createDatabaseFixture();t.after(()=>f.close());await f.database.verify();
  const db=f.database,c=context(),owner=new ObjectArtifactOwner(),inline=new InlineArtifactOwner();
@@ -352,4 +452,85 @@ test('artifact storage ingress validates current grants and governance before at
   await assert.rejects(invoke(),{code:'EPOCH_REVOKED'});
   await assert.rejects(replay(),error=>error instanceof AbhClientError&&error.response?.error.code==='FORBIDDEN');
   const [final]=await f.admin`SELECT count(*) AS artifacts FROM data.artifacts`;assert.equal(final!.artifacts,'2');
+});
+
+test('public object upload streams through authorization and ObjectStore verification',{timeout:180_000},async t=>{
+  const {mkdtemp}=await import('node:fs/promises'),{tmpdir}=await import('node:os'),{join}=await import('node:path');
+  const f=await createDatabaseFixture();t.after(()=>f.close());await f.database.verify();
+  const base=context(),org=base.tenant.resourceOrganizationId,actor=randomUUID(),scope=ref('abh.organization',org),
+    issuer='object.http.fixture',audience='abh.test',subject=randomUUID(),identityDigest=await inputDigest([issuer,subject]),
+    principal=ref('abh.principal',actor),
+    grant=contract('GrantRecord',{grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:principal,
+      scopeRefs:[scope],actionTypes:['abh.artifacts.store-inline'],purposeNames:['abh.action.prepare'],
+      validFrom:new Date(Date.now()-1000).toISOString(),validUntil:new Date(Date.now()+120000).toISOString(),
+      issuanceEvidenceRef:scope,status:'Active'});
+  await f.database.transaction(base,options(),async tx=>{
+    await tx.owner('Identity')`INSERT INTO identity.organizations(resource_organization_id,id,name,home_region,status) VALUES (${org},${org},'object upload','local','Active')`;
+    await tx.owner('Identity')`INSERT INTO identity.principals(resource_organization_id,id,display_name,identity_kind,credential_epoch,status) VALUES (${org},${principal.id},'object uploader','Human',1,'Active')`;
+    await tx.owner('Identity')`INSERT INTO identity.memberships(resource_organization_id,id,principal_id,membership_epoch,status) VALUES (${org},${randomUUID()},${principal.id},1,'Active')`;
+    for(const value of [scope,principal,grant.grantRef])await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch) VALUES (${org},${randomUUID()},${value.type},${value.id},1)`;
+    await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status) VALUES (${org},${grant.grantRef.id},${principal.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
+  });
+  const objectRoot=await mkdtemp(join(tmpdir(),'abh-http-object-'));
+  t.after(()=>import('node:fs/promises').then(fs=>fs.rm(objectRoot,{recursive:true,force:true})));
+  await f.admin`INSERT INTO deployment.identity_locations(identity_digest,resource_organization_id,principal_id,principal_version) VALUES (${identityDigest},${org},${principal.id},1)`;
+  const identity=new IdentityIngress(f.database,{verify:async()=>({status:'Completed',data:{issuer,audience,subject,identityKind:'Human',
+    authnStrength:{level:'SingleFactor'},credentialEpoch:1,verifiedAt:new Date().toISOString(),expiresAt:new Date(Date.now()+60000).toISOString(),
+    evidenceRef:ref('abh.identity-evidence')}})},{issuer,audience});
+  let allowed=true,references=true;
+  const checks={fenceRefs:async()=>[] as import('@abh/contracts').EntityRef[],
+    admit:async()=>{if(!allowed)throw new CoreError('FORBIDDEN');},
+    references:async()=>{if(!references)throw new CoreError('RESOURCE_NOT_FOUND');}};
+  const store=new FilesystemObjectStore(objectRoot);
+  const app=createCoreHttpApp({database:f.database,identity,credentials:async request=>{
+    if(request.headers.authorization!=='Bearer fixture')throw new CoreError('UNAUTHENTICATED');
+    return {credentialRef:ref('abh.credential'),organizationId:org,purpose:'abh.action.prepare'};
+  },objectUpload:{objectStore:store,maxBytes:1024*1024,grants:async()=>[grant.grantRef],checks}});
+  t.after(()=>app.close());
+  const bytes=new Uint8Array(300_000).map((_,index)=>index%251),
+    digest=`sha256:${(await import('node:crypto')).createHash('sha256').update(bytes).digest('hex')}`,
+    payload={ownerRef:scope,mediaType:'application/octet-stream',dataClass:'tool.result',purposeNames:['abh.action.prepare'],
+      sourceRefs:[scope],region:'local',retentionPolicyRef:ref('abh.retention-policy')},
+    metadata=Buffer.from(JSON.stringify({...payload,digest,declaredSizeBytes:bytes.length,
+      authorizedContextRef:ref('abh.authorized-context')})).toString('base64url');
+  const fullHeaders:Record<string,string>={authorization:'Bearer fixture','x-abh-upload-metadata':metadata,
+    'content-length':String(bytes.length)};
+  const send=(body:Buffer=Buffer.from(bytes),headers:Record<string,string>=
+    {...fullHeaders,'idempotency-key':randomUUID()})=>app.inject({method:'POST',
+    url:'/v1/artifacts/object-uploads',headers:{...headers,'content-type':'application/octet-stream'},payload:body}).then(result=>{
+      return result;
+    });
+  assert.equal((await send(Buffer.alloc(0),{'content-length':'0'})).statusCode,401);
+  const missingMetadata=await send(Buffer.alloc(0),{authorization:'Bearer fixture','content-length':'0'});
+  assert.equal(missingMetadata.statusCode,400);
+  const badLength=await send(Buffer.alloc(bytes.length+1),{authorization:'Bearer fixture','x-abh-upload-metadata':metadata,
+    'idempotency-key':randomUUID(),'content-length':String(bytes.length+1)});
+  assert.equal(badLength.statusCode,400);
+  allowed=false;const denied=await send();assert.equal(denied.statusCode,403,denied.body);allowed=true;
+  references=false;const notFound=await send();assert.equal(notFound.statusCode,404,notFound.body);references=true;
+  const uploadKey=randomUUID(),response=await send(Buffer.from(bytes),
+    {...fullHeaders,'idempotency-key':uploadKey});assert.equal(response.statusCode,201,response.body);
+  const replayedUpload=await send(Buffer.from(bytes),{...fullHeaders,'idempotency-key':uploadKey});
+  assert.equal(replayedUpload.statusCode,201,replayedUpload.body);assert.deepEqual(replayedUpload.json(),response.json());
+  const [uploadCount]=await f.admin`SELECT count(*) AS artifacts FROM data.artifacts`;assert.equal(uploadCount!.artifacts,'1');
+  const accepted=response.json(),record=accepted.data.record as ArtifactRecord;
+  assert.equal(record.status,'Available');assert.equal(record.sizeBytes,bytes.length);assert.equal(record.contentDigest,digest);
+  const streamed=await new ObjectArtifactOwner().readStream(f.database,
+    deriveVerifiedContext({...base.request,purposeOfUse:'abh.action.prepare'}),options(),record.artifactRef,
+    store,ref('abh.authorized-context'),async()=>{});
+  const storedHash=createHash('sha256');let storedSize=0;
+  for await(const chunk of streamed.content){storedHash.update(chunk);storedSize+=chunk.byteLength;}
+  assert.equal(storedSize,bytes.length);assert.equal(`sha256:${storedHash.digest('hex')}`,digest);
+  const client=createAbhClient({baseUrl:'https://fixture.test',headers:async()=>({authorization:'Bearer fixture'}),
+    fetch:async(url,init)=>{
+      const chunks:Uint8Array[]=[],source=init?.body as AsyncIterable<Uint8Array>;
+      for await(const chunk of source)chunks.push(chunk);
+      const upstream=await app.inject({method:'POST',url:new URL(String(url)).pathname,
+        headers:Object.fromEntries(new Headers(init?.headers)),payload:Buffer.concat(chunks.map(chunk=>Buffer.from(chunk)))});
+      return new Response(upstream.body,{status:upstream.statusCode,headers:{'content-type':String(upstream.headers['content-type'])}});
+    }});
+  const stream=new ReadableStream<Uint8Array>({start(controller){controller.enqueue(bytes);controller.close();}});
+  const uploaded=await client.artifacts.storeObject({organizationId:org,idempotencyKey:randomUUID(),payload,
+    content:stream,digest,declaredSizeBytes:bytes.length,authorizedContextRef:ref('abh.authorized-context')});
+  assert.equal(uploaded.data.record.status,'Available');assert.equal(uploaded.data.record.sizeBytes,bytes.length);
 });

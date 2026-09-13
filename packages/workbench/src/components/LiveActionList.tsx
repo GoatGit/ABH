@@ -6,10 +6,13 @@ import type {ActionListResponse} from '@abh/contracts';
 import {actionListQueryKey,type ActionListFilters,type QueryIdentity} from '@/lib/query-keys';
 import {actionPositionLabel} from '@/lib/action-view';
 import {formatDateTime} from '@/lib/format';
+import {useOrganizationLiveInvalidation} from './useOrganizationLiveInvalidation';
 
 export function LiveActionList({identity,filters,initial,staleSeconds}:{
   identity:QueryIdentity;filters:ActionListFilters;initial:ActionListResponse;staleSeconds:number;
 }){
+  const streamState=useOrganizationLiveInvalidation(identity,[
+    actionListQueryKey(identity,filters)]);
   const query=useQuery({
     queryKey:actionListQueryKey(identity,filters),initialData:initial,
     staleTime:staleSeconds*1000,refetchInterval:staleSeconds*1000,
@@ -26,7 +29,7 @@ export function LiveActionList({identity,filters,initial,staleSeconds}:{
   if(filters.outcome)nextQuery.set('outcome',filters.outcome);
   if(actions.meta.nextCursor)nextQuery.set('cursor',actions.meta.nextCursor);
   return <>
-    <p className="message stale" role="status">刷新状态：授权轮询；时点 {formatDateTime(actions.meta.asOf)}</p>
+    <p className="message stale" role="status">刷新状态：{streamState==='live'?'实时':'授权轮询'}；时点 {formatDateTime(actions.meta.asOf)}</p>
     {actions.data.length===0?<p className="message empty" role="status">没有可见执行记录；可能缺少目标或授权。</p>:(
       <div className="grid">{actions.data.map(item=>(
         <section key={item.actionRef.id} className="card">

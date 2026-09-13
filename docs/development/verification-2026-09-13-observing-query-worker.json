@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-13",
+  "scope": "Tenant-local Observing Operation query scheduling, independent capture, reconciliation, and terminal CAS",
+  "summary": "Added a bounded Observing Operation worker that skips active leases and already-evidenced operations, claims a fresh worker lease, revalidates a separate query authority, commits a budgeted query exit, captures raw/normalized evidence and an operation receipt, compares the complete receipt vector under the installed rule, and applies only a conclusive report with worker fencing. Ambiguity and transport failure remain Observing.",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/actions.test.ts"
+  ],
+  "results": {
+    "actionsTestsPassed": 72,
+    "actionsTestsFailed": 0,
+    "typecheckPassed": true,
+    "responseLostRecoveredToObserving": true,
+    "independentQueryExitCommitted": true,
+    "providerCallsForRecovery": 1,
+    "rawAndNormalizedEvidencePersisted": true,
+    "operationReceiptCreated": true,
+    "reconciliationApplied": true,
+    "finalOperationClosedSucceeded": true,
+    "workerLeaseReleased": true
+  },
+  "boundaries": [
+    "No global tenant discovery or production process manager is claimed",
+    "Real Provider credentials, production query policy, and deployment governance remain external",
+    "Transport ambiguity never becomes a no-effect or success assertion"
+  ]
+}

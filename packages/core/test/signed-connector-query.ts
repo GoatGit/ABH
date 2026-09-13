@@ -23,14 +23,14 @@ import {queryPackAndCapture,retryQueryCapture,type QueryCaptureDestination} from
 import {queryPackOnce} from '../src/execution/query-pack-once.ts';
 import type {QueryTransport} from '../src/execution/query-transport.ts';
 import type {InstalledQueryPolicy} from '../src/execution/query-exit.ts';
-import {options} from './database-fixture.ts';
+import {options,seedLedgerCatalog} from './database-fixture.ts';
 
 export async function checkSignedConnectorQuery(database:Database,receiver:VerifiedContext,assets:InstalledPolicyAssets,input:{operationRef:EntityRef;dispatchGrant:GrantRecord;claim:{workerId:string;leaseRef:EntityRef;leaseFencingToken:number};installation:InstalledPackDispatch}){
  const ref=<T extends string>(type:T)=>({type,id:randomUUID(),version:1}),identity=async(type:string,value:unknown)=>({type,commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(value)}),org=receiver.tenant.resourceOrganizationId,scope={type:'abh.organization',id:org,version:1},purposeNames=['abh.operation.reconcile'];
  const operation=await database.transaction(receiver,options(),tx=>new OperationOwner().get(tx,input.operationRef.id)),action=await database.transaction(receiver,options(),tx=>new ActionOwner().get(tx,operation.actionRef.id));
  const purpose=contract('PurposeRecord',{purposeRef:ref('abh.purpose'),resourceOrganizationId:org,name:purposeNames[0],evidenceRefs:[scope],status:'Active'}),catalog=createContractCatalog();assert.ok(catalog.success);
  const pc=await identity('abh.purposes.configure',purpose);await database.transaction(receiver,options(),tx=>new PurposeOwner().configure(tx,pc,purpose,catalog.data,async()=>{}));
- const resource=ref('abh.resource'),ledgers=new LedgerOwner(),ledgerInput={id:randomUUID(),scopeRef:scope,resourceType:'org.example.signed.query',meteringMode:'cumulative' as const,unit:'org.example.signed.query',periodRef:ref('abh.period'),limit:'2',purposeNames},lc=await identity('abh.ledgers.configure',ledgerInput);
+ const resource=ref('abh.resource'),ledgers=new LedgerOwner(),ledgerCatalog=await seedLedgerCatalog(database,receiver,'org.example.signed.query'),ledgerInput={id:randomUUID(),scopeRef:scope,resourceType:'org.example.signed.query',meteringMode:'cumulative' as const,unit:'org.example.signed.query',periodRef:ledgerCatalog.periodRef,limit:'2',purposeNames},lc=await identity('abh.ledgers.configure',ledgerInput);
  const ledger=await database.transaction(receiver,options(),tx=>ledgers.configure(tx,lc,ledgerInput));
  const ue=contract('ResourceEnvelopeRecord',{envelopeRef:ref('abh.resource-envelope'),resourceOrganizationId:org,scopeRefs:[scope],bindings:[{resourceRef:resource,ledgerRef:ledger.ledgerRef,unit:ledger.unit,maxQuantity:'2'}],evidenceRefs:[scope],purposeNames,digest:'sha256:'+'0'.repeat(64)}),envelope={...ue,digest:await digestContract('ResourceEnvelopeRecord',ue)},ec=await identity('abh.resource-envelopes.configure',envelope);
  await database.transaction(receiver,options(),tx=>new ResourceEnvelopeOwner().configure(tx,ec,envelope,async()=>{}));
@@ -73,4 +73,3 @@ export async function checkSignedConnectorQuery(database:Database,receiver:Verif
  const current=await database.transaction(receiver,options(),tx=>new OperationOwner().get(tx,operation.operationRef.id));assert.notEqual(current.position.lifecycle,'Closed');assert.equal(current.attemptCount,1);
  return {receiver,queryInput,queryPolicy,installation,ledgerRef:ledger.ledgerRef,readGrant:read,captureGrant:capture};
 }
-

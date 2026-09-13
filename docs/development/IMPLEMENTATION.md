@@ -14,7 +14,144 @@
 
 ## 当前状态
 
-2026-09-12：V1 工程实现完成度约 90%。完整 `pnpm check` 通过，Core 553 项中 547 通过、6 跳过；全工作区 917 项中 911 通过、6 跳过。Contracts 51 个 artifact、API 13 个入口、Docs 769 个链接、全仓类型检查、构建和 Workbench 生产 E2E 2 项通过。生产托管、真实外部系统、全局发布扫描和完整业务 Worker 不计入该工程口径。
+2026-09-13：V1 工程实现完成度约 99.9%。Learning Gate 到 Workbench Release 的受控写路径已闭合；Release Assignment 现在具备 Core 与 Workbench 的授权 Get/List、稳定分页和受治理 Pause 生命周期。Run 取消、有界 Task Graph Patch、Durable Wait 条件唤醒 Worker、Ready Task Worker、Running 租约过期接管、迟到 Invocation 观察/裁决、无进展预算停止、Human Exception 处置与 ApplyCorrection 后治理解冻、Task Execution/Invocation/Checkpoint Owner、Correction 候选/公开接入、三类目标应用、受治理 Signal/Case、Draft Capability Candidate、Profile 冻结/Evaluation Run、Evaluation Retry/Gate 与 Learning Release 均已形成契约、PostgreSQL、授权、幂等和审计闭环；Ledger 余额/责任审计已接入 CLI doctor，周期/单位目录与退款/汇率 Correction 也已进入本地闭环。Action 的确定性 TransportFailed Safe Retry 已补齐三次上限、完整 T2 重授权、同一 Operation 围栏轮换和强制策略重评。`abh run` 已移除组合桩，改为显式部署安装模块提供 Identity Provider、凭证解析、Mission 治理、Durable Port 和 drain 记录后，连接 `assembleAbhService` 与 `runHttpService`。`defineBusiness` 与 hello-business 初始化模板提供 Action-only 声明、稳定摘要、schema 输入校验和公开 SDK 示例；Manifest 编译、Pack 发布和生产治理仍不计入本地闭环。
+
+## 2026-09-13：defineBusiness 与 hello-business 模板
+
+`@abh/core` 新增 `defineBusiness`、`validateBusinessInput` 和封闭 `BusinessDefinition` 类型。作者只能声明 Action-only 业务名、SemVer、1—20 个唯一 Action、有界 title/description、最多 8 层的封闭 JSON-Schema 子集、执行 Service、完成策略、风险类、行为槽、操作上限、intent 有效期和已登记用途。函数返回冻结声明和 JCS/SHA-256 稳定摘要；`validateBusinessInput` 在发送前执行同一 schema 的有界校验。公共入口不暴露事务或 Repository。
+
+`abh init --template hello-business` 生成契约有效的 `business.mjs`、`example.mjs`、受保护环境样例和 package script。模板声明 `hello.publish`，示例先本地校验输入，再通过公开 typed SDK 的 `artifacts/actions.propose` 稳定子键流程提交一个 Action，并用 trackingRef 查询 Strong ActionView；示例在人工审批前停止，不自动批准、不注入身份、不伪造 Decision。测试通过动态导入生成项目验证公开入口解析、声明摘要和 schema 校验。
+
+验证覆盖声明封闭性、重复 Action 拒绝、digest 稳定性、类型/长度/enum/额外字段拒绝、hello-business 配置和环境引用，以及生成项目的真实模块导入。Contracts 51 个 artifact、API 报告和 786 个文档链接一致；CLI 21/21 通过，Core 业务声明专项 2/2 通过。该边界仍不是 `defineBusiness` → Pack Manifest 编译器，也不是真实 Domain/Pack 发布验收。
+
+## 2026-09-12：显式运行宿主 CLI 装配
+
+`abh run` 不再返回“需要手工装配”的桩结果。命令现在只接受 `--config`、`--host`、`--port`，读取契约校验后的 Development 配置和显式 `env:` 数据库角色引用，再动态加载业务模块导出的 `createAbhServiceInstallation`。该安装模块必须提供真实 `IdentityProviderPort`、固定 issuer/audience、当前凭证解析、Mission HTTP 治理安装、`DurableExecutionPort.drain`、drain Context 和报告持久化；可选提供租户 Worker、启动检查和 release 回调。
+
+CLI 随后创建受限 `Database`，用部署 Provider 构造 `IdentityIngress`，经 `assembleAbhService` 组合 HTTP Owner，再交给 `runHttpService` 执行启动检查、套接字、租户循环、SIGTERM/SIGINT ingress 排空和依赖关闭。CLI 不注入默认身份、Grant、队列、机构或业务回调；缺失安装在进入数据库连接前以 `INCOMPLETE_BUSINESS_INSTALLATION` 失败。真实连接串只从受保护环境传给部署安装模块和受限数据库构造，不写日志、不进入 Command 或审计。
+
+CLI 回归覆盖严格参数、配置/环境缺失、安装模块缺失、显式安装成功路径，以及 Identity、Mission、queue 和 drain 回调不使用默认值的依赖注入验证；`abh run` 的依赖注入测试确认 CLI 调用顺序为 Database→IdentityIngress→assembled service→HTTP runtime。全仓 `pnpm check` 通过：Core 609 项中 602 通过、7 跳过、0 失败；CLI 20/20 通过，Contracts 313/313 通过，全工作区 996 项中 989 通过、7 跳过、0 失败，API 报告与构建一致。
+
+## 2026-09-13：Exception Resolution Effect 治理解冻
+
+新增公共命令 `abh.exceptions.apply-resolution-effect`、不可变 `abh.exception-resolution-effect` 和 `human.exception_resolution_effects` 表。只有 `ApplyCorrection` 决议可触发效果；Core 在事务内复核当前 Human/`abh.decision.review`、以 `abh.exception` 为授权对象和来源 fence 的当前 Grant、批准 Decision、决议与 Exception 事实一致，以及 `CorrectionApplicationRecord` 的精确身份、治理有效性和 Exception 报告证据。错误决议种类返回 `PRECONDITION_FAILED`；外部/无证据应用返回 `OPERATION_FACT_CONFLICT`；缺权返回 `AUTHORITY_REQUIRED`。
+
+效果只调用 ResourceFence 报告阻塞释放，移除 `blockedByReportRef`，保留未决 Operation 和 fencing token，并把不可变 effect、Audit 与事件同事务提交。重放会重新执行当前授权，已释放且匹配同一 Correction 应用时返回原 effect；不把不可变证据引用送入 fence 锁。HTTP 响应使用 `201` 且 Create 命令不带 `If-Match`，稳定幂等重放保留同一响应；typed client 暴露 `client.exceptions.applyResolutionEffect`。
+
+真实 PostgreSQL/HTTP/SDK 回归覆盖解冻、HTTP 与 SDK replay、外部应用、无证据应用、缺权、错误决议种类后效果计数不变，以及 fence 只移除报告阻塞且版本递增。Contracts、API 报告、文档链接、Core 类型和全仓构建通过；Core Action 回归 70/70，Contracts 回归 313/313，OpenAPI 达到 60 条路径。后续仍限于生产治理装配、真实 Domain 验收、Exception 后续编排和责任重路由。
+
+## 2026-09-13：Safety Stop 候选发现
+
+新增公开强读查询 `abh.safety-stops.list` 和 typed client `safetyStops.list`。查询要求当前 `abh.actions.read` Grant 与 `abh.action.safety-stop` 用途，在租户/Workspace 内最多返回 100 个未释放 resource fence 候选，完整时返回 `complete=true`，超限时返回 `complete=false`。响应只包含 fence 身份、资源键、当前 token、原未释放 Operation、可选当前 safety Operation 和 blocker 引用，不暴露 payload、Provider 密钥、Attempt 细节或实现句柄。
+
+该入口只做候选发现，不创建 safety Intent、不授权 transport、不改 fence 或 Unknown 责任。真实 PostgreSQL 回归覆盖缺 Grant 拒绝、两条独立责任完整列出和 `limit=1` 截断；契约测试覆盖候选边界和缺 `unresolvedOperationRef` 拒绝。正式安全业务编排和生产 Worker 仍开放。
+
+
+## 2026-09-12：Evaluation Request 与 Profile 冻结
+
+新增公开命令 `abh.learning.request-evaluation`、不可变 `abh.evaluation-profile` 目录对象和 `core.evaluation_profiles` / `core.evaluation_runs` 租户表。Payload 只允许 Evaluator 提交精确 Candidate 和 baseline；Suite、Dataset、指标阈值、停止规则、assignment unit 和样本下限都来自治理登记的唯一 Profile，调用方不能自填。Core 在同一强读事务中复核当前 Evaluator Grant、学习用途、Candidate 版本/摘要、Producer 与 Evaluator 身份独立、候选 Draft 状态、baseline 与候选 Artifact 不同且当前 Available，以及 Profile 四个 Artifact 快照仍可用。
+
+通过唯一 Profile 匹配 Candidate 的 `assetKind` 和 `risk` 后，命令生成确定性受控的 Queued Evaluation Run，写入服务端随机 seed、空执行引用、Audit、Outbox 和命令 Receipt。该命令不执行评测、不产生指标、不判定 Gate，也不改变 Release 状态。HTTP 处理器和 typed client 支持独立 Evaluator 装配与幂等回放。真实 PostgreSQL 回归覆盖缺 Grant、Producer 请求、baseline 漂移/缺失、Profile 缺失/Artifact 失效/多义、成功创建、HTTP/SDK replay 和精确计数；OpenAPI 公共路径增至 43 条。
+
+## 2026-09-12：Learning Candidate 创建
+
+新增公开命令 `abh.learning.create-candidate`，目录对象 `abh.learning-candidate` 和不可变 `core.learning_candidates` 租户表。`CreateCandidatePayload` 绑定精确 Learning Case、资产类型、base 版本、候选 Artifact、Scope 和风险码；Core 在同一强读事务中复核当前 Grant、学习用途、Case 版本与 digest、Case 的信号 Scope 一致性，以及候选 Artifact 当前 Available 精确版本。命令只生成 Draft Candidate、Audit、Outbox 和命令回执，不授予事实资格，也不触发评测、Gate 或 Release。
+
+HTTP 处理器和类型化客户端同步支持命令幂等回放。真实 PostgreSQL 回归覆盖缺 Grant、Case 缺失/版本漂移、Scope 越权、Artifact 缺失/过期、成功创建、HTTP/SDK replay 和精确持久计数。OpenAPI 公共路径增至 42 条。
+
+## 2026-09-12：不可变 Correction 候选
+
+`abh.corrections.propose` 现在创建只读候选，不自动应用替换产物。命令要求当前 Human、`abh.correction.propose` 用途、独立 Grant、当前 `Correction` 责任且责任 Scope 覆盖 Subject。Owner 在锁下读取 `beforeRef` 所属 Artifact，核对 Subject Owner、当前版本和预期版本；不匹配时返回 `CORRECTION_STALE`。替换 Artifact 必须是当前租户可用 Inline Artifact、内容摘要完整，且 Owner 指向同一 Subject。
+
+`human.corrections` 与数据库清单版本 68 保存不可变 `CorrectionRecord`、Subject/Artifact/责任索引、目标 Owner、证据、命令 Receipt 和契约摘要；Audit 与 Outbox 同事务提交。重放返回同一候选，权限撤销后重放 fail-closed。该实现不解冻资源、不做补偿、不改技术 Outcome，也不推进 Capability Candidate 或生产版本；实际应用必须由目标 Owner 在授权流程中完成。
+
+`CoreHttpInstallation.corrections` 现在提供显式宿主装配的 `POST /v1/commands/abh.corrections.propose`。处理器先解析一次性私有身份绑定和安装提供的当前 Grant 候选，再调用 Correction Owner；Owner 事务内重新校验 Human 用途、Grant、活跃 Correction 责任、Scope、Subject 版本和 Artifact 属主。响应使用 `CorrectionProposedResponse`，返回内联 `objectRef`、`commandId` 和完整候选。typed client 暴露 `client.corrections.propose`，本地校验目标 UUID 和幂等键；Create 命令不发送 `If-Match`。
+
+`abh.corrections.get` 提供 Strong 单候选查询。宿主必须在 `corrections.get` 安装当前读权解析器；处理器在事务内锁定组织与 Grant fence、校验 `abh.corrections.read`，再由 Correction Owner 校验精确版本、租户、用途、行记录和不可变摘要。typed client 暴露 `client.corrections.get`。投影模式和批量列表仍未提供，避免把候选当前读取伪装成连续订阅。
+
+真实 PostgreSQL 回归覆盖 HTTP `201`、HTTP 精确重放、typed SDK 重放和精确持久计数：`corrections=2`、`audits=8`、`events=8`、`receipts=2`。直接 Owner 回归继续覆盖有效候选、Grant 缺失、替换 Artifact 缺失/属主错误、当前版本过期、无责任和越权责任。合同生成一致性、API 报告、Core 类型检查、聚焦测试和完整 `pnpm check` 通过。Subject Owner 应用、品牌事实资格、能力纠错 Candidate 和学习订阅仍是后续缺口。
+
+## 2026-09-12：Correction 应用第一段（Mission Goal）
+
+`abh.corrections.apply` 现在实现第一段目标 Owner 应用：仅接受 `targetOwner=Domain` 且 Subject 为 `abh.mission` 的候选。命令要求当前 Human、`abh.mission.manage` 用途和当前 apply Grant；Payload 必须精确绑定 Subject、Mission Authority 和证据。Owner 在锁下复核候选精确版本与不可变摘要、目标 Artifact、Mission 当前 goal 和版本，随后调用宿主 `authority` 准入，再通过 `MissionOwner.reviseGoal` 原子推进 Goal。
+
+`human.correction_applications` 保存不可变 `CorrectionApplicationRecord`，固定候选、应用前后版本、Authority、证据、结果、Receipt、应用人和契约摘要；Audit 与 Outbox 同事务提交。重放先重新验证当前 Human、Grant 与用途，再返回同一 `CorrectionApplicationRecord`；候选保持不可变，摘要不因应用改变。HTTP 和 typed SDK 均暴露 `client.corrections.apply`，Update 命令使用带引号的 `If-Match` ETag。
+
+真实 PostgreSQL 回归覆盖 apply Grant 缺失、目标 Authority 拒绝、Mission Goal 从版本 2 推进到 3、HTTP 与 SDK 精确重放、Owner 级重放、候选摘要不变和精确持久计数：`corrections=2, applications=1, audits=9, events=9, receipts=3`。该段只覆盖 Mission Goal；Run Graph Patch 与 Memory Signal 后继由后续段落实现。
+
+## 2026-09-12：Correction 应用第二段（Run Graph Patch）
+
+`abh.corrections.apply` 现在支持 `targetOwner=Run` 且 Subject 为 `abh.run` 的候选，运行用途登记为 `abh.runtime.deliver`。候选的 `beforeRef` 必须是 Run 拥有的 JSON 快照，并精确匹配当前 Graph Revision 的 `nodes`、`edges` 和 `supersededNodeKeys`；`proposedAfterRef` 必须是 Run 拥有的 `ProposeGraphPatchPayload`，其 Run、版本、`baseRevision` 和证据 Artifact 都绑定候选快照。快照或 Run 版本漂移返回 `CORRECTION_STALE`，Patch 基线过期返回 `PRECONDITION_FAILED`。
+
+通过校验后，Owner 在同一事务内调用 Run Owner 的受控 Graph Patch：复核 Run 状态与版本、图依赖、边界和 Pending 节点规则，创建下一 Graph Revision 并物化 Ready/Pending Task，最后写入不可变 `CorrectionApplicationRecord`、Audit、Outbox 和 Receipt。Application 的结果指向 Graph Revision。候选和快照保持不可变；重放返回同一 Application，不创建第二个 Revision。
+
+真实 PostgreSQL 回归覆盖运行时 Grant 缺失、Authority 拒绝、快照漂移、过期 Patch 基线、Revision 2 创建、新 Task 物化、Owner 重放和精确持久计数。该边界只覆盖 Graph Patch，不表示可直接替换已 Running/Failed Task、补偿外部效果或解冻资源；Exception 编排、治理解冻和通用 Run 修改仍开放。
+
+## 2026-09-12：Correction 应用第三段（Memory Signal 后继）
+
+`abh.corrections.apply` 现在支持 `targetOwner=Memory` 且 Subject 为 `abh.learning-signal` 的候选，用途登记为 `abh.learning.capture`。`beforeRef` 必须是 Signal 拥有的 JSON 精确快照；`proposedAfterRef` 必须是同一 Signal 拥有的替换 Artifact。Owner 在 Signal fence 下复核当前不可变 Signal、租户、用途、精确版本和快照；漂移返回 `CORRECTION_STALE`。
+
+应用不修改原 Signal，而是创建新的不可变 successor Learning Signal，沿用 source/scope/type/purpose，绑定替换 Artifact，写入 `abh.learning-signal.corrected`、Correction Application、Audit、Outbox 和 Receipt。同一 Signal 只允许一个直接后继，重复分叉返回 `PRECONDITION_FAILED`；重放返回同一 Application。该段只覆盖 Signal 后继；Learning Case 由后续段落实现，仍不做独立评测、用途撤回传播或知识资格授予。
+
+真实 PostgreSQL 回归覆盖学习 Grant 缺失、Authority 拒绝、快照漂移、成功后继创建、旧 Signal 不变、Application 重放、重复分叉拒绝和精确持久计数。三类目标 Owner 的第一段应用均已闭环，但仍不是通用 Correction Engine。
+
+## 2026-09-12：Learning Case 证据归因第一段
+
+`abh.learning.build-case` 新增为公共 Create 命令，要求当前 `abh.learning.capture` 用途和当前 Grant。Payload 绑定 1—100 个 Signal、根因码、1—50 条支持证据、至多 50 条反证和 Domain Owner Ref。Owner 在 Signal fence 下逐个复核租户、Workspace 可见性、当前用途、精确版本/Ref；所有 Signal 必须共享同一 Scope 和合法学习用途，跨客户或用途撤回样本不能进入 Case。
+
+支持与反证必须是当前租户可用且用途允许的 Artifact，证据缺失、不可用或引用漂移返回 `CASE_EVIDENCE_INCOMPLETE`。通过后创建不可变 `LearningCaseRecord`，写入 Receipt Ref、构建者、数据库时钟、内容摘要、Audit、Outbox `abh.learning-case.created` 和 `core.learning_cases`，全部在同一 PostgreSQL 事务提交。Case 只是证据归因，不创建 Capability Candidate，不执行评测，不授予品牌事实或领域知识资格，也不触发发布。
+
+HTTP 与 typed client 暴露显式宿主装配的 BuildCase；宿主 Grant 回调只提供候选授权，Owner 在事务内重新校验。真实 PostgreSQL 回归覆盖 Grant 缺失、证据缺失、跨 Scope、用途撤回、成功创建、HTTP/SDK 幂等重放、跨组织拒绝和精确持久计数。Capability Candidate、Evaluation Profile/Run/Gate、用途撤回传播、Candidate 查询和独立 Producer/Evaluator/Release 身份仍开放。
+
+## 2026-09-12：保持 Unknown 的 Exception 处置
+
+`abh.exceptions.resolve` 现在把 Human 责任处置与外部技术事实分离。命令要求当前 Human、`abh.decision.review` 用途和独立 Grant；Owner 复核精确 Exception 版本、当前 ResourceFence 仍被报告阻塞、未决 Operation 占位仍存在，且 Closed Responsibility Request 中的 Decision 证据有效。`RejectAndStop` 可引用已拒绝 Decision，其余注册处置必须引用批准证据。
+
+`ExceptionResolutionRecord` 只登记 `WaitForEvidence`、`RejectAndStop`、`ApplyCorrection`、`RequestCompensation` 或 `AuthorizedContinue`，并固定 `technicalUnknownPreserved=true` 与 `resourceFreezePreserved=true`。不可变 Resolution、CommandReceipt、Audit 和 Outbox 在同一 PostgreSQL 事务提交；重放返回同一视图，同 Exception 换幂等键冲突，技术 Operation 与资源冻结不被改写。Command 重放前仍会重新验证当前权限和技术冻结。Correction 应用、自动补偿和治理解冻仍是后续缺口。
+
+## 2026-09-12：Run 无进展预算停止
+
+Run 现在在创建时固定 `progressBudgetSeconds` 和数据库 `progressDeadline`。Checkpoint 提交成功后，Owner 在同一事务读取数据库时钟、刷新 Run JSON 与 `progress_deadline`，因此实际进展能延长预算，而 Worker 不会用本地时钟误判。内部命令 `abh.runs.stop-stalled` 要求当前 Service、`abh.runtime.deliver` 和 Grant；`stopStalledRun` 校验命令目标/版本，`stopStalled` 在 Run 锁下复核状态和数据库 deadline。
+
+到期 Run 原子转为 `Failed/NoProgress`；`Created/Running` Invocation 关闭为 `Cancelled/Deadline`，未终 Task 取消，Mission activeRunRef 清理，活跃 Mission 的 stop epoch 前进。Run、Task、Invocation、Audit 和 Outbox 在一个 PostgreSQL 事务内提交，命令幂等重放返回同一 RunRecord。`runRunStallWorker` 只做租户内有界分页发现，每页刷新 Context 并逐个授权；版本冲突、抢跑 precondition 和候选消失安全跳过，权限或完整性错误继续暴露。
+
+真实 PostgreSQL 回归覆盖活跃 deadline 不停、两个到期候选发现、旧版本拒绝、命令重放、Run/Task/Invocation/Mission/stop epoch 原子状态、精确 Audit/Outbox、Worker 扫描停止和活跃 Run 隔离。Run execution 回归确认 Checkpoint 刷新 JSON 与数据库 deadline。Core 全量 557 项中 551 通过、6 跳过、0 失败；合同生成一致性、类型检查、Contracts/Core API report、本批聚焦测试和完整 `pnpm check` 通过。生产 Worker 托管、跨租户调度、真实 Pi/Provider 装配仍不在此验收范围内。
+
+## 2026-09-12：Run Wake Worker
+
+新增 `runRunWakeWorker` 提供租户内有界候选扫描：只发现 owner 指向 Waiting Run、Wakeup 已持久化且 Wait source 明确 satisfied 的条件通知；Deadline 通知不会伪装成业务条件满足。Worker 每次刷新当前 Service Context，检查组织/Workspace/主体绑定，使用当前 `abh.runs.wake` Grant 调用既有幂等 WakeRun Owner；竞态、旧版本和短暂 precondition 保留给下一次扫描，权限或完整性错误立即暴露。
+
+真实 PostgreSQL 回归覆盖 Deadline 候选过滤、Pending/错误 owner 拒绝、Worker 自动 Waiting→Running、直接命令幂等与旧版本拒绝、缺 Grant 拒绝以及 Audit/Outbox 精确计数。租户间发现、全局 Worker 托管、重投策略和真实等待条件装配仍开放。
+
+## 2026-09-12：Ready Task Worker
+
+新增 `runReadyTaskWorker` 将租户内 Ready 发现接到可替换 executor：每次扫描绑定固定 Service Context，通过当前 Grant 执行 Claim、Prepare、Finalize 和 Complete。Prepare 冻结 TaskSpec 与执行 Principal，Finalize 固定 Manifest、Bindings 和 Contract Digest；executor 只在 Invocation 已 Running 后调用，完成结果必须由当前租约 fencing 提交。幂等键由 Task/租约/阶段派生，短暂丢竞态留给下一页，授权或完整性错误立即失败。
+
+executor 返回 `Unknown` 时 Worker 不伪造 Completed/Failed，Invocation 和 Task 保留 Running，交由后续迟到证据对账。真实 PostgreSQL 回归覆盖下游任务自动 Claim→Running→Completed→Verifying、usage/result 绑定，以及外部结果不确定时不推进任务状态。全局多租户托管、Running 租约过期恢复、重投策略和 Pi 生产装配仍开放。
+
+Running Invocation 只在已有 Work Lease 实际过期后进入恢复扫描。接管在同一事务内推进 fencing token，把旧 Invocation 关闭为 `Deadline/Cancelled`，Task 重置 Ready 并递增 `attemptOrdinal`；新 executor 拿到新 fencing 后正常完成。活跃租约不会被发现，缺失租约也不会获得全新 fencing 序列，旧 executor 后续写入口令会被 `requireCurrent` 拒绝。
+
+## 2026-09-12：迟到 Invocation 观察
+
+新增内部命令 `abh.invocations.observe-late`、`abh.invocation-observation` 对象和不可变 `core.invocation_observations` 表。丢失当前租约的 Worker 不能改写 Invocation/Task 状态；只有数据库观察到同一租约已过期、或接管 token 已严格前进时，才保留其 Completed/Failed 证据、usage 和 Artifacts。接管前的重复 Complete 继续失败，Observation 命令在 Audit/Outbox 和幂等回执约束下只保留一份证据；当前 Owner 后续决定是否采用。
+
+真实 PostgreSQL 回归验证活跃租约拒绝、过期后 Complete 拒绝、Observation 落库、旧 Invocation 和 Task 状态不变、接管后 attempt 2 进入 Verifying，以及重复 Observation 不产生第二行。Core 全量 556 项中 550 通过、6 跳过、0 失败；合同 51 artifact 和 API report 通过。迟到证据的自动采用、对账策略和生产调度仍开放。验证见 [迟到 Invocation 观察](verification-2026-09-12-late-invocation-observation.json)。
+
+## 2026-09-12：迟到 Invocation Owner 裁决
+
+新增不可变 `abh.invocation-adjudication` 与 `core.invocation_adjudications`。Run Owner 在接管过期 Running Invocation 前读取同一租约的 Observation：只有数据库已确认租约过期、证据为 `Completed` 且带 Artifact 时，才在同一事务中推进 fencing token、把旧 Invocation 置为 Succeeded、Task 进入 Verifying，并写入 `Adopted/CompletedEvidence`；非完成证据写入 `Rejected/NotCompletedEvidence` 后仍安全重试。接管完成后的迟到证据保留为 Observed，并由 Owner 写入 `Rejected/TaskAlreadyAdvanced`，绝不覆盖新 attempt。
+
+Worker 认领接管候选后重读 Task；若证据已被采纳则跳过重复 Prepare/Executor。真实 PostgreSQL 回归覆盖活跃租约拒绝观察、过期 Complete 拒绝、接管后迟到证据拒绝、明确完成证据采纳、旧 Invocation/Task 精确推进、不新增 attempt、fencing token 前进和不可变裁决审计。Core 全量 556 项中 550 通过、6 跳过、0 失败。验证见 [迟到 Invocation 裁决](verification-2026-09-12-late-invocation-adjudication.json)。
+
+## 2026-09-12：Task Execution、Invocation 与 Checkpoint
+
+新增内部命令 `abh.tasks.claim`、`abh.invocations.prepare`、`abh.invocations.finalize`、`abh.invocations.complete` 和 `abh.tasks.commit-verified`，以及 `abh.checkpoint` 目录对象。迁移 1788897100000 创建 `core.invocations`（Task/attempt 唯一）和 `core.checkpoints`（Run/sequence 唯一），数据库清单升级到 v66。
+
+`RunOwner.readyTasks` 只做租户内有界发现；认领必须通过当前 Grant、Running Run、Ready Task 和 Durable Work Lease。Prepare 冻结 TaskSpec digest 与执行 Principal；Finalize 在租约 fencing 下重验 Manifest/Binding，计算 Contract Digest，并把 Invocation 与 Task CAS 到 Running。Complete 记录 Artifact、stopReason 和 usage，将 Task 推进 Verifying 或 Failed。
+
+Verification 提交现在锁定当前 Task/Invocation、校验版本与来源，Pass/Reject 结果进入 Task CAS，并原子写入 Audit/Outbox；同时补上 VerificationReport 的 contract digest 字段。CommitVerifiedTask 要求 Pass 证据、成功 Invocation 和 Domain Receipt，写入 Checkpoint、派发依赖满足的 Ready Task，并在 required 节点全部成功时提交 Run Completed 和清理 Mission activeRunRef。
+
+真实 PostgreSQL 回归覆盖租约接管、旧 fencing 拒绝、Created→Running→Succeeded、验证提交、Checkpoint、下游 Ready、同键幂等回放和 Audit/Outbox 计数。当前实现仍不调用真实 Pi/外部系统；实际 Pi/Tool 装配、Running 租约过期恢复和迟到证据对账保留为下一批。
 
 ## 已验证基线
 
@@ -3410,8 +3547,332 @@ Workbench 新增 `/runs/[id]` 强读详情：公开 `abh.runs.get` 返回 Run �
 
 该旅程暴露公开客户端在 query/command 包装层把 `ABH_ERROR` 统一改写成 `INVALID_ARGUMENT` 的缺陷。客户端现在保留服务端 `RESOURCE_NOT_FOUND`、`FORBIDDEN`、`VERSION_CONFLICT` 等注册错误及其响应，只对本地输入校验失败生成 `INVALID_ARGUMENT`；专项客户端测试继续确认注册错误保留 correlation 且不冒充回滚结论。
 
+## 2026-09-12：Run 取消闭环
+
+新增公开命令 `abh.runs.cancel`，契约生成 51 个 artifact，OpenAPI 路径增加到 37 个。`CancelRunPayload` 绑定当前 Run、原因码和证据引用；Core 客户端使用 `id/expectedVersion` 派生强 `If-Match`。PostgreSQL Owner 在同一事务中复核状态、CAS 递增 Run 版本和 stop epoch、取消未终 Task、清理 Mission activeRunRef，并原子写入 Audit/Outbox；Queued Run 必须先调度后取消，幂等回放返回同一 RunRecord。
+
+HTTP 处理器和类型化客户端接入 `runs.cancel`。Workbench Run 页提供确认、强读版本复核、理由约束和基于证据引用的稳定幂等键；生产 E2E 验证 Running→Cancelled、任务同步取消、Run 历史更新和后续 Mission 旅程。页面取消成功先返回受理状态，不声明服务端终态；刷新后以强读 Run v2 和任务状态为准。Fake API 的公开 RunRecord envelope、Run UUID 和任务契约同步修正。
+
+完整 `pnpm check` 通过：Core 553 项中 547 通过、6 跳过、0 失败；全工作区 917 项中 911 通过、6 跳过、0 失败。Contracts 51 个 artifact、API 13 个入口、Docs 769 个链接、全仓类型检查、构建和公开 API 报告通过。Workbench 23 项单测和生产构建 E2E 2 项通过，`/runs/[id]` 首载 106 kB。
+
+## 2026-09-12：Task Graph Patch 修订
+
+新增内部命令 `abh.graph-patches.propose`、`abh.graph-revision.created` 事件和 `abh.graph-revision` 目录对象。`ProposeGraphPatchPayload` 只接受新增节点、边、待作废 Pending 节点和证据引用；Core 在 `core.graph_revisions`（manifest v64，租户 RLS）中保存完整修订、base/revision、patch digest、闭包和 proposer。
+
+`RunOwner` 在同一个强读事务中校验 Run 状态、base 版本、节点键、自环、悬挂边、环、深度 20、活跃节点 100、边 300 和 Pending 作废前提；通过后原子写入修订、Audit 和 Outbox。`executeCommand` 保持唯一幂等入口，同键重放按回执结果读取同一修订，而不是再次执行业务写入。启动 Run 时也会创建空的基础修订。
+
+真实 PostgreSQL 回归覆盖 stale base、环、成功修订、幂等重放、非 Pending 作废拒绝和 ledger 计数。修复过程中发现 Owner 方法嵌套执行 `executeCommand` 导致同一事务重复插入回执；现在外层命令包装器唯一负责命令准入、回执和重放，Owner 只负责聚合不变量。剩余编排缺口是 Task 执行、Checkpoint/Invocation、唤醒恢复和完整调度托管。
+
+## 2026-09-12：Run Durable Wait 唤醒
+
+新增内部命令 `abh.runs.wake` 和同名当前授权动作，复用状态机既有 `abh.run.resume` 事件。`WakeRunPayload` 绑定 Run 版本、cause 和 Durable Wait；命令包装器要求 `abh.mission.manage` 或 `abh.runtime.deliver` 用途，并在同一强读事务中锁定组织/run fences、验证当前 Grant。
+
+`RunOwner.wake` 只接受 Waiting Run。它重读 Durable Wait，要求 owner 和 waiting intent 精确指向该 Run、状态已 Succeeded 且存在 wakeup；再复核 Mission 仍 Active、版本一致且 activeRunRef 指向该 Run。通过后 CAS 将 Run 推进到 Running v2，写入 Audit、`abh.run.resume` Outbox 事件，并返回同一 RunRecord 的幂等回放。
+
+真实 PostgreSQL 回归覆盖 Pending/错误 owner 拒绝、成功 Waiting→Running、同命令回放无重复 ledger、旧版本拒绝，以及 Audit/Outbox 精确计数。这补上等待条件满足后的 Owner 恢复入口；生产唤醒 Worker、任务调度和 Checkpoint 托管仍待实现。
+
+## 2026-09-12：Learning Gate 与独立裁决
+
+`abh.learning.build-gate` 补上评测后的独立 Gate Fact：Gate principal 必须不同于 Candidate producer 和 Evaluator，在 `abh.learning.gate` 用途下提交精确 Candidate 版本和不可变 Evaluation Result 集合。Owner 复核 Candidate/Profile/Result 摘要、同一候选与同一冻结 Profile、结果 Artifact 可用性，并锁定 Profile 中机器可读阈值。裁决规则保守合并：缺指标或任一 Inconclusive 证据为 `Inconclusive`，任一阈值失败为 `Fail`，全部通过才是 `Pass`。
+
+不可变 `EvaluationGateArtifactRecord` 保存阈值、实测值、逐项 finding、verdict、签名者、事件、审计和回执；同一 Candidate 只允许一个 Gate，重放收敛到原 Gate。Gate 不创建 Release、不授予知识资格，也不替代生产发布审批。真实 PostgreSQL 回归覆盖 Pass/Fail/Inconclusive、evaluator 自签拒绝、证据错配和命令重放。
+
+## 2026-09-12：Evaluation Result 与 Run CAS
+
+`abh.learning.submit-evaluation-result` 完成 Internal 命令链路。Evaluator 在 `abh.learning.evaluate` 用途下凭当前 Grant 提交指标、样本、执行引用和数据摘要；Owner 只接受 Queued Run 的精确 v1 CAS，独立复核 Evaluator 与 Candidate producer 身份，按样本和失败数确定性判定 `Completed` 或 `Inconclusive`，并写入不可变 `EvaluationResultRecord`、Run v2、事件、审计和命令回执。Run 更新时固化结果引用和执行引用，错误 Evaluator、错误版本、重复终态提交和命令重放均有真实 PostgreSQL 断言。
+
+契约把 `EvaluationRunRecord.resultRef` 定义为终态后才存在的可选事实字段，并从 Run 创建摘要中排除；内部动作目录注册 `abh.evaluation-run` 目标授权。该批次仍不实现外部评测执行、指标不确定性计算、Gate Artifact、Release 编排或评测查询。
+
 ## 2026-09-10：Run 公共生命周期与 Gateway 授权闭环
 
 `abh.runs.start` / `abh.runs.complete` 已从内部 Owner 升级为公共命令链路：显式 `abh.mission.manage` 用途、当前 Grant/fence 准入、Active Mission/Authority/Workflow 精确匹配、同事务唯一 Active Run 检查、Mission `activeRunRef` 原子回填与终态清理、Audit/Outbox、幂等回执和 RunRecord 回放。`abh.tools.invoke` 同步接入 HTTP 命令准入与稳定命令回执，修复 callKey 内容摘要每次变化导致无法重放的问题；Verification 授权范围和 Learning 命令用途注册也一并修正。
 
 真实 PostgreSQL 16 集成覆盖 Draft 拒绝、Authority/Workflow 不匹配、Mission 版本冲突、活跃 Run 拒绝、启动/完成 Audit 和 Outbox、Mission 版本推进与清理、Run/Tool 幂等重放和 stale Run 拒绝。HTTP 装配已包含 Run 命令，浏览器客户端使用与命令模式匹配的 Start/Complete 请求头与目标。Run 启动现在在同一个 UoW 内解析 Static Assignment 并固定 Workflow 的精确 Capability 版本：`assignmentSnapshotRef` 指向 `abh.pin-set`，不再使用占位引用。Run 恢复 Worker 和完整编排仍未实现。
+
+## 2026-09-12：Evaluation 查询与用途撤回传播
+
+新增 `abh.evaluation-runs.get`、`abh.evaluation-results.get` 和 `abh.learning-gates.get` 三个 Public Query，分别绑定 Run 当前版本、不可变 Result 和独立 Gate。Run 提交结果后按 ID 读取当前 v2，而不是误回 Queued v1；Result 允许 evaluate 与 gate 两种证据用途读取，Gate 只允许 gate 用途读取。类型化客户端同步暴露 `learning.getEvaluationRun`、`learning.getEvaluationResult` 和 `learning.getLearningGate`。
+
+新增 `core.learning_withdrawals` 租户隔离表，Purpose Owner 撤销 `abh.learning.capture`、`abh.learning.evaluate` 或 `abh.learning.gate` 时在同一事务写入幂等 Withdrawal。Learning Owner 在 Signal、Case、Candidate、Profile、Run、Result 和 Gate 读取/写入前复核撤回标记：capture 撤销阻断证据归因链，evaluate 撤销阻断评测执行和 Result 证据，gate 撤销阻断 Gate 查询与后续裁决。原始事实保持不可变，传播通过 fail-closed 访问控制实现，不篡改历史记录或合法保留证据。
+
+## 2026-09-12：Learning Signal/Case/Candidate 有界列表
+
+新增 `abh.learning-signals.list`、`abh.learning-cases.list` 和 `abh.learning-candidates.list`。Signal 支持 `signalType/scopeId`，Case 支持 `rootCauseCode/scopeId`，Candidate 支持 `candidateStatus/assetKind/scopeId`；三者都提供 `limit` 和路线绑定的 opaque cursor。响应返回当前页、独立于分页的聚合计数和 `asOf`；排序固定为 `(created_at,id)` 降序，keyset 条件避免偏移漂移。
+
+三个 Public Query 共用 `abh.learning.read` 授权入口，宿主必须显式安装路线级 cursor 和 Grant resolver；Core 在事务内重验当前 Grant/fence。Signal 和 Case 只允许 capture 用途，Candidate 允许 capture/evaluate/gate 用途。Learning Owner 继续复用租户、workspace、purpose、RLS 和 withdrawal 守卫：capture 撤回阻断 Signal/Case/Candidate 读取，evaluate 或 gate 撤回也阻断 Candidate 证据面。
+
+类型化客户端暴露 `learning.listSignals/listCases/listCandidates`。Contracts OpenAPI 增至 49 条路径，51 个生成 artifact 保持一致。真实 PostgreSQL 回归覆盖类型/范围过滤、聚合计数、两页收敛、cursor 筛选漂移拒绝、缺权失败、跨用途 Candidate 可见性以及 capture/evaluate/gate 撤回后的 fail-closed 行为。本地工程完成度更新为约 99.7%；剩余主要是真实评测宿主、Release Controller 消费、运维面和生产治理外部化。
+
+## 2026-09-12：Learning Candidate 运维诊断
+
+新增 `abh doctor learning --candidate` 与 `inspectLearningCandidateReadiness`。CLI 只接受有界参数和格式化结果；Core 使用专用只读连接设置组织、workspace 和 `abh.learning.read` 上下文，在 RLS 内一次读取最多 100 条候选，并用第 101 行标记截断。诊断按候选汇总 Profile 数量/来源、Evaluation Run 与已收口数量、Gate、由 Gate 反查的 Release、必需/已撤用途，并输出七种封闭 stop reason：`PURPOSE_WITHDRAWN`、`PROFILE_MISSING`、`PROFILE_AMBIGUOUS`、`EVALUATION_MISSING`、`EVALUATION_UNSETTLED`、`GATE_MISSING`、`RELEASE_NOT_LINKED`。
+
+诊断不会创建 Gate、Release、Assignment，不重跑评测或修复撤回；输出由新增 `CliDoctorLearningResult` 和 `LearningCandidateDiagnostic` Contract 约束，`commandRef=null`、`evidenceRefs=[]`，不伪造持久证据，也不返回 SQL、驱动错误或连接串。真实 PostgreSQL 回归覆盖从缺 Profile/评测/Gate 逐步补齐到 Release 关联的 stop reason 收敛、合同校验、用途撤回传播；CLI 回归覆盖严格参数解析、重复/未知 flag、连接失败和凭据不泄露。这是 Learning 候选运维面的第一段，不等于生产 Release Controller 或自动晋级。
+
+## 2026-09-12：Learning Gate 供 Release 消费
+
+新增内部命令 `abh.releases.configure-learning-candidate` 和 `abh.release.manage` 治理用途。`LearningReleaseController` 在同一事务内复核 Candidate/Gate/Profile 的租户、Workspace、版本、不可变 digest、Candidate 草稿状态、Gate `Pass` 判定与精确引用绑定；当前 Release Authority 必须独立于 Producer、Evaluator 和 Gate signer。Capture、Evaluate 或 Gate 用途任一撤回时，新执行和已受理回放都 fail-closed。
+
+控制器复核 `release.gateRefs` 精确包含 Gate、Assignment 指向同一 Release，并确认该 Gate 尚未被其他 Release 消费。通过后只委托既有 `StaticReleaseOwner.configure` 完成 Draft→Ready 与 Assignment 写入；不绕过静态发布治理，也不执行自动晋级。唯一命令回执保证同键重放返回同一 Assignment，真实 PostgreSQL 回归覆盖授权、Producer/Evaluator 独立性、缺失/错配/非 Pass Gate、Release/Assignment 链接、成功发布、无重复写入、幂等一致和撤回传播。
+
+## 2026-09-12：Evaluation 基线比较与统计不确定性
+
+冻结 Evaluation Profile 现在必须声明置信度和最低相对提升；Evaluation Result 可绑定同一冻结协议下的基线指标和样本量。Gate 不再把单一点值直接当成通过依据，而是按有效样本合并多次评测，计算 Wilson Score 双侧区间：绝对门槛要求候选置信下界不低于阈值；配置提升门槛时还要求点提升和下界差均达到冻结比例。
+
+不可变 Gate 保存聚合候选/基线指标、逐指标 Wilson `uncertainty` 和封闭 `limitations`，明确结果只适用于冻结数据集且不做干扰/选择偏差调整。缺少基线、缺失指标或样本不足会 Fail/Inconclusive，不会把失败样本静默剔除。真实 PostgreSQL 回归覆盖缺基线字段拒绝、绝对阈值、基线相对提升、区间和局限结构、幂等重放与非 Pass Gate 拒绝。
+
+## 2026-09-12：Evaluation Recovery Orchestration
+
+Evaluation Run 现在具有 60 分钟数据库时钟截止期，并新增内部 `abh.learning.expire-evaluation` 命令和 `abh.evaluation-run.expired` 审计事件。恢复只允许把仍在队列中的 Run 显式置为 `Inconclusive`；不会生成 Result、指标或 Gate 证据，迟到的真实评测结果也无法写入终态 Run。
+
+新增租户本地 `Evaluation Recovery Worker`：以 `abh.learning.evaluate` Service Context 和当前 Grant 扫描有界 Queued 页，使用 Work Lease fencing token 防重复派发；宿主回调只接受 `Accepted` 或 `Unknown`。Accepted 释放租约，Unknown 或回调失败保留租约自然过期。达到 attempt 上限或超过截止期后走正式 expire 命令。回收 Worker 每次派发前重验 Grant；capture/evaluate 任一用途撤回会阻断扫描。
+
+真实 PostgreSQL 回归覆盖授权拒绝、Accepted 派发与租约释放、释放后再次接管、Unknown 不重复派发、attempt 上限、时钟过期、用途撤回、活跃 Run 仍可接收真实结果、过期 Run 拒绝迟到结果，以及过期事件/回执审计。Contracts 维持 51 个 artifact 和 49 条内部 OpenAPI path；契约生成、Core 构建/类型检查、学习回归和公开 API 报告通过。
+
+## 2026-09-12：Workbench Learning 列表只读浏览
+
+新增公开 `abh.evaluation-runs.list` 和 `abh.learning-gates.list`，与既有 Candidate/Case/Signal 列表共用 bounded keyset、聚合计数、`abh.learning.read` 准入和按用途收敛的授权回调。HTTP、OpenAPI、生成契约、类型化客户端和公开 API 报告同步接入。Workbench `/learning` 现在能在 `abh.learning.evaluate` 会话中浏览候选、可见 Evaluation Run、到期、结果和分页游标；页面保持只读，不提供恢复、裁决或发布操作。
+
+浏览器生产旅程覆盖 Overview→Mission→Run、Learning 候选与评测、迟到响应拒绝、Decision 审批、补偿和 Organization B 隔离。Fake API 同步到最新 Run 进度预算/截止契约，并且评测列表在无 Candidate 过滤时返回同一组织候选的可见请求。生成器测试修正为 51 条 OpenAPI path；完整 `pnpm check` 通过，E2E 2 项通过。剩余的 Workbench/CLI 操作面是写路径、批量运维、连续投影和差异对比，而不是本次只读列表本身。
+
+## 2026-09-12：Workbench Evaluation Request 写路径
+
+`/learning` 从只读浏览补上首个受治理 Learning 写入口：`abh.learning.request-evaluation`。服务端 Action 先校验 UUID/版本，用公开强读确认 Draft Candidate 属于当前组织、用途和 Workspace，再以返回的 Candidate 和 Baseline 引用绑定命令目标；浏览器只提交 Candidate id/version，不注入 Profile、Baseline、Organization 或预期结果。幂等键由组织、Workspace、Candidate 引用和用途规范化派生，页面在 accepted 后显示命令回执与刷新后的 Run 状态。
+
+Fake API 增加 Evaluation Run 动态受理与 `201` 命令响应，生产 Chromium E2E 覆盖候选选择、表单受理、运行可见性和可访问性扫描；单测锁定幂等键稳定性。完整 `pnpm check` 通过：Contracts 312/312，Core 562 项中 556 通过、6 跳过、0 失败，Workbench 24/24，CLI 5/5，E2E 2/2，Docs 771 条链接，Contracts 51 个 artifact/path。此入口不裁决 Gate、不重试 Evaluation，也不代表批量运维或完整 CLI 操作面。
+
+同一页面继续消费 `abh.learning-gates.list`，把不可变 Gate Artifact 纳入 Learning 可观测面：显示 verdict/version、Candidate、Profile、评测证据数、逐指标 Wilson 区间、局限说明和签署时间。页面文案已从“只读”改为准确描述恢复仍由受授权宿主 Worker 执行。Fake API 和生产浏览器旅程同步覆盖 Pass Gate 与授权组织隔离；Gate 仍由 Core 确定性裁决，Workbench 不提供人工改判。
+
+## 2026-09-12：Evaluation Host HTTP Port
+
+新增公开 `@abh/core/evaluation` 装配入口，为既有 `Evaluation Recovery Worker` 提供有界 HTTP Dispatcher。请求使用 canonical JSON 并精确绑定 Evaluation Run、Work Lease fencing token 和 attempt；宿主凭据由有界回调注入，继承 Worker signal。适配器只接受 HTTP `202` 与封闭 `{outcome:"Accepted"}`；非 202、协议漂移、重定向、超大、非法 UTF-8/JSON、超时和传输失败统一返回 `Unknown`，保留租约直至安全过期。
+
+真实本机 HTTP 回归覆盖精确绑定与受理、非 202/非法 JSON/意外结果保持 Unknown、端点/凭据配置校验、凭据等待取消和上游取消。响应默认 64 KiB、最大 256 KiB，timeout 100—30000ms。该 Port 只定义宿主受理边界；真实 promptfoo/模型评测执行、计费证据、生产凭据解析和独立安全评审仍不因此完成。
+
+完整 `pnpm check` 通过：Contracts 312/312，Core 568 项中 562 通过、6 跳过、0 失败，Workbench 24/24，CLI 5/5，Docs 771 条链接，Contracts 51 个 artifact/path，公开 API 9+5 个入口匹配。
+
+## 2026-09-12：Evaluation Retry 精确前驱闭环
+
+新增公开 `abh.learning.retry-evaluation`：只能选择一个当前租户可见、强锁复核后的 `Inconclusive` Evaluation Run。后继 Run 冻结同一 Candidate、Profile、Baseline 与 Assignment Unit，生成新 seed/到期时间，并通过 `retryOfRef` 记录精确前驱；调用方不能注入新 Baseline 或 Profile。Candidate 保持 Draft 且没有其他 Queued Run 才能进入重试；Profile 仍要匹配资产/风险，evaluator 仍不得是 producer，Profile suite/dataset/threshold/stopping artifact 和 Baseline 仍必须可用。capture/evaluate 用途撤回、授权、租户/Workspace 边界继续失败关闭。
+
+HTTP 安装点、OpenAPI、类型化客户端和公开 API 报告同步接入，`201` 复用 `EvaluationRunCreatedResponse`。真实 PostgreSQL 回归覆盖成功重试、冻结血缘、seed 更替、幂等回放、Completed/未知前驱拒绝、producer 身份拒绝和活跃队列冲突；同一命令还通过 HTTP 与客户端回放验证。Workbench `/learning` 对可见 `Inconclusive` Run 提供受限重试动作，先强读当前版本再以稳定 `wb/:runId/:version/retry` 幂等键提交；生产 Chromium E2E 覆盖受理、新 Run 可见性和组织隔离。
+
+## 2026-09-12：Learning Release Workbench 写路径
+
+`abh.releases.configure-learning-candidate` 已从 Internal 提升为 Public Create 命令，HTTP 响应绑定 `StaticAssignmentRecord`，OpenAPI 公共路径增至 53 条。Core typed client 新增 `releases.configureLearningCandidate`；HTTP 安装支持独立 Release Authority、当前 Grant 复核、幂等回放和直接 Assignment DTO。Fastify 适配器同时修正了 Create 命令的 ETag 提取：信封 `data.objectRef` 与直接聚合 DTO 的 `assignmentRef` 都能生成强 ETag。
+
+Workbench `/learning` 对强读后的可见 Pass Gate 提供发布表单。服务端动作只接受 Candidate/Gate 版本、Behavior Slot、精确 Capability 和 Compatibility Artifact 输入；Organization、Workspace、状态和证据引用均由 BFF 从当前 Session 与强读 Gate 构造。稳定幂等键绑定 Candidate、Gate、Capability digest 和 Compatibility 意图；浏览器不能注入结果或权威证据。
+
+真实 PostgreSQL Learning 回归覆盖 Core 成功发布、幂等重放、独立 Release Authority 复核、HTTP 提交和 typed client 解包。Workbench 26 项单测和生产 Chromium E2E 覆盖受理、组织上下文隔离、迟到响应拒绝、Evaluation Request/Retry 与 Learning Release。Contracts 312 项测试通过，Core 568 项中 562 通过、6 跳过、0 失败，CLI 5 项和 Fastify 15 项通过。验证见 [Learning Release Workbench 证据](verification-2026-09-12-learning-release-workbench.json)。
+
+## 2026-09-12：Assignment 治理生命周期闭合
+
+`abh.assignments.pause` 已从内部提升为 Public Update，绑定精确 Assignment 版本的 `If-Match` CAS，返回升级后的 `StaticAssignmentRecord`。暂停把 `status` 推进为 `Paused`，同时把 `selectable` 与 `executionAllowed` 置为 false；reason 与 evidence 写入 DTO 和 Audit relation。该操作停止新的能力选择与执行资格，不取消或改写已在途执行。
+
+新增 `abh.assignments.get` 与 `abh.assignments.list` 公共查询。List 支持 release/status 过滤、`limit<=100`、授权绑定的 `(createdAt,id)` keyset cursor，并在同一强读事务复核当前 `abh.release.manage` Grant。`counts` 稳定包含 `Active` 与 `Paused` 零值，避免缺省状态被误读为不可知。Core HTTP、Mission HTTP、启动校验、Learning Cursor 和 typed client 已同步接线；OpenAPI 公共路径增至 56 条，Contracts 51 个 artifact 和 API 报告重新生成。
+
+真实 PostgreSQL 回归覆盖活跃列表、强读、精确版本暂停、暂停 DTO、暂停列表、零值计数与独立 Assignment Grant。Workbench `/learning` 现在展示授权 Assignment 列表；浏览器只提交 Assignment 版本与原因，BFF 强读当前 DTO、校验组织和 Active 状态，并从已有证据引用派生 pause evidence，幂等键绑定版本、原因和该证据。生产 Chromium E2E 覆盖 Release 后 Assignment 可见、确认暂停和 Paused v2 状态。Contracts 312/312、Core 568 项中 562 通过、6 跳过、0 失败、Workbench 27 项和 2 项 E2E、Fastify 15 和 CLI 5 项通过。验证见 [Assignment 治理证据](verification-2026-09-12-assignment-pause.json)。这不等于生产发布审批或回滚编排；Canary 终止、真实部署补偿和批量运维仍在后续批次。
+
+## 2026-09-12：Static Assignment Rollback 生命周期
+
+新增 Public Update 命令 `abh.assignments.rollback` 与不可变事件 `abh.assignment.rollback`。命令绑定失败 Assignment 的强读版本、精确前继 Release、完整 Gate 证据集合、Compatibility Artifact 和治理理由；返回新的 Assignment DTO 并记录 `rollbackOfAssignmentRef` / `rollbackFromReleaseRef` 血缘。
+
+Core 在同一事务中锁定 Active、selectable、execution-allowed 的失败 Assignment；只接受 Ready、当前用途/Workspace 可见的精确前继 Release。Gate 与 Compatibility 引用必须和前继 Release 完全一致，且 Artifact 仍 Available、Learning Gate 仍 Pass。通过后用 CAS 把失败 Assignment 推进到 Paused 并关闭新选择/执行资格，随后创建指向前继 Release 的 replacement Assignment。既有 Pin Set 不改写，已有 immutable pin 继续可查询；系统也不声明在途工作已被取消。
+
+真实 PostgreSQL 回归覆盖版本冲突、未知前继、Tombstoned evidence 失败关闭、replacement 不落库、成功替换、Audit/Outbox、旧 pin 不可变和新 subject 选回前继版本。公共路径另覆盖空 Grant 拒绝、Release Authority 成功、同回执幂等重放、HTTP 403、`If-Match` 版本绑定和 typed client 重放。HTTP 装配校验也修正为识别 `assignments.rollback`，避免只有 rollback 安装时错误访问未安装的 pause 授权。验证见 [Static Assignment Rollback 证据](verification-2026-09-12-assignment-rollback.json)。
+
+## 2026-09-12：Assignment Rollback Workbench 闭环
+
+Workbench `/learning` 现在为 Active Assignment 提供受控回滚入口，并显示 `rollbackOfAssignmentRef` / `rollbackFromReleaseRef` 血缘。浏览器只能选择可见前继 Release 并填写理由；前继 Gate、Compatibility Artifact、精确 Release 版本、目标版本和完整幂等意图全部由 Workbench 服务端强读当前/前继 Assignment 后派生。
+
+Learning Release 服务端动作同步把 Compatibility Artifact 写入 Assignment evidence set，使后续回滚可以从不可见证据引用中封闭派生。生产 Chromium E2E 覆盖两次 Release、第一次 Assignment 暂停、第二次 Active Assignment 选择前继 Release、服务端派生回滚、replacement 显示 Active v1 和完整回滚血缘。Workbench 28 项单测和 2 项生产 E2E 通过，验证见 [Assignment Rollback Workbench 证据](verification-2026-09-12-assignment-rollback-workbench.json)。
+
+## 2026-09-12：Capability Release 运维诊断
+
+新增 `abh doctor release --organization-id --release-id`。Core 使用专用 read-only PostgreSQL 连接设置组织、workspace 和 `abh.release.manage` 用途，复核 Release 用途、Artifact/Learning Gate 证据、Compatibility Artifact、exact Capability 安装、Assignment 存在与执行准入、当前 pin set，以及可覆盖相同行为槽的 Ready 回退候选。结果只输出有界事实和封闭 stop reasons；未知 Release 返回空 diagnostics，不虚构证据。
+
+CLI 提供严格参数解析、UUID/期限校验、text/JSON 输出和稳定退出码；stdout 不包含连接串、SQL 或驱动错误。`CliDoctorReleaseResult` 现在允许失败结果为空 diagnostics，同时强制 Passed 结果恰好包含一个 Release diagnostic。真实 PostgreSQL 回归覆盖参数错误、未知 Release、缺安装时只报告实际停止原因，以及证据、安装、Assignment、pin 和回退候选齐全后的 Passed。CLI 回归覆盖严格解析、依赖失败和凭据不泄露。
+
+该诊断仍然只读：不安装 Pack、创建 Assignment、修复证据、生成 pin、批准生产 Release 或执行回滚编排。
+
+## 2026-09-12：Operation 恢复诊断已闭合
+
+设计要求的 `abh doctor operation --organization-id <UUID> --operation-id <UUID> [--workspace-id <UUID>]` 已接入 Core 与 CLI。`inspectOperationReadiness` 使用专用只读 PostgreSQL 连接和 `abh.operation.reconcile` 上下文，在租户边界内读取 Operation 原意图、当前 attempt 对应 Dispatch Permit、Permit 到期水位、Receipt 计数与最后外部观察水位、最新 Reconciliation 裁决以及未释放 Resource Fence。诊断输出封闭判定 `safeRetry`、`remainingResponsibility` 和七种 stop reason，覆盖许可缺失/过期、观察证据缺失、Unknown 保护差异和 Closed 无收口。
+
+CLI 只接受 UUID、`text|json` 和 `100..30000ms`，失败结果保持契约有效且不返回 SQL、驱动错误或连接串。文本输出不展开载荷或凭据。真实 PostgreSQL 回归覆盖无效参数不触库、未知 Operation 空诊断、Pending 有许可且未过期的安全续跑、Observing/Unknown 无 Receipt/Reconciliation 时保留 Fence 责任，以及 Closed/ConfirmedSuccess 且 Fence 已收口后的一致通过。
+
+该命令严格只读：不调用 Provider、不派发、不写 Reconciliation、不释放 Fence、不合成回执，也不绕过授权或责任边界。验证见 [Operation Doctor 证据](verification-2026-09-12-operation-doctor.json)。
+
+## 2026-09-12：CLI Development 初始化第一段
+
+`abh init --template action-only` 已按 CLI 合同接入：生成显式 Development 配置、两个受限数据库角色的环境引用、Action-only 业务入口和本地检查脚手架。配置在写盘前经 `resolveDevelopmentConfig` 校验；默认目录使用 0755、文件 0600，JSON 输出固定 `commandRef=null`、`errorCode=null`、`evidenceRefs=[]`。
+
+非空目标默认 fail-closed；`--force` 只改写模板自有文件，text 模式在替换前输出有界 unified diff，JSON 模式保持单个机器可解析对象，不触碰调用方新增文件。目录、普通文件和 symlink 目标分别校验，不跟随非普通目标。CLI 回归覆盖严格参数、配置有效性、非空拒绝、force 差异/隔离、symlink 安全和 JSON 输出有效性。
+
+这只是初始化脚手架：不启动服务、不提供生产身份/Secret Ref 解析，也不把空业务入口说成已实现业务 Action。`dev`、Pack、升级、导入导出和发行打包继续开放。
+
+## 2026-09-12：Pack 内容验证 CLI 第一段
+
+新增 `abh pack validate --root --manifest --policy`，把既有 Core 本地 Pack 扫描器接到 CLI：先复核显式部署策略和 Manifest，再在同一有界期限内读取声明 payload、复核精确字节和三组 manifest/artifact-set/package 摘要。扫描拒绝 symlink、hard link、未声明文件、重复引用和超限内容；新增 `PackContentDiagnostic` 与 `CliPackValidateResult` Contract 约束成功输出。
+
+CLI 使用 100..30000ms 期限，拒绝未知/重复参数，失败只输出稳定错误码和 remediation；`commandRef=null`、`evidenceRefs=[]`，不把本地检查包装成持久证据。真实本地夹具覆盖成功、策略身份不匹配、单字节篡改、文本/JSON 输出和严格解析。签名、来源、CTK、安装、迁移执行和运行时授权仍不在此命令范围内。
+
+## 2026-09-12：Pack Manifest 构建 CLI 第一段
+
+新增 `abh pack build --root --manifest --output`，把无 integrity 的作者草稿转成规范未签名 Manifest。Core 在固定 4 MiB/64 MiB/10000 entry 边界内扫描普通文件，拒绝 symlink、hard link、未声明/重复文件和目录逃逸；按实际字节补齐 Artifact/Migration 尺寸与 SHA-256，再生成三组完整性摘要和 Cosign `signaturePayload`。CLI 以 `O_EXCL|O_NOFOLLOW`、0600 写出规范 JSON，契约化结果固定 `commandRef=null`、`evidenceRefs=[]`。
+
+本命令只生成本地开发制品：不执行包代码、不创建 proof 文件、不签名、不验证部署策略，也不安装或授运行时 authority。契约、Core 定点回归、CLI 严格解析、确定性输出、输出冲突和越界/链接失败均有覆盖。
+
+## 2026-09-12：Pack Cosign 签名 CLI 第一段
+
+新增 `abh pack sign`，复用 V1 的 `digestPackManifest().signaturePayload` 原文并调用部署方 pinned Cosign `sign-blob`。CLI 只接受绝对 Cosign 路径、命名环境密钥引用和可选口令引用；核心在受限 0700 临时目录中用 0600 文件传入载荷/私钥，进程环境固定为最小集，超时或取消强制 SIGKILL。生成 bundle 后立即用独立公钥调用 `verify-blob`，通过后才以 `O_EXCL|O_NOFOLLOW` 和 0600 写出。
+
+结果契约输出 Pack 身份、package digest、bundle digest 和有界长度，固定 `commandRef=null`、`evidenceRefs=[]`，不返回私钥、口令、Cosign stdout/stderr 或主机路径。签名只是证据生成：provenance、CTK、部署策略、安装、迁移和运行时 authority 仍必须独立验收。
+
+## 2026-09-12：Pack 供应链验证 CLI 闭合
+
+新增 `abh pack verify --root --manifest --policy --trust`，把既有 Core `validateLocalPack` 接入 CLI。命令在同一有界只读流程中复核 payload 精确字节、三组 Manifest 摘要、发布签名、SLSA provenance 和签名 CTK 报告；固定 4 MiB/64 MiB/10000 entry 边界并拒绝链接、未声明和重复文件。
+
+结果契约输出正式验证报告中的身份、三组内容摘要、部署策略/三个证据 bundle/CTK 报告摘要、验证时间和有效期摘要，固定 `commandRef=null`、`evidenceRefs=[]`。CLI 不持久化报告、不 Stage、不执行迁移、不创建 Assignment，也不授运行时 authority。
+
+## 2026-09-13：只读 Pack 安装 doctor
+
+新增 `abh doctor pack --organization-id --pack-id --pack-version`，在受限 runtime 连接和同一个 `READ ONLY` 事务中检查精确安装记录。诊断绑定持久 Manifest 身份、状态、版本、部署版本和三组摘要，核验验证报告、签名信任快照、Capability Set 及子注册、当前部署修订指针，并检查生命周期附带的 Enable/Suspend/Retire 事实。
+
+新增 `PackInstallDiagnostic` 和 `CliDoctorPackResult` Contracts。输出最多一条精确 Pack 诊断和有界 stop reasons；`commandRef=null`、`evidenceRefs=[]`。doctor 不读取 payload、不重验 Cosign 密码学、不访问 runtime 无权读取的全局迁移 Journal、不修复或变更安装。真实 PostgreSQL fixture 覆盖未知 Pack、严格参数和证据/注册/部署指针缺失。
+
+## 2026-09-13：Business 固定构建到本地 Pack
+
+新增 `compileBusinessPack` 公共 Pack 入口。它先封闭重验 `defineBusiness` 输出的 `kind`、`schemaVersion`、字段集合、声明语义和 JCS/SHA-256 摘要，再把声明字节编译为唯一 `business.json` Artifact。生成的 DomainPack 固定 `Declarative`、`UNLICENSED`、`resources=None`、`>=0.1.0 <1.0.0`，Capability 显式提供 Business Definition 和每个 Action；Manifest 权限只包含 Action 命令和去重后的用途。
+
+编译复用既有 `buildPackManifest` 的 4 MiB/64 MiB/10000 entry 边界、链接拒绝和真实字节摘要，并产出 `abh.business-ctk-plan`。计划固定 `suiteVersion=1.0.0`、`status=NotRun`，逐 Action 建立 schema case，绑定实际 package digest 并声明 Manifest 中全部 Capability；它不是签名 CTK、执行结果或部署证据。hello-business 模板新增 `npm run pack:manifest`，在生成的 `pack/` 目录输出声明、Manifest 和计划。
+
+新增 `abh pack compile-business --business --output`。CLI 只接受 100..30000ms 期限和未知/重复参数拒绝；以 0600、不覆盖方式写出规范 Manifest、声明字节和 CTK 计划，结果继续由 `CliPackBuildResult` 封闭。CLI 回归覆盖成功输出、契约校验、Artifact 字节摘要、`NotRun` 计划、输出冲突、篡改摘要拒绝和文本/JSON 参数边界。
+
+Core 回归覆盖契约有效、Capability/权限映射、Artifact 精确摘要、计划摘要、确定性输出、篡改声明摘要拒绝和错误输入拒绝；CLI 回归动态执行生成编译脚本并校验三个输出。Core 613 项中 606 通过、7 项既有 Cosign 用例跳过、0 失败。该能力只产出未签名本地候选，不签名、不发布、不安装、不启用、不授执行权限，也不替代真实 Domain、独立安全或性能验收。
+
+## 2026-09-13：只读 Ledger 余额 doctor
+
+新增 `abh doctor ledger --organization-id --ledger-id` 和 Core `inspectLedgerBalanceAudit`。命令以固定 `abh.resource.read` 用途进入受限 runtime 连接，并在同一个 `READ ONLY` 事务中设置租户上下文、按精确组织与 Ledger ID 读取授权记录、重建最多 10,000 条 immutable entries、汇总四类余额，并核对 Held Reservation、Open Commitment、到期 Hold 和 Outbox ledger 版本链。
+
+新增 `LedgerDiagnostic` 与 `CliDoctorLedgerResult` Contracts。`LEDGER_RECORD_DRIFT` 表示行版本越过最新 Outbox 事件；`BALANCE_DRIFT` 表示规范化列与 entries 重建不一致；其余有界原因覆盖非法 entry、超过 10,000 条、责任不一致和到期 Hold。CLI 输出前做契约校验，固定 `commandRef=null`、`evidenceRefs=[]`，不产生修复 Command，也不直接改数。真实 PostgreSQL fixture 覆盖一致账本、未知账本、余额列漂移、版本漂移和到期 Held。
+
+## 2026-09-13：Ledger 周期/单位目录与余额 Correction
+
+`resource.units` 与 `resource.periods` 成为 Ledger 配置的强制目录。不可变 Unit 声明 monetary/quantity、币种和 0—12 位精度；不可变 Period 声明 UTC 会计区间。`LedgerOwner.configure` 先在租户内解析 Unit 与 Period，再拒绝 monetary/quantity 币种错配、Period 版本漂移和超过 Unit 精度的 limit。目录运行时只授予 SELECT/INSERT，配置路径继续走 Audit、Outbox 和 Command Receipt。
+
+`abh.ledger-corrections.apply` 支持 Refund 和 FxRevaluation 的有符号 `usageDelta`。命令要求 Refund 不带 conversion ref、FX 必须带 conversion ref，并把方向、额度恢复和证据规则交给宿主 Domain 回调。Owner 加锁后复核当前 cumulative/open 状态、精确账本版本和容量下限，创建不可变 `LedgerCorrectionRecord`，追加 `Correct` Ledger Entry，原子更新 confirmed usage，再写入 Correction、Entry、Ledger balance、Audit、Outbox 和 Receipt。同一 ledger/source/version 的重放返回原记录，内容变化返回幂等冲突；过期期望版本允许按最新当前版本重试，不伪造成功。
+
+真实 PostgreSQL 回归覆盖目录缺失、Period 过期、Unit/Period/精度准入、FX 增加、源去重重放、Refund 减少、超额退款、余额重建和 doctor 通过。迁移 69 将数据库清单中的 Tenant 表增加到 113 张；Contract 生成与 312 项契约测试通过。该能力仍是账本层原语，真实业务退款/FX 策略宿主和生产资源装配保持显式缺口。验证见 [Ledger Catalog Corrections 证据](verification-2026-09-13-ledger-catalog-corrections.json)。
+
+## 2026-09-14：Responsibility DelegateSlot 与 EscalateSlot
+
+Correction 新增 `Capability` 目标 Owner，用于 Prompt/Workflow 等系统能力纠错。提案阶段继续保留不可变 before/after Artifact 和 Human Correction 责任；Apply 阶段不再直接改生产 Capability，而是要求 Learning Case、baseline、replacement artifact 和候选元数据一致，并在同一事务内调用既有 Learning Candidate 创建路径。结果是 Draft Learning Candidate、不可变 CorrectionApplication、Audit 和 Outbox 证据；重放返回同一 application。真实 PostgreSQL 回归验证 Draft 候选创建、生产版本不变和重放安全。验证见 [Capability Correction 证据](verification-2026-09-14-capability-correction.json)。
+
+在 DelegateSlot 之后新增内部 `abh.responsibility-requests.escalate-slot`，仅接受 Unresolved Request，并把一个无合法候选的冻结席位替换为下一个治理候选。Owner 复核当前 Human Assignment、责任类型、Workspace/Subject scope 和不晚于 Request 的有效期；Route Revision 记录持久 `escalation` 元数据，Request 持久 `escalationDepth`。合同将升级深度限制为 1–4，Owner 再次拒绝第五级。全部锁、CAS、Pending supersede、审计和 Outbox 语义复用既有 Route Revision。真实 PostgreSQL 回归覆盖首次升级、持久深度、第四级后拒绝和只替换目标席位。验证见 [Responsibility Escalation 证据](verification-2026-09-14-responsibility-escalation.json)。
+
+新增内部 `abh.responsibility-requests.delegate-slot` 命令，复用 Route Revision 的事务锁、版本 CAS、Pending supersede 和不可变 Route Revision 记录，但把变更限制为单个冻结席位的委派。所有者会复核委派元数据、受托 Human Assignment 的当前状态/类型/Workspace/Subject scope、不晚于 Request 到期的有效期，以及其余席位和槽位完全未变。旧批准保留为历史，旧 Pending 进入 Superseded，新 Route Revision 全部使用 fresh Decision；ALL 完成凭证只在全部新席位重新批准后创建。合同注册 `DELEGATION_EXCEEDS_AUTHORITY`，真实 PostgreSQL 回归覆盖专用授权、缺失委派、受托人不匹配、旧批准保留和 fresh ALL 完成。验证见 [Responsibility Delegation 证据](verification-2026-09-14-responsibility-delegation.json)。
+
+## 2026-09-13：Action Safe Retry
+
+新增组织级 `abh.organization` 授权投影订阅。订阅只向当前组织发放 Mission/Decision/Action 已提交 Outbox 的变更提示，不携带业务载荷；每次出流前复核 Active Organization、Human 成员资格、当前 `abh.projections.read` Grant、事件组织归属和 UUID 游标，未知游标强制 reset。协议目录把 Organization 纳入 `abh.projections.read` 目标。Workbench BFF 允许同源代理该 subject；Overview、Inbox 和 Action List 通过一条组织流精确失效授权键控缓存，轮询保留为兜底。
+
+E2E 改用 `.next-e2e` 隔离构建和生产 Next server，构建期间与运行期间固定 Fixture 身份，消除开发/生产产物混用。真实 Chromium 旅程覆盖 Overview/Inbox 消费失效、Action 列表组织事件更新、Run Running→Completed SSE 变更，以及 Action SSE 断开后凭 Last-Event-ID 重连并强读到 Closed。真实 PostgreSQL 回归覆盖组织事件、坏游标 reset 和无授权 reset。验证见 [Workbench Organization SSE 证据](verification-2026-09-13-workbench-organization-sse.json)。
+
+同一生产 E2E 套件还覆盖失败 Action 的补偿提案旅程：治理服务解析注册模板后，浏览器渲染 JSON Forms；提交路径强读最新 Action 版本与 Closed/Failed 状态，重新解析模板、复验 source/artifact 绑定、用 Ajv 2020 校验输入，并以稳定幂等键调用公开 `abh.actions.propose`。该证据关闭 Workbench 补偿模板旅程缺口；真实 Domain 治理服务和生产宿主装配仍是外部边界。
+
+新增内部命令 `abh.operations.safe-retry`，只接受已派发至少一次、仍 Dispatching/Pending、尝试次数少于 3 且最新 Attempt Observation 恰为 `TransportFailed` 的 Operation。命令先独立预检当前 Service Grant，再完整执行 T2 来源、Snapshot、Policy、预算、连接、目标和资源槽重授权；通过后继续复用旧 Permit 的 Provider idempotency key，创建新的不可变 Attempt/Permit。旧 Attempt、Observation、旧 Permit 和旧围栏令牌保持不变。
+
+`ResourceFenceOwner.occupy` 只在 safe-retry 路径允许同一 unresolved Operation 重入并轮换 fencing token；其他 Operation 仍被同一资源槽阻塞。普通 `issue-permit` 无法借用该路径获得第二个 Permit。T2 授权完成后，Safe Retry 在同一事务中无锁重读当前 Grant；组织 fence 已由 T2 持有，并发撤销会被阻塞，撤销已提交则命令失败。
+
+真实 PostgreSQL 回归覆盖 ordinal 2/3、相同 idempotency key、围栏令牌只对同一 Operation 轮换、旧 Permit 令牌保持、三次硬上限、缺少/撤销 Grant、Created 与 Interrupted 最新观察拒绝、stale Permit、强制策略拒绝后零新增事实，以及 T2 来源 epoch 不被 retry Grant 污染。生产外部传输重试 Worker、safetyStop 与正式 Domain 装配仍待实现。验证见 [Action Safe Retry 证据](verification-2026-09-13-action-safe-retry.json)。
+
+## 2026-09-13：Action Safety Stop 围栏原语
+
+可信 Action Definition 现在可声明 `safetyStop`，声明进入不可变 Action Intent 并由现有 T2 完整重验 Service 来源、Snapshot、Policy、预算、连接、目标和行为 Pin。对已占用资源槽，`ResourceFenceOwner` 只允许该显式安全 Action 的 Operation 建立 `safetyStopOperationRef` 例外；原 `unresolvedOperationRef`、预算、Attempt、Observation 和旧围栏事实保持不变。安全派发轮换当前 fencing token，使旧普通 Permit 不能再通过出口校验；晚到的第二个独立 safetyStop Action 可再次轮换例外，表示重新确认停止。普通重试和普通新派发仍被拒绝。
+
+真实 PostgreSQL 回归证明：Unknown 普通 Operation 保持资源责任，独立安全 Action 可在同一槽派发，旧 fencing token 失效，安全 Action 不清除 Unknown，预算按两个 Hold 精确可见，第二个独立安全 Action 可替换当前安全指针并推进 token。合同生成和 70/70 Action 测试通过。本批只是核心围栏/T2 原语；公开 safetyStop 命令、正式 Domain 装配、回执/补偿编排和生产治理验收仍未闭合。验证见 [Action Safety Stop 证据](verification-2026-09-13-action-safety-stop.json)。
+
+## 2026-09-13：Safety Receipt 例外退役
+
+`OperationController.apply` 现在在最终确认前读取当前 fence slot：报告目标与 `safetyStopOperationRef` 按 Operation 身份匹配时走 `clearSafetyStop`，只移除安全例外；否则仍走原有 `clear`，继续要求原 Unknown Operation 自己的最终对账。Fence token CAS、完整 Receipt 向量、pinned rule、Controller 权限和 Operation 版本检查保持不变。`DispatchExitOwner` 的 T2 授权同步识别当前安全 Permit，避免已授权安全派发在一次性出口处失败。
+
+真实 PostgreSQL 集成覆盖第一个安全 Permit 的完整派发、响应、Receipt、Reconciliation、关闭和指针退役；原 Unknown Operation、原预算 Hold 和旧 token 保持不变。第二个独立安全 Action 再次轮换指针到 token 3，并用成功 Receipt 完成退役。安全例外存在时普通 retry 被拒绝；退役后原语允许受控 safe retry，但自动安全编排不是本批范围。公开业务编排、exact Connector 运行时证明、正式 Domain 装配和生产治理验收仍显式开放。验证见 [Action Safety Stop 证据](verification-2026-09-13-action-safety-stop.json)。
+
+## 2026-09-13：Safety Capability 元数据登记
+
+Pack 能力 Binding 与 Registration 新增 `safetyStop`。构建期准备器把缺失值规范为 `false`，Registration digest 策略包含该布尔值，因此登记后不能在不推进 Capability Set digest 的情况下改写止损语义。`safetyStop=true` 必须在权限包络中显式授予 `abh.action.safety-stop`，否则准备器在打开源文件前拒绝。能力查询候选返回显式 `safetyStop`，并支持封闭的 `safetyStop` 布尔筛选，同时继续不返回 implementation 或 source 句柄。Catalog 注册 `abh.action.safety-stop`；Action Owner 拒绝“声明 safetyStop 但没有专用用途”的受信定义，公开 proposal payload 依旧无法注入该标志。
+
+Exact resolver 现在把 immutable Registration 的 `safetyStop` 作为解析结果的一部分，并在 `requireSafetyStop=true` 但登记为 false 时返回 `PIN_INPUT_CONFLICT`。`dispatchPackOnce` 根据 Action Intent 设置该要求，因此在一次性出口提交后、真实传输前，safety Intent 不能绑定未登记止损能力的 Connector。真实 exact Pin/Schema 解析测试覆盖 false 拒绝和 true 放行；普通非 safety 解析不受影响。公开业务编排和正式 Domain 装配仍开放。验证见 [Action Safety Stop 证据](verification-2026-09-13-action-safety-stop.json)。
+
+## 2026-09-13：Exception Resolution 公共入口
+
+`ResolveException` 已接入公共契约、Core HTTP 安装项和类型化客户端。公共响应只返回 Exception ref、Command id 和不可变决议记录；宿主只提供可信 Grant 发现，Owner 在 PostgreSQL 事务内重新验证 Human 审阅用途、当前 Grant、关闭且批准的 Decision、精确 Exception 版本、技术 Unknown 和 ResourceFence。
+
+验证：契约 51 artifact、59 个 OpenAPI path、公开 API 报告和 786 个文档链接通过；真实 PostgreSQL 集成通过 HTTP 成功响应、相同幂等键稳定重放、类型化客户端等价调用、Unknown/冻结标志保留和原 Operation/围栏不变。工作仍不含处置后责任重路由、治理解冻编排和生产治理装配。证据为 `verification-2026-09-13-exception-resolution-public.json`。
+
+## 2026-09-13：Run Suspension 通知 Owner
+
+新增 `runPackSuspensionConsumer` 并把持久扫描页投递扩展为 Action/Run 分发。Run 分支在原事件、稳定 consumer id 和现有 Inbox/Artifact 事务内复核当前 Grant、suspension 登记、来源 admission、Run 行、assignment PinSet、PinSet digest 与精确能力。成功写入 `RunPackSuspensionObservation`，保留当前 Run 和全部 Task 快照；失败不确认事件，未知 subject 或缺少 Run admission 显式拒绝。
+
+真实 Cosign/PostgreSQL 联测覆盖 Run PinSet 引用发现、Run/Task 回读、通知 Artifact、consumer id 稳定性和缺 admission 拒绝。该效果只是暂停观察，不是 Run 状态变化或补偿；生产跨范围调度、退役治理和真实 Provider 验收仍开放。验证见 [Run Suspension Owner 证据](verification-2026-09-13-run-suspension-owner.json)。
+
+## 2026-09-13：Suspension 持久回填水位
+
+新增 `runtime.suspension_sweeps` 和 `SuspensionSweepOwner`，以 event/capability/scope 为键保存 generation、数据库时钟高水位、单调 page cursor 和完成事实。capability reference 查询支持 `beforeAt` 快照边界；失败不推进，并发后插入必须由新一代扫描。dispatch worker 现在自动维护显式 scope 的 durable 回填状态。
+
+真实 Cosign/PostgreSQL 回归覆盖数据库 readiness、worker 两代状态、高水位前后 PinSet 分离、cursor 回退拒绝、完成新一代打开和原事件 Inbox 去重。该水位仍绑定显式 scope，不构成生产 scope 目录、退役删除证明或全局通知完成。验证见 [Suspension Watermark 证据](verification-2026-09-13-suspension-watermark.json)。
+
+## 2026-09-13：Safety Stop 公共提案
+
+新增 `abh.actions.start-safety-stop`、HTTP 安装项和 `client.safetyStops.start`。payload 显式绑定候选 fence、token 和未决 Operation；Owner 在提案事务内重新锁读候选并复核真实 Identity、token、未决 Operation、无阻塞报告和无既有 safety Operation。受信 definition 必须声明 `safetyStop=true` 与专用用途；proposal 目标必须同时绑定 fence 与未决 Operation。接受命令只创建 Proposed safety intent，不签发 Snapshot、Permit、资源预留或外部调用。
+
+契约新增 `ProposeSafetyStopPayload` 并保持 51 个 artifact 一致；OpenAPI 增至 61 条路径。真实 Identity/Core HTTP/typed client Action 回归 71/71 通过，覆盖成功 intent、stale token、重复 safety 候选、非安全 definition 拒绝和既有公开 proposal 回归。全仓 `pnpm check` 通过 1002 项中 995 通过、7 外部签名跳过、0 失败。自动编排、正式 Domain 装配和生产治理验收仍开放。验证见 [Safety Stop Public Proposal 证据](verification-2026-09-13-safety-stop-public-proposal.json)。
+
+## 2026-09-13：Artifact 反向血缘
+
+`ArtifactLineageOwner` 现在把 Available 发布事实写入 `data.artifact_dependencies`，内联与 ObjectStore T2 共用同一写入协议。血缘边不可变、按租户和 purpose 隔离，并对同一目标/源组合幂等；反向 descendants 查询用精确 source 三元组和 JSON 引用复核，返回稳定 UUID 键序和有界分页。表只授予 runtime SELECT/INSERT，迁移清单版本升至 72。
+
+真实 PostgreSQL 回归覆盖内联和 ObjectStore 发布、双源血缘、重复记录去重、键序分页、跨租户隔离、runtime 权限拒绝和 CHECK 防改写；Artifact 24/24 与数据库 readiness 12/12 聚焦回归通过。生产 ObjectStore Adapter、无上限大正文流式上传和保留/导出生命周期仍开放。验证见 [Artifact Lineage 证据](verification-2026-09-13-artifact-lineage.json)。
+
+## 2026-09-13：Artifact 保留生命周期
+
+`runArtifactRetentionWorker` 新增持久保留协议：到期发现、授权入队、租约 claim、外部幂等删除和元数据墓碑在同一套可恢复状态中推进。`data.artifact_retention_jobs` 保存 policy evidence、object ref、stable deletion proof/idempotency key、worker/fencing token、attempt 和最终 receipt；inline Artifact 直接墓碑，ObjectStore Artifact 必须先确认物理删除。迁移清单版本升至 73。
+
+真实 PostgreSQL 聚焦回归 25/25 通过，覆盖未到期保留、到期对象先删后墓碑、Artifact 版本递增、Job 收据、删除幂等键、墓碑后读取拒绝和保留 Artifact 不受影响。验证见 [Artifact Retention 证据](verification-2026-09-13-artifact-retention.json)。
+
+## 2026-09-13：ObjectStore 流式上传与 Artifact 导出
+
+新增 `FilesystemObjectStore`、无上限 Object Artifact streaming、`readStream()`、`data.artifact_exports` 和 `ArtifactExportOwner`。文件适配器以 staging、digest/size 校验、`sync`、原子发布和 receipt 幂等实现 `ObjectStorePort`；定位是 single-host durable production-profile adapter，不是跨主机云存储验收。Object 上传保持 T1 staging、外部 put、verify、T2 Available 的两段协议，导出作业在显式授权和租约保护下使用 repeatable-read snapshot 生成带 hash manifest、records JSONL 和 Artifact 内容的开放目录。
+
+聚焦回归 27/27 通过，覆盖 artifacts、database readiness、filesystem object store 和 artifact export。真实云/多主机 ObjectStore、生产托管和外部验收仍开放；公开 HTTP/client 大正文链路与导出过期清扫已由后续条目关闭。验证见 [ObjectStore 流式与导出证据](verification-2026-09-13-objectstore-stream-export.json)。
+
+## 2026-09-13：公开大对象上传与导出过期
+
+`POST /v1/artifacts/object-uploads` 以 binary body 承载内容、base64url canonical metadata header 承载治理/摘要/长度声明。Fastify binary route 独立认证、取消、错误映射和 route `maxBytes`；typed client `artifacts.storeObject()` 支持 browser `ReadableStream` 和 async iterable。服务端先做 metadata、用途、Grant/fence/admit/reference 校验，再进入 T1 staging、ObjectStore put、read-back digest/size 复核和 T2 Available。FilesystemObjectStore 仍是 single-host durable production-profile adapter，不是分布式或 managed cloud 存储验收。
+
+上传幂等从 ObjectStore receipt 提升为 Artifact 级预约：同一组织、调用者、`store-inline` 动作和幂等键先创建 command receipt，`resultRef` 绑定 staging Artifact；完成升版后重放按 ID 返回当前 Available record，Tracked 状态返回同一 tracking。并发重放由命令去重锁序列化，崩溃后的 Pending 预约不新建 Artifact。`ArtifactExportOwner.expire()` 现在按 worker lease 清理输出目录并原子转 Expired。真实 PostgreSQL/Identity/Fastify 聚焦回归 28/28 通过；分布式/云 ObjectStore、生产扫描隔离、托管与外部验收仍开放。验证见 [公开大对象上传证据](verification-2026-09-13-public-object-upload.json)。
+
+## 2026-09-13：Observing Operation 查询调度
+
+新增租户内 `runObservingQueryWorker`，把已进入 Observing 的 Operation 交给独立调度：按 Operation UUID 有界扫描，跳过活跃租约、已有回执捕获或当前版本报告的事实；每次读取都重新取得 Service context、Work Lease、Execution Authority、QueryExit 预算和独立 Capture 准入。Provider 响应先持久化原始/规范化证据并生成 Operation Receipt，再由当前 Reconciliation rule 比较全部回执；确认成功或无效果时在 Worker fence 内 CAS 关闭 Operation 并清除资源占用，TransportFailed/Unsupported/歧义继续保留 Unknown 责任。
+
+该 Worker 不重放原发送、不改写矛盾结果、不做跨租户发现，也不把进程内 Capture retry 当作持久恢复。真实 PostgreSQL/OPA/Ledger 聚焦回归 `actions.test.ts` 72/72 通过，新增场景覆盖 ResponseLost→Recovery Observing→独立授权查询→Normalized Receipt→ConfirmedSuccess→Operation Closed/Succeeded。生产 Connector 凭据、真实 Provider 与托管部署仍属外部边界。验证见 [Observing 查询调度证据](verification-2026-09-13-observing-query-worker.json)。
+
+## 2026-09-13：Action 详情实时失效
+
+新增 `abh.action` 授权 SSE 订阅。Core 在每次事务中先用 Action Owner 强读租户/Workspace/用途内 Action，再复核当前 `abh.projections.read` Grant；恢复游标必须是绑定同一 Action 的 UUID Outbox 事件，游标错误返回 reset，而不是重放不可信状态。订阅只发送 subject/version/watermark 提示，不携带 Action payload 或敏感业务数据；初始连接先保存当前事件基线，只有此后提交的 Action 状态事件触发一次失效，同一命令重放不再产生事件。
+
+Workbench 同源 BFF 允许转发 `abh.action`，`Last-Event-ID` 保持有界传递；Action 详情页用同一授权键控 TanStack Query 消费提示，SSE 禁用或失败继续授权强读轮询。本批以 Core/Workbench 类型检查、Workbench 28 项单测、既有真实 PostgreSQL Action 72 项回归和 800 条文档链接验证；未把不稳定的浏览器旅程当作通过证据。Overview/Inbox/Run/列表页 SSE、专用真实浏览器验收与生产身份适配器仍开放。
+
+## 2026-09-13：对象上传二进制帧修复
+
+Fastify binary parser 现在只从传入 payload 转发一次，并在收到声明 `Content-Length` 的最后一块后立即结束 decoded `PassThrough`；缺失、零长度和超 route 限制帧会在进入 Owner 前返回有界契约错误。该修复移除了旧实现同时监听数据事件又再次 pipe raw request 造成的重复接管/悬挂路径，也保证空请求可确定到达上传治理校验并以 `INVALID_ARGUMENT` 拒绝。
+
+公开对象上传仍要求 exact declared size、current Grant/fence/admission/reference，先 T1 staging，再 ObjectStore put、read-back digest/size 复核和 T2 Available。回归覆盖 artifact 14/14、Fastify 16/16，最终 `corepack pnpm check` 的文档、契约、类型、全仓测试、构建和 API 报告门禁全部通过。验证见 [公开大对象上传证据](verification-2026-09-13-public-object-upload.json)。
+
+## 2026-09-13：Run 状态授权实时失效
+
+`abh.run` 现在纳入 Projection read 注册和 Core 授权 SSE 路由。订阅端必须绑定同一 Run 的 Outbox subject，每轮重读当前 Run、活跃 Human membership 和当前 `abh.projections.read` Grant；UUID 游标必须是同一 Run 的 Outbox 锚点，未知或跨主体游标返回 reset。事件帧只包含 subject/version/watermark 提示，不暴露 Run payload、任务或业务输入。
+
+Workbench 新增同源 Run 强读 BFF、授权键控 TanStack Query、轮询兜底和 `abh.run` SSE 失效消费；Run 取消前的版本提示由服务端记录驱动。真实 PostgreSQL Run lifecycle 回归验证 start 事件锚点、complete 事件提示、version 2 推进和未知游标 reset；Workbench 29 项回归覆盖授权缓存隔离与有界事件路径。验证见 [Run 状态 SSE 证据](verification-2026-09-13-run-status-sse.json)。

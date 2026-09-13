@@ -19,6 +19,7 @@ export interface OperationControlChecks {
   admit(tx:TenantTransaction,operation:OperationRecord,node:OperationPlanNode):Promise<void>;
 }
 const vector=(refs:EntityRef[])=>canonicalJson(refs.map(refKey).sort());
+const sameOwner=(a:EntityRef,b:EntityRef)=>a.type===b.type&&a.id===b.id;
 
 /** Applies current complete reports with CAS and Worker fencing. Unknown preserves resource occupancy and all budget responsibility. */
 export class OperationController {
@@ -72,7 +73,7 @@ export class OperationController {
     if(permits.length!==1)throw new CoreError('OPERATION_FACT_CONFLICT');
     const permit=await readPermit(tx,{type:'abh.dispatch-permit',id:permits[0]!.id,version:Number(permits[0]!.version)}),fences=new ResourceFenceOwner();
     if(!sameRef(report.permitRef,permit.permitRef)||report.payloadDigest!==permit.payloadDigest)throw new CoreError('OPERATION_FACT_CONFLICT');
-    await fences.requireCurrent(tx,node,operationRef,permit.resourceFencingToken);
+    const slot=await fences.requireCurrent(tx,node,operationRef,permit.resourceFencingToken);
     await lockAction(tx,operation.actionRef.id);
     const lease=await new WorkLeaseOwner().requireCurrent(tx,input.leaseRef,input.workerId,input.leaseFencingToken,operationRef);
     const key=`${c.resourceOrganizationId}/OperationController/abh.operation/${operationRef.id}`,sql=tx.owner('OperationController');
@@ -83,10 +84,12 @@ export class OperationController {
     const final=report.verdict==='ConfirmedSuccess'||report.verdict==='ConfirmedNoEffect';
     const next=contract('OperationRecord',{...operation,operationRef:{...operationRef,version:operationRef.version+1},reconciliationRef:report.reconciliationRef,
       position:final?{lifecycle:'Closed',outcome:report.verdict==='ConfirmedSuccess'?'Succeeded':'Failed'}:{lifecycle:'Observing',outcome:'Unknown'}});
-    if(final)await fences.clear(tx,command,node,operationRef,permit.resourceFencingToken,report.reconciliationRef,async()=>{
+    if(final){
       // The report, complete receipt vector, pinned rule, live Controller and version are verified under these locks.
       if(!sameRef(report.operationRef,operationRef))throw new CoreError('OPERATION_FACT_CONFLICT');
-    });
+      if(slot.safetyStopOperationRef&&sameOwner(slot.safetyStopOperationRef,operationRef))await fences.clearSafetyStop(tx,command,node,operationRef,permit.resourceFencingToken,report.reconciliationRef);
+      else await fences.clear(tx,command,node,operationRef,permit.resourceFencingToken,report.reconciliationRef,async()=>{});
+    }
     const changed=await sql`UPDATE execution.operations SET record=${JSON.stringify(next)}::text::jsonb,version=version+1,lifecycle=${next.position.lifecycle},outcome=${next.position.outcome},updated_at=clock_timestamp(),updated_by=${c.actor.id}
       WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${operationRef.id} AND version=${operationRef.version} RETURNING id`;
     if(!changed[0])throw new CoreError('VERSION_CONFLICT');

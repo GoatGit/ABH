@@ -8,9 +8,9 @@
 
 处理器返回公开契约 DTO；错误通过 `HttpFailure` 显式映射。未知异常和操作未声明的错误统一返回脱敏 INTERNAL_ERROR。成功响应先生成规范 JSON，再校验实际发送快照；命令 ETag 和 202 Location 从该快照生成。错误默认不承诺可安全重试。
 
-默认请求体上限 1 MiB、总处理期限 30 秒（配置最多 60 秒），认证上下文更早过期时提前终止。认证及 Owner 收到 AbortSignal；不合作的 Promise 也不会阻塞 HTTP 响应，超时后返回的认证结果不能启动 Owner。已开始的业务事务是否提交由 Owner 的取消/事务规则决定，HTTP 超时不证明回滚，调用方应使用原幂等键查回。Socket 断开也会取消信号。
+默认请求体上限 1 MiB、总处理期限 30 秒（配置最多 60 秒），认证上下文更早过期时提前终止。显式 binary route 可配置独立 `maxBytes`，其 content parser 不再继承全局 JSON 上限；parser 在解码流超限时断流并返回脱敏 `LIMIT_EXCEEDED`，HTTP 状态受 Fastify parser 错误约束为 400。handler 仍必须复核声明长度和实际流长度。认证及 Owner 收到 AbortSignal；不合作的 Promise 也不会阻塞 HTTP 响应，超时后返回的认证结果不能启动 Owner。已开始的业务事务是否提交由 Owner 的取消/事务规则决定，HTTP 超时不证明回滚，调用方应使用原幂等键查回。Socket 断开也会取消信号。
 
-测试使用 Fastify inject，并用真实 TCP 验证原始重复头。生产身份/治理安装、Core DTO 映射、SDK/CLI、hello-business、TLS/代理配置和完整服务生命周期仍待完成；本包不代表 V1 服务验收。
+测试使用 Fastify inject，并用真实 TCP 验证原始重复头。生产身份/治理安装、hello-business、TLS/代理配置和完整发行验收仍待完成；Core DTO 映射、typed SDK、显式 CLI 宿主和本地服务生命周期联测已通过。
 
 `stopHttpIngress(app)` 可直接接入 RuntimeService.stopIngress。调用时同步关闭业务准入，关闭监听/连接并等待所有已进入的认证和 Owner Promise；重复调用返回同一停机 Promise。超时响应后的后台业务也必须真正结束后才能关闭数据库。请求自身的业务失败由请求处理，传输关闭失败则在收尾后上报。直接 app.close() 只负责 Fastify 的传输生命周期，生产宿主应使用此钩子。
 

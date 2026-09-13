@@ -74,6 +74,7 @@ export async function queryPackCapabilitiesInTransaction(tx:TenantTransaction,op
   for(const row of rows.slice(0,1000).sort((a,b)=>a.pack_name<b.pack_name?-1:a.pack_name>b.pack_name?1:0)){
    const registration=contract('PackCapabilityRegistration',row.capability);
    if(query.versionRange&&!satisfies(registration.capability.version,query.versionRange))continue;
+   if(query.safetyStop!==undefined&&registration.safetyStop===true!==query.safetyStop)continue;
    let current=facts.get(row.pack_id);
    if(!current){
     await trust.lock(tx,row.pack_name);
@@ -87,7 +88,7 @@ export async function queryPackCapabilitiesInTransaction(tx:TenantTransaction,op
    admitPackDeployment(pack.manifest,governance.policy);
    if(await digestBytes(new TextEncoder().encode(canonicalJson({deployment:governance.policy,trust:governance.trust})))!==validation.report.deploymentPolicyDigest)throw new CoreError('VERSION_CONFLICT');
    const availability=contract('PackCapabilityAvailability',await boundedCallback(opts=>inspect(tx,structuredClone(registration),structuredClone(pack),structuredClone(governance),opts),work));
-   if(availability.visible)candidates.push({capability:registration.capability,packRef:pack.packRef,registrationDigest:registration.registrationDigest,schemaDigest:registration.schemaDigest,compatible:availability.compatible,healthy:availability.healthy});
+   if(availability.visible)candidates.push({capability:registration.capability,packRef:pack.packRef,registrationDigest:registration.registrationDigest,schemaDigest:registration.schemaDigest,safetyStop:registration.safetyStop===true,compatible:availability.compatible,healthy:availability.healthy});
   }
   // Later candidate callbacks cannot invalidate an earlier candidate unnoticed.
   for(const value of facts.values())if(canonicalJson(await readFacts(value.pack.packRef))!==canonicalJson(value))throw new CoreError('VERSION_CONFLICT');

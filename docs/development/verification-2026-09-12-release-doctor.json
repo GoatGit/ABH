@@ -1,0 +1,46 @@
+{
+  "date": "2026-09-12",
+  "subject": "Capability release readiness doctor",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/release-doctor.test.ts",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm typecheck",
+    "corepack pnpm build",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "git diff --check"
+  ],
+  "results": {
+    "contractsArtifacts": 51,
+    "releaseDoctorRegression": "5 passed, 0 failed",
+    "cliDoctorRegressions": "6 passed, 0 failed",
+    "organizationAndWorkspaceScopedReadOnlyConnection": true,
+    "invalidArgumentFailuresHaveNoSyntheticRelease": true,
+    "unknownReleaseReportsEmptyDiagnostics": true,
+    "gateCompatibilityInstallationAssignmentPinAndRollbackReported": true,
+    "closedStopReasons": [
+      "GATE_EVIDENCE_INVALID",
+      "COMPATIBILITY_INVALID",
+      "CAPABILITY_NOT_INSTALLED",
+      "ASSIGNMENT_MISSING",
+      "EXECUTION_NOT_ALLOWED",
+      "PIN_UNAVAILABLE",
+      "ROLLBACK_CANDIDATE_MISSING"
+    ],
+    "noDiagnosticMutationOrReleasePromotion": true,
+    "rawDatabaseErrorsAndConnectionStringsSuppressed": true
+  },
+  "evidence": [
+    "The real PostgreSQL fixture advanced a Ready release from missing exact installation to a contract-valid Passed result",
+    "The rollback query found a prior Ready release covering the same behavior slot and valid gate/compatibility evidence",
+    "Unknown releases returned an empty bounded diagnostics array and PRECONDITION_FAILED",
+    "The CLI rejected unknown, duplicate, malformed and out-of-range flags without echoing secrets; dependency failures stayed contract-valid"
+  ],
+  "limits": [
+    "The doctor observes readiness; it does not install capabilities, mutate assignments, repair evidence, create pins or orchestrate rollback",
+    "Production release approval, automatic promotion, deployment execution, in-flight compensation and continuous observation remain open",
+    "Production hosting, real governance systems, independent security review and domain acceptance remain outside local engineering completion"
+  ]
+}

@@ -189,6 +189,36 @@ export const coreCatalog = {
       "description": "Responsibility case bound to immutable contradictory terminal evidence."
     },
     {
+      "name": "abh.exception-resolution",
+      "owner": "HumanGateway",
+      "scopeKind": "None",
+      "description": "Immutable responsibility disposition while preserving technical Unknown evidence."
+    },
+    {
+      "name": "abh.exception-resolution-effect",
+      "owner": "HumanGateway",
+      "scopeKind": "None",
+      "description": "Immutable governance effect that releases only the reviewed report hold."
+    },
+    {
+      "name": "abh.exception-successor-dispatch",
+      "owner": "HumanGateway",
+      "scopeKind": "None",
+      "description": "Immutable proof that one resolved exception was handed to its governed successor handler."
+    },
+    {
+      "name": "abh.correction-application",
+      "owner": "HumanGateway",
+      "scopeKind": "None",
+      "description": "Immutable Subject Owner application result for one correction candidate."
+    },
+    {
+      "name": "abh.correction",
+      "owner": "HumanGateway",
+      "scopeKind": "Object",
+      "description": "Immutable human correction candidate that never auto-applies to the current subject."
+    },
+    {
       "name": "abh.execution-authority",
       "owner": "Control",
       "scopeKind": "None",
@@ -333,10 +363,22 @@ export const coreCatalog = {
       "description": "Immutable Pack validation evidence; installation requires current deployment governance."
     },
     {
+      "name": "abh.ledger-correction",
+      "owner": "ResourceLedger",
+      "scopeKind": "None",
+      "description": "Immutable signed Ledger correction from a verified source observation."
+    },
+    {
+      "name": "abh.unit",
+      "owner": "ResourceLedger",
+      "scopeKind": "None",
+      "description": "Immutable monetary or quantity measurement unit."
+    },
+    {
       "name": "abh.period",
       "owner": "ResourceLedger",
       "scopeKind": "None",
-      "description": "abh.period"
+      "description": "Immutable accounting period bound to Ledger configuration."
     },
     {
       "name": "abh.pin-set",
@@ -457,6 +499,18 @@ export const coreCatalog = {
       "owner": "MissionController",
       "scopeKind": "None",
       "description": "abh.run"
+    },
+    {
+      "name": "abh.graph-revision",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Bounded Task Graph revision and dependency closure."
+    },
+    {
+      "name": "abh.checkpoint",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Verified Run recovery index over Tasks, outputs, waits and resource usage."
     },
     {
       "name": "abh.secret",
@@ -585,6 +639,18 @@ export const coreCatalog = {
       "description": "abh.invocation"
     },
     {
+      "name": "abh.invocation-observation",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Append-only evidence from a Worker whose execution lease has expired."
+    },
+    {
+      "name": "abh.invocation-adjudication",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Current Run Owner decision to adopt or reject late Invocation evidence."
+    },
+    {
       "name": "abh.tool-capability",
       "owner": "MissionController",
       "scopeKind": "None",
@@ -619,6 +685,42 @@ export const coreCatalog = {
       "owner": "MissionController",
       "scopeKind": "None",
       "description": "abh.learning-signal"
+    },
+    {
+      "name": "abh.learning-case",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Governed evidence attribution case; does not confer knowledge qualification"
+    },
+    {
+      "name": "abh.learning-candidate",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Draft capability candidate; evaluation and release are separately authorized"
+    },
+    {
+      "name": "abh.evaluation-profile",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Immutable governance-owned evaluation suite, dataset, metric and stopping rule binding"
+    },
+    {
+      "name": "abh.evaluation-run",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Governed offline evaluation execution binding a candidate to one frozen profile and baseline"
+    },
+    {
+      "name": "abh.evaluation-result",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Immutable evaluator result for one exact evaluation run and frozen profile"
+    },
+    {
+      "name": "abh.learning-gate",
+      "owner": "MissionController",
+      "scopeKind": "None",
+      "description": "Immutable independent gate verdict built from exact evaluation evidence"
     }
   ],
   "purposes": [
@@ -631,12 +733,20 @@ export const coreCatalog = {
       "description": "Execute an authorized fixed Action plan."
     },
     {
+      "name": "abh.action.safety-stop",
+      "description": "Execute an independently authorized safety-stop Action against an occupied resource."
+    },
+    {
       "name": "abh.operation.reconcile",
       "description": "Read external observations to reconcile prior operations."
     },
     {
       "name": "abh.decision.review",
       "description": "Review and respond to a responsibility decision."
+    },
+    {
+      "name": "abh.correction.propose",
+      "description": "Create an immutable correction candidate for an authorized owner."
     },
     {
       "name": "abh.artifact.read",
@@ -683,11 +793,41 @@ export const coreCatalog = {
       "description": "Capture learning signals"
     },
     {
+      "name": "abh.learning.evaluate",
+      "description": "Request governed offline capability evaluation under an independent evaluator identity."
+    },
+    {
+      "name": "abh.learning.gate",
+      "description": "Build an independent learning gate verdict from immutable evaluation evidence."
+    },
+    {
+      "name": "abh.learning.read",
+      "description": "Read aggregate learning evidence and governed candidate status"
+    },
+    {
+      "name": "abh.release.manage",
+      "description": "Configure governed capability releases from independently verified evidence"
+    },
+    {
       "name": "abh.projections.read",
       "description": "Read projection data"
+    },
+    {
+      "name": "abh.resource.read",
+      "description": "Read ledger balances, immutable entries and unresolved obligations"
     }
   ],
   "actions": [
+    {
+      "name": "abh.action.safety-stop",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.action.safety-stop"
+      ],
+      "description": "StartSafetyStop"
+    },
     {
       "name": "abh.actions.aggregate",
       "targetTypes": [
@@ -752,12 +892,14 @@ export const coreCatalog = {
     {
       "name": "abh.actions.read",
       "targetTypes": [
-        "abh.action"
+        "abh.action",
+        "abh.organization"
       ],
       "purposeNames": [
-        "abh.action.prepare"
+        "abh.action.prepare",
+        "abh.action.safety-stop"
       ],
-      "description": "GetAction"
+      "description": "ListSafetyStops"
     },
     {
       "name": "abh.actions.register-plan",
@@ -840,6 +982,16 @@ export const coreCatalog = {
       "description": "StoreInlineArtifact"
     },
     {
+      "name": "abh.artifacts.tombstone",
+      "targetTypes": [
+        "abh.artifact"
+      ],
+      "purposeNames": [
+        "abh.artifact.manage"
+      ],
+      "description": "Apply retention or deletion governance to artifact metadata after physical deletion is confirmed."
+    },
+    {
       "name": "abh.capabilities.read",
       "targetTypes": [
         "abh.organization"
@@ -850,6 +1002,38 @@ export const coreCatalog = {
         "abh.operation.reconcile"
       ],
       "description": "QueryPackCapabilities"
+    },
+    {
+      "name": "abh.corrections.apply",
+      "targetTypes": [
+        "abh.correction"
+      ],
+      "purposeNames": [
+        "abh.learning.capture",
+        "abh.mission.manage",
+        "abh.runtime.deliver"
+      ],
+      "description": "ApplyCorrection"
+    },
+    {
+      "name": "abh.corrections.propose",
+      "targetTypes": [
+        "abh.correction"
+      ],
+      "purposeNames": [
+        "abh.correction.propose"
+      ],
+      "description": "ProposeCorrection"
+    },
+    {
+      "name": "abh.corrections.read",
+      "targetTypes": [
+        "abh.correction"
+      ],
+      "purposeNames": [
+        "abh.correction.propose"
+      ],
+      "description": "GetCorrection"
     },
     {
       "name": "abh.decisions.read",
@@ -893,6 +1077,17 @@ export const coreCatalog = {
       "description": "Open a responsibility case for a currently frozen terminal contradiction."
     },
     {
+      "name": "abh.exceptions.resolve",
+      "targetTypes": [
+        "abh.exception",
+        "abh.exception-resolution"
+      ],
+      "purposeNames": [
+        "abh.decision.review"
+      ],
+      "description": "ResolveException"
+    },
+    {
       "name": "abh.execution-authority.create",
       "targetTypes": [
         "abh.execution-authority"
@@ -905,6 +1100,77 @@ export const coreCatalog = {
       "description": "Current management permission for finite execution delegation from Scope policy or complete Action approval."
     },
     {
+      "name": "abh.graph-patches.propose",
+      "targetTypes": [
+        "abh.run"
+      ],
+      "purposeNames": [
+        "abh.mission.manage",
+        "abh.runtime.deliver"
+      ],
+      "description": "Propose a bounded acyclic Task Graph revision against the current base."
+    },
+    {
+      "name": "abh.invocations.complete",
+      "targetTypes": [
+        "abh.invocation"
+      ],
+      "purposeNames": [
+        "abh.runtime.deliver"
+      ],
+      "description": "Persist the Invocation result and move its Task to verification or failure."
+    },
+    {
+      "name": "abh.invocations.finalize",
+      "targetTypes": [
+        "abh.invocation"
+      ],
+      "purposeNames": [
+        "abh.runtime.deliver"
+      ],
+      "description": "Fix Manifest, Bindings and Contract Digest before Task enters Running."
+    },
+    {
+      "name": "abh.invocations.observe-late",
+      "targetTypes": [
+        "abh.invocation"
+      ],
+      "purposeNames": [
+        "abh.runtime.deliver"
+      ],
+      "description": "Preserve expired-lease Invocation evidence without changing execution state."
+    },
+    {
+      "name": "abh.invocations.prepare",
+      "targetTypes": [
+        "abh.task"
+      ],
+      "purposeNames": [
+        "abh.runtime.deliver"
+      ],
+      "description": "Create an immutable TaskSpec-bound Created Invocation under the current lease."
+    },
+    {
+      "name": "abh.learning.build-case",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.capture"
+      ],
+      "description": "Attribute governed signals and current evidence into a Learning Case without knowledge qualification."
+    },
+    {
+      "name": "abh.learning.build-gate",
+      "targetTypes": [
+        "abh.learning-candidate"
+      ],
+      "purposeNames": [
+        "abh.learning.gate"
+      ],
+      "description": "Build an immutable independent Gate verdict from exact evaluation evidence without creating a Release."
+    },
+    {
       "name": "abh.learning.capture",
       "targetTypes": [
         "abh.organization"
@@ -913,6 +1179,101 @@ export const coreCatalog = {
         "abh.learning.capture"
       ],
       "description": "CaptureSignal"
+    },
+    {
+      "name": "abh.learning.capture-signal",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.capture"
+      ],
+      "description": "Capture a purpose-authorized learning signal with source and scope bindings."
+    },
+    {
+      "name": "abh.learning.create-candidate",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.capture"
+      ],
+      "description": "Create a Draft capability candidate from an exact Learning Case without evaluation or release authority."
+    },
+    {
+      "name": "abh.learning.evaluate",
+      "targetTypes": [
+        "abh.evaluation-result",
+        "abh.evaluation-run",
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.evaluate",
+        "abh.learning.gate"
+      ],
+      "description": "RequestEvaluation"
+    },
+    {
+      "name": "abh.learning.expire-evaluation",
+      "targetTypes": [
+        "abh.evaluation-run"
+      ],
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "description": "Recover a timed-out evaluation run as Inconclusive without inventing evaluator evidence."
+    },
+    {
+      "name": "abh.learning.gate",
+      "targetTypes": [
+        "abh.learning-gate"
+      ],
+      "purposeNames": [
+        "abh.learning.gate"
+      ],
+      "description": "GetLearningGate"
+    },
+    {
+      "name": "abh.learning.read",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.capture",
+        "abh.learning.evaluate",
+        "abh.learning.gate"
+      ],
+      "description": "ListLearningSignals"
+    },
+    {
+      "name": "abh.learning.request-evaluation",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "description": "Request an offline evaluation by freezing the registered profile for an exact candidate and baseline."
+    },
+    {
+      "name": "abh.learning.retry-evaluation",
+      "targetTypes": [
+        "abh.organization"
+      ],
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "description": "Retry an exact inconclusive evaluation run with frozen evaluation inputs."
+    },
+    {
+      "name": "abh.learning.submit-evaluation-result",
+      "targetTypes": [
+        "abh.evaluation-run"
+      ],
+      "purposeNames": [
+        "abh.learning.evaluate"
+      ],
+      "description": "Submit immutable evaluator results and complete an exact queued evaluation run."
     },
     {
       "name": "abh.missions.activate",
@@ -1119,6 +1480,16 @@ export const coreCatalog = {
       "description": "Recover an expired possible-in-flight Permit as Unknown while retaining its resource responsibility."
     },
     {
+      "name": "abh.operations.safe-retry",
+      "targetTypes": [
+        "abh.operation"
+      ],
+      "purposeNames": [
+        "abh.action.execute"
+      ],
+      "description": "Reauthorize a bounded retry of a deterministic transport failure with the same Provider idempotency key."
+    },
+    {
       "name": "abh.pack-inspection-jobs.accept-delivery",
       "targetTypes": [
         "abh.pack-inspection-job"
@@ -1321,12 +1692,20 @@ export const coreCatalog = {
     {
       "name": "abh.projections.read",
       "targetTypes": [
+        "abh.action",
         "abh.decision",
-        "abh.mission"
+        "abh.mission",
+        "abh.organization",
+        "abh.run"
       ],
       "purposeNames": [
+        "abh.action.execute",
+        "abh.action.prepare",
         "abh.decision.review",
         "abh.mission.manage",
+        "abh.missions.read",
+        "abh.operation.reconcile",
+        "abh.runs.read",
         "abh.runtime.deliver"
       ],
       "description": "GetProjection"
@@ -1342,6 +1721,28 @@ export const coreCatalog = {
       "description": "RefreshMissionSummary"
     },
     {
+      "name": "abh.release.manage",
+      "targetTypes": [
+        "abh.assignment",
+        "abh.organization",
+        "abh.release"
+      ],
+      "purposeNames": [
+        "abh.release.manage"
+      ],
+      "description": "StopStaticAssignment"
+    },
+    {
+      "name": "abh.releases.configure-learning-candidate",
+      "targetTypes": [
+        "abh.release"
+      ],
+      "purposeNames": [
+        "abh.release.manage"
+      ],
+      "description": "Consume a passing immutable Learning Gate and configure a governed Release and Assignment without automatic promotion."
+    },
+    {
       "name": "abh.responsibilities.revoke",
       "targetTypes": [
         "abh.responsibility-assignment"
@@ -1350,6 +1751,28 @@ export const coreCatalog = {
         "abh.action.prepare"
       ],
       "description": "Revoke a responsibility assignment after current management and continuity checks."
+    },
+    {
+      "name": "abh.responsibility-requests.delegate-slot",
+      "targetTypes": [
+        "abh.responsibility-request"
+      ],
+      "purposeNames": [
+        "abh.action.prepare",
+        "abh.operation.reconcile"
+      ],
+      "description": "Delegate one frozen responsibility seat through governed route revision."
+    },
+    {
+      "name": "abh.responsibility-requests.escalate-slot",
+      "targetTypes": [
+        "abh.responsibility-request"
+      ],
+      "purposeNames": [
+        "abh.action.prepare",
+        "abh.operation.reconcile"
+      ],
+      "description": "Escalate one unresolved responsibility seat to the next governed candidate."
     },
     {
       "name": "abh.responsibility-requests.expire",
@@ -1442,6 +1865,27 @@ export const coreCatalog = {
         "abh.mission.manage"
       ],
       "description": "StartRun"
+    },
+    {
+      "name": "abh.runs.stop-stalled",
+      "targetTypes": [
+        "abh.run"
+      ],
+      "purposeNames": [
+        "abh.runtime.deliver"
+      ],
+      "description": "Atomically stop a Run whose fixed no-progress deadline has expired."
+    },
+    {
+      "name": "abh.runs.wake",
+      "targetTypes": [
+        "abh.run"
+      ],
+      "purposeNames": [
+        "abh.mission.manage",
+        "abh.runtime.deliver"
+      ],
+      "description": "Resume a Waiting Run only after its durable wait has succeeded and the Mission still owns the Run."
     },
     {
       "name": "abh.runtime.cancel-wait",
@@ -1590,6 +2034,27 @@ export const coreCatalog = {
         "abh.runtime.deliver"
       ],
       "description": "DurableExecutionPort.signal"
+    },
+    {
+      "name": "abh.tasks.claim",
+      "targetTypes": [
+        "abh.task"
+      ],
+      "purposeNames": [
+        "abh.runtime.deliver"
+      ],
+      "description": "Claim a Ready Task under a short-lived durable execution lease."
+    },
+    {
+      "name": "abh.tasks.commit-verified",
+      "targetTypes": [
+        "abh.task"
+      ],
+      "purposeNames": [
+        "abh.mission.manage",
+        "abh.runtime.deliver"
+      ],
+      "description": "Commit a verified Task, checkpoint and the next dependency-safe Task states."
     },
     {
       "name": "abh.tools.invoke",

@@ -6,6 +6,7 @@ import { runner } from 'node-pg-migrate';
 import postgres from 'postgres';
 import { Database } from '../src/data/uow.ts';
 import { deriveVerifiedContext } from '../src/internal/context.ts';
+import type { EntityRef } from '@abh/contracts';
 
 export const postgresImage = 'postgres@sha256:5a65324fe84dc41709ff914e90b07f3e2f577073ed27bf917d4873aca0c9ec51';
 export async function createDatabaseFixture() {
@@ -31,9 +32,9 @@ export async function createDatabaseFixture() {
     const password = randomBytes(24).toString('hex');
     // DDL does not accept bind parameters. This value is server-generated hexadecimal only.
     await admin.unsafe(`ALTER ROLE abh_runtime PASSWORD '${password}'`);
-    const runtimeUrl = new URL(url); runtimeUrl.username = 'abh_runtime'; runtimeUrl.password = password;
     const queuePassword = randomBytes(24).toString('hex');
     await admin.unsafe(`ALTER ROLE abh_queue PASSWORD '${queuePassword}'`);
+    const runtimeUrl = new URL(url); runtimeUrl.username = 'abh_runtime'; runtimeUrl.password = password;
     const queueUrl = new URL(url); queueUrl.username = 'abh_queue'; queueUrl.password = queuePassword;
     database = await Database.connect(runtimeUrl.toString(), { max: 1 });
     const raw = postgres(runtimeUrl.toString(), { max: 1, onnotice: ()=>{} });
@@ -51,3 +52,35 @@ export function context(organizationId: string = randomUUID(), actorId: string =
     sessionEpoch: 1, scopeEpoch: 1, receivedAt: new Date().toISOString(), contextExpiresAt: new Date(Date.now()+60_000).toISOString() });
 }
 export const options = () => ({ deadline: Date.now()+10_000, signal: new AbortController().signal });
+
+/** Test setup helper for suites that exercise Ledger arithmetic rather than catalog admission itself. */
+export async function seedLedgerCatalog(database: Database, unitOrContext: string | ReturnType<typeof context>,
+  suppliedUnit?: string, currency?: string) {
+  const c = typeof unitOrContext==='string'?context():unitOrContext;
+  const unit = typeof unitOrContext==='string'?unitOrContext:suppliedUnit!;
+  const unitId = randomUUID(), periodId = randomUUID(), recordedAt = new Date().toISOString();
+  const unitRecord = {unitRef:{type:'abh.unit',id:unitId,version:1},resourceOrganizationId:c.tenant.resourceOrganizationId,
+    name:unit,kind:currency?'monetary':'quantity',...(currency?{currency}:{}),precision:12,recordedAt};
+  const periodRef:EntityRef & {type:'abh.period'}={type:'abh.period',id:periodId,version:1};
+  const periodRecord = {periodRef,resourceOrganizationId:c.tenant.resourceOrganizationId,
+    startsAt:'2020-01-01T00:00:00Z',endsAt:'2099-01-01T00:00:00Z',recordedAt};
+  const existingCatalogRef=await database.transaction<EntityRef & {type:'abh.period'}>(c,options(),async tx=> {
+    const existingPeriod=await tx.owner('ResourceLedger')`SELECT record FROM resource.periods
+      WHERE resource_organization_id=${c.tenant.resourceOrganizationId} AND deleted_at IS NULL
+      ORDER BY created_at DESC LIMIT 1`;
+    if(existingPeriod[0])return (existingPeriod[0].record as {periodRef:EntityRef & {type:'abh.period'}}).periodRef;
+    const existingUnit=await tx.owner('ResourceLedger')`SELECT record FROM resource.units
+      WHERE resource_organization_id=${c.tenant.resourceOrganizationId} AND name=${unit} AND deleted_at IS NULL LIMIT 1`;
+    if(existingUnit[0])throw new Error('Ledger unit exists without a reusable period');
+    await tx.owner('ResourceLedger')`INSERT INTO resource.units
+      (resource_organization_id,id,workspace_id,purpose_names,record,name,kind,precision)
+      VALUES (${c.tenant.resourceOrganizationId},${unitId},${c.tenant.workspaceId??null},ARRAY[${c.tenant.purposeOfUse}],
+        ${JSON.stringify(unitRecord)}::text::jsonb,${unit},${currency?'monetary':'quantity'},12)`;
+    await tx.owner('ResourceLedger')`INSERT INTO resource.periods
+      (resource_organization_id,id,workspace_id,purpose_names,record,starts_at,ends_at)
+      VALUES (${c.tenant.resourceOrganizationId},${periodId},${c.tenant.workspaceId??null},ARRAY[${c.tenant.purposeOfUse}],
+        ${JSON.stringify(periodRecord)}::text::jsonb,${periodRecord.startsAt},${periodRecord.endsAt})`;
+    return periodRef;
+  });
+  return {periodRef:existingCatalogRef!};
+}

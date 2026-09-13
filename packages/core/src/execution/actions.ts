@@ -26,6 +26,8 @@ export interface ActionDefinition {
   maxOperations:number;
   intentExpirySeconds:number;
   purposeNames:string[];
+  /** Trusted handler may set this only for a separately governed safety-stop purpose. */
+  safetyStop?:boolean;
 }
 export interface ActionPreparationChecks {
   /** Acquire current preparation/source fences in global order before any aggregate locks. */
@@ -69,6 +71,7 @@ export class ActionOwner {
   async propose(tx:TenantTransaction,command:CommandIdentity,payload:ProposeActionPayload,definition:ActionDefinition,checks:Pick<ActionPreparationChecks,'lock'|'artifact'|'proposal'>):Promise<ActionRecord>{
     contract('ProposeActionPayload',payload);
     if(definition.actionType!==payload.actionType||!Number.isInteger(definition.intentExpirySeconds)||definition.intentExpirySeconds<1||definition.intentExpirySeconds>86400)throw new CoreError('INVALID_ARGUMENT');
+    if(definition.safetyStop===true&&!definition.purposeNames.includes('abh.action.safety-stop'))throw new CoreError('PURPOSE_DENIED');
     await checks.lock(tx);const c=tx.context.tenant,sql=tx.owner('ActionEngine');
     const purposeNames=lifecyclePurposes(definition.purposeNames,c.purposeOfUse);
     const impact=contract('ImpactUpperBound',await checks.proposal(tx,payload,definition));
@@ -85,7 +88,8 @@ export class ActionOwner {
     const [clock]=await sql`SELECT clock_timestamp() AS now`;
     const unsigned=contract('ActionIntentRecord',{actionRef:action.actionRef,resourceOrganizationId:c.resourceOrganizationId,proposal:{...payload,completionPolicyRef:definition.completionPolicyRef,resourceRequirements:impact.resourceRequirements},
       executionPrincipalRef:definition.executionPrincipalRef,payloadDigest:action.payloadDigest,riskClass:definition.riskClass,impactUpperBound:impact,
-      requiredBehaviorSlots:definition.requiredBehaviorSlots,maxOperations:definition.maxOperations,purposeNames,expiresAt:new Date(clock!.now.getTime()+definition.intentExpirySeconds*1000).toISOString(),digest:'sha256:'+'0'.repeat(64)});
+      requiredBehaviorSlots:definition.requiredBehaviorSlots,maxOperations:definition.maxOperations,purposeNames,
+      safetyStop:definition.safetyStop===true,expiresAt:new Date(clock!.now.getTime()+definition.intentExpirySeconds*1000).toISOString(),digest:'sha256:'+'0'.repeat(64)});
     const intent=contract('ActionIntentRecord',{...unsigned,digest:await digestContract('ActionIntentRecord',unsigned)});
     await sql`INSERT INTO execution.actions(resource_organization_id,id,workspace_id,purpose_names,lifecycle,outcome,record)
       VALUES (${c.resourceOrganizationId},${action.actionRef.id},${c.workspaceId??null},${purposeNames},'Proposed','NotStarted',${JSON.stringify(action)}::text::jsonb)`;

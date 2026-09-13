@@ -14,7 +14,7 @@ ABH 服务端内部模块，按 `docs/V1` 持续实现。根入口仍只导出 `
 
 - PostgreSQL Tenant UoW、事务局部 Context、取消/截止时间、固定锁序、Command 去重、CAS、同事务 Audit/Outbox，以及 RLS/角色/表/函数/状态约束的启动核验。
 - 当前 Identity/Membership/Grant、跨组织最小 Workspace 核验、Purpose/Connection 目录、撤销 fence、静态 Release/Assignment/完整 PinSet。
-- 精确十进制 Ledger、Reservation、Commitment/Settlement、实际超额冻结，以及受当前权限约束的内联 Artifact/摘要/墓碑。
+- 精确十进制 Ledger、周期/单位目录、Reservation、Commitment/Settlement、Refund/FX Correction、实际超额冻结，以及受当前权限约束的内联 Artifact/摘要/墓碑。
 - 冻结 ANY/ALL 责任席位、Decision 与整体完成证明、有限 Service Grant/Action ExecutionAuthority Effect。
 - Action 不可变意图/Plan、真实 OPA Mandatory + 固定 Behavior、T1 Snapshot/资源预留、完整批准及当前来源回验。
 - WorkLease 与不设 TTL 的未决资源占位、T2 Permit/Attempt、提交后一次性受信出口、Stateful Fake Provider。
@@ -28,9 +28,9 @@ ABH 服务端内部模块，按 `docs/V1` 持续实现。根入口仍只导出 `
 
 治理/bootstrap、完整 Domain/Scope/Artifact admission 和 Connector 安装证据仍有明确 Fixture 回调，不能直接接成公共路由。独立 Query Authority 与已派发取消已有内部实现；终态 Correction/Exception、安全重试、持续外部责任与完整恢复策略继续实现。
 
-内联 Artifact 上限 64 KiB UTF-8；二进制原始回执使用无损 base64 包装，上限 48,000 bytes。大对象 staging/scan/lineage/删除证明尚未接入。保存失败的进程内句柄不会跨重启保存，进程丢失后仍须独立 Query 查回。
+内联 Artifact 上限 64 KiB UTF-8；二进制原始回执使用无损 base64 包装，上限 48,000 bytes。FilesystemObjectStore 支持单主机 durable 大对象 staging、digest/size 复核、streaming 读取、lineage、保留/删除证明和导出；公开上传用 Artifact 级回执预约去重。生产上传扫描/隔离、跨主机/云 ObjectStore 与完整 Domain 验收仍需宿主实现。保存失败的进程内句柄不会跨重启保存，进程丢失后仍须独立 Query 查回。
 
-Outbox 冻结扇出与 Inbox 已持久化；真实 pg-boss 已验证队列角色隔离、入队超时查回、确认丢失重投和有界排空。DurableWaitOwner 已持久化等待、源水位回读、唯一唤醒、取消及 Tenant 补偿扫描；Wait Port 已与 pg-boss 组合，并接入真实 Action/Decision 授权请求等待、Operation 对账完成等待和 Inbox 通知；发布扫描与租户内 Worker 装配已有实现；其余业务 Owner、生产身份/安装治理及完整故障矩阵待完成。HTTP/SDK/CLI、hello-business、Pi/Mission/Run、其余 V1 模块尚未实现完毕。本地 Fixture 测试不替代生产治理、正式模块门禁、独立审查或 SLO 证据。
+Outbox 冻结扇出与 Inbox 已持久化；真实 pg-boss 已验证队列角色隔离、入队超时查回、确认丢失重投和有界排空。DurableWaitOwner 已持久化等待、源水位回读、唯一唤醒、取消及 Tenant 补偿扫描；Wait Port 已与 pg-boss 组合，并接入真实 Action/Decision 授权请求等待、Operation 对账完成等待和 Inbox 通知；发布扫描与租户内 Worker 装配已有实现。HTTP、typed SDK、Mission/Run/Pi、显式 `abh run` 宿主和其余业务 Owner 已有本地闭环；`defineBusiness` 声明、hello-business 模板和本地 Manifest/CTK 计划编译已实现，生产身份/安装治理、发行验收及完整故障矩阵待完成。本地 Fixture 测试不替代生产治理、正式模块门禁、独立审查或 SLO 证据。
 
 完整实现进度与分批证据见 [实施跟踪](../../docs/development/IMPLEMENTATION.md) 和 [数据库验证记录](../../docs/development/M0-B-data.md)。
 
@@ -67,3 +67,16 @@ const result = await client.capabilities.query({ kind: 'abh.tool', versionRange:
 ```
 
 服务端须安装 `capabilityQuery` 并为当前业务用途校验独立的 `abh.capabilities.read` Grant。结果包含兼容／健康状态；`complete=false` 表示结果截断，应缩小查询范围。候选发现不授予执行权限，也不会自动选择版本或返回实现句柄。
+
+### Evaluation Host HTTP Port
+
+```ts
+import { createHttpEvaluationDispatcher } from '@abh/core/evaluation';
+
+const dispatcher = createHttpEvaluationDispatcher({
+  endpoint: 'https://evaluation.internal/runs/',
+  headers: signal => resolveEvaluationCredentials(signal),
+});
+```
+
+该公开入口把 `EvaluationRecoveryWorker` 的租约上下文发送到宿主 POST `/dispatch`。请求是 canonical JSON，精确绑定 `evaluationRun`、`work lease` 和 `attempt`；凭据由回调注入且继承 Worker 取消/截止期。只有 HTTP `202` 加封闭 JSON `{ "outcome": "Accepted" }` 表示受理；非 202、非法响应、超时、过大、重定向或传输失败一律返回 `Unknown`，由 Worker 保留租约并安全过期。响应默认上限 64 KiB，可配置到 256 KiB。此 Port 不执行模型评测、不免除 Model/Tool Gateway 授权，也不把 Unknown 解释为失败或成功。

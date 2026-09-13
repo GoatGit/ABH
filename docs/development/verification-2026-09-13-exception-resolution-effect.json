@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-13",
+  "scope": "Correction-driven Exception resolution effect",
+  "summary": "Closed authorized correction application to governance unfreeze while preserving unresolved operations and fencing tokens.",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test --test-concurrency=1 packages/core/test/actions.test.ts",
+    "corepack pnpm contracts:test",
+    "corepack pnpm api:update",
+    "corepack pnpm api:check",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm build",
+    "git diff --check"
+  ],
+  "results": {
+    "contractArtifacts": 51,
+    "openapiPaths": 60,
+    "contractsTestsPassed": 313,
+    "coreActionTestsPassed": 70,
+    "coreActionTestsFailed": 0,
+    "contractsTestsFailed": 0,
+    "apiReportsMatch": true,
+    "contractsCheckPassed": true,
+    "docsLinksChecked": 786,
+    "workspaceBuildPassed": true,
+    "realPostgresVerified": true,
+    "httpCreatedVerified": true,
+    "httpIdempotentReplayVerified": true,
+    "typedClientEquivalenceVerified": true,
+    "currentExceptionGrantEnforced": true,
+    "applyCorrectionKindEnforced": true,
+    "correctionApplicationEvidenceEnforced": true,
+    "foreignApplicationRejected": true,
+    "evidencelessApplicationRejected": true,
+    "missingGrantRejected": true,
+    "wrongResolutionKindRejected": true,
+    "reportBlockReleased": true,
+    "unresolvedOperationPreserved": true,
+    "fencingTokenPreserved": true,
+    "immutableEffectTableInsertOnly": true
+  },
+  "remainingGaps": [
+    "Production governance assembly and real Domain acceptance",
+    "Post-resolution exception orchestration and responsibility rerouting",
+    "Production hosting, identity, provider and independent security review"
+  ]
+}

@@ -18,7 +18,7 @@
 ## 当前边界
 
 - 已有审批稳定幂等键与 If-Match；界面不乐观显示“已生效”。
-- Mission 投影与 Decision 状态通过 TanStack Query 刷新；同源 SSE BFF 注入身份并支持有界 Last-Event-ID，禁用或失败时回退授权轮询。
+- Mission 投影、Decision 状态与 Action 详情通过 TanStack Query 刷新；同源 SSE BFF 注入身份并支持有界 Last-Event-ID，禁用或失败时回退授权轮询。
 - Mission 投影使用语义表格和懒加载 ECharts SVG 图；只有通过形状守卫的授权摘要才渲染图表，数据异常时安全降级。
 - Decision 审批使用懒加载 JSON Forms；服务端强读 Decision、复核状态和 Package 摘要，并用 Ajv 2020 重新校验注册表单输入。生产构建浏览器旅程、axe 扫描和 LCP/CLS 门禁可运行 `pnpm test:e2e`。
 - 已提供 acting/resource 组织上下文显示与显式切换 UI；宿主必须验证组织选择 Cookie，不能信任浏览器改写。

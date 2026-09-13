@@ -77,6 +77,32 @@ test('internal/uninstalled routes remain unavailable and invalid installations f
   assert.throws(() => createHttpApp({} as HttpInstallation));
 });
 
+test('binary routes enforce route-specific decoded body limits', async t => {
+  let bytes = 0;
+  const app = createHttpApp({ authenticate, bodyLimit: 16, binaryRoutes: {
+    '/v1/artifacts/object-uploads': {
+      operation: 'abh.artifacts.store-object', maxBytes: 64,
+      handle: async ({ content }) => {
+        for await (const chunk of content) bytes += chunk.byteLength;
+        return { bytes };
+      }
+    }
+  } });
+  t.after(() => app.close());
+  const valid = await app.inject({ method: 'POST', url: '/v1/artifacts/object-uploads',
+    headers: { 'content-type': 'application/octet-stream' }, payload: Buffer.alloc(64, 7) });
+  assert.equal(valid.statusCode, 201, valid.body);
+  assert.equal(valid.json().data.bytes, 64);
+  const oversized = await app.inject({ method: 'POST', url: '/v1/artifacts/object-uploads',
+    headers: { 'content-type': 'application/octet-stream' }, payload: Buffer.alloc(65, 7) });
+  assert.equal(oversized.statusCode, 400);
+  assert.equal(oversized.json().error.code, 'LIMIT_EXCEEDED');
+  assert.equal(bytes, 64);
+  assert.throws(() => createHttpApp({ authenticate, binaryRoutes: {
+    '/v1/artifacts/object-uploads': { operation: 'abh.artifacts.store-object', maxBytes: 0, handle: async () => ({}) }
+  } }));
+});
+
 test('auth failures and expired context deny Owner invocation without leaking exception data', async t => {
   let calls = 0;
   for (const [auth, expected] of [

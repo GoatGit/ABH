@@ -195,6 +195,36 @@
               "type": "object",
               "properties": {
                 "code": {
+                  "const": "TASK_COMMIT_INCOMPLETE"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
                   "const": "BLOCKER_EVIDENCE_INVALID"
                 },
                 "category": {
@@ -1305,6 +1335,36 @@
               "type": "object",
               "properties": {
                 "code": {
+                  "const": "DELEGATION_EXCEEDS_AUTHORITY"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
                   "const": "DECIDER_NOT_ELIGIBLE"
                 },
                 "category": {
@@ -1335,7 +1395,67 @@
               "type": "object",
               "properties": {
                 "code": {
+                  "const": "ROUTE_DEPTH_EXCEEDED"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
                   "const": "OPERATION_FACT_CONFLICT"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "CORRECTION_STALE"
                 },
                 "category": {
                   "const": "Conflict"
@@ -1426,6 +1546,216 @@
               "properties": {
                 "code": {
                   "const": "LEARNING_PURPOSE_DENIED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "CASE_EVIDENCE_INCOMPLETE"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "CANDIDATE_SCOPE_EXCEEDED"
+                },
+                "category": {
+                  "const": "Authorization"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "EVALUATION_PROFILE_UNAVAILABLE"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "EVALUATION_PROFILE_AMBIGUOUS"
+                },
+                "category": {
+                  "const": "Conflict"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "GATE_EVIDENCE_INVALID"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "GATE_POLICY_INCOMPLETE"
+                },
+                "category": {
+                  "const": "Precondition"
+                },
+                "message": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                },
+                "retryable": {
+                  "const": false
+                },
+                "correlationId": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                }
+              },
+              "required": [
+                "code",
+                "category",
+                "message",
+                "retryable",
+                "correlationId"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "const": "EVALUATOR_IDENTITY_INVALID"
                 },
                 "category": {
                   "const": "Authorization"

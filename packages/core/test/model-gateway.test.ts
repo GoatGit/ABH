@@ -8,7 +8,7 @@ import {inputDigest,type CommandIdentity} from '../src/data/journal.ts';
 import {CoreError} from '../src/internal/errors.ts';
 import {deriveVerifiedContext} from '../src/internal/context.ts';
 import {ModelGatewayOwner,callModel,type ModelAdapterPort} from '../src/mission/model-gateway.ts';
-import {context,createDatabaseFixture,options} from './database-fixture.ts';
+import {context,createDatabaseFixture,options,seedLedgerCatalog} from './database-fixture.ts';
 
 const route = (allowedModels:string[]=['hello.model']):ModelRoute=>({routeRef:{type:'abh.model-route',id:randomUUID(),version:1},
   resourceOrganizationId:'',allowedModels:allowedModels as ModelRoute['allowedModels'],purposeOfUse:'abh.mission.manage',
@@ -22,11 +22,12 @@ test('model gateway fixes route admission and persists one-way call transitions'
     VALUES (${value.resourceOrganizationId},${value.routeRef.id},${c.tenant.actor.id},${c.tenant.actor.id},
       ARRAY[${value.purposeOfUse}]::text[],${JSON.stringify(value)}::text::jsonb)`;
   const ledgerOwner=new LedgerOwner();
+  const catalog=await seedLedgerCatalog(f.database,c,'abh.unit.token');
   const ledgerCommand=async(operation:string,input:unknown):Promise<CommandIdentity>=>
     ({commandId:randomUUID(),type:`abh.test.${operation}`,idempotencyKey:randomUUID(),digest:await inputDigest(input)});
   const configureLedger=(limit:string,mode:LedgerRecord['meteringMode']):Promise<LedgerRecord>=>{
     const id=randomUUID(),recordInput={id,scopeRef:{type:'abh.organization' as const,id:c.tenant.resourceOrganizationId,version:1 as const},
-      resourceType:'abh.resource.model-usage',meteringMode:mode,unit:'abh.unit.token',periodRef:{type:'abh.period' as const,id:randomUUID(),version:1 as const},limit};
+      resourceType:'abh.resource.model-usage',meteringMode:mode,unit:'abh.unit.token',periodRef:catalog.periodRef,limit};
     return f.database.transaction(c,options(),async tx=>ledgerOwner.configure(tx,await ledgerCommand('configure',recordInput),recordInput));
   };
   const budget=(ledger:LedgerRecord)=>({ledgerRef:ledger.ledgerRef,amount:'2',

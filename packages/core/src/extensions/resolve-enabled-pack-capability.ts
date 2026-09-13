@@ -17,7 +17,7 @@ import type {InstalledCapabilityImplementation,ResolvePackCapabilityAdmission} f
 /** Internal shared content resolution. The caller must supply its concrete
  * persisted authority check; installation alone never authorizes invocation. */
 export async function resolveEnabledPackCapability<T>(tx:TenantTransaction,options:TransactionOptions,
- input:{exactRef:CapabilityRef},binding:InstalledCapabilityImplementation<T>,readGrants:readonly EntityRef[],
+ input:{exactRef:CapabilityRef;requireSafetyStop?:boolean},binding:InstalledCapabilityImplementation<T>,readGrants:readonly EntityRef[],
  admission:ResolvePackCapabilityAdmission,requireAuthority:()=>Promise<void>){
  const value=structuredClone(input),grants=structuredClone(readGrants),installed={exactRef:contract('CapabilityRef',structuredClone(binding.exactRef)),registeredKind:binding.registeredKind,implementationRef:contract('EntityRef',structuredClone(binding.implementationRef)),implementation:binding.implementation};
  contract('CapabilityRef',value.exactRef);contract('RegisteredName',installed.registeredKind);
@@ -40,6 +40,7 @@ export async function resolveEnabledPackCapability<T>(tx:TenantTransaction,optio
   return {candidate,pack,entry};
  };
  const before=await find();
+ if(value.requireSafetyStop===true&&!before.entry.safetyStop)throw new CoreError('PIN_INPUT_CONFLICT');
  await boundedCallback(opts=>current(tx,structuredClone(before.entry),structuredClone(before.pack),opts),work);
  const readSchema=async()=>{
   const bytesSource=await boundedCallback(opts=>source(tx,structuredClone(before.pack),opts),work);
@@ -57,5 +58,5 @@ export async function resolveEnabledPackCapability<T>(tx:TenantTransaction,optio
  if(canonicalJson(await find(true))!==canonicalJson(before))throw new CoreError('VERSION_CONFLICT');
  await requireAuthority();
  assertMigrationWorkActive(tx,work);
- return Object.freeze({exactRef:Object.freeze({...value.exactRef}),packRef:Object.freeze({...before.pack.packRef}),schema:()=>Uint8Array.from(schema),implementation:installed.implementation});
+ return Object.freeze({exactRef:Object.freeze({...value.exactRef}),packRef:Object.freeze({...before.pack.packRef}),safetyStop:before.entry.safetyStop===true,schema:()=>Uint8Array.from(schema),implementation:installed.implementation});
 }

@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-13",
+  "scope": "Organization projection SSE, Workbench aggregate invalidation, and isolated production E2E",
+  "summary": "Added an authorized abh.organization SSE subject that emits only committed Mission/Decision/Action change hints for the caller's organization. Every hint revalidates active organization, human membership, projections grant, event ownership and cursor identity; unknown cursors reset. Workbench Overview, Inbox and Action List subscribe to one same-origin organization stream, invalidate authorization-scoped TanStack caches and retain polling fallback. Run SSE, Action SSE reconnect and the compensation JSON Forms proposal journey were verified in Chromium.",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-name-pattern 'Run lifecycle validates state' test/run-commands.test.ts",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench test:e2e",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "contractArtifactsMatched": 51,
+    "coreTypecheckPassed": true,
+    "coreOrganizationFeedTestPassed": 1,
+    "workbenchTypecheckPassed": true,
+    "workbenchUnitTestsPassed": 29,
+    "cliTestsPassed": 22,
+    "docsLinksChecked": 803,
+    "contractsApiEntryPointsMatched": 9,
+    "coreApiEntryPointsMatched": 6,
+    "coreTestsPassed": 620,
+    "fullCheckPassed": true,
+    "browserE2eTestsPassed": 4,
+    "browserE2eTestsFailed": 0,
+    "runSseChangeJourneyPassed": true,
+    "actionSseReconnectJourneyPassed": true,
+    "organizationActionListSseJourneyPassed": true,
+    "compensationProposalBrowserJourneyPassed": true,
+    "overviewAndInboxOrganizationInvalidationPassed": true,
+    "unknownCursorReset": true,
+    "unauthorizedGrantReset": true,
+    "isolatedProductionE2eBuild": true
+  },
+  "boundaries": [
+    "Compensation template governance and a real governance service acceptance remain open",
+    "Production identity adapter, process hosting and tenant lifecycle governance remain externally bounded"
+  ]
+}

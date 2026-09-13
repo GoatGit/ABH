@@ -16,6 +16,7 @@ export interface TransactionOptions {
   readonly deadline: number;
   readonly signal: AbortSignal;
   readonly readOnly?: boolean;
+  readonly readOnlySnapshot?: boolean;
 }
 
 /** Scoped handle, never exported from the public package. Invalid after its UoW completes. */
@@ -147,7 +148,8 @@ export class Database {
     const release = await this.#admission.acquire({...options,deadline});
     try {
     // begin owns one pooled connection. The callback's failure rolls back before reuse.
-    return await this.#pool.begin(options.readOnly ? 'READ ONLY' : '', async sql => {
+    return await this.#pool.begin(options.readOnlySnapshot ? 'READ ONLY ISOLATION LEVEL REPEATABLE READ' :
+      options.readOnly ? 'READ ONLY' : '', async sql => {
       requireVerifiedContext(context);
       const remaining = deadline - Date.now();
       if (remaining <= 0 || options.signal.aborted) throw new CoreError('DEPENDENCY_TIMEOUT');
@@ -185,6 +187,6 @@ export class Database {
         signal.removeEventListener('abort', onAbort);
       }
     }) as T;
-    } finally { release(); }
+  } finally { release(); }
   }
 }

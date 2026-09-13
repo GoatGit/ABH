@@ -10,7 +10,7 @@ import {canonicalJson,digestBytes} from '@abh/contracts/digest';
 import {serializeHttpResponse} from '@abh/contracts/http';
 import {deriveVerifiedContext} from '../src/internal/context.ts';
 import {ToolGatewayOwner} from '../src/mission/gateway.ts';
-import {completeRun,startRun} from '../src/mission/run-commands.ts';
+import {cancelRun,completeRun,startRun} from '../src/mission/run-commands.ts';
 import {closeMission,pauseMission} from '../src/mission/lifecycle.ts';
 import {consumeCommittedEvent} from '../src/durable/inbox.ts';
 import {MissionSummaryEventConsumer,runMissionSummaryProjectionWorker,requestMissionSummaryRefresh,
@@ -21,12 +21,15 @@ import {createTenantRuntimeLoops,joinRuntimeLoops,type TenantRuntimeOptions} fro
 import {createMissionQueryHandlers,type MissionHttpInstallation} from '../src/server/mission-http.ts';
 import {RunCursorCodec} from '../src/server/run-cursor.ts';
 import {ProjectionOwner,redactMissionSummaryData} from '../src/workbench/projections.ts';
+import {subscribeRunStatusChanges} from '../src/workbench/projections.ts';
+import {subscribeOrganizationProjectionChanges} from '../src/workbench/projections.ts';
 import {ProjectionMetricsCollector} from '../src/workbench/projection-metrics.ts';
 import {inspectProjectionHealth} from '../src/diagnostics.ts';
 import {StaticReleaseOwner} from '../src/release/static.ts';
-import {context,options,createDatabaseFixture} from './database-fixture.ts';
+import {context,options,createDatabaseFixture,seedLedgerCatalog} from './database-fixture.ts';
 
 const ref=(type:string)=>({type,id:randomUUID(),version:1});
+const zeroUUID='00000000-0000-0000-0000-000000000000';
  const workflow={kind:'Workflow' as const,id:'hello.workflow',version:'1.0.0',digest:`sha256:${'0'.repeat(64)}`};
 type IdempotencyKey=ReturnType<typeof randomUUID>;
 const missionPurposeNames=['abh.mission.manage'];
@@ -67,7 +70,7 @@ test('Run lifecycle validates state, locks active runs, journals effects, and cl
  const org=c.tenant.resourceOrganizationId,scope={type:'abh.organization',id:org,version:1};
  const principal={type:'abh.principal',id:c.tenant.actor.id,version:1};
  const grant=contract('GrantRecord',{grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:principal,
-  scopeRefs:[scope],actionTypes:['abh.runs.start','abh.runs.complete','abh.runs.read','abh.missions.pause','abh.missions.close',
+  scopeRefs:[scope],actionTypes:['abh.runs.start','abh.runs.complete','abh.runs.cancel','abh.runs.read','abh.missions.pause','abh.missions.close',
     'abh.projections.read','abh.projections.request-mission-summary',
     'abh.tools.invoke','abh.tools.read'],
   purposeNames:['abh.mission.manage'],
@@ -378,6 +381,8 @@ test('Run lifecycle validates state, locks active runs, journals effects, and cl
  const startKey:IdempotencyKey=randomUUID();
  const first=await invoke(payload(),startKey);assert.equal(first.status,'Queued');assert.equal(first.runRef.version,1);
  assert.equal(first.assignmentSnapshotRef.type,'abh.pin-set');
+ const [startEvent]=await f.admin`SELECT id FROM data.outbox
+   WHERE aggregate_type='abh.run' AND aggregate_id=${first.runRef.id} AND record->>'type'='abh.run.start'`;
  const [pinSetRow]=await f.admin`SELECT record FROM release.pin_sets WHERE id=${first.assignmentSnapshotRef.id}`;
  const pinSet=contract('PinSet',pinSetRow!.record);
  assert.equal(pinSet.subjectRef.id,first.runRef.id);
@@ -403,6 +408,34 @@ test('Run lifecycle validates state, locks active runs, journals effects, and cl
  const completed=await complete(1,'Completed',completeKey);assert.equal(completed.status,'Completed');assert.equal(completed.runRef.version,2);
  const completedReplay=await complete(1,'Completed',completeKey);
  assert.deepEqual(completedReplay.runRef,completed.runRef);
+ const runFeed=subscribeRunStatusChanges(f.database,c,options(),first.runRef.id,[grant.grantRef],
+   startEvent!.id,50);
+ const runChange=await runFeed.next();
+ assert.equal(runChange.value!.kind,'change');
+ assert.equal(runChange.value!.projectionType,'abh.projection.run-status');
+ assert.equal(runChange.value!.subjectRef.id,first.runRef.id);
+ assert.equal(runChange.value!.version,2);
+ await runFeed.return(undefined);
+ const organizationFeed=subscribeOrganizationProjectionChanges(f.database,c,options(),
+   org,[grant.grantRef],zeroUUID,50);
+ const organizationChange=await organizationFeed.next();
+ assert.equal(organizationChange.value!.kind,'change');
+ assert.equal(organizationChange.value!.projectionType,'abh.projection.organization-feed');
+ assert.equal(organizationChange.value!.subjectRef.type,'abh.organization');
+ assert.equal(organizationChange.value!.subjectRef.id,org);
+ await organizationFeed.return(undefined);
+ const unknownOrganizationCursor=subscribeOrganizationProjectionChanges(f.database,c,
+   options(),org,[grant.grantRef],randomUUID(),50);
+ assert.deepEqual((await unknownOrganizationCursor.next()).value,{kind:'reset'});
+ await unknownOrganizationCursor.return(undefined);
+ const deniedOrganizationFeed=subscribeOrganizationProjectionChanges(f.database,c,
+   options(),org,[ref('abh.grant')],undefined,50);
+ assert.deepEqual((await deniedOrganizationFeed.next()).value,{kind:'reset'});
+ await deniedOrganizationFeed.return(undefined);
+ const unknownRunCursor=subscribeRunStatusChanges(f.database,c,options(),first.runRef.id,
+   [grant.grantRef],randomUUID(),50);
+ assert.deepEqual((await unknownRunCursor.next()).value,{kind:'reset'});
+ await unknownRunCursor.return(undefined);
  const [missionAfter]=await f.admin`SELECT record,version FROM core.missions WHERE id=${missionId}`;
  const missionAfterRecord=contract('MissionRecord',missionAfter!.record);assert.equal(missionAfterRecord.activeRunRef,undefined);assert.equal(Number(missionAfter!.version),3);
  const [completeLedger]=await f.admin`SELECT
@@ -422,6 +455,47 @@ test('Run lifecycle validates state, locks active runs, journals effects, and cl
    payload:{runRef:{...secondRun.runRef,version:1},outcome:'Completed',
     resultRefs:[{type:'abh.artifact',id:randomUUID(),version:1}]}}),[grant.grantRef]);
  assert.equal(secondCompleted.status,'Completed');
+
+ const thirdRun=await invoke(payload(5,{triggerKey:'cancel.trigger'}));
+ const evidenceRef=ref('abh.artifact');
+ await f.database.transaction(c,options(),async tx=>{
+  const running=contract('RunRecord',{...thirdRun,status:'Running'});
+  await tx.owner('MissionController')`UPDATE core.runs SET status='Running',record=${JSON.stringify(running)}::text::jsonb
+    WHERE resource_organization_id=${org} AND id=${thirdRun.runRef.id}`;
+  const task=contract('TaskRecord',{taskRef:{type:'abh.task',id:randomUUID(),version:1},resourceOrganizationId:org,
+   runRef:{...thirdRun.runRef},nodeKey:'cancel.node',kind:'DomainCommand' as const,inputRefs:[ref('abh.artifact')],
+   status:'Running',required:true,attemptOrdinal:1,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  await tx.owner('MissionController')`INSERT INTO core.tasks(resource_organization_id,id,workspace_id,purpose_names,record,run_id,node_key,status,created_by,updated_by)
+   VALUES (${org},${task.taskRef.id},${tx.context.tenant.workspaceId??null},${missionPurposeNames},${JSON.stringify(task)}::text::jsonb,
+    ${thirdRun.runRef.id},${task.nodeKey},${task.status},${c.tenant.actor.id},${c.tenant.actor.id})`;
+ });
+ const cancel=(runVersion:number,idempotencyKey:IdempotencyKey=randomUUID())=>cancelRun(f.database,c,options(),
+  contract('CancelRunCommand',{type:'abh.runs.cancel',schemaVersion:'0.1.0',commandId:randomUUID(),idempotencyKey,
+   target:{type:'abh.run',id:thirdRun.runRef.id},expectedVersion:runVersion,
+   payload:{runRef:{...thirdRun.runRef,version:runVersion},reasonCode:'abh.workbench.user.cancel',evidenceRefs:[evidenceRef]}}),[grant.grantRef]);
+ const cancelKey:IdempotencyKey=randomUUID(),cancelled=await cancel(1,cancelKey);
+ assert.equal(cancelled.status,'Cancelled');assert.equal(cancelled.stopEpoch,1);assert.equal(cancelled.runRef.version,2);
+ assert.deepEqual(await cancel(1,cancelKey),cancelled);
+ const [cancelledMissionRow]=await f.admin`SELECT record,version,stop_epoch FROM core.missions WHERE id=${missionId}`;
+ const cancelledMission=contract('MissionRecord',cancelledMissionRow!.record);
+ assert.equal(cancelledMission.activeRunRef,undefined);assert.equal(cancelledMission.stopEpoch,1);assert.equal(Number(cancelledMissionRow!.version),7);
+ const [taskCounts]=await f.admin`SELECT
+  count(*) FILTER (WHERE status='Cancelled') AS cancelled,
+  count(*) FILTER (WHERE status='Running') AS running FROM core.tasks WHERE run_id=${thirdRun.runRef.id}`;
+ assert.deepEqual(taskCounts,{cancelled:'1',running:'0'});
+ const [cancelLedger]=await f.admin`SELECT
+  (SELECT count(*) FROM data.audit_records WHERE record->>'action'='abh.runs.cancel' AND record->'targetRef'->>'id'=${thirdRun.runRef.id}) AS runaudits,
+  (SELECT count(*) FROM data.outbox WHERE aggregate_id=${thirdRun.runRef.id} AND record->>'type'='abh.run.cancel') AS runevents,
+  (SELECT count(*) FROM data.outbox WHERE aggregate_type='abh.task' AND aggregate_id IN
+    (SELECT id FROM core.tasks WHERE run_id=${thirdRun.runRef.id}) AND record->>'type'='abh.task.cancelled') AS taskevents`;
+ assert.deepEqual(cancelLedger,{runaudits:'1',runevents:'1',taskevents:'1'});
+ const queuedRun=await invoke(payload(7,{triggerKey:'queued.cancel'}));
+ await assert.rejects(cancelRun(f.database,c,options(),contract('CancelRunCommand',{
+  type:'abh.runs.cancel',schemaVersion:'0.1.0',commandId:randomUUID(),idempotencyKey:randomUUID(),
+  target:{type:'abh.run',id:queuedRun.runRef.id},expectedVersion:1,
+  payload:{runRef:{...queuedRun.runRef},reasonCode:'abh.workbench.user.cancel'}}),[grant.grantRef]),
+  {code:'PRECONDITION_FAILED'});
+
  const runFilter={missionStatus:'Completed' as const,missionId,limit:1};
  const runPage1=await listRuns(runFilter);
  assert.equal(runPage1.runs.length,1);assert.ok(runPage1.cursor);
@@ -555,7 +629,7 @@ test('paid tool calls reserve, hold, consume and release atomically',{timeout:12
   ({commandId:randomUUID(),type:`abh.test.tool.${operation}`,idempotencyKey:randomUUID(),digest:await inputDigest(input)});
  const configureLedger=async():Promise<LedgerRecord>=>{
   const input:Parameters<LedgerOwner['configure']>[2]={id:randomUUID(),scopeRef:{type:'abh.organization',id:org,version:1},resourceType:'abh.resource.tool-usage',meteringMode:'cumulative',
-   unit:'abh.unit.credit',periodRef:{type:'abh.period',id:randomUUID(),version:1},limit:'10'};
+   unit:'abh.unit.credit',periodRef:(await seedLedgerCatalog(f.database,c,'abh.unit.credit')).periodRef,limit:'10'};
   return f.database.transaction(c,options(),async tx=>ledgerOwner.configure(tx,await ledgerCommand('configure',input),input));
  };
  const budget=(ledger:LedgerRecord)=>({ledgerRef:ledger.ledgerRef,amount:budgetAmount,

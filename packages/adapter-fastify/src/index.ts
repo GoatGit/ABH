@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { PassThrough } from 'node:stream';
 import Fastify, { type FastifyInstance, type FastifyRequest } from 'fastify';
 import type { CommandEnvelope, RequestContext } from '@abh/contracts';
 import { createErrorResponse, errorRegistry, type ErrorCode } from '@abh/contracts/errors';
@@ -7,16 +8,25 @@ import { validateContract } from '@abh/contracts/schema';
 
 export type QueryType = (typeof protocolRegistry.queries)[number]['type'];
 export type PublicCommand = Extract<CommandEnvelope, { type: PublicCommandType }>;
+export type TransportOperation = PublicCommandType | QueryType | string;
 export interface IngressIdentity {
   requestId: string;
   correlationId: string;
   receivedAt: string;
-  operation: PublicCommandType | QueryType;
+  operation: TransportOperation;
   signal: AbortSignal;
 }
 export interface HandlerContext {
   context: RequestContext;
   signal: AbortSignal;
+}
+export interface HttpBinaryRoute {
+  readonly operation: TransportOperation;
+  readonly contentType?: string;
+  /** Route-specific decoded body bound; defaults to the app-wide bodyLimit. */
+  readonly maxBytes?: number;
+  /** Headers are caller-supplied transport metadata; handlers must validate them explicitly. */
+  handle(input: HandlerContext & { headers: Record<string, string | string[]>; content: AsyncIterable<Uint8Array> }): Promise<unknown>;
 }
 export type HttpProjectionEvent =
   {kind:'reset'}|
@@ -28,6 +38,8 @@ export interface HttpInstallation {
   /** Handlers own current authorization, replay admission, transactions and permission-filtered DTOs. */
   commands?: Partial<{ [K in PublicCommandType]: (input: HandlerContext & { command: Extract<PublicCommand, { type: K }> }) => Promise<unknown> }>;
   queries?: Partial<Record<QueryType, (input: HandlerContext & { query: unknown; id?: string }) => Promise<unknown>>>;
+  /** Explicit non-contract binary transports for unbounded bodies; handlers own bounds and authorization. */
+  binaryRoutes?: Record<string, HttpBinaryRoute>;
   /** Optional SSE endpoint: each notify callback emits a projection_changed event to connected clients. */
   events?: {
     subscribe(subjectType: string, subjectId: string, context: RequestContext, signal: AbortSignal,
@@ -89,6 +101,7 @@ export function createHttpApp(installation: HttpInstallation): FastifyInstance {
   if (!Number.isSafeInteger(deadlineMs) || deadlineMs < 1 || deadlineMs > 60_000 || !Number.isSafeInteger(bodyLimit) || bodyLimit < 1) throw new TypeError('Invalid HTTP bounds');
   const commands = { ...installation.commands };
   const queries = { ...installation.queries };
+  const binaryRoutes = { ...installation.binaryRoutes };
   const authenticate = installation.authenticate;
   const publicCommands = protocolRegistry.commands.filter(entry => entry.visibility === 'Public');
   for (const key of Object.keys(commands)) if (!publicCommands.some(entry => entry.type === key) || typeof commands[key as PublicCommandType] !== 'function') throw new TypeError('Unregistered command handler');
@@ -98,10 +111,98 @@ export function createHttpApp(installation: HttpInstallation): FastifyInstance {
   const sseConnections = { users: new Map<string, number>(), organizations: new Map<string, number>() };
   lifetimes.set(app, lifetime);
   app.setErrorHandler((error, request, reply) => {
-    const code = error instanceof HttpFailure ? error.code : (error as { statusCode?: number }).statusCode === 400 || (error as { statusCode?: number }).statusCode === 413 || (error as { statusCode?: number }).statusCode === 415 ? 'INVALID_ARGUMENT' : 'INTERNAL_ERROR';
+    const rawCode = error instanceof HttpFailure ? error.code : (error as { code?: unknown }).code;
+    const code = typeof rawCode === 'string' && Object.hasOwn(errorRegistry, rawCode) ? rawCode as ErrorCode
+      : (error as { statusCode?: number }).statusCode === 400 || (error as { statusCode?: number }).statusCode === 413 || (error as { statusCode?: number }).statusCode === 415 ? 'INVALID_ARGUMENT' : 'INTERNAL_ERROR';
     reply.code(errorRegistry[code].httpStatus).send(createErrorResponse(code, request.id));
   });
   app.setNotFoundHandler((request, reply) => reply.code(404).send(createErrorResponse('RESOURCE_NOT_FOUND', request.id)));
+
+  for (const [path, route] of Object.entries(binaryRoutes)) {
+    const contentType = route.contentType ?? 'application/octet-stream';
+    const maxBytes = route.maxBytes ?? bodyLimit;
+    if (!path.startsWith('/v1/') || !Number.isSafeInteger(maxBytes) || maxBytes < 1
+      || Object.values(binaryRoutes).filter(candidate => (candidate.contentType ?? 'application/octet-stream') === contentType).length !== 1)
+      throw new TypeError('Invalid binary transport route');
+    app.addContentTypeParser(contentType, { bodyLimit: maxBytes }, (request: FastifyRequest, payload, done) => {
+      if (request.headers['content-length'] === '0' || payload.readableEnded) {
+        const empty = new PassThrough();
+        empty.end();
+        done(null, empty);
+        return;
+      }
+      const body = new PassThrough();
+      const expectedSize = Number(request.headers['content-length']);
+      let size = 0, settled = false;
+      const finish = (error?: Error, value?: PassThrough) => {
+        if (settled) return;
+        settled = true;
+        if (error) { body.destroy(error); done(null, body); return; }
+        value!.end();
+        done(null, value!);
+      };
+      if (!Number.isSafeInteger(expectedSize) || expectedSize < 1) {
+        finish(Object.assign(new HttpFailure('INVALID_ARGUMENT'), { statusCode: 400 }));
+        return;
+      }
+      if (expectedSize > maxBytes) return finish(Object.assign(new HttpFailure('LIMIT_EXCEEDED'), { statusCode: 429 }));
+      payload.on('data', chunk => {
+        if (settled) return;
+        size += chunk.byteLength;
+        if (size > maxBytes) return finish(Object.assign(new HttpFailure('LIMIT_EXCEEDED'), { statusCode: 429 }));
+        body.write(chunk);
+        if (size === expectedSize) finish(undefined, body);
+      });
+      payload.on('error', error => finish(error));
+      request.raw.on('aborted', () => finish(Object.assign(new Error('request aborted'), { statusCode: 400 })));
+    });
+    app.post(path, async (request, reply) => {
+      if (lifetime.stopping) return reply.code(500).send(createErrorResponse('INTERNAL_ERROR', request.id));
+      const controller = new AbortController(), correlationId = request.id;
+      const abort = () => controller.abort(new HttpFailure('CONTEXT_EXPIRED'));
+      const disconnected = () => { if (!reply.raw.writableEnded) abort(); };
+      request.raw.once('aborted', abort); reply.raw.once('close', disconnected);
+      const timer = setTimeout(abort, deadlineMs);
+      let expiryTimer: ReturnType<typeof setTimeout> | undefined, onAbort: () => void = () => {};
+      const cancelled = new Promise<never>((_, reject) => {
+        onAbort = () => reject(new HttpFailure('CONTEXT_EXPIRED'));
+        controller.signal.addEventListener('abort', onAbort, { once: true });
+      });
+      let completion: Promise<void> | undefined;
+      try {
+        const receivedAt = new Date().toISOString();
+        const identity = await authenticate(request, { requestId: request.id, correlationId, receivedAt, operation: route.operation, signal: controller.signal });
+        if (!validateContract('RequestContext', identity).success) throw new HttpFailure('INTERNAL_ERROR');
+        const context = { ...structuredClone(identity), requestId: request.id, correlationId, receivedAt };
+        const remaining = Date.parse(context.contextExpiresAt) - Date.now();
+        if (remaining <= 0 || controller.signal.aborted) throw new HttpFailure('CONTEXT_EXPIRED');
+        expiryTimer = setTimeout(abort, Math.min(remaining, deadlineMs));
+        const body = request.body as AsyncIterable<Uint8Array> | undefined;
+        if (!body || typeof (body as AsyncIterable<Uint8Array>)[Symbol.asyncIterator] !== 'function') throw new HttpFailure('INVALID_ARGUMENT');
+        let settled!: () => void;
+        completion = new Promise(resolve => { settled = resolve; });
+        lifetime.work.add(completion);
+        const pending = route.handle({ context, signal: controller.signal, headers: headers(request), content: body })
+          .finally(settled);
+        const data = await Promise.race([pending, cancelled]);
+        if (!data || typeof data !== 'object') throw new HttpFailure('INTERNAL_ERROR');
+        const snapshot = JSON.stringify({ success: true, data });
+        const version = (data as { objectRef?: { version?: number } }).objectRef?.version;
+        if (version !== undefined) reply.header('ETag', `"${version}"`);
+        return reply.code(201).type('application/json').send(snapshot);
+      } catch (error) {
+        let code = error instanceof HttpFailure ? error.code : 'INTERNAL_ERROR';
+        if (!errorRegistry[code]) code = 'INTERNAL_ERROR';
+        return reply.code(errorRegistry[code].httpStatus).type('application/json')
+          .send(createErrorResponse(code, correlationId));
+      } finally {
+        clearTimeout(timer); clearTimeout(expiryTimer);
+        (request.body as { destroy?: (error?: Error) => void }).destroy?.();
+        controller.signal.removeEventListener('abort', onAbort);
+        request.raw.removeListener('aborted', abort); reply.raw.removeListener('close', disconnected);
+      }
+    });
+  }
 
   if (installation.events) {
     const events = installation.events;
@@ -233,7 +334,8 @@ export function createHttpApp(installation: HttpInstallation): FastifyInstance {
         if (!encoded.success) throw new HttpFailure('INTERNAL_ERROR');
         if (isCommand) {
           const snapshot = JSON.parse(encoded.json);
-          reply.header('ETag', `"${snapshot.data.objectRef.version}"`);
+          const version = snapshot.data?.objectRef?.version ?? snapshot.assignmentRef?.version;
+          if (version !== undefined) reply.header('ETag', `"${version}"`);
           if (status === 202) reply.header('Location', `/v1/actions/${snapshot.data.trackingRef.id}`);
         }
         return reply.code(status).type('application/json').send(encoded.json);

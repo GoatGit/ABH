@@ -1,0 +1,55 @@
+{
+  "date": "2026-09-13",
+  "scope": "Public candidate-bound safety-stop Action proposal",
+  "summary": "Added abh.actions.start-safety-stop, HTTP installation and typed client. The owner revalidates the selected identity, fence, token, unresolved operation, dedicated purpose and trusted safety definition in the proposal transaction; acceptance creates only a Proposed safety intent. A real Identity, Core HTTP and typed client call is covered end to end.",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts exec node --test test/generator.test.ts",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/actions.test.ts",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "contractArtifactsMatched": 51,
+    "openApiPaths": 61,
+    "generatorTestsPassed": 23,
+    "generatorTestsFailed": 0,
+    "typecheckPassed": true,
+    "actionTestsPassed": 71,
+    "actionTestsFailed": 0,
+    "successCreatesProposedSafetyIntentOnly": true,
+    "realIdentityValidated": true,
+    "httpAndTypedClientPathPassed": true,
+    "staleTokenRejected": true,
+    "duplicateSafetyCandidateRejected": true,
+    "nonSafetyDefinitionRejected": true,
+    "existingPublicProposalRegressionsPassed": true
+  },
+  "finalCheck": {
+    "command": "corepack pnpm check",
+    "passed": true,
+    "docsLinksChecked": 792,
+    "contractArtifactsMatched": 51,
+    "publicApiEntryPoints": {
+      "contracts": 9,
+      "core": 6
+    },
+    "testsTotal": 1002,
+    "testsPassed": 995,
+    "testsFailed": 0,
+    "testsSkipped": 7,
+    "packages": {
+      "contracts": { "passed": 313, "failed": 0, "skipped": 0 },
+      "adapterPi": { "passed": 10, "failed": 0, "skipped": 0 },
+      "adapterFastify": { "passed": 15, "failed": 0, "skipped": 0 },
+      "core": { "passed": 607, "failed": 0, "skipped": 7 },
+      "workbench": { "passed": 28, "failed": 0, "skipped": 0 },
+      "cli": { "passed": 22, "failed": 0, "skipped": 0 }
+    }
+  },
+  "boundaries": [
+    "Acceptance does not authorize, reserve, dispatch or mutate the blocked operation",
+    "Automatic safety orchestration and formal Domain assembly remain open",
+    "Production release governance and external safety acceptance remain open"
+  ]
+}

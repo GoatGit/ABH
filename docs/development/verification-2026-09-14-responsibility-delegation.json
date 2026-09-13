@@ -1,0 +1,38 @@
+{
+  "date": "2026-09-14",
+  "scope": "Dedicated responsibility DelegateSlot command",
+  "summary": "Added an internal DelegateSlot command that reuses governed route revision CAS while replacing exactly one frozen seat. The owner validates the delegation metadata, current Human assignment, responsibility type, request/workspace scope and limited expiry before fresh decisions are created. Approved history remains immutable, pending seats are superseded, and ALL completion only occurs after every fresh seat responds.",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/decisions.test.ts",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm --filter @abh/core api:check"
+  ],
+  "results": {
+    "contractArtifactsMatched": 51,
+    "decisionsTestsPassed": 34,
+    "dedicatedDelegateSlotTestPassed": true,
+    "onlyTargetSeatChanged": true,
+    "delegateAssignmentRevalidated": true,
+    "limitedExpiryEnforced": true,
+    "previousApprovalPreserved": true,
+    "pendingSeatSuperseded": true,
+    "freshRouteRevisionRequired": true,
+    "allCompletionAfterFreshSeats": true,
+    "missingDelegationRejected": true,
+    "mismatchedDelegateRejected": true,
+    "contractsApiEntryPointsMatched": 9,
+    "coreApiEntryPointsMatched": 6,
+    "coreTestsPassed": 621,
+    "docsLinksChecked": 804,
+    "fullCheckPassed": true
+  },
+  "boundaries": [
+    "Production reviewer qualification and governance assembly remain externally bounded",
+    "Escalation chains, capability-correction candidates and broader exception successor orchestration remain open"
+  ]
+}

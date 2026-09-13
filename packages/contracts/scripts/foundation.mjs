@@ -32,9 +32,11 @@ export function lintCatalog(catalog, definitions, states, protocol, version) {
   const types = new Set(catalog.objectTypes.map(entry=>entry.name));
   assert(unique((catalog.actions??[]).map(entry=>entry.name)), 'Duplicate internal action registration');
   for(const action of catalog.actions??[]){
-    const command=protocol.commands.find(command=>command.type===action.name&&command.visibility==='Internal');
+    const command=protocol.commands.find(command=>command.type===action.name);
     assert(command&&action.description?.length>0&&Array.isArray(action.targetTypes)&&action.targetTypes.length===1&&action.targetTypes[0]===command.targetType
-      &&Array.isArray(action.purposeNames)&&action.purposeNames.length>0&&unique(action.purposeNames)&&action.purposeNames.every(name=>catalog.purposes.some(purpose=>purpose.name===name)), `Invalid internal action registration: ${action.name}`);
+      &&Array.isArray(action.purposeNames)&&action.purposeNames.length>0&&unique(action.purposeNames)
+      &&(command.visibility==='Internal'||JSON.stringify(action.purposeNames)===JSON.stringify(command.purposeNames))
+      &&action.purposeNames.every(name=>catalog.purposes.some(purpose=>purpose.name===name)), `Invalid catalog action registration: ${action.name}`);
   }
   for (const entry of [...catalog.objectTypes,...catalog.purposes]) assert(registeredName.test(entry.name) && entry.name.startsWith('abh.') && entry.description?.length > 0, `Invalid Core registration: ${entry.name}`);
   for (const entry of catalog.objectTypes) assert(catalog.owners.includes(entry.owner) && ['None','Organization','Workspace','Object'].includes(entry.scopeKind), `Invalid object Owner/scope kind: ${entry.name}`);

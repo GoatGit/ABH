@@ -4,6 +4,7 @@ import { digestBytes } from '@abh/contracts/digest';
 import type { TenantTransaction } from './uow.ts';
 import { appendChange,contract,type CommandIdentity } from './journal.ts';
 import { CoreError } from '../internal/errors.ts';
+import { ArtifactLineageOwner } from './artifact-lineage.ts';
 
 /** Small inert UTF-8 documents. Large/binary content requires the ObjectStorePort staging path. */
 export class InlineArtifactOwner {
@@ -76,6 +77,7 @@ export class InlineArtifactOwner {
     const available=contract('ArtifactRecord',{...staged,artifactRef:{...staged.artifactRef,version:2},status:'Available'});
     await sql`UPDATE data.artifacts SET status='Available',version=2,record=${JSON.stringify(available)}::text::jsonb,updated_at=clock_timestamp(),updated_by=${c.actor.id}
       WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${id} AND version=1`;
+    await new ArtifactLineageOwner().record(tx,available);
     await appendChange(tx,{command,target:available.artifactRef,eventType:'abh.artifact.publish',changedFields:['status'],relatedRefs:input.sourceRefs});
     return available;
   }

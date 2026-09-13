@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-12",
+  "subject": "tenant-local Run wake worker for persisted satisfied durable waits",
+  "commands": [
+    "corepack pnpm --filter @abh/core exec node --test test/run-wake.test.ts test/run-recovery.test.ts",
+    "corepack pnpm --filter @abh/core exec tsc --noEmit -p tsconfig.typecheck.json",
+    "corepack pnpm --filter @abh/core test"
+  ],
+  "results": {
+    "completionEstimate": "96%",
+    "coreTests": 556,
+    "corePassed": 550,
+    "coreSkipped": 6,
+    "coreFailed": 0,
+    "deadlineCandidatesExcluded": true,
+    "workerWaitingToRunningVerified": true,
+    "wakeupPersistenceRequired": true,
+    "satisfiedSourceRequired": true,
+    "identityAndTenantBindingVerified": true,
+    "missingGrantRejected": true,
+    "directWakeIdempotencyPreserved": true,
+    "staleVersionRejected": true,
+    "auditAndOutboxCountVerified": true
+  },
+  "evidence": [
+    "pendingWakeRuns uses bounded tenant-local SQL and requires a persisted Wakeup plus a satisfied Wait source",
+    "Deadline wakeups are excluded before WakeRun can fabricate a business resume",
+    "The worker refreshed a fixed Service identity and used the current abh.runs.wake Grant",
+    "A second Waiting Run moved to Running v2 through the worker with exactly one additional audit and event",
+    "Direct command replay, stale version rejection and missing-grant rejection remain atomic"
+  ],
+  "limits": [
+    "global tenant discovery, production hosting, retry policy and real wait condition installation remain open",
+    "real IdP, external systems, global release scan and independent security review remain outside this estimate"
+  ]
+}

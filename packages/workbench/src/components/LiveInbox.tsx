@@ -5,10 +5,13 @@ import {useQuery} from '@tanstack/react-query';
 import type {DecisionInboxResponse} from '@abh/contracts';
 import {overviewInboxQueryKey,type QueryIdentity} from '@/lib/query-keys';
 import {formatDateTime,formatImpact} from '@/lib/format';
+import {useOrganizationLiveInvalidation} from './useOrganizationLiveInvalidation';
 
 export function LiveInbox({identity,initial,staleSeconds}:{
   identity:QueryIdentity;initial:DecisionInboxResponse;staleSeconds:number;
 }){
+  const streamState=useOrganizationLiveInvalidation(identity,[
+    overviewInboxQueryKey(identity)]);
   const query=useQuery({
     queryKey:overviewInboxQueryKey(identity),initialData:initial,
     staleTime:staleSeconds*1000,refetchInterval:staleSeconds*1000,
@@ -21,7 +24,7 @@ export function LiveInbox({identity,initial,staleSeconds}:{
   if(query.isPending||!inbox)return <main><h1>待办与审批</h1>
     <p className="message stale">正在同步授权待办…</p></main>;
   return <main><h1>待办与审批</h1>
-    <p className="message stale" role="status">刷新状态：授权轮询；时点 {formatDateTime(inbox.meta.asOf)}</p>
+    <p className="message stale" role="status">刷新状态：{streamState==='live'?'实时':'授权轮询'}；时点 {formatDateTime(inbox.meta.asOf)}</p>
     {inbox.data.length===0?<p className="message empty" role="status">无待办；可创建目标或等待新责任。</p>:(
       <div className="grid">{inbox.data.map(item=>(
         <section key={item.decisionRef.id} className="card">

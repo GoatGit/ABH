@@ -6,7 +6,11 @@ ExceptionOwner 为已 Closed Operation 的当前矛盾报告建立不可变责�
 
 没有当前合格责任人时 Request 保持 Unresolved，异常证据不会丢弃；有责任人时使用既有冻结席位、候选资格与 Decision 流程。责任状态从 requestRef 回读，技术状态从 sourceRef 对应的 Operation 和 ResourceFence 回读，ExceptionRecord 不复制技术 Outcome。批准/关闭责任事项不触发解冻、外部补偿、预算释放或终态回退。
 
-当前只实现 TerminalContradiction 类别的创建与责任绑定；ResolveException 注册处置类型、Correction/Domain Result 新版本、治理解冻仍未实现。资格检查和路由配置是宿主安装接口，Fixture 的回调不能充当正式生产治理。调用者在任何资源锁之前声明所有资格检查使用的控制 fence。
+TerminalContradiction 类别的创建、责任绑定、`ResolveException` 责任处置和不可变 `ProposeCorrection` 候选已实现。Resolve 命令要求当前 Human/`abh.decision.review` Grant，复核 Exception 版本、资源仍冻结、外部 Unknown/未决 Operation 仍存在，以及 Closed Request 中批准（RejectAndStop 可用拒绝）的 Decision 证据；不可变 Resolution、Receipt、Audit/Outbox 同事务写入。处置只登记 `WaitForEvidence`、`RejectAndStop`、`ApplyCorrection`、`RequestCompensation` 或 `AuthorizedContinue`，不会解冻、释放预算、执行补偿或回写技术 Outcome。
+
+Correction 要求当前 Human/`abh.correction.propose` Grant 和覆盖 Subject 的活跃 `Correction` 责任。`human.corrections` 只保存 `beforeRef`、目标替换 Artifact、理由/证据、责任、目标 Owner、Receipt 和摘要；当前版本不匹配返回 `CORRECTION_STALE`。候选不会被自动应用，也不改变资源冻结、技术 Outcome 或生产能力版本。`CoreHttpInstallation.corrections` 和 `client.corrections.propose` 可显式装配公开提案；`corrections.get` 和 `client.corrections.get` 提供当前读权下的 Strong 单候选查询。宿主仍必须提供 Grant 解析器，Owner 在事务内复核全部资格和摘要。
+
+Correction 应用支持 `Domain + Mission Goal`、`Run + Graph Patch` 与 `Memory + Learning Signal successor`。Mission 候选要求当前 Human/`abh.mission.manage` Grant、精确候选版本/摘要、精确 Subject 与 Authority，以及宿主 authority 准入；随后通过 `MissionOwner.reviseGoal` 推进 Goal。Run 候选要求 `abh.runtime.deliver` Grant，`before` Artifact 必须精确快照当前 Graph Revision，`after` Artifact 必须是绑定同一 Run 和当前基线的 `ProposeGraphPatchPayload`；应用复用 Run Owner 的图校验、Revision CAS 和 Task 物化。Memory 候选要求 `abh.learning.capture` Grant，`beforeRef` 必须精确快照不可变 Signal；应用创建新的不可变 successor Signal，不修改旧 Signal。三类结果都把不可变 `CorrectionApplicationRecord`、Audit 和 Outbox 写入同一事务，HTTP/SDK 重放返回同一记录，候选摘要不变。Learning Case、Capability Candidate、独立评测、知识资格授予、用途撤回传播、Exception 后继编排、自动补偿、已执行节点改写和通用应用仍未实现；`ApplyCorrection` Exception 的授权应用与报告阻塞解冻已闭合。资格检查和路由配置是宿主安装接口，Fixture 的回调不能充当正式生产治理。调用者在任何资源锁之前声明所有资格检查使用的控制 fence。
 
 
 ExceptionOwner.inspect 提供内部诊断读取，必须传入安装的当前查询 admission。权限检查后按资源锁、父 Action、Human Request 的顺序锁定，回读实际 Request 版本/状态、Operation position、当前资源冻结报告与未决占位。验证 Request 的 kind/subject/proposalDigest/原报告证据和持久 Exception 一致，不能通过替换责任请求将异常解释成已处理。返回的是当前技术状态与当前责任状态，不从创建时 Request Ref 的版本推断当前状态。该方法需要可取得行锁的事务，尚非公开 HTTP/CLI 查询接口；正式查询动作/用途治理仍须宿主装配。

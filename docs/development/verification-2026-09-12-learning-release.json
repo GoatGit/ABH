@@ -1,0 +1,39 @@
+{
+  "date": "2026-09-12",
+  "scope": "learning-gate-release-consumption",
+  "contractArtifacts": 51,
+  "openApiPaths": 49,
+  "checks": [
+    "contracts generate --check",
+    "contracts build",
+    "core build",
+    "contracts api:update",
+    "core api:update",
+    "learning-build-case real-postgresql regression",
+    "workbench 23 unit tests",
+    "cli 5 unit tests",
+    "workspace build and api reports",
+    "artifact discovery retry after unrelated testcontainer port timeout"
+  ],
+  "fullCoreRun": {
+    "total": 562,
+    "passed": 555,
+    "failed": 1,
+    "skipped": 6,
+    "failure": "unrelated testcontainer port-bind timeout",
+    "isolatedRetry": "passed"
+  },
+  "covered": [
+    "release authority grant",
+    "producer evaluator and gate-signer independence",
+    "immutable candidate gate and profile digests",
+    "pass verdict and exact candidate linkage",
+    "release and assignment linkage",
+    "unique gate consumption",
+    "static release owner delegation",
+    "idempotent replay",
+    "learning purpose withdrawal propagation",
+    "no automatic promotion beyond governed assignment creation"
+  ],
+  "status": "passed-with-unrelated-testcontainer-timeout-retried"
+}

@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-12",
+  "subject": "Independent immutable learning gate",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/learning-build-case.test.ts",
+    "corepack pnpm check",
+    "git diff --check"
+  ],
+  "results": {
+    "completionEstimate": "99.5%",
+    "contractsArtifacts": 51,
+    "contractOpenApiPaths": 43,
+    "independentGatePrincipalRequired": true,
+    "producerAndEvaluatorSelfSigningRejected": true,
+    "frozenMetricThresholdsVerified": true,
+    "passVerdictVerified": true,
+    "failVerdictVerified": true,
+    "inconclusiveVerdictVerified": true,
+    "crossCandidateEvidenceRejected": true,
+    "oneGatePerCandidateVerified": true,
+    "commandReplayStableVerified": true,
+    "gateEventAuditReceiptAtomicVerified": true,
+    "releaseCreationBlockedByDesignVerified": true
+  },
+  "evidence": [
+    "Real PostgreSQL BuildGate persisted one immutable EvaluationGateArtifactRecord with thresholds, metric values, per-metric findings, verdict, signer, event, audit and receipt",
+    "A 0.93 accuracy against a frozen 0.95 minimum produced Fail; 0.97 produced Pass",
+    "A completed result combined with an Inconclusive result for the same candidate produced conservative Inconclusive",
+    "The evaluator principal was refused as Gate signer and evaluation evidence bound to another candidate was rejected",
+    "Replaying each accepted Gate command returned the same immutable record without another Gate, event or receipt",
+    "No Release, promotion, knowledge qualification or production approval was created"
+  ],
+  "limits": [
+    "External evaluation execution, deadlines, retries, cost accounting and recovery workers remain open",
+    "Baseline regression comparison, multiple-comparison controls and statistical uncertainty remain open",
+    "Gate/result queries, projections, Workbench surfaces and CLI diagnostics remain open",
+    "Release orchestration, production governance, real external systems and independent security review remain outside this local engineering closure"
+  ]
+}

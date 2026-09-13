@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-13",
+  "subject": "Ledger unit/period catalog and refund/FX correction application",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test test/ledger-catalog.test.ts test/ledger-doctor.test.ts test/ledger.test.ts test/commitments.test.ts",
+    "corepack pnpm --filter @abh/core exec node --test test/model-gateway.test.ts test/waits.test.ts test/inbox.test.ts test/pg-boss.test.ts test/run-commands.test.ts test/actions.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm contracts:check",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm --filter @abh/adapter-fastify test",
+    "corepack pnpm --filter @abh/adapter-pi test",
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm typecheck",
+    "corepack pnpm build",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "git diff --check"
+  ],
+  "results": {
+    "databaseManifestVersion": 69,
+    "tenantTables": 113,
+    "contractsArtifacts": 51,
+    "contractsApiEntryPoints": 9,
+    "coreApiEntryPoints": 6,
+    "ledgerTargetedTests": "25 passed, 0 failed",
+    "catalogAffectedIntegrationTests": "118 passed, 0 failed",
+    "contractsTests": "312 passed, 0 failed",
+    "coreTests": "596 passed, 7 skipped, 0 failed",
+    "cliTests": "17 passed, 0 failed",
+    "adapterFastifyTests": "15 passed, 0 failed",
+    "adapterPiTests": "10 passed, 0 failed",
+    "workbenchTests": "28 passed, 0 failed",
+    "rootTypecheckAndBuild": "passed",
+    "apiCheck": "passed",
+    "docsLinksChecked": 778,
+    "gitDiffCheck": "passed"
+  },
+  "evidence": [
+    "Ledger configuration resolves and validates an immutable monetary/quantity unit and UTC accounting period before admitting a limit",
+    "Unit currency rules and unit precision bound monetary ledgers and exact decimal limits",
+    "Refund and FxRevaluation corrections require signed usage, the correct conversion-ref shape and a host Domain callback",
+    "Correction inserts an immutable record and Correct entry, atomically updates confirmed usage, and journals Audit, Outbox and Receipt",
+    "Source identity deduplicates replays, changed input conflicts, over-refund fails without partial state, and the doctor rebuilds the corrected balance"
+  ],
+  "limits": [
+    "The capability is a ledger primitive; real refund and FX business rules require an explicit Domain host callback",
+    "Production resource-policy assembly, external exchange-rate sources and hosted refund workflows remain outside local V1"
+  ]
+}

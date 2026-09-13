@@ -1,0 +1,39 @@
+{
+  "date": "2026-09-12",
+  "scope": "assignment-governed-get-list-pause",
+  "contractArtifacts": 51,
+  "openApiPaths": 56,
+  "checks": [
+    "contracts generate --check",
+    "contracts 312 tests",
+    "contracts build and api reports",
+    "core typecheck, build and api reports",
+    "learning-build-case real-postgresql assignment list/get/pause regression",
+    "core full run: 568 tests, 562 passed, 6 skipped, 0 failed",
+    "workbench typecheck",
+    "workbench 27 unit tests",
+    "workbench production chromium e2e: 2 passed",
+    "adapter-fastify 15 tests",
+    "cli 5 tests"
+  ],
+  "covered": [
+    "public assignment pause with exact expected-version CAS",
+    "paused selectable and executionAllowed false",
+    "persisted stop reason and stop evidence reference",
+    "authorized assignment get",
+    "bounded release/status assignment list",
+    "authorization-bound keyset cursor",
+    "stable Active and Paused counts including zero",
+    "typed client assignment lifecycle operations",
+    "workbench authorized assignment list",
+    "workbench strong-read pause with server-derived evidence",
+    "browser release to visible assignment to paused v2 journey"
+  ],
+  "remaining": [
+    "production release approval governance",
+    "canary termination and rollback orchestration",
+    "real deployment compensation",
+    "batch release scanning and operations console"
+  ],
+  "status": "passed"
+}

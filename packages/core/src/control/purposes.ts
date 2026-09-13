@@ -5,6 +5,7 @@ import type {TenantTransaction} from '../data/uow.ts';
 import {appendChange,contract,type CommandIdentity} from '../data/journal.ts';
 import {CoreError} from '../internal/errors.ts';
 import {lockFences} from './fences.ts';
+import {LearningOwner} from '../mission/learning.ts';
 
 /** Purpose names are registered by a verified static catalog and activated by explicit governance. */
 export class PurposeOwner {
@@ -44,6 +45,7 @@ export class PurposeOwner {
       WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${ref.id} AND version=${ref.version}`;
     const fence=fences.find(f=>f.scopeRef.type===ref.type&&f.scopeRef.id===ref.id)!;
     await sql`UPDATE control.fences SET epoch=epoch+1,version=version+1,stop_flag=true,updated_at=clock_timestamp(),updated_by=${c.actor.id} WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${fence.fenceRef.id}`;
+    if(next.name.startsWith('abh.learning.'))await new LearningOwner().withdrawRevokedPurpose(tx,next.name);
     await appendChange(tx,{command,target:next.purposeRef,eventType:'abh.purpose.revoked',changedFields:['status'],relatedRefs:evidence});
     await appendChange(tx,{command,target:{...fence.fenceRef,version:fence.fenceRef.version+1},eventType:'abh.fence.advanced',changedFields:['epoch','stopFlag'],relatedRefs:[next.purposeRef]});return next;
   }

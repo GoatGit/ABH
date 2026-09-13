@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-13",
+  "scope": "defineBusiness declaration, hello-business template, and local Pack/CTK fixed build",
+  "summary": "Added a closed Action-only business declaration API with stable digest and schema validation, an SDK-based generated hello-business template, and a bounded compiler for an unsigned local Manifest plus an explicit NotRun CTK plan.",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test packages/core/test/business.test.ts",
+    "node --test packages/core/test/business-pack.test.ts",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm --filter @abh/cli exec node --test test/pack.test.mjs",
+    "corepack pnpm api:update",
+    "corepack pnpm api:check",
+    "corepack pnpm contracts:check",
+    "corepack pnpm docs:check"
+  ],
+  "results": {
+    "coreBusinessTestsPassed": 2,
+    "coreBusinessPackTestsPassed": 2,
+    "coreTestsTotal": 613,
+    "coreTestsPassed": 606,
+    "coreTestsSkipped": 7,
+    "coreTestsFailed": 0,
+    "cliTestsPassed": 22,
+    "cliPackCompileBusinessTestsPassed": 1,
+    "cliTestsFailed": 0,
+    "generatedBusinessModuleImported": true,
+    "stableJcsSha256DigestVerified": true,
+    "closedDeclarationFieldsVerified": true,
+    "boundedInputSchemaVerified": true,
+    "duplicateActionsRejected": true,
+    "publicTypedClientExampleGenerated": true,
+    "approvalNotAutomated": true,
+    "generatedManifestContractValid": true,
+    "generatedCtkPlanRemainsNotRun": true,
+    "localPackCandidateNotSignedOrInstalled": true,
+    "contractArtifactsMatch": 51,
+    "apiReportsMatch": true,
+    "docsLinksChecked": 786
+  },
+  "finalCheck": {
+    "command": "corepack pnpm check",
+    "passed": true,
+    "note": "After adding abh pack compile-business, the full workspace check passed with Core 613/606 passed and 7 expected skips; an earlier operation-doctor Testcontainers timeout passed 6/6 on focused rerun."
+  },
+  "remainingGaps": [
+    "Production deployment acceptance for the local Business Manifest and CTK plan",
+    "Real production identity, governance and Domain acceptance",
+    "Pack distribution, hosting and independent security/performance review"
+  ]
+}

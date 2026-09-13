@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-13",
+  "subject": "Read-only installed Pack doctor",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate --check",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm --filter @abh/core exec node --test test/pack-doctor.test.ts",
+    "corepack pnpm --filter @abh/cli build",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm typecheck",
+    "corepack pnpm build",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "git diff --check"
+  ],
+  "results": {
+    "contractsArtifacts": 51,
+    "contractsApiEntryPoints": 9,
+    "coreApiEntryPoints": 6,
+    "contractsTests": "312 passed, 0 failed",
+    "coreTests": "587 passed, 7 skipped, 0 failed",
+    "packDoctorDatabaseFixture": "4 passed, 0 failed",
+    "cliTests": "16 passed, 0 failed",
+    "rootTypecheckAndBuild": "passed",
+    "apiCheck": "passed",
+    "docsLinksChecked": 777,
+    "gitDiffCheck": "passed"
+  },
+  "evidence": [
+    "Exact installed Pack identity, status, deployment version and three persisted integrity digests are checked in one READ ONLY transaction",
+    "Validation report, signed trust snapshot, capability set and child registrations are bound by exact references, digests and declared identities",
+    "Unknown Pack fails closed as one PRECONDITION_FAILED violation without inventing a diagnostic",
+    "Partial fixture reports only validation, governance, capability registration and deployment-pointer gaps"
+  ],
+  "limits": [
+    "The doctor does not read Package payload bytes or repeat Cosign cryptographic verification",
+    "The doctor does not read the global migration Journal reserved to maintenance, and manifestMigrationCount is not migration completion",
+    "The doctor does not assert runtime availability, repair installation, change lifecycle state or grant execution authority"
+  ]
+}

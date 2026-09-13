@@ -8,6 +8,7 @@ import {CoreError} from '../internal/errors.ts';
 import {boundedCallback} from '../internal/bounded-callback.ts';
 import {requireVerifiedContext} from '../internal/context.ts';
 import {discoverPackSuspensions,type PackSuspensionDiscoveryAdmission,type PackSuspensionDiscoveryCursor} from '../extensions/discover-pack-suspensions.ts';
+import {SuspensionSweepOwner} from '../extensions/suspension-sweeps.ts';
 import {processActionSuspension,snapshotActionSuspensionProcessing,type ActionSuspensionProcessingInstallation} from './process-action-suspension.ts';
 
 export interface SuspensionScopeFailure {
@@ -43,6 +44,7 @@ export async function runSuspensionDispatchWorker(database:Database,input:Suspen
  if(!Number.isInteger(eventSize)||eventSize<1||eventSize>100||!Number.isInteger(targetSize)||targetSize<1||targetSize>100||!Number.isInteger(interval)||interval<1||interval>60000
   ||!input.scopes.length||input.scopes.length>100||new Set(input.scopes.map(scope=>scope.id)).size!==input.scopes.length)throw new CoreError('INVALID_ARGUMENT');
  const d=input.discovery,s=d.source,discovery={fenceRefs:d.fenceRefs.bind(d),discover:d.discover.bind(d),source:{fenceRefs:s.fenceRefs.bind(s),current:s.current.bind(s)}};
+ const sweeps=new SuspensionSweepOwner();
  let organization:string|undefined,managementBinding:string|undefined,eventCursor:PackSuspensionDiscoveryCursor|undefined;
  const scopes=input.scopes.map(scope=>{
   contract('RegisteredName',scope.id);
@@ -72,10 +74,14 @@ export async function runSuspensionDispatchWorker(database:Database,input:Suspen
    for(const entry of suspension.capabilities)for(const scope of scopes.filter(scope=>scope.processing.delivery.registeredKind===entry.capability.kind)){
     const capability=contract('CapabilityRef',{kind:scope.publicKind,id:entry.capability.id,version:entry.capability.version,digest:entry.registrationDigest});
     try{
-    let cursor:Parameters<typeof processActionSuspension>[2]['cursor'];
+    const sweep=await database.transaction(await context(),options(),tx=>sweeps.open(tx,
+     {eventRef:suspension.eventRef,capability,scopeId:scope.id}));
+    let cursor=sweep.cursor;
     do{
      if(signal.aborted)return;
      const result=await processActionSuspension(database,options(),{eventRef:suspension.eventRef,capability,registeredKind:entry.capability.kind,limit:targetSize,maxPages:1,...(cursor?{cursor}:{})},scope.processing);
+     await database.transaction(await context(),options(),tx=>sweeps.advance(tx,
+      {eventRef:suspension.eventRef,capability,scopeId:scope.id},result.complete?undefined:result.cursor,result.complete));
      stats.targetPages+=result.pages;stats.targets+=result.targets;
      cursor=result.complete?undefined:result.cursor;
     }while(cursor);

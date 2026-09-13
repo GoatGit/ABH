@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-12",
+  "subject": "Bounded local Pack supply-chain verification CLI",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate --check",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm --filter @abh/cli build",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm typecheck",
+    "corepack pnpm build",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "git diff --check"
+  ],
+  "results": {
+    "contractsArtifacts": 51,
+    "contractsApiEntryPoints": 9,
+    "coreApiEntryPoints": 6,
+    "contractsTests": "312 passed, 0 failed",
+    "cliTests": "15 passed, 0 failed",
+    "rootTypecheckAndBuild": "passed",
+    "apiCheck": "passed",
+    "docsLinksChecked": 777,
+    "gitDiffCheck": "passed",
+    "contentSignatureProvenanceCtkCombined": true,
+    "singleBoundedReadOnlySnapshot": true,
+    "diagnosticExposesDigestsAndLifetimeOnly": true,
+    "policyMismatchForbidden": true,
+    "invalidTrustRejectedBeforeHostPathDisclosure": true,
+    "commandRefAndEvidenceRefsRemainNull": true
+  },
+  "evidence": [
+    "CLI regression reaches Core proof admission with valid bundle shape and fails closed on unavailable pinned verifier",
+    "Policy identity mismatch returns FORBIDDEN while malformed trust configuration returns INVALID_ARGUMENT",
+    "JSON failure remains a contract-valid CliPackVerifyResult without exposing trust policy material or host paths"
+  ],
+  "limits": [
+    "Verification does not persist a report, stage a Pack, execute migration, install software or grant runtime authority",
+    "Database trust policy, revocation state, current governance and production deployment admission remain separate"
+  ]
+}

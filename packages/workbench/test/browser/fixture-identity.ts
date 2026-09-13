@@ -78,8 +78,9 @@ function organizationForSelection(selection?:WorkbenchOrganizationSelection){
 export const fixtureIdentityAdapter:WorkbenchIdentityAdapter={
   resolve:async(headers:Headers,selection?:WorkbenchOrganizationSelection)=>{
     const requestUrl=headers.get('referer');
-    const purposeOfUse=requestUrl&&new URL(requestUrl).pathname.startsWith('/missions/')
-      ?'abh.mission.manage':undefined;
+    const pathname=requestUrl?new URL(requestUrl).pathname:undefined;
+    const purposeOfUse=pathname?.startsWith('/missions/')?'abh.mission.manage'
+      :pathname?.startsWith('/learning/')||pathname==='/learning'?'abh.learning.evaluate':undefined;
     const choice=organizationForSelection(selection);
     if(choice&&purposeOfUse)return createSession({...choice,purposeOfUse});
     return choice?createSession(choice):null;

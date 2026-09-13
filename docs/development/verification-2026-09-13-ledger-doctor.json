@@ -1,0 +1,50 @@
+{
+  "date": "2026-09-13",
+  "subject": "Read-only Ledger balance and liability doctor",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core exec node --test test/ledger-doctor.test.ts",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm --filter @abh/cli build",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm contracts:check",
+    "corepack pnpm typecheck",
+    "corepack pnpm build",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "git diff --check"
+  ],
+  "results": {
+    "contractsArtifacts": 51,
+    "contractsApiEntryPoints": 9,
+    "coreApiEntryPoints": 6,
+    "ledgerDoctorDatabaseFixture": "6 passed, 0 failed",
+    "contractsTests": "312 passed, 0 failed",
+    "coreTests": "600 passed, 7 skipped, 0 failed",
+    "cliTests": "17 passed, 0 failed",
+    "adapterFastifyTests": "15 passed, 0 failed",
+    "adapterPiTests": "10 passed, 0 failed",
+    "workbenchTests": "28 passed, 0 failed",
+    "rootTypecheckAndBuild": "passed",
+    "apiCheck": "passed",
+    "docsLinksChecked": 777,
+    "gitDiffCheck": "passed"
+  },
+  "evidence": [
+    "The doctor rebuilds immutable entries and matches limit, confirmed usage, Held Reservation and Open Commitment in one READ ONLY transaction",
+    "The doctor reconciles held reservations, open commitments, expiration and the ledger Outbox version chain without repair writes",
+    "Unknown Ledger reports PRECONDITION_FAILED with no invented diagnostic",
+    "Direct balance-column drift reports BALANCE_DRIFT while an unjournaled ledger version advance reports LEDGER_RECORD_DRIFT",
+    "Expired Held remains visible as EXPIRED_HOLD with bounded counts"
+  ],
+  "limits": [
+    "The audit reads at most 10000 entries plus one limit probe; larger ledgers stop with ENTRY_LIMIT_EXCEEDED",
+    "The doctor does not settle usage, release holds, create commitments, write evidence or issue repair Commands",
+    "Period and unit catalogs and refund/FX Correction application were outside this doctor batch and are covered by the follow-on ledger catalog/correction batch",
+    "Production resource-policy assembly and real refund/exchange-rate domain rule hosting remain explicit gaps"
+  ]
+}

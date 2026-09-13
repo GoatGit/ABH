@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-12",
+  "scope": "assignment-rollback-workbench",
+  "checks": [
+    "workbench typecheck",
+    "workbench 28 unit tests",
+    "workbench production build",
+    "workbench production chromium e2e: 2 passed"
+  ],
+  "covered": [
+    "active assignment rollback form",
+    "browser submits only release selection and reason",
+    "server strong-reads current assignment and exact version",
+    "server strong-reads predecessor assignment by release",
+    "server derives learning gate and compatibility evidence",
+    "stable idempotency key binds predecessor, evidence and reason",
+    "rollback lineage display for assignment and release",
+    "production journey: two releases, pause, rollback and active replacement",
+    "existing assignments remain queryable and paused history is not erased"
+  ],
+  "remaining": [
+    "production release approval governance",
+    "canary termination and full operational rollback orchestration",
+    "real deployment compensation and batch release operations"
+  ],
+  "status": "passed"
+}

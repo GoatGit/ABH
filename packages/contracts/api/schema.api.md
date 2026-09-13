@@ -46,6 +46,7 @@ export const schemaIds: {
     readonly ResourceRequirement: "urn:abh:contracts:0.1.0:workflow#/$defs/ResourceRequirement";
     readonly ImpactUpperBound: "urn:abh:contracts:0.1.0:workflow#/$defs/ImpactUpperBound";
     readonly ProposeActionPayload: "urn:abh:contracts:0.1.0:workflow#/$defs/ProposeActionPayload";
+    readonly ProposeSafetyStopPayload: "urn:abh:contracts:0.1.0:workflow#/$defs/ProposeSafetyStopPayload";
     readonly ActionProposal: "urn:abh:contracts:0.1.0:workflow#/$defs/ActionProposal";
     readonly CancelActionPayload: "urn:abh:contracts:0.1.0:workflow#/$defs/CancelActionPayload";
     readonly RequestAuthorizationPayload: "urn:abh:contracts:0.1.0:workflow#/$defs/RequestAuthorizationPayload";
@@ -70,6 +71,13 @@ export const schemaIds: {
     readonly ActionListResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/ActionListResponse";
     readonly DecisionInboxResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/DecisionInboxResponse";
     readonly ActionAcceptedResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/ActionAcceptedResponse";
+    readonly LearningCaseCreatedResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/LearningCaseCreatedResponse";
+    readonly LearningCandidateCreatedResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/LearningCandidateCreatedResponse";
+    readonly EvaluationRunCreatedResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/EvaluationRunCreatedResponse";
+    readonly CorrectionProposedResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/CorrectionProposedResponse";
+    readonly CorrectionAppliedResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/CorrectionAppliedResponse";
+    readonly ExceptionResolvedResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/ExceptionResolvedResponse";
+    readonly ExceptionResolutionEffectResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/ExceptionResolutionEffectResponse";
     readonly DecisionSubmittedResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/DecisionSubmittedResponse";
     readonly DecisionWithdrawnResponse: "urn:abh:contracts:0.1.0:workflow#/$defs/DecisionWithdrawnResponse";
     readonly EventChangeSummary: "urn:abh:contracts:0.1.0:workflow#/$defs/EventChangeSummary";
@@ -150,12 +158,21 @@ export const schemaIds: {
     readonly MembershipRecord: "urn:abh:contracts:0.1.0:facts#/$defs/MembershipRecord";
     readonly GrantRecord: "urn:abh:contracts:0.1.0:facts#/$defs/GrantRecord";
     readonly LedgerRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LedgerRecord";
+    readonly LedgerUnitRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LedgerUnitRecord";
+    readonly LedgerPeriodRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LedgerPeriodRecord";
+    readonly RegisterLedgerUnitPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RegisterLedgerUnitPayload";
+    readonly RegisterLedgerPeriodPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RegisterLedgerPeriodPayload";
+    readonly LedgerCorrectionRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LedgerCorrectionRecord";
+    readonly ApplyLedgerCorrectionPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ApplyLedgerCorrectionPayload";
     readonly ReservationRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ReservationRecord";
     readonly AuditRecord: "urn:abh:contracts:0.1.0:facts#/$defs/AuditRecord";
     readonly CommandReceipt: "urn:abh:contracts:0.1.0:facts#/$defs/CommandReceipt";
     readonly ArtifactRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ArtifactRecord";
     readonly FenceRecord: "urn:abh:contracts:0.1.0:facts#/$defs/FenceRecord";
     readonly LedgerEntryRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LedgerEntryRecord";
+    readonly LedgerBalanceDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/LedgerBalanceDiagnostic";
+    readonly LedgerDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/LedgerDiagnostic";
+    readonly CliDoctorLedgerResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliDoctorLedgerResult";
     readonly ConfigureLedgerPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ConfigureLedgerPayload";
     readonly ReserveAllPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ReserveAllPayload";
     readonly ConsumeReservationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ConsumeReservationPayload";
@@ -165,9 +182,11 @@ export const schemaIds: {
     readonly WorkspaceRecord: "urn:abh:contracts:0.1.0:facts#/$defs/WorkspaceRecord";
     readonly ReleaseRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ReleaseRecord";
     readonly StaticAssignmentRecord: "urn:abh:contracts:0.1.0:facts#/$defs/StaticAssignmentRecord";
+    readonly StaticAssignmentListResult: "urn:abh:contracts:0.1.0:facts#/$defs/StaticAssignmentListResult";
     readonly ConfigureStaticReleasePayload: "urn:abh:contracts:0.1.0:facts#/$defs/ConfigureStaticReleasePayload";
     readonly ResolveStaticPinsPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ResolveStaticPinsPayload";
     readonly StopStaticAssignmentPayload: "urn:abh:contracts:0.1.0:facts#/$defs/StopStaticAssignmentPayload";
+    readonly RollbackStaticAssignmentPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RollbackStaticAssignmentPayload";
     readonly StoreInlineArtifactPayload: "urn:abh:contracts:0.1.0:facts#/$defs/StoreInlineArtifactPayload";
     readonly TombstoneArtifactPayload: "urn:abh:contracts:0.1.0:facts#/$defs/TombstoneArtifactPayload";
     readonly CommitmentRecord: "urn:abh:contracts:0.1.0:facts#/$defs/CommitmentRecord";
@@ -178,6 +197,11 @@ export const schemaIds: {
     readonly BeginCloseCommitmentPayload: "urn:abh:contracts:0.1.0:facts#/$defs/BeginCloseCommitmentPayload";
     readonly CloseCommitmentPayload: "urn:abh:contracts:0.1.0:facts#/$defs/CloseCommitmentPayload";
     readonly ResponsibilityAssignmentRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ResponsibilityAssignmentRecord";
+    readonly CorrectionRecord: "urn:abh:contracts:0.1.0:facts#/$defs/CorrectionRecord";
+    readonly CorrectionApplicationRecord: "urn:abh:contracts:0.1.0:facts#/$defs/CorrectionApplicationRecord";
+    readonly ApplyCorrectionPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ApplyCorrectionPayload";
+    readonly CorrectionCapabilityCandidate: "urn:abh:contracts:0.1.0:facts#/$defs/CorrectionCapabilityCandidate";
+    readonly ProposeCorrectionPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ProposeCorrectionPayload";
     readonly ResponsibilitySeat: "urn:abh:contracts:0.1.0:facts#/$defs/ResponsibilitySeat";
     readonly ResponsibilitySlot: "urn:abh:contracts:0.1.0:facts#/$defs/ResponsibilitySlot";
     readonly ResponsibilityRequestRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ResponsibilityRequestRecord";
@@ -215,10 +239,13 @@ export const schemaIds: {
     readonly RenewWorkLeasePayload: "urn:abh:contracts:0.1.0:facts#/$defs/RenewWorkLeasePayload";
     readonly ReleaseWorkLeasePayload: "urn:abh:contracts:0.1.0:facts#/$defs/ReleaseWorkLeasePayload";
     readonly ResourceFenceRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ResourceFenceRecord";
+    readonly SafetyStopCandidate: "urn:abh:contracts:0.1.0:facts#/$defs/SafetyStopCandidate";
+    readonly SafetyStopListResult: "urn:abh:contracts:0.1.0:facts#/$defs/SafetyStopListResult";
     readonly DispatchPermitRecord: "urn:abh:contracts:0.1.0:facts#/$defs/DispatchPermitRecord";
     readonly AttemptRecord: "urn:abh:contracts:0.1.0:facts#/$defs/AttemptRecord";
     readonly AttemptObservationRecord: "urn:abh:contracts:0.1.0:facts#/$defs/AttemptObservationRecord";
     readonly IssueDispatchPermitPayload: "urn:abh:contracts:0.1.0:facts#/$defs/IssueDispatchPermitPayload";
+    readonly SafeRetryOperationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/SafeRetryOperationPayload";
     readonly DispatchExitRecord: "urn:abh:contracts:0.1.0:facts#/$defs/DispatchExitRecord";
     readonly ClaimDispatchExitPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ClaimDispatchExitPayload";
     readonly NormalizedOperationObservation: "urn:abh:contracts:0.1.0:facts#/$defs/NormalizedOperationObservation";
@@ -227,6 +254,22 @@ export const schemaIds: {
     readonly ApplyReconciliationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ApplyReconciliationPayload";
     readonly RecoverOperationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RecoverOperationPayload";
     readonly RecoverRunPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RecoverRunPayload";
+    readonly WakeRunPayload: "urn:abh:contracts:0.1.0:facts#/$defs/WakeRunPayload";
+    readonly GraphPatchNode: "urn:abh:contracts:0.1.0:facts#/$defs/GraphPatchNode";
+    readonly GraphPatchEdge: "urn:abh:contracts:0.1.0:facts#/$defs/GraphPatchEdge";
+    readonly ProposeGraphPatchPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ProposeGraphPatchPayload";
+    readonly GraphRevisionRecord: "urn:abh:contracts:0.1.0:facts#/$defs/GraphRevisionRecord";
+    readonly TaskSpec: "urn:abh:contracts:0.1.0:facts#/$defs/TaskSpec";
+    readonly ClaimTaskPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ClaimTaskPayload";
+    readonly PrepareInvocationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/PrepareInvocationPayload";
+    readonly FinalizeInvocationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/FinalizeInvocationPayload";
+    readonly CompleteInvocationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/CompleteInvocationPayload";
+    readonly ObserveLateInvocationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ObserveLateInvocationPayload";
+    readonly LateInvocationObservationRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LateInvocationObservationRecord";
+    readonly LateInvocationAdjudicationRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LateInvocationAdjudicationRecord";
+    readonly CommitVerifiedTaskPayload: "urn:abh:contracts:0.1.0:facts#/$defs/CommitVerifiedTaskPayload";
+    readonly InvocationRecord: "urn:abh:contracts:0.1.0:facts#/$defs/InvocationRecord";
+    readonly CheckpointRecord: "urn:abh:contracts:0.1.0:facts#/$defs/CheckpointRecord";
     readonly ActionResultRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ActionResultRecord";
     readonly AggregateActionPayload: "urn:abh:contracts:0.1.0:facts#/$defs/AggregateActionPayload";
     readonly CleanupActionPayload: "urn:abh:contracts:0.1.0:facts#/$defs/CleanupActionPayload";
@@ -263,10 +306,16 @@ export const schemaIds: {
     readonly OutboxConsumptionRecord: "urn:abh:contracts:0.1.0:facts#/$defs/OutboxConsumptionRecord";
     readonly RecordOutboxConsumptionPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RecordOutboxConsumptionPayload";
     readonly ExceptionRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ExceptionRecord";
+    readonly ExceptionResolutionRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ExceptionResolutionRecord";
     readonly OpenTerminalExceptionPayload: "urn:abh:contracts:0.1.0:facts#/$defs/OpenTerminalExceptionPayload";
+    readonly ApplyExceptionResolutionEffectPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ApplyExceptionResolutionEffectPayload";
+    readonly ExceptionResolutionEffectRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ExceptionResolutionEffectRecord";
+    readonly ResolveExceptionPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ResolveExceptionPayload";
     readonly RevokeResponsibilityPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RevokeResponsibilityPayload";
     readonly DecisionWithdrawalRecord: "urn:abh:contracts:0.1.0:facts#/$defs/DecisionWithdrawalRecord";
     readonly ReviseResponsibilityRoutePayload: "urn:abh:contracts:0.1.0:facts#/$defs/ReviseResponsibilityRoutePayload";
+    readonly ResponsibilityDelegation: "urn:abh:contracts:0.1.0:facts#/$defs/ResponsibilityDelegation";
+    readonly ResponsibilityEscalation: "urn:abh:contracts:0.1.0:facts#/$defs/ResponsibilityEscalation";
     readonly ResponsibilityRouteRevisionRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ResponsibilityRouteRevisionRecord";
     readonly DecisionEffectIntentRecord: "urn:abh:contracts:0.1.0:facts#/$defs/DecisionEffectIntentRecord";
     readonly DecisionEffectReceiptRecord: "urn:abh:contracts:0.1.0:facts#/$defs/DecisionEffectReceiptRecord";
@@ -297,6 +346,22 @@ export const schemaIds: {
     readonly DatabaseDiagnosticResult: "urn:abh:contracts:0.1.0:facts#/$defs/DatabaseDiagnosticResult";
     readonly ProjectionHealthResult: "urn:abh:contracts:0.1.0:facts#/$defs/ProjectionHealthResult";
     readonly CliDoctorProjectionResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliDoctorProjectionResult";
+    readonly LearningCandidateDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/LearningCandidateDiagnostic";
+    readonly CliDoctorLearningResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliDoctorLearningResult";
+    readonly ReleaseDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/ReleaseDiagnostic";
+    readonly CliDoctorReleaseResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliDoctorReleaseResult";
+    readonly OperationDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/OperationDiagnostic";
+    readonly CliDoctorOperationResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliDoctorOperationResult";
+    readonly PackInstallDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/PackInstallDiagnostic";
+    readonly CliDoctorPackResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliDoctorPackResult";
+    readonly PackContentDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/PackContentDiagnostic";
+    readonly CliPackValidateResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliPackValidateResult";
+    readonly PackBuildDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/PackBuildDiagnostic";
+    readonly CliPackBuildResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliPackBuildResult";
+    readonly PackSignatureDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/PackSignatureDiagnostic";
+    readonly CliPackSignResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliPackSignResult";
+    readonly PackVerificationDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/PackVerificationDiagnostic";
+    readonly CliPackVerifyResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliPackVerifyResult";
     readonly CliDoctorDataResult: "urn:abh:contracts:0.1.0:facts#/$defs/CliDoctorDataResult";
     readonly PackInspectionDiagnostic: "urn:abh:contracts:0.1.0:facts#/$defs/PackInspectionDiagnostic";
     readonly PackInspectionDiagnosticResponse: "urn:abh:contracts:0.1.0:facts#/$defs/PackInspectionDiagnosticResponse";
@@ -344,7 +409,9 @@ export const schemaIds: {
     readonly MissionListResult: "urn:abh:contracts:0.1.0:facts#/$defs/MissionListResult";
     readonly RunRecord: "urn:abh:contracts:0.1.0:facts#/$defs/RunRecord";
     readonly StartRunPayload: "urn:abh:contracts:0.1.0:facts#/$defs/StartRunPayload";
+    readonly StopStalledRunPayload: "urn:abh:contracts:0.1.0:facts#/$defs/StopStalledRunPayload";
     readonly CompleteRunPayload: "urn:abh:contracts:0.1.0:facts#/$defs/CompleteRunPayload";
+    readonly CancelRunPayload: "urn:abh:contracts:0.1.0:facts#/$defs/CancelRunPayload";
     readonly TaskRecord: "urn:abh:contracts:0.1.0:facts#/$defs/TaskRecord";
     readonly RunView: "urn:abh:contracts:0.1.0:facts#/$defs/RunView";
     readonly RunListResult: "urn:abh:contracts:0.1.0:facts#/$defs/RunListResult";
@@ -363,6 +430,30 @@ export const schemaIds: {
     readonly MissionSummaryProjection: "urn:abh:contracts:0.1.0:facts#/$defs/MissionSummaryProjection";
     readonly CaptureSignalPayload: "urn:abh:contracts:0.1.0:facts#/$defs/CaptureSignalPayload";
     readonly LearningSignalRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LearningSignalRecord";
+    readonly BuildCasePayload: "urn:abh:contracts:0.1.0:facts#/$defs/BuildCasePayload";
+    readonly LearningCaseRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LearningCaseRecord";
+    readonly CreateCandidatePayload: "urn:abh:contracts:0.1.0:facts#/$defs/CreateCandidatePayload";
+    readonly LearningCandidateRecord: "urn:abh:contracts:0.1.0:facts#/$defs/LearningCandidateRecord";
+    readonly ExpireEvaluationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ExpireEvaluationPayload";
+    readonly LearningSignalListResult: "urn:abh:contracts:0.1.0:facts#/$defs/LearningSignalListResult";
+    readonly LearningCaseListResult: "urn:abh:contracts:0.1.0:facts#/$defs/LearningCaseListResult";
+    readonly LearningCandidateListResult: "urn:abh:contracts:0.1.0:facts#/$defs/LearningCandidateListResult";
+    readonly EvaluationRunListResult: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationRunListResult";
+    readonly EvaluationProfileRecord: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationProfileRecord";
+    readonly RequestEvaluationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RequestEvaluationPayload";
+    readonly RetryEvaluationPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RetryEvaluationPayload";
+    readonly EvaluationRunRecord: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationRunRecord";
+    readonly EvaluationMetricValue: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationMetricValue";
+    readonly EvaluationMetricThreshold: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationMetricThreshold";
+    readonly SubmitEvaluationResultPayload: "urn:abh:contracts:0.1.0:facts#/$defs/SubmitEvaluationResultPayload";
+    readonly EvaluationResultRecord: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationResultRecord";
+    readonly EvaluationGateFinding: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationGateFinding";
+    readonly EvaluationUncertainty: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationUncertainty";
+    readonly EvaluationGateLimitation: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationGateLimitation";
+    readonly BuildGatePayload: "urn:abh:contracts:0.1.0:facts#/$defs/BuildGatePayload";
+    readonly EvaluationGateArtifactRecord: "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationGateArtifactRecord";
+    readonly LearningGateListResult: "urn:abh:contracts:0.1.0:facts#/$defs/LearningGateListResult";
+    readonly ConfigureLearningReleasePayload: "urn:abh:contracts:0.1.0:facts#/$defs/ConfigureLearningReleasePayload";
     readonly AgentTaskContract: "urn:abh:contracts:0.1.0:facts#/$defs/AgentTaskContract";
     readonly RuntimeEvent: "urn:abh:contracts:0.1.0:facts#/$defs/RuntimeEvent";
     readonly ProjectionQueryResult: "urn:abh:contracts:0.1.0:facts#/$defs/ProjectionQueryResult";
@@ -414,10 +505,20 @@ export const schemaIds: {
     readonly PublishPackTrustPolicyCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/PublishPackTrustPolicyCommand";
     readonly RecordPackValidationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RecordPackValidationCommand";
     readonly ReviseResponsibilityRouteCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ReviseResponsibilityRouteCommand";
+    readonly DelegateResponsibilitySlotCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/DelegateResponsibilitySlotCommand";
+    readonly EscalateResponsibilitySlotCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/EscalateResponsibilitySlotCommand";
     readonly RevokeResponsibilityCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RevokeResponsibilityCommand";
     readonly ExpireResponsibilityRequestCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ExpireResponsibilityRequestCommand";
     readonly RetryResponsibilityRouteCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RetryResponsibilityRouteCommand";
     readonly OpenTerminalExceptionCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/OpenTerminalExceptionCommand";
+    readonly ResolveExceptionCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ResolveExceptionCommand";
+    readonly ResolveExceptionHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/ResolveExceptionHttpRequest";
+    readonly ApplyExceptionResolutionEffectCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ApplyExceptionResolutionEffectCommand";
+    readonly ApplyExceptionResolutionEffectHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/ApplyExceptionResolutionEffectHttpRequest";
+    readonly ProposeCorrectionCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ProposeCorrectionCommand";
+    readonly ProposeCorrectionHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/ProposeCorrectionHttpRequest";
+    readonly ApplyCorrectionCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ApplyCorrectionCommand";
+    readonly ApplyCorrectionHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/ApplyCorrectionHttpRequest";
     readonly CreateScopeAuthorityCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/CreateScopeAuthorityCommand";
     readonly EvaluateScopeAuthorityCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/EvaluateScopeAuthorityCommand";
     readonly CaptureQueryCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/CaptureQueryCommand";
@@ -445,8 +546,11 @@ export const schemaIds: {
     readonly RecordOperationReceiptCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RecordOperationReceiptCommand";
     readonly ClaimDispatchExitCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ClaimDispatchExitCommand";
     readonly IssueDispatchPermitCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/IssueDispatchPermitCommand";
+    readonly SafeRetryOperationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/SafeRetryOperationCommand";
     readonly ProposeActionCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ProposeActionCommand";
     readonly ProposeActionHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/ProposeActionHttpRequest";
+    readonly StartSafetyStopCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/StartSafetyStopCommand";
+    readonly StartSafetyStopHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/StartSafetyStopHttpRequest";
     readonly CancelActionCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/CancelActionCommand";
     readonly CancelActionHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/CancelActionHttpRequest";
     readonly RequestAuthorizationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RequestAuthorizationCommand";
@@ -458,6 +562,9 @@ export const schemaIds: {
     readonly ValidateActionCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ValidateActionCommand";
     readonly RegisterOperationPlanCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RegisterOperationPlanCommand";
     readonly ConfigureLedgerCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ConfigureLedgerCommand";
+    readonly RegisterLedgerUnitCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RegisterLedgerUnitCommand";
+    readonly RegisterLedgerPeriodCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RegisterLedgerPeriodCommand";
+    readonly ApplyLedgerCorrectionCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ApplyLedgerCorrectionCommand";
     readonly ReserveAllCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ReserveAllCommand";
     readonly ConsumeReservationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ConsumeReservationCommand";
     readonly ReleaseReservationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ReleaseReservationCommand";
@@ -465,6 +572,9 @@ export const schemaIds: {
     readonly ConfigureStaticReleaseCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ConfigureStaticReleaseCommand";
     readonly ResolveStaticPinsCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ResolveStaticPinsCommand";
     readonly StopStaticAssignmentCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/StopStaticAssignmentCommand";
+    readonly StopStaticAssignmentHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/StopStaticAssignmentHttpRequest";
+    readonly RollbackStaticAssignmentCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RollbackStaticAssignmentCommand";
+    readonly RollbackStaticAssignmentHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/RollbackStaticAssignmentHttpRequest";
     readonly StoreInlineArtifactCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/StoreInlineArtifactCommand";
     readonly StoreInlineArtifactHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/StoreInlineArtifactHttpRequest";
     readonly TombstoneArtifactCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/TombstoneArtifactCommand";
@@ -492,15 +602,51 @@ export const schemaIds: {
     readonly StartRunHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/StartRunHttpRequest";
     readonly CompleteRunCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/CompleteRunCommand";
     readonly CompleteRunHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/CompleteRunHttpRequest";
+    readonly CancelRunCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/CancelRunCommand";
+    readonly CancelRunHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/CancelRunHttpRequest";
     readonly RecoverRunCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RecoverRunCommand";
+    readonly StopStalledRunCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/StopStalledRunCommand";
+    readonly WakeRunCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/WakeRunCommand";
+    readonly ProposeGraphPatchCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ProposeGraphPatchCommand";
+    readonly ClaimTaskCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ClaimTaskCommand";
+    readonly PrepareInvocationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/PrepareInvocationCommand";
+    readonly FinalizeInvocationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/FinalizeInvocationCommand";
+    readonly CompleteInvocationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/CompleteInvocationCommand";
+    readonly ObserveLateInvocationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ObserveLateInvocationCommand";
+    readonly CommitVerifiedTaskCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/CommitVerifiedTaskCommand";
     readonly SubmitVerificationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/SubmitVerificationCommand";
     readonly SubmitVerificationHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/SubmitVerificationHttpRequest";
     readonly InvokeToolCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/InvokeToolCommand";
     readonly InvokeToolHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/InvokeToolHttpRequest";
     readonly CaptureSignalCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/CaptureSignalCommand";
     readonly CaptureSignalHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/CaptureSignalHttpRequest";
+    readonly BuildCaseCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/BuildCaseCommand";
+    readonly BuildCaseHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/BuildCaseHttpRequest";
+    readonly CreateCandidateCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/CreateCandidateCommand";
+    readonly CreateCandidateHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/CreateCandidateHttpRequest";
+    readonly RequestEvaluationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RequestEvaluationCommand";
+    readonly RequestEvaluationHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/RequestEvaluationHttpRequest";
+    readonly RetryEvaluationCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/RetryEvaluationCommand";
+    readonly RetryEvaluationHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/RetryEvaluationHttpRequest";
+    readonly SubmitEvaluationResultCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/SubmitEvaluationResultCommand";
+    readonly ExpireEvaluationRunCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ExpireEvaluationRunCommand";
+    readonly BuildGateCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/BuildGateCommand";
+    readonly ConfigureLearningCandidateReleaseCommand: "urn:abh:contracts:0.1.0:protocol#/$defs/ConfigureLearningCandidateReleaseCommand";
+    readonly ConfigureLearningCandidateReleaseHttpRequest: "urn:abh:contracts:0.1.0:protocol#/$defs/ConfigureLearningCandidateReleaseHttpRequest";
     readonly CommandEnvelope: "urn:abh:contracts:0.1.0:protocol#/$defs/CommandEnvelope";
+    readonly GetAssignmentQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/GetAssignmentQuery";
+    readonly ListAssignmentsQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/ListAssignmentsQuery";
+    readonly ListLearningSignalsQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/ListLearningSignalsQuery";
+    readonly ListLearningCasesQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/ListLearningCasesQuery";
+    readonly ListLearningCandidatesQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/ListLearningCandidatesQuery";
+    readonly ListEvaluationRunsQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/ListEvaluationRunsQuery";
+    readonly GetEvaluationRunQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/GetEvaluationRunQuery";
+    readonly GetEvaluationResultQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/GetEvaluationResultQuery";
+    readonly GetLearningGateQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/GetLearningGateQuery";
+    readonly ListLearningGatesQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/ListLearningGatesQuery";
+    readonly GetCorrectionQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/GetCorrectionQuery";
     readonly QueryPackCapabilitiesQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/QueryPackCapabilitiesQuery";
+    readonly ListSafetyStopsQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/ListSafetyStopsQuery";
     readonly GetMissionQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/GetMissionQuery";
     readonly ListMissionsQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/ListMissionsQuery";
     readonly GetRunQuery: "urn:abh:contracts:0.1.0:protocol#/$defs/GetRunQuery";
@@ -624,6 +770,22 @@ export interface SchemaTypes {
     // (undocumented)
     AggregateActionPayload: Types.AggregateActionPayload;
     // (undocumented)
+    ApplyCorrectionCommand: Types.ApplyCorrectionCommand;
+    // (undocumented)
+    ApplyCorrectionHttpRequest: Types.ApplyCorrectionHttpRequest;
+    // (undocumented)
+    ApplyCorrectionPayload: Types.ApplyCorrectionPayload;
+    // (undocumented)
+    ApplyExceptionResolutionEffectCommand: Types.ApplyExceptionResolutionEffectCommand;
+    // (undocumented)
+    ApplyExceptionResolutionEffectHttpRequest: Types.ApplyExceptionResolutionEffectHttpRequest;
+    // (undocumented)
+    ApplyExceptionResolutionEffectPayload: Types.ApplyExceptionResolutionEffectPayload;
+    // (undocumented)
+    ApplyLedgerCorrectionCommand: Types.ApplyLedgerCorrectionCommand;
+    // (undocumented)
+    ApplyLedgerCorrectionPayload: Types.ApplyLedgerCorrectionPayload;
+    // (undocumented)
     ApplyReconciliationCommand: Types.ApplyReconciliationCommand;
     // (undocumented)
     ApplyReconciliationPayload: Types.ApplyReconciliationPayload;
@@ -670,6 +832,16 @@ export interface SchemaTypes {
     // (undocumented)
     BlockMissionPayload: Types.BlockMissionPayload;
     // (undocumented)
+    BuildCaseCommand: Types.BuildCaseCommand;
+    // (undocumented)
+    BuildCaseHttpRequest: Types.BuildCaseHttpRequest;
+    // (undocumented)
+    BuildCasePayload: Types.BuildCasePayload;
+    // (undocumented)
+    BuildGateCommand: Types.BuildGateCommand;
+    // (undocumented)
+    BuildGatePayload: Types.BuildGatePayload;
+    // (undocumented)
     BuildMissionSummaryCommand: Types.BuildMissionSummaryCommand;
     // (undocumented)
     BuildMissionSummaryPayload: Types.BuildMissionSummaryPayload;
@@ -696,6 +868,12 @@ export interface SchemaTypes {
     // (undocumented)
     CancelPackInspectionPayload: Types.CancelPackInspectionPayload;
     // (undocumented)
+    CancelRunCommand: Types.CancelRunCommand;
+    // (undocumented)
+    CancelRunHttpRequest: Types.CancelRunHttpRequest;
+    // (undocumented)
+    CancelRunPayload: Types.CancelRunPayload;
+    // (undocumented)
     CancelWakeupRequest: Types.CancelWakeupRequest;
     // (undocumented)
     CapabilityRef: Types.CapabilityRef;
@@ -716,6 +894,8 @@ export interface SchemaTypes {
     // (undocumented)
     CatalogExtension: Types.CatalogExtension;
     // (undocumented)
+    CheckpointRecord: Types.CheckpointRecord;
+    // (undocumented)
     ClaimDispatchExitCommand: Types.ClaimDispatchExitCommand;
     // (undocumented)
     ClaimDispatchExitPayload: Types.ClaimDispatchExitPayload;
@@ -723,6 +903,10 @@ export interface SchemaTypes {
     ClaimQueryExitCommand: Types.ClaimQueryExitCommand;
     // (undocumented)
     ClaimQueryExitPayload: Types.ClaimQueryExitPayload;
+    // (undocumented)
+    ClaimTaskCommand: Types.ClaimTaskCommand;
+    // (undocumented)
+    ClaimTaskPayload: Types.ClaimTaskPayload;
     // (undocumented)
     ClaimWorkLeaseCommand: Types.ClaimWorkLeaseCommand;
     // (undocumented)
@@ -734,9 +918,27 @@ export interface SchemaTypes {
     // (undocumented)
     CliDoctorDataResult: Types.CliDoctorDataResult;
     // (undocumented)
+    CliDoctorLearningResult: Types.CliDoctorLearningResult;
+    // (undocumented)
+    CliDoctorLedgerResult: Types.CliDoctorLedgerResult;
+    // (undocumented)
+    CliDoctorOperationResult: Types.CliDoctorOperationResult;
+    // (undocumented)
+    CliDoctorPackResult: Types.CliDoctorPackResult;
+    // (undocumented)
     CliDoctorProjectionResult: Types.CliDoctorProjectionResult;
     // (undocumented)
+    CliDoctorReleaseResult: Types.CliDoctorReleaseResult;
+    // (undocumented)
     CliInspectionDiagnosticResult: Types.CliInspectionDiagnosticResult;
+    // (undocumented)
+    CliPackBuildResult: Types.CliPackBuildResult;
+    // (undocumented)
+    CliPackSignResult: Types.CliPackSignResult;
+    // (undocumented)
+    CliPackValidateResult: Types.CliPackValidateResult;
+    // (undocumented)
+    CliPackVerifyResult: Types.CliPackVerifyResult;
     // (undocumented)
     CloseCommitmentCommand: Types.CloseCommitmentCommand;
     // (undocumented)
@@ -758,6 +960,10 @@ export interface SchemaTypes {
     // (undocumented)
     CommitmentState: Types.CommitmentState;
     // (undocumented)
+    CommitVerifiedTaskCommand: Types.CommitVerifiedTaskCommand;
+    // (undocumented)
+    CommitVerifiedTaskPayload: Types.CommitVerifiedTaskPayload;
+    // (undocumented)
     CompareOperationCommand: Types.CompareOperationCommand;
     // (undocumented)
     CompareOperationPayload: Types.CompareOperationPayload;
@@ -765,6 +971,10 @@ export interface SchemaTypes {
     CompatibleQueryEvidence: Types.CompatibleQueryEvidence;
     // (undocumented)
     CompiledPolicyManifest: Types.CompiledPolicyManifest;
+    // (undocumented)
+    CompleteInvocationCommand: Types.CompleteInvocationCommand;
+    // (undocumented)
+    CompleteInvocationPayload: Types.CompleteInvocationPayload;
     // (undocumented)
     CompletePackInspectionCommand: Types.CompletePackInspectionCommand;
     // (undocumented)
@@ -779,6 +989,12 @@ export interface SchemaTypes {
     ConfigureConnectionCommand: Types.ConfigureConnectionCommand;
     // (undocumented)
     ConfigureConnectionPayload: Types.ConfigureConnectionPayload;
+    // (undocumented)
+    ConfigureLearningCandidateReleaseCommand: Types.ConfigureLearningCandidateReleaseCommand;
+    // (undocumented)
+    ConfigureLearningCandidateReleaseHttpRequest: Types.ConfigureLearningCandidateReleaseHttpRequest;
+    // (undocumented)
+    ConfigureLearningReleasePayload: Types.ConfigureLearningReleasePayload;
     // (undocumented)
     ConfigureLedgerCommand: Types.ConfigureLedgerCommand;
     // (undocumented)
@@ -819,6 +1035,22 @@ export interface SchemaTypes {
     ConsumeReservationPayload: Types.ConsumeReservationPayload;
     // (undocumented)
     ContextManifest: Types.ContextManifest;
+    // (undocumented)
+    CorrectionApplicationRecord: Types.CorrectionApplicationRecord;
+    // (undocumented)
+    CorrectionAppliedResponse: Types.CorrectionAppliedResponse;
+    // (undocumented)
+    CorrectionCapabilityCandidate: Types.CorrectionCapabilityCandidate;
+    // (undocumented)
+    CorrectionProposedResponse: Types.CorrectionProposedResponse;
+    // (undocumented)
+    CorrectionRecord: Types.CorrectionRecord;
+    // (undocumented)
+    CreateCandidateCommand: Types.CreateCandidateCommand;
+    // (undocumented)
+    CreateCandidateHttpRequest: Types.CreateCandidateHttpRequest;
+    // (undocumented)
+    CreateCandidatePayload: Types.CreateCandidatePayload;
     // (undocumented)
     CreateMissionCommand: Types.CreateMissionCommand;
     // (undocumented)
@@ -867,6 +1099,8 @@ export interface SchemaTypes {
     DecisionWithdrawalRecord: Types.DecisionWithdrawalRecord;
     // (undocumented)
     DecisionWithdrawnResponse: Types.DecisionWithdrawnResponse;
+    // (undocumented)
+    DelegateResponsibilitySlotCommand: Types.DelegateResponsibilitySlotCommand;
     // (undocumented)
     DeletedObject: Types.DeletedObject;
     // (undocumented)
@@ -920,7 +1154,31 @@ export interface SchemaTypes {
     // (undocumented)
     ErrorResponse: Types.ErrorResponse;
     // (undocumented)
+    EscalateResponsibilitySlotCommand: Types.EscalateResponsibilitySlotCommand;
+    // (undocumented)
     EvaluateScopeAuthorityCommand: Types.EvaluateScopeAuthorityCommand;
+    // (undocumented)
+    EvaluationGateArtifactRecord: Types.EvaluationGateArtifactRecord;
+    // (undocumented)
+    EvaluationGateFinding: Types.EvaluationGateFinding;
+    // (undocumented)
+    EvaluationGateLimitation: Types.EvaluationGateLimitation;
+    // (undocumented)
+    EvaluationMetricThreshold: Types.EvaluationMetricThreshold;
+    // (undocumented)
+    EvaluationMetricValue: Types.EvaluationMetricValue;
+    // (undocumented)
+    EvaluationProfileRecord: Types.EvaluationProfileRecord;
+    // (undocumented)
+    EvaluationResultRecord: Types.EvaluationResultRecord;
+    // (undocumented)
+    EvaluationRunCreatedResponse: Types.EvaluationRunCreatedResponse;
+    // (undocumented)
+    EvaluationRunListResult: Types.EvaluationRunListResult;
+    // (undocumented)
+    EvaluationRunRecord: Types.EvaluationRunRecord;
+    // (undocumented)
+    EvaluationUncertainty: Types.EvaluationUncertainty;
     // (undocumented)
     EventChangeSummary: Types.EventChangeSummary;
     // (undocumented)
@@ -929,6 +1187,14 @@ export interface SchemaTypes {
     ExactVersion: Types.ExactVersion;
     // (undocumented)
     ExceptionRecord: Types.ExceptionRecord;
+    // (undocumented)
+    ExceptionResolutionEffectRecord: Types.ExceptionResolutionEffectRecord;
+    // (undocumented)
+    ExceptionResolutionEffectResponse: Types.ExceptionResolutionEffectResponse;
+    // (undocumented)
+    ExceptionResolutionRecord: Types.ExceptionResolutionRecord;
+    // (undocumented)
+    ExceptionResolvedResponse: Types.ExceptionResolvedResponse;
     // (undocumented)
     ExecuteWaitPortCommand: Types.ExecuteWaitPortCommand;
     // (undocumented)
@@ -941,6 +1207,10 @@ export interface SchemaTypes {
     ExecutionAuthorityState: Types.ExecutionAuthorityState;
     // (undocumented)
     ExecutionPin: Types.ExecutionPin;
+    // (undocumented)
+    ExpireEvaluationPayload: Types.ExpireEvaluationPayload;
+    // (undocumented)
+    ExpireEvaluationRunCommand: Types.ExpireEvaluationRunCommand;
     // (undocumented)
     ExpirePackInspectionCommand: Types.ExpirePackInspectionCommand;
     // (undocumented)
@@ -960,11 +1230,25 @@ export interface SchemaTypes {
     // (undocumented)
     FenceRecord: Types.FenceRecord;
     // (undocumented)
+    FinalizeInvocationCommand: Types.FinalizeInvocationCommand;
+    // (undocumented)
+    FinalizeInvocationPayload: Types.FinalizeInvocationPayload;
+    // (undocumented)
     GetActionQuery: Types.GetActionQuery;
+    // (undocumented)
+    GetAssignmentQuery: Types.GetAssignmentQuery;
     // (undocumented)
     GetContextQuery: Types.GetContextQuery;
     // (undocumented)
+    GetCorrectionQuery: Types.GetCorrectionQuery;
+    // (undocumented)
     GetDecisionQuery: Types.GetDecisionQuery;
+    // (undocumented)
+    GetEvaluationResultQuery: Types.GetEvaluationResultQuery;
+    // (undocumented)
+    GetEvaluationRunQuery: Types.GetEvaluationRunQuery;
+    // (undocumented)
+    GetLearningGateQuery: Types.GetLearningGateQuery;
     // (undocumented)
     GetMissionQuery: Types.GetMissionQuery;
     // (undocumented)
@@ -977,6 +1261,12 @@ export interface SchemaTypes {
     GrantRecord: Types.GrantRecord;
     // (undocumented)
     GrantState: Types.GrantState;
+    // (undocumented)
+    GraphPatchEdge: Types.GraphPatchEdge;
+    // (undocumented)
+    GraphPatchNode: Types.GraphPatchNode;
+    // (undocumented)
+    GraphRevisionRecord: Types.GraphRevisionRecord;
     // (undocumented)
     IdempotencyKey: Types.IdempotencyKey;
     // (undocumented)
@@ -1002,6 +1292,8 @@ export interface SchemaTypes {
     // (undocumented)
     InvocationHandle: Types.InvocationHandle;
     // (undocumented)
+    InvocationRecord: Types.InvocationRecord;
+    // (undocumented)
     InvokeToolCommand: Types.InvokeToolCommand;
     // (undocumented)
     InvokeToolHttpRequest: Types.InvokeToolHttpRequest;
@@ -1020,25 +1312,71 @@ export interface SchemaTypes {
     // (undocumented)
     JobRef: Types.JobRef;
     // (undocumented)
+    LateInvocationAdjudicationRecord: Types.LateInvocationAdjudicationRecord;
+    // (undocumented)
+    LateInvocationObservationRecord: Types.LateInvocationObservationRecord;
+    // (undocumented)
+    LearningCandidateCreatedResponse: Types.LearningCandidateCreatedResponse;
+    // (undocumented)
+    LearningCandidateDiagnostic: Types.LearningCandidateDiagnostic;
+    // (undocumented)
+    LearningCandidateListResult: Types.LearningCandidateListResult;
+    // (undocumented)
+    LearningCandidateRecord: Types.LearningCandidateRecord;
+    // (undocumented)
+    LearningCaseCreatedResponse: Types.LearningCaseCreatedResponse;
+    // (undocumented)
+    LearningCaseListResult: Types.LearningCaseListResult;
+    // (undocumented)
+    LearningCaseRecord: Types.LearningCaseRecord;
+    // (undocumented)
+    LearningGateListResult: Types.LearningGateListResult;
+    // (undocumented)
+    LearningSignalListResult: Types.LearningSignalListResult;
+    // (undocumented)
     LearningSignalRecord: Types.LearningSignalRecord;
     // (undocumented)
+    LedgerBalanceDiagnostic: Types.LedgerBalanceDiagnostic;
+    // (undocumented)
+    LedgerCorrectionRecord: Types.LedgerCorrectionRecord;
+    // (undocumented)
+    LedgerDiagnostic: Types.LedgerDiagnostic;
+    // (undocumented)
     LedgerEntryRecord: Types.LedgerEntryRecord;
+    // (undocumented)
+    LedgerPeriodRecord: Types.LedgerPeriodRecord;
     // (undocumented)
     LedgerRecord: Types.LedgerRecord;
     // (undocumented)
     LedgerState: Types.LedgerState;
     // (undocumented)
+    LedgerUnitRecord: Types.LedgerUnitRecord;
+    // (undocumented)
     LifecyclePurposeNames: Types.LifecyclePurposeNames;
     // (undocumented)
     ListActionsQuery: Types.ListActionsQuery;
     // (undocumented)
+    ListAssignmentsQuery: Types.ListAssignmentsQuery;
+    // (undocumented)
+    ListEvaluationRunsQuery: Types.ListEvaluationRunsQuery;
+    // (undocumented)
     ListInboxQuery: Types.ListInboxQuery;
+    // (undocumented)
+    ListLearningCandidatesQuery: Types.ListLearningCandidatesQuery;
+    // (undocumented)
+    ListLearningCasesQuery: Types.ListLearningCasesQuery;
+    // (undocumented)
+    ListLearningGatesQuery: Types.ListLearningGatesQuery;
+    // (undocumented)
+    ListLearningSignalsQuery: Types.ListLearningSignalsQuery;
     // (undocumented)
     ListMissionsQuery: Types.ListMissionsQuery;
     // (undocumented)
     ListProjectionQuery: Types.ListProjectionQuery;
     // (undocumented)
     ListRunsQuery: Types.ListRunsQuery;
+    // (undocumented)
+    ListSafetyStopsQuery: Types.ListSafetyStopsQuery;
     // (undocumented)
     LocalPackStagingReceipt: Types.LocalPackStagingReceipt;
     // (undocumented)
@@ -1094,6 +1432,10 @@ export interface SchemaTypes {
     // (undocumented)
     ObjectTypeRegistration: Types.ObjectTypeRegistration;
     // (undocumented)
+    ObserveLateInvocationCommand: Types.ObserveLateInvocationCommand;
+    // (undocumented)
+    ObserveLateInvocationPayload: Types.ObserveLateInvocationPayload;
+    // (undocumented)
     OpenCommitmentCommand: Types.OpenCommitmentCommand;
     // (undocumented)
     OpenCommitmentPayload: Types.OpenCommitmentPayload;
@@ -1105,6 +1447,8 @@ export interface SchemaTypes {
     OpenTerminalExceptionCommand: Types.OpenTerminalExceptionCommand;
     // (undocumented)
     OpenTerminalExceptionPayload: Types.OpenTerminalExceptionPayload;
+    // (undocumented)
+    OperationDiagnostic: Types.OperationDiagnostic;
     // (undocumented)
     OperationInputBinding: Types.OperationInputBinding;
     // (undocumented)
@@ -1140,6 +1484,8 @@ export interface SchemaTypes {
     // (undocumented)
     OutboxRoutingRecord: Types.OutboxRoutingRecord;
     // (undocumented)
+    PackBuildDiagnostic: Types.PackBuildDiagnostic;
+    // (undocumented)
     PackCapabilityAvailability: Types.PackCapabilityAvailability;
     // (undocumented)
     PackCapabilityBinding: Types.PackCapabilityBinding;
@@ -1157,6 +1503,8 @@ export interface SchemaTypes {
     PackCapabilitySetRecord: Types.PackCapabilitySetRecord;
     // (undocumented)
     PackConformancePolicy: Types.PackConformancePolicy;
+    // (undocumented)
+    PackContentDiagnostic: Types.PackContentDiagnostic;
     // (undocumented)
     PackDataChange: Types.PackDataChange;
     // (undocumented)
@@ -1206,6 +1554,8 @@ export interface SchemaTypes {
     // (undocumented)
     PackInspectionWaitingEvidence: Types.PackInspectionWaitingEvidence;
     // (undocumented)
+    PackInstallDiagnostic: Types.PackInstallDiagnostic;
+    // (undocumented)
     PackManifest: Types.PackManifest;
     // (undocumented)
     PackMigrationAttemptRecord: Types.PackMigrationAttemptRecord;
@@ -1250,11 +1600,15 @@ export interface SchemaTypes {
     // (undocumented)
     PackSchemaOwnership: Types.PackSchemaOwnership;
     // (undocumented)
+    PackSignatureDiagnostic: Types.PackSignatureDiagnostic;
+    // (undocumented)
     PackSignerPolicy: Types.PackSignerPolicy;
     // (undocumented)
     PackSuspensionRecord: Types.PackSuspensionRecord;
     // (undocumented)
     PackValidationReport: Types.PackValidationReport;
+    // (undocumented)
+    PackVerificationDiagnostic: Types.PackVerificationDiagnostic;
     // (undocumented)
     PauseMissionCommand: Types.PauseMissionCommand;
     // (undocumented)
@@ -1282,6 +1636,10 @@ export interface SchemaTypes {
     // (undocumented)
     PortCallContext: Types.PortCallContext;
     // (undocumented)
+    PrepareInvocationCommand: Types.PrepareInvocationCommand;
+    // (undocumented)
+    PrepareInvocationPayload: Types.PrepareInvocationPayload;
+    // (undocumented)
     PrepareOutboxCommand: Types.PrepareOutboxCommand;
     // (undocumented)
     PrepareOutboxPayload: Types.PrepareOutboxPayload;
@@ -1305,6 +1663,18 @@ export interface SchemaTypes {
     ProposeActionHttpRequest: Types.ProposeActionHttpRequest;
     // (undocumented)
     ProposeActionPayload: Types.ProposeActionPayload;
+    // (undocumented)
+    ProposeCorrectionCommand: Types.ProposeCorrectionCommand;
+    // (undocumented)
+    ProposeCorrectionHttpRequest: Types.ProposeCorrectionHttpRequest;
+    // (undocumented)
+    ProposeCorrectionPayload: Types.ProposeCorrectionPayload;
+    // (undocumented)
+    ProposeGraphPatchCommand: Types.ProposeGraphPatchCommand;
+    // (undocumented)
+    ProposeGraphPatchPayload: Types.ProposeGraphPatchPayload;
+    // (undocumented)
+    ProposeSafetyStopPayload: Types.ProposeSafetyStopPayload;
     // (undocumented)
     PublishPackTrustPolicyCommand: Types.PublishPackTrustPolicyCommand;
     // (undocumented)
@@ -1386,6 +1756,14 @@ export interface SchemaTypes {
     // (undocumented)
     RegisteredName: Types.RegisteredName;
     // (undocumented)
+    RegisterLedgerPeriodCommand: Types.RegisterLedgerPeriodCommand;
+    // (undocumented)
+    RegisterLedgerPeriodPayload: Types.RegisterLedgerPeriodPayload;
+    // (undocumented)
+    RegisterLedgerUnitCommand: Types.RegisterLedgerUnitCommand;
+    // (undocumented)
+    RegisterLedgerUnitPayload: Types.RegisterLedgerUnitPayload;
+    // (undocumented)
     RegisterOperationPlanCommand: Types.RegisterOperationPlanCommand;
     // (undocumented)
     RegisterOperationPlanPayload: Types.RegisterOperationPlanPayload;
@@ -1393,6 +1771,8 @@ export interface SchemaTypes {
     RegisterPackCapabilitiesCommand: Types.RegisterPackCapabilitiesCommand;
     // (undocumented)
     RegisterPackCapabilitiesPayload: Types.RegisterPackCapabilitiesPayload;
+    // (undocumented)
+    ReleaseDiagnostic: Types.ReleaseDiagnostic;
     // (undocumented)
     ReleaseRecord: Types.ReleaseRecord;
     // (undocumented)
@@ -1422,6 +1802,12 @@ export interface SchemaTypes {
     // (undocumented)
     RequestContextRef: Types.RequestContextRef;
     // (undocumented)
+    RequestEvaluationCommand: Types.RequestEvaluationCommand;
+    // (undocumented)
+    RequestEvaluationHttpRequest: Types.RequestEvaluationHttpRequest;
+    // (undocumented)
+    RequestEvaluationPayload: Types.RequestEvaluationPayload;
+    // (undocumented)
     RequestPackEnableCommand: Types.RequestPackEnableCommand;
     // (undocumented)
     RequestPackEnablePayload: Types.RequestPackEnablePayload;
@@ -1450,6 +1836,12 @@ export interface SchemaTypes {
     // (undocumented)
     ResolvedDevelopmentConfig: Types.ResolvedDevelopmentConfig;
     // (undocumented)
+    ResolveExceptionCommand: Types.ResolveExceptionCommand;
+    // (undocumented)
+    ResolveExceptionHttpRequest: Types.ResolveExceptionHttpRequest;
+    // (undocumented)
+    ResolveExceptionPayload: Types.ResolveExceptionPayload;
+    // (undocumented)
     ResolveStaticPinsCommand: Types.ResolveStaticPinsCommand;
     // (undocumented)
     ResolveStaticPinsPayload: Types.ResolveStaticPinsPayload;
@@ -1463,6 +1855,10 @@ export interface SchemaTypes {
     ResourceRequirement: Types.ResourceRequirement;
     // (undocumented)
     ResponsibilityAssignmentRecord: Types.ResponsibilityAssignmentRecord;
+    // (undocumented)
+    ResponsibilityDelegation: Types.ResponsibilityDelegation;
+    // (undocumented)
+    ResponsibilityEscalation: Types.ResponsibilityEscalation;
     // (undocumented)
     ResponsibilityInboxProjection: Types.ResponsibilityInboxProjection;
     // (undocumented)
@@ -1485,6 +1881,12 @@ export interface SchemaTypes {
     RetirePackCommand: Types.RetirePackCommand;
     // (undocumented)
     RetirePackPayload: Types.RetirePackPayload;
+    // (undocumented)
+    RetryEvaluationCommand: Types.RetryEvaluationCommand;
+    // (undocumented)
+    RetryEvaluationHttpRequest: Types.RetryEvaluationHttpRequest;
+    // (undocumented)
+    RetryEvaluationPayload: Types.RetryEvaluationPayload;
     // (undocumented)
     RetryResponsibilityRouteCommand: Types.RetryResponsibilityRouteCommand;
     // (undocumented)
@@ -1516,6 +1918,12 @@ export interface SchemaTypes {
     // (undocumented)
     RevokeResponsibilityPayload: Types.RevokeResponsibilityPayload;
     // (undocumented)
+    RollbackStaticAssignmentCommand: Types.RollbackStaticAssignmentCommand;
+    // (undocumented)
+    RollbackStaticAssignmentHttpRequest: Types.RollbackStaticAssignmentHttpRequest;
+    // (undocumented)
+    RollbackStaticAssignmentPayload: Types.RollbackStaticAssignmentPayload;
+    // (undocumented)
     RunListResult: Types.RunListResult;
     // (undocumented)
     RunRecord: Types.RunRecord;
@@ -1525,6 +1933,14 @@ export interface SchemaTypes {
     RuntimeEvent: Types.RuntimeEvent;
     // (undocumented)
     RunView: Types.RunView;
+    // (undocumented)
+    SafeRetryOperationCommand: Types.SafeRetryOperationCommand;
+    // (undocumented)
+    SafeRetryOperationPayload: Types.SafeRetryOperationPayload;
+    // (undocumented)
+    SafetyStopCandidate: Types.SafetyStopCandidate;
+    // (undocumented)
+    SafetyStopListResult: Types.SafetyStopListResult;
     // (undocumented)
     ScheduledWakeup: Types.ScheduledWakeup;
     // (undocumented)
@@ -1560,11 +1976,23 @@ export interface SchemaTypes {
     // (undocumented)
     StartRunPayload: Types.StartRunPayload;
     // (undocumented)
+    StartSafetyStopCommand: Types.StartSafetyStopCommand;
+    // (undocumented)
+    StartSafetyStopHttpRequest: Types.StartSafetyStopHttpRequest;
+    // (undocumented)
+    StaticAssignmentListResult: Types.StaticAssignmentListResult;
+    // (undocumented)
     StaticAssignmentRecord: Types.StaticAssignmentRecord;
     // (undocumented)
     StatObjectRequest: Types.StatObjectRequest;
     // (undocumented)
+    StopStalledRunCommand: Types.StopStalledRunCommand;
+    // (undocumented)
+    StopStalledRunPayload: Types.StopStalledRunPayload;
+    // (undocumented)
     StopStaticAssignmentCommand: Types.StopStaticAssignmentCommand;
+    // (undocumented)
+    StopStaticAssignmentHttpRequest: Types.StopStaticAssignmentHttpRequest;
     // (undocumented)
     StopStaticAssignmentPayload: Types.StopStaticAssignmentPayload;
     // (undocumented)
@@ -1583,6 +2011,10 @@ export interface SchemaTypes {
     SubmitDecisionHttpRequest: Types.SubmitDecisionHttpRequest;
     // (undocumented)
     SubmitDecisionPayload: Types.SubmitDecisionPayload;
+    // (undocumented)
+    SubmitEvaluationResultCommand: Types.SubmitEvaluationResultCommand;
+    // (undocumented)
+    SubmitEvaluationResultPayload: Types.SubmitEvaluationResultPayload;
     // (undocumented)
     SubmitTriggerCommand: Types.SubmitTriggerCommand;
     // (undocumented)
@@ -1603,6 +2035,8 @@ export interface SchemaTypes {
     Target: Types.Target;
     // (undocumented)
     TaskRecord: Types.TaskRecord;
+    // (undocumented)
+    TaskSpec: Types.TaskSpec;
     // (undocumented)
     Time: Types.Time;
     // (undocumented)
@@ -1641,6 +2075,10 @@ export interface SchemaTypes {
     WaitPortReceiptRecord: Types.WaitPortReceiptRecord;
     // (undocumented)
     WaitRef: Types.WaitRef;
+    // (undocumented)
+    WakeRunCommand: Types.WakeRunCommand;
+    // (undocumented)
+    WakeRunPayload: Types.WakeRunPayload;
     // (undocumented)
     WithdrawDecisionCommand: Types.WithdrawDecisionCommand;
     // (undocumented)

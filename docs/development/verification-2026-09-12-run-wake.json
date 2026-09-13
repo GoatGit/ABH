@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-12",
+  "subject": "internal WakeRun owner that verifies a succeeded durable wait and active Mission ownership before resuming a Waiting Run",
+  "commands": [
+    "corepack pnpm check",
+    "corepack pnpm --filter @abh/core exec node --test test/run-wake.test.ts",
+    "corepack pnpm --filter @abh/core exec node --test test/run-graph.test.ts",
+    "corepack pnpm --filter @abh/core exec node --test test/run-commands.test.ts",
+    "corepack pnpm api:check"
+  ],
+  "results": {
+    "completionEstimate": "94%",
+    "workspaceTests": 919,
+    "workspacePassed": 913,
+    "workspaceSkipped": 6,
+    "workspaceFailed": 0,
+    "coreTests": 555,
+    "corePassed": 549,
+    "coreSkipped": 6,
+    "coreFailed": 0,
+    "contractsArtifacts": 51,
+    "apiEntryPoints": 13,
+    "documentLinksChecked": 769,
+    "wakeFocusedTest": "passed",
+    "runLifecycleFocusedTest": "passed",
+    "graphPatchFocusedTest": "passed",
+    "publicApiReportCheck": "passed",
+    "pendingWaitRejected": true,
+    "foreignOwnerWaitRejected": true,
+    "waitingToRunningTransitionVerified": true,
+    "missionActiveRunRevalidated": true,
+    "durableWaitOwnerAndIntentBound": true,
+    "idempotentReplayReturnsSameRun": true,
+    "staleVersionRejected": true,
+    "runResumeAuditAndOutboxAtomic": true
+  },
+  "evidence": [
+    "Contracts expose internal WakeRun and the abh.runs.wake action while reusing the canonical abh.run.resume event",
+    "PostgreSQL fixture persists a contract-valid DurableWaitRecord and Waiting Run owned by an Active Mission",
+    "Pending and foreign-owner waits are rejected before Run mutation",
+    "A succeeded wait whose owner and waiting intent point to the Run resumes Running v2 atomically",
+    "Stable command replay returns the same RunRecord without a second audit or outbox event",
+    "A later stale command is rejected by the Run version guard",
+    "Focused Run lifecycle and graph patch regressions remain green"
+  ],
+  "limits": [
+    "WakeRun is intentionally internal and has no public HTTP route",
+    "production wakeup worker, ready-task dispatch, invocation execution and checkpoint托管 remain open",
+    "real IdP, external providers, global release scan and independent security review remain outside this estimate"
+  ]
+}

@@ -2,7 +2,11 @@ import Link from 'next/link';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {Card,Message,SessionRequired} from '@/components/ui';
+import {ActionForm} from '@/components/ActionForm';
+import {LiveRunStatus} from '@/components/LiveRunStatus';
+import {cancelRunAction} from '@/lib/actions';
 import {formatDateTime} from '@/lib/format';
+import {workbenchConfig} from '@/lib/config';
 
 export const dynamic='force-dynamic';
 
@@ -15,7 +19,12 @@ export default async function RunPage({params}:{params:Promise<{id:string}>}){
   try{
     const view=await createWorkbenchClient(session).runs.get(id),run=view.run;
     return <main><h1>{run.triggerKey}</h1>
-      <Message kind="stale">强读 Run v{run.runRef.version}；时点 {formatDateTime(view.asOf)}。</Message>
+      <Message kind="stale">当前强读 Run v{run.runRef.version}；时点 {formatDateTime(view.asOf)}。</Message>
+      <LiveRunStatus sseEnabled={workbenchConfig.sseEnabled!==false} identity={{
+        actorId:session.actorId,actingOrganizationId:session.actingOrganizationId,
+        resourceOrganizationId:session.resourceOrganizationId,workspaceId:session.workspaceId,
+        purposeOfUse:session.purposeOfUse,authorizationDigest:session.authorizationDigest,
+      }} runId={run.runRef.id} initial={view} staleSeconds={workbenchConfig.queryStaleSeconds}/>
       <div className="grid">
         <Card title="执行状态"><dl>
           <dt>状态</dt><dd>{run.status}</dd>
@@ -41,6 +50,16 @@ export default async function RunPage({params}:{params:Promise<{id:string}>}){
           ))}</ol>
         )}
       </Card>
+      {['Running','Waiting','Paused'].includes(run.status)?(
+        <Card title="取消 Run"><ActionForm action={cancelRunAction}
+          confirm="取消不回滚已发生的外部影响，是否继续？">
+          <input type="hidden" name="runId" value={id}/>
+          <input type="hidden" name="version" value={run.runRef.version}/>
+          <label htmlFor="run-cancel-reason">Run 取消理由</label>
+          <textarea id="run-cancel-reason" name="reason" rows={4} required minLength={1} maxLength={2000}/>
+          <p>同一理由与版本生成稳定幂等键；任务清理以服务端确认为准。</p>
+        </ActionForm></Card>
+      ):null}
       <div className="grid"><Card title="相关视图">
         <Link href={`/actions?missionId=${run.missionRef.id}`}>查看执行结果</Link>
       </Card></div>

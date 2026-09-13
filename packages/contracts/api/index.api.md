@@ -140,6 +140,8 @@ export interface ActionIntentRecord {
     resourceOrganizationId: UUID;
     // (undocumented)
     riskClass: RegisteredName;
+    // (undocumented)
+    safetyStop?: boolean;
 }
 
 // @public (undocumented)
@@ -640,6 +642,141 @@ export interface AggregateActionPayload {
 }
 
 // @public (undocumented)
+export interface ApplyCorrectionCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ApplyCorrectionPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.correction";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.corrections.apply";
+}
+
+// @public (undocumented)
+export interface ApplyCorrectionHttpRequest {
+    // (undocumented)
+    expectedVersion?: Version;
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: ApplyCorrectionPayload;
+    // (undocumented)
+    target: {
+        type: "abh.correction";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface ApplyCorrectionPayload {
+    // (undocumented)
+    authorityRef: EntityRef;
+    // (undocumented)
+    candidate?: CorrectionCapabilityCandidate;
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    subjectRef: EntityRef;
+}
+
+// @public (undocumented)
+export interface ApplyExceptionResolutionEffectCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ApplyExceptionResolutionEffectPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.exception-resolution";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.exceptions.apply-resolution-effect";
+}
+
+// @public (undocumented)
+export interface ApplyExceptionResolutionEffectHttpRequest {
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: ApplyExceptionResolutionEffectPayload;
+    // (undocumented)
+    target: {
+        type: "abh.exception-resolution";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface ApplyExceptionResolutionEffectPayload {
+    // (undocumented)
+    correctionApplicationRef: {
+        type: "abh.correction-application";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    resolutionRef: {
+        type: "abh.exception-resolution";
+        id: UUID;
+        version: Version;
+    };
+}
+
+// @public (undocumented)
+export interface ApplyLedgerCorrectionCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ApplyLedgerCorrectionPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.ledger-correction";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.ledger-corrections.apply";
+}
+
+// @public (undocumented)
+export type ApplyLedgerCorrectionPayload = ApplyLedgerCorrectionPayload1;
+
+// @public (undocumented)
+export interface ApplyLedgerCorrectionPayload1 {
+    // (undocumented)
+    conversionRef?: EntityRef;
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    kind: "Refund" | "FxRevaluation";
+    // (undocumented)
+    ledgerRef: EntityRef & {
+        type: "abh.ledger";
+        [k: string]: unknown;
+    };
+    // (undocumented)
+    sourceRef: EntityRef;
+    // (undocumented)
+    usageDelta: Decimal;
+}
+
+// @public (undocumented)
 export interface ApplyReconciliationCommand {
     // (undocumented)
     commandId: UUID;
@@ -1084,6 +1221,77 @@ export interface BlockMissionPayload {
 }
 
 // @public (undocumented)
+export interface BuildCaseCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: BuildCasePayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.learning.build-case";
+}
+
+// @public (undocumented)
+export interface BuildCaseHttpRequest {
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: BuildCasePayload;
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface BuildCasePayload {
+    counterEvidenceRefs: EntityRef[];
+    // (undocumented)
+    domainOwnerRef: EntityRef;
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    rootCauseCode: RegisteredName;
+    signalRefs: EntityRef[];
+}
+
+// @public (undocumented)
+export interface BuildGateCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: BuildGatePayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.learning-candidate";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.learning.build-gate";
+}
+
+// @public (undocumented)
+export interface BuildGatePayload {
+    // (undocumented)
+    candidateRef: EntityRef;
+    evaluationRefs: EntityRef[];
+}
+
+// @public (undocumented)
 export interface BuildMissionSummaryCommand {
     // (undocumented)
     commandId: UUID;
@@ -1290,6 +1498,55 @@ export interface CancelPackInspectionPayload {
 }
 
 // @public (undocumented)
+export interface CancelRunCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: CancelRunPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.run";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.runs.cancel";
+}
+
+// @public (undocumented)
+export interface CancelRunHttpRequest {
+    // (undocumented)
+    expectedVersion?: Version;
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: CancelRunPayload;
+    // (undocumented)
+    target: {
+        type: "abh.run";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface CancelRunPayload {
+    evidenceRefs?: EntityRef[];
+    // (undocumented)
+    reasonCode: RegisteredName;
+    // (undocumented)
+    runRef: {
+        type: "abh.run";
+        id: UUID;
+        version: Version;
+    };
+}
+
+// @public (undocumented)
 export interface CancelWakeupRequest {
     // (undocumented)
     context: PortCallContext;
@@ -1434,6 +1691,36 @@ export interface CatalogExtension {
 }
 
 // @public (undocumented)
+export interface CheckpointRecord {
+    // (undocumented)
+    checkpointRef: {
+        type: "abh.checkpoint";
+        id: UUID;
+        version: Version;
+    };
+    completedTaskRefs: EntityRef[];
+    // (undocumented)
+    createdAt: Time;
+    domainCommandReceiptRefs: EntityRef[];
+    // (undocumented)
+    graphRevisionRef: EntityRef;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    resourceUsageRef?: EntityRef;
+    // (undocumented)
+    runRef: EntityRef;
+    // (undocumented)
+    sequence: number;
+    // (undocumented)
+    taskRef: EntityRef;
+    verifiedOutputRefs: EntityRef[];
+    waitRefs: EntityRef[];
+    // (undocumented)
+    watermark: Digest;
+}
+
+// @public (undocumented)
 export interface ClaimDispatchExitCommand {
     // (undocumented)
     commandId: UUID;
@@ -1511,6 +1798,37 @@ export interface ClaimQueryExitPayload {
         id: UUID;
         version: Version;
     };
+    // (undocumented)
+    workerId: UUID;
+}
+
+// @public (undocumented)
+export interface ClaimTaskCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ClaimTaskPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.task";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.tasks.claim";
+}
+
+// @public (undocumented)
+export interface ClaimTaskPayload {
+    // (undocumented)
+    leaseSeconds: number;
+    // (undocumented)
+    taskRef: EntityRef;
     // (undocumented)
     workerId: UUID;
 }
@@ -1595,6 +1913,106 @@ export interface CliDoctorDataResult1 {
 }
 
 // @public (undocumented)
+export type CliDoctorLearningResult = CliDoctorLearningResult1;
+
+// @public (undocumented)
+export interface CliDoctorLearningResult1 {
+    candidates: LearningCandidateDiagnostic[];
+    // (undocumented)
+    checkId: "learning.candidate-readiness";
+    // (undocumented)
+    commandRef: null;
+    // (undocumented)
+    errorCode: null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+    // (undocumented)
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    remediation: null | string;
+    // (undocumented)
+    status: "Passed" | "Failed";
+    // (undocumented)
+    truncated: boolean;
+    // (undocumented)
+    violationCount: number;
+}
+
+// @public (undocumented)
+export type CliDoctorLedgerResult = CliDoctorLedgerResult1;
+
+// @public (undocumented)
+export interface CliDoctorLedgerResult1 {
+    // (undocumented)
+    checkId: "ledger.balance-audit";
+    // (undocumented)
+    commandRef: null;
+    // (undocumented)
+    errorCode: null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+    // (undocumented)
+    evidenceRefs: EntityRef[];
+    ledgers: LedgerDiagnostic[];
+    // (undocumented)
+    organizationId: UUID;
+    // (undocumented)
+    remediation: null | string;
+    // (undocumented)
+    status: "Passed" | "Failed";
+    // (undocumented)
+    violationCount: number;
+}
+
+// @public (undocumented)
+export type CliDoctorOperationResult = CliDoctorOperationResult1;
+
+// @public (undocumented)
+export interface CliDoctorOperationResult1 {
+    // (undocumented)
+    checkId: "operation.readiness";
+    // (undocumented)
+    commandRef: null;
+    // (undocumented)
+    errorCode: null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+    // (undocumented)
+    evidenceRefs: EntityRef[];
+    operations: OperationDiagnostic[];
+    // (undocumented)
+    organizationId: UUID;
+    // (undocumented)
+    remediation: null | string;
+    // (undocumented)
+    status: "Passed" | "Failed";
+    // (undocumented)
+    truncated: boolean;
+    // (undocumented)
+    violationCount: number;
+}
+
+// @public (undocumented)
+export type CliDoctorPackResult = CliDoctorPackResult1;
+
+// @public (undocumented)
+export interface CliDoctorPackResult1 {
+    // (undocumented)
+    checkId: "pack.install-readiness";
+    // (undocumented)
+    commandRef: null;
+    // (undocumented)
+    errorCode: null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+    // (undocumented)
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    organizationId: UUID;
+    packs: PackInstallDiagnostic[];
+    // (undocumented)
+    remediation: null | string;
+    // (undocumented)
+    status: "Passed" | "Failed";
+    // (undocumented)
+    violationCount: number;
+}
+
+// @public (undocumented)
 export type CliDoctorProjectionResult = CliDoctorProjectionResult1;
 
 // @public (undocumented)
@@ -1638,6 +2056,32 @@ export interface CliDoctorProjectionResult1 {
 }
 
 // @public (undocumented)
+export type CliDoctorReleaseResult = CliDoctorReleaseResult1;
+
+// @public (undocumented)
+export interface CliDoctorReleaseResult1 {
+    // (undocumented)
+    checkId: "release.readiness";
+    // (undocumented)
+    commandRef: null;
+    // (undocumented)
+    errorCode: null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+    // (undocumented)
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    organizationId: string;
+    releases: ReleaseDiagnostic[];
+    // (undocumented)
+    remediation: null | string;
+    // (undocumented)
+    status: "Passed" | "Failed";
+    // (undocumented)
+    truncated: boolean;
+    // (undocumented)
+    violationCount: number;
+}
+
+// @public (undocumented)
 export type CliInspectionDiagnosticResult = CliInspectionDiagnosticResult1;
 
 // @public (undocumented)
@@ -1655,6 +2099,98 @@ export interface CliInspectionDiagnosticResult1 {
     remediation: string;
     // (undocumented)
     status: "Reported" | "Failed";
+}
+
+// @public (undocumented)
+export type CliPackBuildResult = CliPackBuildResult1;
+
+// @public (undocumented)
+export interface CliPackBuildResult1 {
+    // (undocumented)
+    checkId: "pack.manifest-build";
+    // (undocumented)
+    commandRef: null;
+    // (undocumented)
+    diagnostic: null | PackBuildDiagnostic;
+    // (undocumented)
+    errorCode: null | "INVALID_ARGUMENT" | "LIMIT_EXCEEDED" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+    // (undocumented)
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    remediation: null | string;
+    // (undocumented)
+    status: "Passed" | "Failed";
+    // (undocumented)
+    violationCount: number;
+}
+
+// @public (undocumented)
+export type CliPackSignResult = CliPackSignResult1;
+
+// @public (undocumented)
+export interface CliPackSignResult1 {
+    // (undocumented)
+    checkId: "pack.signature";
+    // (undocumented)
+    commandRef: null;
+    // (undocumented)
+    diagnostic: null | PackSignatureDiagnostic;
+    // (undocumented)
+    errorCode: null | "INVALID_ARGUMENT" | "FORBIDDEN" | "LIMIT_EXCEEDED" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+    // (undocumented)
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    remediation: null | string;
+    // (undocumented)
+    status: "Passed" | "Failed";
+    // (undocumented)
+    violationCount: number;
+}
+
+// @public (undocumented)
+export type CliPackValidateResult = CliPackValidateResult1;
+
+// @public (undocumented)
+export interface CliPackValidateResult1 {
+    // (undocumented)
+    checkId: "pack.content-validation";
+    // (undocumented)
+    commandRef: null;
+    // (undocumented)
+    diagnostic: null | PackContentDiagnostic;
+    // (undocumented)
+    errorCode: null | "INVALID_ARGUMENT" | "FORBIDDEN" | "LIMIT_EXCEEDED" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+    // (undocumented)
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    remediation: null | string;
+    // (undocumented)
+    status: "Passed" | "Failed";
+    // (undocumented)
+    violationCount: number;
+}
+
+// @public (undocumented)
+export type CliPackVerifyResult = CliPackVerifyResult1;
+
+// @public (undocumented)
+export interface CliPackVerifyResult1 {
+    // (undocumented)
+    checkId: "pack.supply-chain-validation";
+    // (undocumented)
+    commandRef: null;
+    // (undocumented)
+    diagnostic: null | PackVerificationDiagnostic;
+    // (undocumented)
+    errorCode: null | "INVALID_ARGUMENT" | "FORBIDDEN" | "LIMIT_EXCEEDED" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+    // (undocumented)
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    remediation: null | string;
+    // (undocumented)
+    status: "Passed" | "Failed";
+    // (undocumented)
+    violationCount: number;
 }
 
 // @public (undocumented)
@@ -1736,7 +2272,7 @@ export interface CloseMissionPayload {
 }
 
 // @public (undocumented)
-export type CommandEnvelope = CreateMissionCommand | ActivateMissionCommand | SubmitTriggerCommand | PauseMissionCommand | CancelMissionCommand | ResumeMissionCommand | ReviseMissionGoalCommand | CloseMissionCommand | BlockMissionCommand | ResolveBlockerCommand | FailPackInspectionCommand | FailLostPackInspectionCommand | AcceptPackInspectionDeliveryCommand | CancelPackInspectionCommand | WaitPackInspectionCommand | CompletePackInspectionCommand | ExpirePackInspectionCommand | StartPackInspectionCommand | RequestPackInspectionCommand | RecordPackDataImpactCommand | RegisterPackCapabilitiesCommand | RecordCompatibleQueryEvidenceCommand | RetirePackCommand | SuspendPackCommand | EnablePackCommand | RequestPackEnableCommand | RecordPackConformanceCommand | StagePackCommand | PublishPackTrustPolicyCommand | RecordPackValidationCommand | ReviseResponsibilityRouteCommand | RevokeResponsibilityCommand | ExpireResponsibilityRequestCommand | RetryResponsibilityRouteCommand | OpenTerminalExceptionCommand | CreateScopeAuthorityCommand | EvaluateScopeAuthorityCommand | CaptureQueryCommand | ClaimQueryExitCommand | NotifyOperationWaitCommand | ExecuteWaitPortCommand | NotifyActionWaitCommand | RegisterDurableWaitCommand | RecheckDurableWaitCommand | CancelDurableWaitCommand | PrepareOutboxCommand | RecordOutboxConsumptionCommand | RecordOutboxDeliveryCommand | ConsumeEventCommand | BuildMissionSummaryCommand | RefreshMissionSummaryCommand | RefreshActionAuthorizationCommand | CleanupActionCommand | AggregateActionCommand | RecoverOperationCommand | ApplyReconciliationCommand | CompareOperationCommand | CaptureTransportCommand | RecordOperationReceiptCommand | ClaimDispatchExitCommand | IssueDispatchPermitCommand | ProposeActionCommand | CancelActionCommand | RequestAuthorizationCommand | SubmitDecisionCommand | WithdrawDecisionCommand | ValidateActionCommand | RegisterOperationPlanCommand | ConfigureLedgerCommand | ReserveAllCommand | ConsumeReservationCommand | ReleaseReservationCommand | RevokeGrantCommand | ConfigureStaticReleaseCommand | ResolveStaticPinsCommand | StopStaticAssignmentCommand | StoreInlineArtifactCommand | TombstoneArtifactCommand | OpenCommitmentCommand | SettleCommitmentCommand | AdjustCommitmentCommand | BeginCloseCommitmentCommand | CloseCommitmentCommand | AssignResponsibilityCommand | OpenResponsibilityRequestCommand | IssueExecutionAuthorityCommand | RevokeExecutionAuthorityCommand | PinActionCommand | ConfigurePolicyCommand | ActivateMandatoryPolicyCommand | ConfigureResourceEnvelopeCommand | ConfigurePurposeCommand | ConfigureConnectionCommand | RevokePurposeCommand | RevokeConnectionCommand | ClaimWorkLeaseCommand | RenewWorkLeaseCommand | ReleaseWorkLeaseCommand | StartRunCommand | CompleteRunCommand | RecoverRunCommand | SubmitVerificationCommand | InvokeToolCommand | CaptureSignalCommand;
+export type CommandEnvelope = CreateMissionCommand | ActivateMissionCommand | SubmitTriggerCommand | PauseMissionCommand | CancelMissionCommand | ResumeMissionCommand | ReviseMissionGoalCommand | CloseMissionCommand | BlockMissionCommand | ResolveBlockerCommand | FailPackInspectionCommand | FailLostPackInspectionCommand | AcceptPackInspectionDeliveryCommand | CancelPackInspectionCommand | WaitPackInspectionCommand | CompletePackInspectionCommand | ExpirePackInspectionCommand | StartPackInspectionCommand | RequestPackInspectionCommand | RecordPackDataImpactCommand | RegisterPackCapabilitiesCommand | RecordCompatibleQueryEvidenceCommand | RetirePackCommand | SuspendPackCommand | EnablePackCommand | RequestPackEnableCommand | RecordPackConformanceCommand | StagePackCommand | PublishPackTrustPolicyCommand | RecordPackValidationCommand | ReviseResponsibilityRouteCommand | DelegateResponsibilitySlotCommand | EscalateResponsibilitySlotCommand | RevokeResponsibilityCommand | ExpireResponsibilityRequestCommand | RetryResponsibilityRouteCommand | OpenTerminalExceptionCommand | ResolveExceptionCommand | ApplyExceptionResolutionEffectCommand | ProposeCorrectionCommand | ApplyCorrectionCommand | CreateScopeAuthorityCommand | EvaluateScopeAuthorityCommand | CaptureQueryCommand | ClaimQueryExitCommand | NotifyOperationWaitCommand | ExecuteWaitPortCommand | NotifyActionWaitCommand | RegisterDurableWaitCommand | RecheckDurableWaitCommand | CancelDurableWaitCommand | PrepareOutboxCommand | RecordOutboxConsumptionCommand | RecordOutboxDeliveryCommand | ConsumeEventCommand | BuildMissionSummaryCommand | RefreshMissionSummaryCommand | RefreshActionAuthorizationCommand | CleanupActionCommand | AggregateActionCommand | RecoverOperationCommand | ApplyReconciliationCommand | CompareOperationCommand | CaptureTransportCommand | RecordOperationReceiptCommand | ClaimDispatchExitCommand | IssueDispatchPermitCommand | SafeRetryOperationCommand | ProposeActionCommand | StartSafetyStopCommand | CancelActionCommand | RequestAuthorizationCommand | SubmitDecisionCommand | WithdrawDecisionCommand | ValidateActionCommand | RegisterOperationPlanCommand | ConfigureLedgerCommand | RegisterLedgerUnitCommand | RegisterLedgerPeriodCommand | ApplyLedgerCorrectionCommand | ReserveAllCommand | ConsumeReservationCommand | ReleaseReservationCommand | RevokeGrantCommand | ConfigureStaticReleaseCommand | ResolveStaticPinsCommand | StopStaticAssignmentCommand | RollbackStaticAssignmentCommand | StoreInlineArtifactCommand | TombstoneArtifactCommand | OpenCommitmentCommand | SettleCommitmentCommand | AdjustCommitmentCommand | BeginCloseCommitmentCommand | CloseCommitmentCommand | AssignResponsibilityCommand | OpenResponsibilityRequestCommand | IssueExecutionAuthorityCommand | RevokeExecutionAuthorityCommand | PinActionCommand | ConfigurePolicyCommand | ActivateMandatoryPolicyCommand | ConfigureResourceEnvelopeCommand | ConfigurePurposeCommand | ConfigureConnectionCommand | RevokePurposeCommand | RevokeConnectionCommand | ClaimWorkLeaseCommand | RenewWorkLeaseCommand | ReleaseWorkLeaseCommand | StartRunCommand | CompleteRunCommand | CancelRunCommand | RecoverRunCommand | StopStalledRunCommand | WakeRunCommand | ProposeGraphPatchCommand | ClaimTaskCommand | PrepareInvocationCommand | FinalizeInvocationCommand | CompleteInvocationCommand | ObserveLateInvocationCommand | CommitVerifiedTaskCommand | SubmitVerificationCommand | InvokeToolCommand | CaptureSignalCommand | BuildCaseCommand | CreateCandidateCommand | RequestEvaluationCommand | RetryEvaluationCommand | SubmitEvaluationResultCommand | ExpireEvaluationRunCommand | BuildGateCommand | ConfigureLearningCandidateReleaseCommand;
 
 // @public (undocumented)
 export interface CommandReceipt {
@@ -1799,6 +2335,38 @@ export interface CommitmentRecord {
 
 // @public (undocumented)
 export type CommitmentState = "Open" | "Closing" | "Closed";
+
+// @public (undocumented)
+export interface CommitVerifiedTaskCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: CommitVerifiedTaskPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.task";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.tasks.commit-verified";
+}
+
+// @public (undocumented)
+export interface CommitVerifiedTaskPayload {
+    domainCommandReceiptRefs: EntityRef[];
+    // (undocumented)
+    invocationRef: EntityRef;
+    // (undocumented)
+    taskRef: EntityRef;
+    // (undocumented)
+    verificationRef: EntityRef;
+}
 
 // @public (undocumented)
 export interface CompareOperationCommand {
@@ -1873,6 +2441,45 @@ export interface CompiledPolicyManifest {
     sourceDigest: Digest;
     // (undocumented)
     wasmDigest: Digest;
+}
+
+// @public (undocumented)
+export interface CompleteInvocationCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: CompleteInvocationPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.invocation";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.invocations.complete";
+}
+
+// @public (undocumented)
+export interface CompleteInvocationPayload {
+    // (undocumented)
+    invocationRef: EntityRef;
+    // (undocumented)
+    leaseFencingToken: Version;
+    // (undocumented)
+    leaseRef: EntityRef;
+    // (undocumented)
+    resultArtifactRef?: EntityRef;
+    // (undocumented)
+    stopReason: "Completed" | "Failed" | "Cancelled" | "Deadline" | "BudgetExceeded" | "InvalidOutput" | "Unknown";
+    // (undocumented)
+    usageRef?: EntityRef;
+    // (undocumented)
+    workerId: UUID;
 }
 
 // @public (undocumented)
@@ -1988,6 +2595,52 @@ export interface ConfigureConnectionCommand {
 export interface ConfigureConnectionPayload {
     // (undocumented)
     connection: ConnectionRecord;
+}
+
+// @public (undocumented)
+export interface ConfigureLearningCandidateReleaseCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ConfigureLearningReleasePayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.release";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.releases.configure-learning-candidate";
+}
+
+// @public (undocumented)
+export interface ConfigureLearningCandidateReleaseHttpRequest {
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: ConfigureLearningReleasePayload;
+    // (undocumented)
+    target: {
+        type: "abh.release";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface ConfigureLearningReleasePayload {
+    // (undocumented)
+    assignment: StaticAssignmentRecord;
+    // (undocumented)
+    candidateRef: EntityRef;
+    // (undocumented)
+    gateRef: EntityRef;
+    // (undocumented)
+    purposeNames?: LifecyclePurposeNames;
+    // (undocumented)
+    release: ReleaseRecord;
 }
 
 // @public (undocumented)
@@ -2326,6 +2979,176 @@ export interface ContextManifest {
         id: UUID;
         version: Version;
     };
+}
+
+// @public (undocumented)
+export interface CorrectionApplicationRecord {
+    // (undocumented)
+    applicationRef: {
+        type: "abh.correction-application";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    appliedAt: Time;
+    // (undocumented)
+    appliedBy: Actor;
+    // (undocumented)
+    authorityRef: EntityRef;
+    // (undocumented)
+    correctionRef: {
+        type: "abh.correction";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    digest: Digest;
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    receiptRef: CommandRef;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    resultRef: EntityRef;
+    // (undocumented)
+    resultVersion: Version;
+    // (undocumented)
+    subjectRef: EntityRef;
+    // (undocumented)
+    subjectVersionBefore: Version;
+    // (undocumented)
+    targetOwner: "Domain" | "Memory" | "Run" | "Capability";
+}
+
+// @public (undocumented)
+export interface CorrectionAppliedResponse {
+    // (undocumented)
+    data: {
+        objectRef: {
+            type: "abh.correction";
+            id: UUID;
+            version: Version;
+        };
+        commandId: UUID;
+        application: CorrectionApplicationRecord;
+    };
+    // (undocumented)
+    success: true;
+}
+
+// @public (undocumented)
+export interface CorrectionCapabilityCandidate {
+    // (undocumented)
+    assetKind: RegisteredName;
+    // (undocumented)
+    baseVersion?: Version;
+    // (undocumented)
+    caseRef: EntityRef;
+    // (undocumented)
+    risk: RegisteredName;
+    // (undocumented)
+    scopeRef: EntityRef;
+}
+
+// @public (undocumented)
+export interface CorrectionProposedResponse {
+    // (undocumented)
+    data: {
+        objectRef: {
+            type: "abh.correction";
+            id: UUID;
+            version: Version;
+        };
+        commandId: UUID;
+        correction: CorrectionRecord;
+    };
+    // (undocumented)
+    success: true;
+}
+
+// @public (undocumented)
+export interface CorrectionRecord {
+    // (undocumented)
+    beforeRef: EntityRef;
+    // (undocumented)
+    correctionRef: {
+        type: "abh.correction";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    digest: Digest;
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    proposedAfterRef: EntityRef;
+    // (undocumented)
+    proposedAt: Time;
+    // (undocumented)
+    proposedBy: Actor;
+    // (undocumented)
+    purpose: RegisteredName;
+    // (undocumented)
+    reason: string;
+    // (undocumented)
+    receiptRef: CommandRef;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    responsibilityRef: EntityRef;
+    // (undocumented)
+    subjectRef: EntityRef;
+    // (undocumented)
+    subjectVersion: Version;
+    // (undocumented)
+    targetOwner: "Domain" | "Memory" | "Run" | "Capability";
+}
+
+// @public (undocumented)
+export interface CreateCandidateCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: CreateCandidatePayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.learning.create-candidate";
+}
+
+// @public (undocumented)
+export interface CreateCandidateHttpRequest {
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: CreateCandidatePayload;
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface CreateCandidatePayload {
+    // (undocumented)
+    assetKind: RegisteredName;
+    // (undocumented)
+    baseVersion: Version;
+    // (undocumented)
+    candidateArtifactRef: EntityRef;
+    // (undocumented)
+    caseRef: EntityRef;
+    // (undocumented)
+    risk: RegisteredName;
+    // (undocumented)
+    scopeRef: EntityRef;
 }
 
 // @public (undocumented)
@@ -2694,6 +3517,27 @@ export interface DecisionWithdrawnResponse {
     };
     // (undocumented)
     success: true;
+}
+
+// @public (undocumented)
+export interface DelegateResponsibilitySlotCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ReviseResponsibilityRoutePayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.responsibility-request";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.responsibility-requests.delegate-slot";
 }
 
 // @public (undocumented)
@@ -3072,6 +3916,8 @@ export interface DurableWakeupRecord {
     // (undocumented)
     digest: Digest;
     // (undocumented)
+    expiresAt?: Time;
+    // (undocumented)
     ownerRef: EntityRef;
     // (undocumented)
     reason: "Condition" | "Deadline";
@@ -3197,6 +4043,12 @@ export interface ErrorResponse {
     } | {
         code: "RUN_ALREADY_ACTIVE";
         category: "Conflict";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
+        code: "TASK_COMMIT_INCOMPLETE";
+        category: "Precondition";
         message: string;
         retryable: false;
         correlationId: UUID;
@@ -3423,13 +4275,31 @@ export interface ErrorResponse {
         retryable: false;
         correlationId: UUID;
     } | {
+        code: "DELEGATION_EXCEEDS_AUTHORITY";
+        category: "Authorization";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
         code: "DECIDER_NOT_ELIGIBLE";
         category: "Authorization";
         message: string;
         retryable: false;
         correlationId: UUID;
     } | {
+        code: "ROUTE_DEPTH_EXCEEDED";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
         code: "OPERATION_FACT_CONFLICT";
+        category: "Conflict";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
+        code: "CORRECTION_STALE";
         category: "Conflict";
         message: string;
         retryable: false;
@@ -3452,9 +4322,72 @@ export interface ErrorResponse {
         message: string;
         retryable: false;
         correlationId: UUID;
+    } | {
+        code: "CASE_EVIDENCE_INCOMPLETE";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
+        code: "CANDIDATE_SCOPE_EXCEEDED";
+        category: "Authorization";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
+        code: "EVALUATION_PROFILE_UNAVAILABLE";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
+        code: "EVALUATION_PROFILE_AMBIGUOUS";
+        category: "Conflict";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
+        code: "GATE_EVIDENCE_INVALID";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
+        code: "GATE_POLICY_INCOMPLETE";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+    } | {
+        code: "EVALUATOR_IDENTITY_INVALID";
+        category: "Authorization";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
     };
     // (undocumented)
     success: false;
+}
+
+// @public (undocumented)
+export interface EscalateResponsibilitySlotCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ReviseResponsibilityRoutePayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.responsibility-request";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.responsibility-requests.escalate-slot";
 }
 
 // @public (undocumented)
@@ -3476,6 +4409,252 @@ export interface EvaluateScopeAuthorityCommand {
     };
     // (undocumented)
     type: "abh.execution-authority.evaluate-scope";
+}
+
+// @public (undocumented)
+export interface EvaluationGateArtifactRecord {
+    baselineMetricValues: EvaluationMetricValue[];
+    // (undocumented)
+    candidateRef: EntityRef;
+    // (undocumented)
+    createdAt: Time;
+    // (undocumented)
+    digest: Digest;
+    evaluationRefs: EntityRef[];
+    findings: EvaluationGateFinding[];
+    // (undocumented)
+    gateRef: {
+        type: "abh.learning-gate";
+        id: UUID;
+        version: Version;
+    };
+    limitations: EvaluationGateLimitation[];
+    metricThresholds: EvaluationMetricThreshold[];
+    metricValues: EvaluationMetricValue[];
+    // (undocumented)
+    profileRef: EntityRef;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    signedBy: Actor;
+    uncertainty: EvaluationUncertainty[];
+    // (undocumented)
+    verdict: "Pass" | "Fail" | "Inconclusive";
+}
+
+// @public (undocumented)
+export interface EvaluationGateFinding {
+    // (undocumented)
+    actual?: number;
+    // (undocumented)
+    baseline?: number;
+    // (undocumented)
+    baselineLowerBound?: number;
+    // (undocumented)
+    lowerBound?: number;
+    // (undocumented)
+    lowerRelativeLift?: number;
+    // (undocumented)
+    metric: RegisteredName;
+    // (undocumented)
+    minimum: number;
+    // (undocumented)
+    outcome: "Pass" | "Fail" | "Missing";
+    // (undocumented)
+    relativeLift?: number;
+}
+
+// @public (undocumented)
+export interface EvaluationGateLimitation {
+    // (undocumented)
+    code: RegisteredName;
+    // (undocumented)
+    detail: string;
+}
+
+// @public (undocumented)
+export interface EvaluationMetricThreshold {
+    // (undocumented)
+    minimum: number;
+    // (undocumented)
+    name: RegisteredName;
+}
+
+// @public (undocumented)
+export interface EvaluationMetricValue {
+    // (undocumented)
+    name: RegisteredName;
+    // (undocumented)
+    value: number;
+}
+
+// @public (undocumented)
+export interface EvaluationProfileRecord {
+    // (undocumented)
+    approvedAt: Time;
+    // (undocumented)
+    approvedBy: Actor;
+    // (undocumented)
+    assetKind: RegisteredName;
+    // (undocumented)
+    assignmentUnit: RegisteredName;
+    // (undocumented)
+    confidenceLevel: 0.8 | 0.9 | 0.95 | 0.99;
+    // (undocumented)
+    datasetSnapshotRef: EntityRef;
+    // (undocumented)
+    digest: Digest;
+    // (undocumented)
+    evaluatorRef: EntityRef;
+    // (undocumented)
+    metricThresholdRef: EntityRef;
+    metricThresholds: EvaluationMetricThreshold[];
+    // (undocumented)
+    minimumRelativeLift: number;
+    // (undocumented)
+    minimumSamples: number;
+    // (undocumented)
+    profileRef: {
+        type: "abh.evaluation-profile";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    risk: RegisteredName;
+    // (undocumented)
+    stoppingRuleRef: EntityRef;
+    // (undocumented)
+    suiteRef: EntityRef;
+}
+
+// @public (undocumented)
+export interface EvaluationResultRecord {
+    artifactRefs: EntityRef[];
+    // (undocumented)
+    baselineCompletedSamples?: number;
+    // (undocumented)
+    baselineFailedSamples?: number;
+    baselineMetricValues?: EvaluationMetricValue[];
+    // (undocumented)
+    candidateRef: EntityRef;
+    // (undocumented)
+    completedSamples: number;
+    // (undocumented)
+    dataDigest: Digest;
+    // (undocumented)
+    digest: Digest;
+    // (undocumented)
+    evaluatorPrincipal: EntityRef;
+    executionRefs: EntityRef[];
+    // (undocumented)
+    failedSamples: number;
+    metricValues: EvaluationMetricValue[];
+    // (undocumented)
+    profileRef: EntityRef;
+    // (undocumented)
+    receiptRef: CommandRef;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    resultRef: {
+        type: "abh.evaluation-result";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    runRef: EntityRef;
+    // (undocumented)
+    status: "Completed" | "Inconclusive";
+    // (undocumented)
+    submittedAt: Time;
+}
+
+// @public (undocumented)
+export interface EvaluationRunCreatedResponse {
+    // (undocumented)
+    data: {
+        objectRef: {
+            type: "abh.evaluation-run";
+            id: UUID;
+            version: Version;
+        };
+        commandId: UUID;
+        evaluationRun: EvaluationRunRecord;
+    };
+    // (undocumented)
+    success: true;
+}
+
+// @public (undocumented)
+export interface EvaluationRunListResult {
+    // (undocumented)
+    asOf: Time;
+    // (undocumented)
+    counts: {
+        [k: string]: number;
+    };
+    // (undocumented)
+    cursor?: string;
+    runs: EvaluationRunRecord[];
+}
+
+// @public (undocumented)
+export interface EvaluationRunRecord {
+    // (undocumented)
+    assignmentUnit: RegisteredName;
+    // (undocumented)
+    baselineRef: EntityRef;
+    // (undocumented)
+    candidateRef: EntityRef;
+    // (undocumented)
+    createdAt: Time;
+    // (undocumented)
+    digest: Digest;
+    executionRefs: EntityRef[];
+    // (undocumented)
+    expiresAt: Time;
+    // (undocumented)
+    profileRef: EntityRef;
+    // (undocumented)
+    receiptRef: CommandRef;
+    // (undocumented)
+    requestedBy: Actor;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    resultRef?: EntityRef;
+    // (undocumented)
+    retryOfRef?: EntityRef;
+    // (undocumented)
+    runRef: {
+        type: "abh.evaluation-run";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    seed: number;
+    // (undocumented)
+    status: "Queued" | "Completed" | "Inconclusive";
+}
+
+// @public (undocumented)
+export interface EvaluationUncertainty {
+    // (undocumented)
+    confidenceLevel: 0.8 | 0.9 | 0.95 | 0.99;
+    // (undocumented)
+    estimate: number;
+    // (undocumented)
+    lowerBound: number;
+    // (undocumented)
+    method: "WilsonScore";
+    // (undocumented)
+    metric: RegisteredName;
+    // (undocumented)
+    sampleCount: number;
+    // (undocumented)
+    upperBound: number;
 }
 
 // @public (undocumented)
@@ -4133,6 +5312,25 @@ export type EventEnvelope = {
     payload: EventChangeSummary;
 } | {
     eventId: UUID;
+    type: "abh.assignment.rollback";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.assignment";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
     type: "abh.assignment.selection-changed";
     schemaVersion: "0.1.0";
     aggregateRef: {
@@ -4285,6 +5483,25 @@ export type EventEnvelope = {
     payload: EventChangeSummary;
 } | {
     eventId: UUID;
+    type: "abh.checkpoint.committed";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.checkpoint";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
     type: "abh.commitment.balance-changed";
     schemaVersion: "0.1.0";
     aggregateRef: {
@@ -4384,6 +5601,44 @@ export type EventEnvelope = {
     schemaVersion: "0.1.0";
     aggregateRef: {
         type: "abh.connection";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.correction.applied";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.correction-application";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.correction.proposed";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.correction";
         id: UUID;
         version: Version;
     };
@@ -4741,10 +5996,105 @@ export type EventEnvelope = {
     payload: EventChangeSummary;
 } | {
     eventId: UUID;
+    type: "abh.evaluation-result.created";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.evaluation-result";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.evaluation-run.created";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.evaluation-run";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.evaluation-run.expired";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.evaluation-run";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.exception-resolution-effect.applied";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.exception-resolution-effect";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
     type: "abh.exception.created";
     schemaVersion: "0.1.0";
     aggregateRef: {
         type: "abh.exception";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.exception.resolved";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.exception-resolution";
         id: UUID;
         version: Version;
     };
@@ -4950,6 +6300,25 @@ export type EventEnvelope = {
     payload: EventChangeSummary;
 } | {
     eventId: UUID;
+    type: "abh.graph-revision.created";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.graph-revision";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
     type: "abh.inbox.created";
     schemaVersion: "0.1.0";
     aggregateRef: {
@@ -5011,6 +6380,234 @@ export type EventEnvelope = {
     schemaVersion: "0.1.0";
     aggregateRef: {
         type: "abh.installed-pack";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.invocation-adjudication.created";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.invocation-adjudication";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.invocation-observation.created";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.invocation-observation";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.invocation.completed";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.invocation";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.invocation.created";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.invocation";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.invocation.running";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.invocation";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.learning-candidate.created";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.learning-candidate";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.learning-case.created";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.learning-case";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.learning-gate.created";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.learning-gate";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.learning-signal.corrected";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.learning-signal";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.ledger-correction.applied";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.ledger-correction";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.ledger-period.registered";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.period";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.ledger-unit.registered";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.unit";
         id: UUID;
         version: Version;
     };
@@ -6356,6 +7953,25 @@ export type EventEnvelope = {
     payload: EventChangeSummary;
 } | {
     eventId: UUID;
+    type: "abh.resource-fence.report-block-released";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.resource-fence";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
     type: "abh.responsibility-assignment.created";
     schemaVersion: "0.1.0";
     aggregateRef: {
@@ -6641,6 +8257,25 @@ export type EventEnvelope = {
     payload: EventChangeSummary;
 } | {
     eventId: UUID;
+    type: "abh.run.stalled";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.run";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
     type: "abh.run.start";
     schemaVersion: "0.1.0";
     aggregateRef: {
@@ -6718,6 +8353,120 @@ export type EventEnvelope = {
 } | {
     eventId: UUID;
     type: "abh.task.cancelled";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.task.failed";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.task.ready";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.task.skipped";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.task.started";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.task.verified";
+    schemaVersion: "0.1.0";
+    aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+    };
+    aggregateVersion: Version;
+    eventOrdinal: number;
+    occurredAt: Time;
+    correlationId: UUID;
+    causationId: UUID;
+    actorRef: Actor;
+    actingOrganizationId: UUID;
+    resourceOrganizationId: UUID;
+    workspaceId?: UUID;
+    payload: EventChangeSummary;
+} | {
+    eventId: UUID;
+    type: "abh.task.verifying";
     schemaVersion: "0.1.0";
     aggregateRef: {
         type: "abh.task";
@@ -6890,6 +8639,139 @@ export interface ExceptionRecord {
 }
 
 // @public (undocumented)
+export interface ExceptionResolutionEffectRecord {
+    // (undocumented)
+    appliedAt: Time;
+    // (undocumented)
+    appliedBy: Actor;
+    // (undocumented)
+    correctionApplicationRef: {
+        type: "abh.correction-application";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    digest: Digest;
+    // (undocumented)
+    effectRef: {
+        type: "abh.exception-resolution-effect";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    exceptionRef: {
+        type: "abh.exception";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    fenceRef: {
+        type: "abh.resource-fence";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    fencingToken: Version;
+    // (undocumented)
+    fencingTokenPreserved: true;
+    // (undocumented)
+    reportBlockReleased: true;
+    // (undocumented)
+    reportRef: {
+        type: "abh.reconciliation";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    resolutionRef: {
+        type: "abh.exception-resolution";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    sourceRef: EntityRef;
+    // (undocumented)
+    unresolvedOperationPreserved: true;
+}
+
+// @public (undocumented)
+export interface ExceptionResolutionEffectResponse {
+    // (undocumented)
+    data: {
+        objectRef: {
+            type: "abh.exception-resolution-effect";
+            id: UUID;
+            version: Version;
+        };
+        commandId: UUID;
+        effect: ExceptionResolutionEffectRecord;
+    };
+    // (undocumented)
+    success: true;
+}
+
+// @public (undocumented)
+export interface ExceptionResolutionRecord {
+    // (undocumented)
+    decisionRef: DecisionRef;
+    // (undocumented)
+    digest: Digest;
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    exceptionRef: {
+        type: "abh.exception";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    reportRef: {
+        type: "abh.reconciliation";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    requestRef: RequestRef;
+    // (undocumented)
+    resolutionKind: "WaitForEvidence" | "RejectAndStop" | "ApplyCorrection" | "RequestCompensation" | "AuthorizedContinue";
+    // (undocumented)
+    resolutionRef: {
+        type: "abh.exception-resolution";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    resolvedAt: Time;
+    // (undocumented)
+    resolvedBy: Actor;
+    // (undocumented)
+    resourceFreezePreserved: true;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    sourceRef: OperationRef;
+    // (undocumented)
+    technicalUnknownPreserved: true;
+}
+
+// @public (undocumented)
+export interface ExceptionResolvedResponse {
+    // (undocumented)
+    data: {
+        objectRef: {
+            type: "abh.exception";
+            id: UUID;
+            version: Version;
+        };
+        commandId: UUID;
+        resolution: ExceptionResolutionRecord;
+    };
+    // (undocumented)
+    success: true;
+}
+
+// @public (undocumented)
 export interface ExecuteWaitPortCommand {
     // (undocumented)
     commandId: UUID;
@@ -7040,6 +8922,33 @@ export interface ExecutionPin {
 }
 
 // @public (undocumented)
+export interface ExpireEvaluationPayload {
+    // (undocumented)
+    runRef: EntityRef;
+}
+
+// @public (undocumented)
+export interface ExpireEvaluationRunCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ExpireEvaluationPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.evaluation-run";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.learning.expire-evaluation";
+}
+
+// @public (undocumented)
 export interface ExpirePackInspectionCommand {
     // (undocumented)
     commandId: UUID;
@@ -7185,9 +9094,53 @@ export interface FenceRecord {
 }
 
 // @public (undocumented)
+export interface FinalizeInvocationCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: FinalizeInvocationPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.invocation";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.invocations.finalize";
+}
+
+// @public (undocumented)
+export interface FinalizeInvocationPayload {
+    bindingRefs: EntityRef[];
+    // (undocumented)
+    contractDigest: Digest;
+    // (undocumented)
+    invocationRef: EntityRef;
+    // (undocumented)
+    leaseFencingToken: Version;
+    // (undocumented)
+    leaseRef: EntityRef;
+    // (undocumented)
+    manifestRef: EntityRef;
+    // (undocumented)
+    workerId: UUID;
+}
+
+// @public (undocumented)
 export interface GetActionQuery {
     // (undocumented)
     consistency?: "Strong" | "Projection";
+}
+
+// @public (undocumented)
+export interface GetAssignmentQuery {
+    // (undocumented)
+    id: UUID;
 }
 
 // @public (undocumented)
@@ -7197,9 +9150,33 @@ export interface GetContextQuery {
 }
 
 // @public (undocumented)
+export interface GetCorrectionQuery {
+    // (undocumented)
+    id: UUID;
+}
+
+// @public (undocumented)
 export interface GetDecisionQuery {
     // (undocumented)
     consistency?: "Strong" | "Projection";
+    // (undocumented)
+    id: UUID;
+}
+
+// @public (undocumented)
+export interface GetEvaluationResultQuery {
+    // (undocumented)
+    id: UUID;
+}
+
+// @public (undocumented)
+export interface GetEvaluationRunQuery {
+    // (undocumented)
+    id: UUID;
+}
+
+// @public (undocumented)
+export interface GetLearningGateQuery {
     // (undocumented)
     id: UUID;
 }
@@ -7263,6 +9240,62 @@ export interface GrantRecord {
 
 // @public (undocumented)
 export type GrantState = "Active" | "Revoked" | "Expired";
+
+// @public (undocumented)
+export interface GraphPatchEdge {
+    // (undocumented)
+    from: RegisteredName;
+    // (undocumented)
+    to: RegisteredName;
+}
+
+// @public (undocumented)
+export interface GraphPatchNode {
+    // (undocumented)
+    deadlineSeconds?: number;
+    inputRefs: EntityRef[];
+    // (undocumented)
+    kind: "Agent" | "Compute" | "StructuredModelJob" | "Wait" | "DomainCommand";
+    // (undocumented)
+    nodeKey: RegisteredName;
+    // (undocumented)
+    outputSchemaRef?: EntityRef;
+    // (undocumented)
+    required: boolean;
+}
+
+// @public (undocumented)
+export interface GraphRevisionRecord {
+    // (undocumented)
+    baseRevision: number;
+    // (undocumented)
+    createdAt: Time;
+    // (undocumented)
+    createdBy: Actor;
+    edges: GraphPatchEdge[];
+    nodes: GraphPatchNode[];
+    // (undocumented)
+    patchDigest: Digest;
+    // (undocumented)
+    proposerRef: EntityRef;
+    // (undocumented)
+    rationaleRef: EntityRef;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    revision: number;
+    // (undocumented)
+    revisionRef: {
+        type: "abh.graph-revision";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    runRef: EntityRef;
+    supersededNodeKeys: RegisteredName[];
+    // (undocumented)
+    updatedAt: Time;
+}
 
 // @public (undocumented)
 export type IdempotencyKey = string;
@@ -7444,6 +9477,49 @@ export interface InvocationHandle {
 }
 
 // @public (undocumented)
+export interface InvocationRecord {
+    // (undocumented)
+    attemptOrdinal: number;
+    bindingRefs?: EntityRef[];
+    // (undocumented)
+    contractDigest?: Digest;
+    // (undocumented)
+    createdAt: Time;
+    // (undocumented)
+    createdBy: Actor;
+    // (undocumented)
+    invocationRef: {
+        type: "abh.invocation";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    manifestRef?: EntityRef;
+    // (undocumented)
+    principalRef: EntityRef;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    resultArtifactRef?: EntityRef;
+    // (undocumented)
+    runRef: EntityRef;
+    // (undocumented)
+    status: "Created" | "Running" | "Succeeded" | "Failed" | "Cancelled";
+    // (undocumented)
+    stopReason?: "Completed" | "Failed" | "Cancelled" | "Deadline" | "BudgetExceeded" | "InvalidOutput";
+    // (undocumented)
+    taskRef: EntityRef;
+    // (undocumented)
+    taskSpec: TaskSpec;
+    // (undocumented)
+    taskSpecDigest: Digest;
+    // (undocumented)
+    updatedAt: Time;
+    // (undocumented)
+    usageRef?: EntityRef;
+}
+
+// @public (undocumented)
 export interface InvokeToolCommand {
     // (undocumented)
     commandId: UUID;
@@ -7601,6 +9677,252 @@ export interface JobRef {
 }
 
 // @public (undocumented)
+export interface LateInvocationAdjudicationRecord {
+    // (undocumented)
+    adjudicationRef: {
+        type: "abh.invocation-adjudication";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    createdAt: Time;
+    // (undocumented)
+    createdBy: Actor;
+    // (undocumented)
+    decision: "Adopted" | "Rejected";
+    // (undocumented)
+    invocationRef: EntityRef;
+    // (undocumented)
+    observationRef: EntityRef;
+    // (undocumented)
+    observedFencingToken: Version;
+    // (undocumented)
+    observedLeaseRef: EntityRef;
+    // (undocumented)
+    observedWorkerId: UUID;
+    // (undocumented)
+    ownerFencingToken: Version;
+    // (undocumented)
+    ownerLeaseRef: EntityRef;
+    // (undocumented)
+    reason: "CompletedEvidence" | "NotCompletedEvidence" | "TaskAlreadyAdvanced";
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    runRef: EntityRef;
+    // (undocumented)
+    taskRef: EntityRef;
+}
+
+// @public (undocumented)
+export interface LateInvocationObservationRecord {
+    // (undocumented)
+    createdBy: Actor;
+    // (undocumented)
+    invocationRef: EntityRef;
+    // (undocumented)
+    leaseFencingToken: Version;
+    // (undocumented)
+    leaseRef: EntityRef;
+    // (undocumented)
+    observationRef: {
+        type: "abh.invocation-observation";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    observedAt: Time;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    resultArtifactRef?: EntityRef;
+    // (undocumented)
+    runRef: EntityRef;
+    // (undocumented)
+    status: "Observed";
+    // (undocumented)
+    stopReason: "Completed" | "Failed" | "Cancelled" | "Deadline" | "BudgetExceeded" | "InvalidOutput";
+    // (undocumented)
+    taskRef: EntityRef;
+    // (undocumented)
+    usageRef?: EntityRef;
+    // (undocumented)
+    workerId: UUID;
+}
+
+// @public (undocumented)
+export interface LearningCandidateCreatedResponse {
+    // (undocumented)
+    data: {
+        objectRef: {
+            type: "abh.learning-candidate";
+            id: UUID;
+            version: Version;
+        };
+        commandId: UUID;
+        learningCandidate: LearningCandidateRecord;
+    };
+    // (undocumented)
+    success: true;
+}
+
+// @public (undocumented)
+export interface LearningCandidateDiagnostic {
+    // (undocumented)
+    assetKind: RegisteredName;
+    // (undocumented)
+    candidateRef: EntityRef;
+    evaluationRunRefs: EntityRef[];
+    // (undocumented)
+    gateRef: EntityRef | null;
+    // (undocumented)
+    profileCount: number;
+    // (undocumented)
+    profileRef: EntityRef | null;
+    releaseRefs: EntityRef[];
+    requiredPurposes: RegisteredName[];
+    // (undocumented)
+    risk: RegisteredName;
+    // (undocumented)
+    settledEvaluationCount: number;
+    // (undocumented)
+    status: "Draft";
+    // (undocumented)
+    stopReasons: ("PURPOSE_WITHDRAWN" | "PROFILE_MISSING" | "PROFILE_AMBIGUOUS" | "EVALUATION_MISSING" | "EVALUATION_UNSETTLED" | "GATE_MISSING" | "RELEASE_NOT_LINKED")[];
+    // (undocumented)
+    withdrawnPurposes: RegisteredName[];
+}
+
+// @public (undocumented)
+export interface LearningCandidateListResult {
+    // (undocumented)
+    asOf: Time;
+    candidates: LearningCandidateRecord[];
+    // (undocumented)
+    counts: {
+        [k: string]: number;
+    };
+    // (undocumented)
+    cursor?: string;
+}
+
+// @public (undocumented)
+export interface LearningCandidateRecord {
+    // (undocumented)
+    assetKind: RegisteredName;
+    // (undocumented)
+    baseVersion: Version;
+    // (undocumented)
+    candidateArtifactRef: EntityRef;
+    // (undocumented)
+    candidateRef: {
+        type: "abh.learning-candidate";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    caseRef: EntityRef;
+    // (undocumented)
+    createdAt: Time;
+    // (undocumented)
+    digest: Digest;
+    // (undocumented)
+    producer: Actor;
+    // (undocumented)
+    receiptRef: CommandRef;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    risk: RegisteredName;
+    // (undocumented)
+    scopeRef: EntityRef;
+    // (undocumented)
+    status: "Draft";
+}
+
+// @public (undocumented)
+export interface LearningCaseCreatedResponse {
+    // (undocumented)
+    data: {
+        objectRef: {
+            type: "abh.learning-case";
+            id: UUID;
+            version: Version;
+        };
+        commandId: UUID;
+        learningCase: LearningCaseRecord;
+    };
+    // (undocumented)
+    success: true;
+}
+
+// @public (undocumented)
+export interface LearningCaseListResult {
+    // (undocumented)
+    asOf: Time;
+    cases: LearningCaseRecord[];
+    // (undocumented)
+    counts: {
+        [k: string]: number;
+    };
+    // (undocumented)
+    cursor?: string;
+}
+
+// @public (undocumented)
+export interface LearningCaseRecord {
+    // (undocumented)
+    builtAt: Time;
+    // (undocumented)
+    builtBy: Actor;
+    // (undocumented)
+    caseRef: {
+        type: "abh.learning-case";
+        id: UUID;
+        version: Version;
+    };
+    counterEvidenceRefs: EntityRef[];
+    // (undocumented)
+    digest: Digest;
+    // (undocumented)
+    domainOwnerRef: EntityRef;
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    receiptRef: CommandRef;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    rootCauseCode: RegisteredName;
+    signalRefs: EntityRef[];
+}
+
+// @public (undocumented)
+export interface LearningGateListResult {
+    // (undocumented)
+    asOf: Time;
+    // (undocumented)
+    counts: {
+        [k: string]: number;
+    };
+    // (undocumented)
+    cursor?: string;
+    gates: EvaluationGateArtifactRecord[];
+}
+
+// @public (undocumented)
+export interface LearningSignalListResult {
+    // (undocumented)
+    asOf: Time;
+    // (undocumented)
+    counts: {
+        [k: string]: number;
+    };
+    // (undocumented)
+    cursor?: string;
+    signals: LearningSignalRecord[];
+}
+
+// @public (undocumented)
 export interface LearningSignalRecord {
     artifactRefs: EntityRef[];
     // (undocumented)
@@ -7623,6 +9945,88 @@ export interface LearningSignalRecord {
     signalType: RegisteredName;
     // (undocumented)
     sourceEventRef: EntityRef;
+}
+
+// @public (undocumented)
+export interface LedgerBalanceDiagnostic {
+    // (undocumented)
+    confirmedUsage: NonnegativeDecimal;
+    // (undocumented)
+    heldReservation: NonnegativeDecimal;
+    // (undocumented)
+    limit: NonnegativeDecimal;
+    // (undocumented)
+    openCommitment: NonnegativeDecimal;
+}
+
+// @public (undocumented)
+export interface LedgerCorrectionRecord {
+    // (undocumented)
+    conversionRef?: EntityRef;
+    // (undocumented)
+    correctionRef: EntityRef & {
+        type: "abh.ledger-correction";
+        [k: string]: unknown;
+    };
+    // (undocumented)
+    inputDigest: Digest;
+    // (undocumented)
+    kind: "Refund" | "FxRevaluation";
+    // (undocumented)
+    ledgerRef: EntityRef & {
+        type: "abh.ledger";
+        [k: string]: unknown;
+    };
+    // (undocumented)
+    recordedAt: Time;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    sourceRef: EntityRef;
+    // (undocumented)
+    usageDelta: Decimal;
+}
+
+// @public (undocumented)
+export interface LedgerDiagnostic {
+    // (undocumented)
+    current: LedgerBalanceDiagnostic;
+    // (undocumented)
+    entryCount: number;
+    // (undocumented)
+    expiredHeldCount: number;
+    // (undocumented)
+    heldReservationCount: number;
+    // (undocumented)
+    lastEntryRef: null | (EntityRef & {
+        type?: "abh.ledger-entry";
+        [k: string]: unknown;
+    });
+    // (undocumented)
+    ledgerRef: EntityRef & {
+        type?: "abh.ledger";
+        [k: string]: unknown;
+    };
+    // (undocumented)
+    meteringMode: "cumulative" | "capacity";
+    // (undocumented)
+    openCommitmentCount: number;
+    // (undocumented)
+    openCommitmentRemaining: NonnegativeDecimal;
+    // (undocumented)
+    periodRef: EntityRef & {
+        type?: "abh.period";
+        [k: string]: unknown;
+    };
+    // (undocumented)
+    recomputed: LedgerBalanceDiagnostic;
+    // (undocumented)
+    resourceType: RegisteredName;
+    // (undocumented)
+    status: LedgerState;
+    stopReasons: ("LEDGER_RECORD_DRIFT" | "ENTRY_RECORD_INVALID" | "ENTRY_LIMIT_EXCEEDED" | "BALANCE_DRIFT" | "OBLIGATION_DRIFT" | "EXPIRED_HOLD")[];
+    // (undocumented)
+    unit: RegisteredName;
 }
 
 // @public (undocumented)
@@ -7660,6 +10064,23 @@ export interface LedgerEntryRecord {
     sourceRef: EntityRef;
     // (undocumented)
     usageDelta: Decimal;
+}
+
+// @public (undocumented)
+export interface LedgerPeriodRecord {
+    // (undocumented)
+    endsAt: Time;
+    // (undocumented)
+    periodRef: EntityRef & {
+        type: "abh.period";
+        [k: string]: unknown;
+    };
+    // (undocumented)
+    recordedAt: Time;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    startsAt: Time;
 }
 
 // @public (undocumented)
@@ -7715,6 +10136,27 @@ export interface LedgerReservationRequirement {
 // @public (undocumented)
 export type LedgerState = "Open" | "Frozen" | "Closed";
 
+// @public (undocumented)
+export interface LedgerUnitRecord {
+    // (undocumented)
+    currency?: string;
+    // (undocumented)
+    kind: "monetary" | "quantity";
+    // (undocumented)
+    name: RegisteredName;
+    // (undocumented)
+    precision: number;
+    // (undocumented)
+    recordedAt: Time;
+    // (undocumented)
+    resourceOrganizationId: UUID;
+    // (undocumented)
+    unitRef: EntityRef & {
+        type: "abh.unit";
+        [k: string]: unknown;
+    };
+}
+
 // @public
 export type LifecyclePurposeNames = RegisteredName[];
 
@@ -7737,6 +10179,30 @@ export interface ListActionsQuery {
 }
 
 // @public (undocumented)
+export interface ListAssignmentsQuery {
+    // (undocumented)
+    assignmentStatus?: AssignmentState;
+    // (undocumented)
+    cursor?: string;
+    // (undocumented)
+    limit?: number;
+    // (undocumented)
+    releaseId?: UUID;
+}
+
+// @public (undocumented)
+export interface ListEvaluationRunsQuery {
+    // (undocumented)
+    candidateId?: UUID;
+    // (undocumented)
+    cursor?: string;
+    // (undocumented)
+    limit?: number;
+    // (undocumented)
+    runStatus?: "Queued" | "Completed" | "Inconclusive";
+}
+
+// @public (undocumented)
 export interface ListInboxQuery {
     // (undocumented)
     consistency?: "Strong" | "Projection";
@@ -7750,6 +10216,56 @@ export interface ListInboxQuery {
     status?: DecisionState;
     // (undocumented)
     type?: RegisteredName;
+}
+
+// @public (undocumented)
+export interface ListLearningCandidatesQuery {
+    // (undocumented)
+    assetKind?: RegisteredName;
+    // (undocumented)
+    candidateStatus?: "Draft";
+    // (undocumented)
+    cursor?: string;
+    // (undocumented)
+    limit?: number;
+    // (undocumented)
+    scopeId?: UUID;
+}
+
+// @public (undocumented)
+export interface ListLearningCasesQuery {
+    // (undocumented)
+    cursor?: string;
+    // (undocumented)
+    limit?: number;
+    // (undocumented)
+    rootCauseCode?: RegisteredName;
+    // (undocumented)
+    scopeId?: UUID;
+}
+
+// @public (undocumented)
+export interface ListLearningGatesQuery {
+    // (undocumented)
+    candidateId?: UUID;
+    // (undocumented)
+    cursor?: string;
+    // (undocumented)
+    limit?: number;
+    // (undocumented)
+    verdict?: "Pass" | "Fail" | "Inconclusive";
+}
+
+// @public (undocumented)
+export interface ListLearningSignalsQuery {
+    // (undocumented)
+    cursor?: string;
+    // (undocumented)
+    limit?: number;
+    // (undocumented)
+    scopeId?: UUID;
+    // (undocumented)
+    signalType?: RegisteredName;
 }
 
 // @public (undocumented)
@@ -7790,6 +10306,12 @@ export interface ListRunsQuery {
     missionId?: UUID;
     // (undocumented)
     missionStatus?: MissionState;
+}
+
+// @public (undocumented)
+export interface ListSafetyStopsQuery {
+    // (undocumented)
+    limit: number;
 }
 
 // @public (undocumented)
@@ -8313,6 +10835,43 @@ export interface ObjectTypeRegistration {
 }
 
 // @public (undocumented)
+export interface ObserveLateInvocationCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ObserveLateInvocationPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.invocation";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.invocations.observe-late";
+}
+
+// @public (undocumented)
+export interface ObserveLateInvocationPayload {
+    // (undocumented)
+    invocationRef: EntityRef;
+    // (undocumented)
+    leaseFencingToken: Version;
+    // (undocumented)
+    leaseRef: EntityRef;
+    // (undocumented)
+    resultArtifactRef?: EntityRef;
+    // (undocumented)
+    stopReason: "Completed" | "Failed" | "Cancelled" | "Deadline" | "BudgetExceeded" | "InvalidOutput" | "Unknown";
+    // (undocumented)
+    usageRef?: EntityRef;
+    // (undocumented)
+    workerId: UUID;
+}
+
+// @public (undocumented)
 export interface OpenCommitmentCommand {
     // (undocumented)
     commandId: UUID;
@@ -8408,6 +10967,51 @@ export interface OpenTerminalExceptionPayload {
     };
     // (undocumented)
     responsibility: OpenResponsibilityRequestPayload;
+}
+
+// @public (undocumented)
+export interface OperationDiagnostic {
+    // (undocumented)
+    actionRef: ActionRef;
+    // (undocumented)
+    attemptCount: number;
+    // (undocumented)
+    lastReceiptAt: null | Time;
+    // (undocumented)
+    nodeKey: NodeKey;
+    // (undocumented)
+    operationRef: OperationRef;
+    // (undocumented)
+    payloadDigest: Digest;
+    // (undocumented)
+    permitExpired: boolean;
+    // (undocumented)
+    permitExpiresAt: null | Time;
+    // (undocumented)
+    permitRef: null | {
+        type: "abh.dispatch-permit";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    planRef: PlanRef;
+    // (undocumented)
+    position: OperationPosition;
+    // (undocumented)
+    providerIdempotencyKey: IdempotencyKey;
+    // (undocumented)
+    receiptCount: number;
+    // (undocumented)
+    reconciliationRef: null | EntityRef;
+    // (undocumented)
+    reconciliationVerdict: null | ("ConfirmedSuccess" | "ConfirmedNoEffect" | "Pending" | "Ambiguous" | "Conflicting");
+    // (undocumented)
+    remainingResponsibility: boolean;
+    // (undocumented)
+    resourceFenceRef: null | EntityRef;
+    // (undocumented)
+    safeRetry: boolean;
+    stopReasons: ("PERMIT_MISSING" | "PERMIT_EXPIRED" | "RECEIPT_MISSING" | "RECONCILIATION_MISSING" | "UNKNOWN_OUTCOME_RETAINED" | "UNKNOWN_OUTCOME_UNPROTECTED" | "CLOSED_WITHOUT_RECONCILIATION")[];
 }
 
 // @public (undocumented)
@@ -8820,6 +11424,32 @@ export interface OutboxRoutingRecord {
 }
 
 // @public (undocumented)
+export interface PackBuildDiagnostic {
+    // (undocumented)
+    artifactCount: number;
+    // (undocumented)
+    artifactSetDigest: Digest;
+    // (undocumented)
+    kind: "DomainPack" | "ConnectorPack" | "RuntimeAdapter" | "WorkbenchExtension";
+    // (undocumented)
+    license: string;
+    // (undocumented)
+    manifestDigest: Digest;
+    // (undocumented)
+    migrationCount: number;
+    // (undocumented)
+    outputBytes: number;
+    // (undocumented)
+    packageDigest: Digest;
+    // (undocumented)
+    packId: RegisteredName;
+    // (undocumented)
+    packVersion: ExactVersion;
+    // (undocumented)
+    trustMode: "Declarative" | "TrustedCode" | "Isolated";
+}
+
+// @public (undocumented)
 export interface PackCapabilityAvailability {
     // (undocumented)
     compatible: boolean;
@@ -8847,6 +11477,8 @@ export interface PackCapabilityBinding {
         secretClasses: RegisteredName[];
     };
     // (undocumented)
+    safetyStop?: boolean;
+    // (undocumented)
     schemaPath: PackPath;
 }
 
@@ -8865,6 +11497,8 @@ export interface PackCapabilityCandidate {
     };
     // (undocumented)
     registrationDigest: Digest;
+    // (undocumented)
+    safetyStop: boolean;
     // (undocumented)
     schemaDigest: Digest;
 }
@@ -8910,6 +11544,8 @@ export interface PackCapabilityRegistration {
     };
     // (undocumented)
     registrationDigest: Digest;
+    // (undocumented)
+    safetyStop?: boolean;
     // (undocumented)
     schemaDigest: Digest;
     // (undocumented)
@@ -8970,6 +11606,30 @@ export interface PackConformancePolicy {
     subjectName: string;
     // (undocumented)
     suiteVersion: ExactVersion;
+}
+
+// @public (undocumented)
+export interface PackContentDiagnostic {
+    // (undocumented)
+    artifactCount: number;
+    // (undocumented)
+    artifactSetDigest: Digest;
+    // (undocumented)
+    kind: "DomainPack" | "ConnectorPack" | "RuntimeAdapter" | "WorkbenchExtension";
+    // (undocumented)
+    license: string;
+    // (undocumented)
+    manifestDigest: Digest;
+    // (undocumented)
+    migrationCount: number;
+    // (undocumented)
+    packageDigest: Digest;
+    // (undocumented)
+    packId: RegisteredName;
+    // (undocumented)
+    packVersion: ExactVersion;
+    // (undocumented)
+    trustMode: "Declarative" | "TrustedCode" | "Isolated";
 }
 
 // @public (undocumented)
@@ -9526,6 +12186,46 @@ export interface PackInspectionWaitingEvidence {
     elapsedMs: number;
     // (undocumented)
     job: PackInspectionJobRecord;
+}
+
+// @public (undocumented)
+export interface PackInstallDiagnostic {
+    // (undocumented)
+    capabilitySetRef: null | (EntityRef & {
+        type?: "abh.pack-capability-set";
+        [k: string]: unknown;
+    });
+    // (undocumented)
+    deploymentRevisionRef: null | (EntityRef & {
+        type?: "abh.pack-deployment-revision";
+        [k: string]: unknown;
+    });
+    // (undocumented)
+    deploymentVersion: Version;
+    // (undocumented)
+    expectedCapabilityCount: number;
+    // (undocumented)
+    governanceEvidenceBound: boolean;
+    // (undocumented)
+    manifestMigrationCount: number;
+    // (undocumented)
+    packageDigest: Digest;
+    // (undocumented)
+    packId: RegisteredName;
+    // (undocumented)
+    packRef: EntityRef & {
+        type?: "abh.installed-pack";
+        [k: string]: unknown;
+    };
+    // (undocumented)
+    packVersion: ExactVersion;
+    // (undocumented)
+    registeredCapabilityCount: number;
+    // (undocumented)
+    status: "Staged" | "Enabled" | "Suspended" | "Retired";
+    stopReasons: ("RECORD_DRIFT" | "VALIDATION_EVIDENCE_MISSING" | "GOVERNANCE_EVIDENCE_MISSING" | "CAPABILITY_REGISTRATION_INVALID" | "DEPLOYMENT_REVISION_MISSING" | "ENABLEMENT_MISSING" | "SUSPENSION_MISSING" | "RETIREMENT_MISSING")[];
+    // (undocumented)
+    validationEvidenceBound: boolean;
 }
 
 // @public (undocumented)
@@ -10159,6 +12859,20 @@ export interface PackSchemaOwnership {
 }
 
 // @public (undocumented)
+export interface PackSignatureDiagnostic {
+    // (undocumented)
+    bundleBytes: number;
+    // (undocumented)
+    bundleDigest: Digest;
+    // (undocumented)
+    packageDigest: Digest;
+    // (undocumented)
+    packId: RegisteredName;
+    // (undocumented)
+    packVersion: ExactVersion;
+}
+
+// @public (undocumented)
 export interface PackSignerPolicy {
     // (undocumented)
     executable: string;
@@ -10206,6 +12920,36 @@ export interface PackValidationReport {
     packVersion: ExactVersion;
     // (undocumented)
     profile: "LocalOfflinePublicKey";
+    // (undocumented)
+    provenanceBundleDigest: Digest;
+    // (undocumented)
+    reportDigest: Digest;
+    // (undocumented)
+    signatureBundleDigest: Digest;
+    // (undocumented)
+    subjectDigest: Digest;
+    // (undocumented)
+    validatedAt: Time;
+    // (undocumented)
+    validUntil: Time;
+}
+
+// @public (undocumented)
+export interface PackVerificationDiagnostic {
+    // (undocumented)
+    artifactSetDigest: Digest;
+    // (undocumented)
+    conformanceBundleDigest: Digest;
+    // (undocumented)
+    conformanceReportDigest: Digest;
+    // (undocumented)
+    deploymentPolicyDigest: Digest;
+    // (undocumented)
+    manifestDigest: Digest;
+    // (undocumented)
+    packId: RegisteredName;
+    // (undocumented)
+    packVersion: ExactVersion;
     // (undocumented)
     provenanceBundleDigest: Digest;
     // (undocumented)
@@ -10437,6 +13181,42 @@ export interface PortCallContext {
 }
 
 // @public (undocumented)
+export interface PrepareInvocationCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: PrepareInvocationPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.task";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.invocations.prepare";
+}
+
+// @public (undocumented)
+export interface PrepareInvocationPayload {
+    identityBasisRefs: EntityRef[];
+    // (undocumented)
+    leaseFencingToken: Version;
+    // (undocumented)
+    leaseRef: EntityRef;
+    // (undocumented)
+    taskRef: EntityRef;
+    // (undocumented)
+    taskSpec: TaskSpec;
+    // (undocumented)
+    workerId: UUID;
+}
+
+// @public (undocumented)
 export interface PrepareOutboxCommand {
     // (undocumented)
     commandId: UUID;
@@ -10631,8 +13411,107 @@ export interface ProposeActionPayload {
     targetRefs: EntityRef[];
 }
 
+// @public (undocumented)
+export interface ProposeCorrectionCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ProposeCorrectionPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.correction";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.corrections.propose";
+}
+
+// @public (undocumented)
+export interface ProposeCorrectionHttpRequest {
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: ProposeCorrectionPayload;
+    // (undocumented)
+    target: {
+        type: "abh.correction";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface ProposeCorrectionPayload {
+    // (undocumented)
+    beforeRef: EntityRef;
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    newArtifactRef: EntityRef;
+    // (undocumented)
+    purpose: RegisteredName;
+    // (undocumented)
+    reason: string;
+    // (undocumented)
+    responsibilityRef: EntityRef;
+    // (undocumented)
+    subjectRef: EntityRef;
+    // (undocumented)
+    targetOwner: "Domain" | "Memory" | "Run" | "Capability";
+}
+
+// @public (undocumented)
+export interface ProposeGraphPatchCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ProposeGraphPatchPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.run";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.graph-patches.propose";
+}
+
+// @public (undocumented)
+export interface ProposeGraphPatchPayload {
+    addEdges: GraphPatchEdge[];
+    addNodes: GraphPatchNode[];
+    // (undocumented)
+    baseRevision: number;
+    // (undocumented)
+    rationaleRef: EntityRef;
+    // (undocumented)
+    runRef: EntityRef;
+    supersedePendingNodes: RegisteredName[];
+}
+
+// @public (undocumented)
+export interface ProposeSafetyStopPayload {
+    // (undocumented)
+    fenceRef: EntityRef;
+    // (undocumented)
+    fencingToken: Version;
+    // (undocumented)
+    proposal: ProposeActionPayload;
+    // (undocumented)
+    unresolvedOperationRef: OperationRef;
+}
+
 // @public
-export type PublicContract = UUID | Version | RegisteredName | ExactVersion | Digest | Time | Decimal | Money | EntityRef | EntitySelector | CapabilityRef | AuthorityRef | SubjectRef | Actor | Target | AuthenticationStrength | RequestContext | AuthorizedRequestContext | ExecutionAuthorityBinding | ExecutionAuthority | ResolveAndPinRequest | ExecutionPin | PinSet | DevelopmentConfig | ActionRef | OperationRef | PlanRef | DecisionRef | DecisionEffectRef | CommandRef | ArtifactRef | PinSetRef | RequestRef | IdempotencyKey | NodeKey | Reason | NonnegativeDecimal | ResourceRequirement | ImpactUpperBound | ProposeActionPayload | ActionProposal | CancelActionPayload | RequestAuthorizationPayload | ValidateActionPayload | RegisterOperationPlanPayload | OperationInputBinding | OperationPlanNode | OperationPlan | ActionRecord | DecisionResponse | DecisionPackage | SubmitDecisionPayload | WithdrawDecisionPayload | DecisionEffectSummary | DecisionView | AuthorizationSummary | OperationSummary | ActionView | QueryMeta | ActionQueryResponse | DecisionQueryResponse | ActionListResponse | DecisionInboxResponse | ActionAcceptedResponse | DecisionSubmittedResponse | DecisionWithdrawnResponse | EventChangeSummary | JobEnvelope | InlineArtifactStoredResponse | PackInspectionJobRef | RequestContextRef | AuthorizedContextRef | CredentialRef | JobRef | WaitRef | StoredObjectRef | PortCallContext | IdentityVerifyRequest | VerifiedIdentity | EnqueueJobRequest | EnqueuedJob | ScheduleWakeupRequest | ScheduledWakeup | CancelWakeupRequest | CancelledWakeup | SignalWaitRequest | SignalledWait | InspectDeliveryRequest | DeliveryInspection | DrainQueueRequest | DrainReport | ObjectDescriptor | PutObjectRequest | ReadObjectRequest | ReadObjectDescriptor | StatObjectRequest | DeleteObjectRequest | DeletedObject | ObjectTypeRegistration | PurposeRegistration | ActionTypeRegistration | CatalogExtension | PackPath | PackFileEntry | PackCapabilityReference | PackCapabilityRequirement | PackResources | PackManifest | ConformanceCaseResult | ConformanceCapabilityClaim | ConformanceEnvironment | ConformanceReport | PackValidationReport | PackDeploymentPolicy | PackSignerPolicy | PackProvenancePolicy | PackConformancePolicy | PackGovernanceSnapshot | SignedTrustPolicyDocument | PackDataDefinition | PackDataInventory | PackDataChange | PackDataImpact | PackSchemaOwnership | PackMigrationStep | PackMigrationEvidence | PackMigrationAttemptRecord | PackMigrationObservationRecord | PackMigrationExecutionResult | PackMigrationExecutionRecord | PackMigrationStructureBinding | PackMigrationStructureReport | PackMigrationDataBinding | PackMigrationDataReport | PackMigrationDataObservation | PackMigrationStructureObservation | PackMigrationStateObservation | PackMigrationDataObservationResult | PackMigrationStructureObservationResult | OrganizationRecord | PrincipalRecord | MembershipRecord | GrantRecord | LedgerRecord | ReservationRecord | AuditRecord | CommandReceipt | ArtifactRecord | FenceRecord | LedgerEntryRecord | ConfigureLedgerPayload | ReserveAllPayload | ConsumeReservationPayload | ReleaseReservationPayload | IdentityLocationRecord | RevokeGrantPayload | WorkspaceRecord | ReleaseRecord | StaticAssignmentRecord | ConfigureStaticReleasePayload | ResolveStaticPinsPayload | StopStaticAssignmentPayload | StoreInlineArtifactPayload | TombstoneArtifactPayload | CommitmentRecord | SettlementRecord | OpenCommitmentPayload | SettleCommitmentPayload | AdjustCommitmentPayload | BeginCloseCommitmentPayload | CloseCommitmentPayload | ResponsibilityAssignmentRecord | ResponsibilitySeat | ResponsibilitySlot | ResponsibilityRequestRecord | DecisionRecord | RequestCompletionEvidence | OpenResponsibilityRequestPayload | AssignResponsibilityPayload | IssueExecutionAuthorityPayload | OperationRecord | OperationReceiptRecord | OperationReconciliationRecord | ActionIntentRecord | PolicyDecision | PolicyEvaluationRecord | RevokeExecutionAuthorityPayload | LifecyclePurposeNames | PinActionPayload | CompiledPolicyManifest | PolicyVersionRecord | PolicyBindingRecord | ConfigurePolicyPayload | ActivateMandatoryPolicyPayload | ActionPolicyInput | ResourceLedgerBinding | ResourceEnvelopeRecord | ConfigureResourceEnvelopePayload | AuthorizationSnapshotRecord | PurposeRecord | ConnectionRecord | ConfigurePurposePayload | ConfigureConnectionPayload | RevokeDirectoryRecordPayload | WorkLeaseRecord | ClaimWorkLeasePayload | RenewWorkLeasePayload | ReleaseWorkLeasePayload | ResourceFenceRecord | DispatchPermitRecord | AttemptRecord | AttemptObservationRecord | IssueDispatchPermitPayload | DispatchExitRecord | ClaimDispatchExitPayload | NormalizedOperationObservation | RecordOperationReceiptPayload | CompareOperationPayload | ApplyReconciliationPayload | RecoverOperationPayload | RecoverRunPayload | ActionResultRecord | AggregateActionPayload | CleanupActionPayload | ActionCleanupRecord | RefreshActionPayload | TransportCaptureRecord | CaptureTransportPayload | InboxRecord | ConsumeEventPayload | OutboxRoutingRecord | OutboxDeliveryRecord | OutboxPublicationRecord | PrepareOutboxPayload | RecordOutboxDeliveryPayload | RegisterDurableWaitPayload | DurableWaitSource | DurableWaitRecord | DurableWakeupRecord | RecheckDurableWaitPayload | CancelDurableWaitPayload | WaitPortReceiptRecord | ExecuteWaitPortPayload | ActionWaitRecord | NotifyActionWaitPayload | OperationWaitRecord | NotifyOperationWaitPayload | ClaimQueryExitPayload | QueryExitRecord | QueryCaptureRecord | CaptureQueryPayload | ScopeAuthorityDraft | ScopeAuthorityPolicyInput | CreateScopeAuthorityPayload | OutboxConsumptionRecord | RecordOutboxConsumptionPayload | ExceptionRecord | OpenTerminalExceptionPayload | RevokeResponsibilityPayload | DecisionWithdrawalRecord | ReviseResponsibilityRoutePayload | ResponsibilityRouteRevisionRecord | DecisionEffectIntentRecord | DecisionEffectReceiptRecord | ActionAuthorizationRequestRecord | RecordPackValidationPayload | PublishPackTrustPolicyPayload | LocalPackStagingReceipt | StagePackPayload | InstalledPackRecord | PackDataImpactRecord | RecordPackDataImpactPayload | PackInspectionJobRecord | RequestPackInspectionPayload | StartPackInspectionPayload | ExpirePackInspectionPayload | PackInspectionTimeoutEvidence | CompletePackInspectionPayload | PackInspectionBlockEvidence | WaitPackInspectionPayload | PackInspectionWaitingEvidence | CancelPackInspectionPayload | PackInspectionCancellationEvidence | PackInspectionRetryExhaustedEvidence | PackInspectionDeliveryRecord | AcceptPackInspectionDeliveryPayload | PackInspectionLeaseLossEvidence | FailLostPackInspectionPayload | DatabaseDiagnosticResult | ProjectionHealthResult | CliDoctorProjectionResult | CliDoctorDataResult | PackInspectionDiagnostic | PackInspectionDiagnosticResponse | CliInspectionDiagnosticResult | PackInspectionFailureEvidence | FailPackInspectionPayload | PackMigrationNonApplicabilityReport | PackEnableProposal | RecordPackConformancePayload | RequestPackEnablePayload | PackDeploymentRevisionRecord | EnablePackPayload | PackEnableRecord | PackCapabilityBinding | PackCapabilityRegistration | RegisterPackCapabilitiesPayload | PackCapabilitySetRecord | PackCapabilityAvailability | PackCapabilityCandidate | PackCapabilityQueryResult | SuspendPackPayload | PackSuspensionRecord | RetirePackPayload | PackRetirementRecord | CompatibleQueryEvidence | RecordCompatibleQueryEvidencePayload | MissionConditionInput | CreateMissionPayload | MissionConditionRecord | MissionRecord | ActivateMissionPayload | SubmitTriggerPayload | MissionTriggerRecord | MissionBlockerRecord | RefreshMissionSummaryPayload | ProjectionRefreshReceipt | PauseMissionPayload | CancelMissionPayload | ResumeMissionPayload | ReviseMissionGoalPayload | CloseMissionPayload | BlockMissionPayload | ResolveBlockerPayload | MissionView | MissionListResult | RunRecord | StartRunPayload | CompleteRunPayload | TaskRecord | RunView | RunListResult | ToolCallInspection | ContextManifest | VerificationReport | SubmitVerificationPayload | ToolCapability | ToolBinding | ToolCallRecord | InvokeToolPayload | ToolCallResponse | ModelRoute | ModelCallRecord | ProjectionEnvelope | MissionSummaryProjection | CaptureSignalPayload | LearningSignalRecord | AgentTaskContract | RuntimeEvent | ProjectionQueryResult | ProjectionListResult | ProjectionChangedEvent | ActionTimelineProjection | ResponsibilityInboxProjection | InvocationHandle | BuildMissionSummaryPayload | ResolvedDevelopmentConfig | CreateMissionCommand | CreateMissionHttpRequest | ActivateMissionCommand | ActivateMissionHttpRequest | SubmitTriggerCommand | SubmitTriggerHttpRequest | PauseMissionCommand | PauseMissionHttpRequest | CancelMissionCommand | CancelMissionHttpRequest | ResumeMissionCommand | ResumeMissionHttpRequest | ReviseMissionGoalCommand | ReviseMissionGoalHttpRequest | CloseMissionCommand | CloseMissionHttpRequest | BlockMissionCommand | BlockMissionHttpRequest | ResolveBlockerCommand | ResolveBlockerHttpRequest | FailPackInspectionCommand | FailLostPackInspectionCommand | AcceptPackInspectionDeliveryCommand | CancelPackInspectionCommand | WaitPackInspectionCommand | CompletePackInspectionCommand | ExpirePackInspectionCommand | StartPackInspectionCommand | RequestPackInspectionCommand | RecordPackDataImpactCommand | RegisterPackCapabilitiesCommand | RecordCompatibleQueryEvidenceCommand | RetirePackCommand | SuspendPackCommand | EnablePackCommand | RequestPackEnableCommand | RecordPackConformanceCommand | StagePackCommand | PublishPackTrustPolicyCommand | RecordPackValidationCommand | ReviseResponsibilityRouteCommand | RevokeResponsibilityCommand | ExpireResponsibilityRequestCommand | RetryResponsibilityRouteCommand | OpenTerminalExceptionCommand | CreateScopeAuthorityCommand | EvaluateScopeAuthorityCommand | CaptureQueryCommand | ClaimQueryExitCommand | NotifyOperationWaitCommand | ExecuteWaitPortCommand | NotifyActionWaitCommand | RegisterDurableWaitCommand | RecheckDurableWaitCommand | CancelDurableWaitCommand | PrepareOutboxCommand | RecordOutboxConsumptionCommand | RecordOutboxDeliveryCommand | ConsumeEventCommand | BuildMissionSummaryCommand | RefreshMissionSummaryCommand | RefreshMissionSummaryHttpRequest | RefreshActionAuthorizationCommand | CleanupActionCommand | AggregateActionCommand | RecoverOperationCommand | ApplyReconciliationCommand | CompareOperationCommand | CaptureTransportCommand | RecordOperationReceiptCommand | ClaimDispatchExitCommand | IssueDispatchPermitCommand | ProposeActionCommand | ProposeActionHttpRequest | CancelActionCommand | CancelActionHttpRequest | RequestAuthorizationCommand | RequestAuthorizationHttpRequest | SubmitDecisionCommand | SubmitDecisionHttpRequest | WithdrawDecisionCommand | WithdrawDecisionHttpRequest | ValidateActionCommand | RegisterOperationPlanCommand | ConfigureLedgerCommand | ReserveAllCommand | ConsumeReservationCommand | ReleaseReservationCommand | RevokeGrantCommand | ConfigureStaticReleaseCommand | ResolveStaticPinsCommand | StopStaticAssignmentCommand | StoreInlineArtifactCommand | StoreInlineArtifactHttpRequest | TombstoneArtifactCommand | OpenCommitmentCommand | SettleCommitmentCommand | AdjustCommitmentCommand | BeginCloseCommitmentCommand | CloseCommitmentCommand | AssignResponsibilityCommand | OpenResponsibilityRequestCommand | IssueExecutionAuthorityCommand | RevokeExecutionAuthorityCommand | PinActionCommand | ConfigurePolicyCommand | ActivateMandatoryPolicyCommand | ConfigureResourceEnvelopeCommand | ConfigurePurposeCommand | ConfigureConnectionCommand | RevokePurposeCommand | RevokeConnectionCommand | ClaimWorkLeaseCommand | RenewWorkLeaseCommand | ReleaseWorkLeaseCommand | StartRunCommand | StartRunHttpRequest | CompleteRunCommand | CompleteRunHttpRequest | RecoverRunCommand | SubmitVerificationCommand | SubmitVerificationHttpRequest | InvokeToolCommand | InvokeToolHttpRequest | CaptureSignalCommand | CaptureSignalHttpRequest | CommandEnvelope | QueryPackCapabilitiesQuery | GetMissionQuery | ListMissionsQuery | GetRunQuery | GetToolCallQuery | ListRunsQuery | GetContextQuery | GetProjectionQuery | ListProjectionQuery | GetActionQuery | ListActionsQuery | GetDecisionQuery | ListInboxQuery | InspectPackInspectionJobQuery | EventEnvelope | MissionState | RunState | ActionState | ActionOutcome | ActionPosition | OperationState | OperationOutcome | OperationPosition | DecisionState | DecisionEffectState | ResponsibilityRequestState | GrantState | ExecutionAuthorityState | ReservationState | CommitmentState | LedgerState | ReleaseState | InstalledPackState | ArtifactState | AccessRecordState | DurableWaitState | ExternalObservationState | AssignmentState | AttemptState | PackInspectionJobState | ErrorResponse | IdentityProviderVerifyResult | DurableExecutionEnqueueResult | DurableExecutionScheduleWakeupResult | DurableExecutionCancelWakeupResult | DurableExecutionSignalResult | DurableExecutionInspectResult | DurableExecutionDrainResult | ObjectStorePutResult | ObjectStoreReadResult | ObjectStoreStatResult | ObjectStoreDeleteResult;
+export type PublicContract = UUID | Version | RegisteredName | ExactVersion | Digest | Time | Decimal | Money | EntityRef | EntitySelector | CapabilityRef | AuthorityRef | SubjectRef | Actor | Target | AuthenticationStrength | RequestContext | AuthorizedRequestContext | ExecutionAuthorityBinding | ExecutionAuthority | ResolveAndPinRequest | ExecutionPin | PinSet | DevelopmentConfig | ActionRef | OperationRef | PlanRef | DecisionRef | DecisionEffectRef | CommandRef | ArtifactRef | PinSetRef | RequestRef | IdempotencyKey | NodeKey | Reason | NonnegativeDecimal | ResourceRequirement | ImpactUpperBound | ProposeActionPayload | ProposeSafetyStopPayload | ActionProposal | CancelActionPayload | RequestAuthorizationPayload | ValidateActionPayload | RegisterOperationPlanPayload | OperationInputBinding | OperationPlanNode | OperationPlan | ActionRecord | DecisionResponse | DecisionPackage | SubmitDecisionPayload | WithdrawDecisionPayload | DecisionEffectSummary | DecisionView | AuthorizationSummary | OperationSummary | ActionView | QueryMeta | ActionQueryResponse | DecisionQueryResponse | ActionListResponse | DecisionInboxResponse | ActionAcceptedResponse | LearningCaseCreatedResponse | LearningCandidateCreatedResponse | EvaluationRunCreatedResponse | CorrectionProposedResponse | CorrectionAppliedResponse | ExceptionResolvedResponse | ExceptionResolutionEffectResponse | DecisionSubmittedResponse | DecisionWithdrawnResponse | EventChangeSummary | JobEnvelope | InlineArtifactStoredResponse | PackInspectionJobRef | RequestContextRef | AuthorizedContextRef | CredentialRef | JobRef | WaitRef | StoredObjectRef | PortCallContext | IdentityVerifyRequest | VerifiedIdentity | EnqueueJobRequest | EnqueuedJob | ScheduleWakeupRequest | ScheduledWakeup | CancelWakeupRequest | CancelledWakeup | SignalWaitRequest | SignalledWait | InspectDeliveryRequest | DeliveryInspection | DrainQueueRequest | DrainReport | ObjectDescriptor | PutObjectRequest | ReadObjectRequest | ReadObjectDescriptor | StatObjectRequest | DeleteObjectRequest | DeletedObject | ObjectTypeRegistration | PurposeRegistration | ActionTypeRegistration | CatalogExtension | PackPath | PackFileEntry | PackCapabilityReference | PackCapabilityRequirement | PackResources | PackManifest | ConformanceCaseResult | ConformanceCapabilityClaim | ConformanceEnvironment | ConformanceReport | PackValidationReport | PackDeploymentPolicy | PackSignerPolicy | PackProvenancePolicy | PackConformancePolicy | PackGovernanceSnapshot | SignedTrustPolicyDocument | PackDataDefinition | PackDataInventory | PackDataChange | PackDataImpact | PackSchemaOwnership | PackMigrationStep | PackMigrationEvidence | PackMigrationAttemptRecord | PackMigrationObservationRecord | PackMigrationExecutionResult | PackMigrationExecutionRecord | PackMigrationStructureBinding | PackMigrationStructureReport | PackMigrationDataBinding | PackMigrationDataReport | PackMigrationDataObservation | PackMigrationStructureObservation | PackMigrationStateObservation | PackMigrationDataObservationResult | PackMigrationStructureObservationResult | OrganizationRecord | PrincipalRecord | MembershipRecord | GrantRecord | LedgerRecord | LedgerUnitRecord | LedgerPeriodRecord | RegisterLedgerUnitPayload | RegisterLedgerPeriodPayload | LedgerCorrectionRecord | ApplyLedgerCorrectionPayload | ReservationRecord | AuditRecord | CommandReceipt | ArtifactRecord | FenceRecord | LedgerEntryRecord | LedgerBalanceDiagnostic | LedgerDiagnostic | CliDoctorLedgerResult | ConfigureLedgerPayload | ReserveAllPayload | ConsumeReservationPayload | ReleaseReservationPayload | IdentityLocationRecord | RevokeGrantPayload | WorkspaceRecord | ReleaseRecord | StaticAssignmentRecord | StaticAssignmentListResult | ConfigureStaticReleasePayload | ResolveStaticPinsPayload | StopStaticAssignmentPayload | RollbackStaticAssignmentPayload | StoreInlineArtifactPayload | TombstoneArtifactPayload | CommitmentRecord | SettlementRecord | OpenCommitmentPayload | SettleCommitmentPayload | AdjustCommitmentPayload | BeginCloseCommitmentPayload | CloseCommitmentPayload | ResponsibilityAssignmentRecord | CorrectionRecord | CorrectionApplicationRecord | ApplyCorrectionPayload | CorrectionCapabilityCandidate | ProposeCorrectionPayload | ResponsibilitySeat | ResponsibilitySlot | ResponsibilityRequestRecord | DecisionRecord | RequestCompletionEvidence | OpenResponsibilityRequestPayload | AssignResponsibilityPayload | IssueExecutionAuthorityPayload | OperationRecord | OperationReceiptRecord | OperationReconciliationRecord | ActionIntentRecord | PolicyDecision | PolicyEvaluationRecord | RevokeExecutionAuthorityPayload | LifecyclePurposeNames | PinActionPayload | CompiledPolicyManifest | PolicyVersionRecord | PolicyBindingRecord | ConfigurePolicyPayload | ActivateMandatoryPolicyPayload | ActionPolicyInput | ResourceLedgerBinding | ResourceEnvelopeRecord | ConfigureResourceEnvelopePayload | AuthorizationSnapshotRecord | PurposeRecord | ConnectionRecord | ConfigurePurposePayload | ConfigureConnectionPayload | RevokeDirectoryRecordPayload | WorkLeaseRecord | ClaimWorkLeasePayload | RenewWorkLeasePayload | ReleaseWorkLeasePayload | ResourceFenceRecord | SafetyStopCandidate | SafetyStopListResult | DispatchPermitRecord | AttemptRecord | AttemptObservationRecord | IssueDispatchPermitPayload | SafeRetryOperationPayload | DispatchExitRecord | ClaimDispatchExitPayload | NormalizedOperationObservation | RecordOperationReceiptPayload | CompareOperationPayload | ApplyReconciliationPayload | RecoverOperationPayload | RecoverRunPayload | WakeRunPayload | GraphPatchNode | GraphPatchEdge | ProposeGraphPatchPayload | GraphRevisionRecord | TaskSpec | ClaimTaskPayload | PrepareInvocationPayload | FinalizeInvocationPayload | CompleteInvocationPayload | ObserveLateInvocationPayload | LateInvocationObservationRecord | LateInvocationAdjudicationRecord | CommitVerifiedTaskPayload | InvocationRecord | CheckpointRecord | ActionResultRecord | AggregateActionPayload | CleanupActionPayload | ActionCleanupRecord | RefreshActionPayload | TransportCaptureRecord | CaptureTransportPayload | InboxRecord | ConsumeEventPayload | OutboxRoutingRecord | OutboxDeliveryRecord | OutboxPublicationRecord | PrepareOutboxPayload | RecordOutboxDeliveryPayload | RegisterDurableWaitPayload | DurableWaitSource | DurableWaitRecord | DurableWakeupRecord | RecheckDurableWaitPayload | CancelDurableWaitPayload | WaitPortReceiptRecord | ExecuteWaitPortPayload | ActionWaitRecord | NotifyActionWaitPayload | OperationWaitRecord | NotifyOperationWaitPayload | ClaimQueryExitPayload | QueryExitRecord | QueryCaptureRecord | CaptureQueryPayload | ScopeAuthorityDraft | ScopeAuthorityPolicyInput | CreateScopeAuthorityPayload | OutboxConsumptionRecord | RecordOutboxConsumptionPayload | ExceptionRecord | ExceptionResolutionRecord | OpenTerminalExceptionPayload | ApplyExceptionResolutionEffectPayload | ExceptionResolutionEffectRecord | ResolveExceptionPayload | RevokeResponsibilityPayload | DecisionWithdrawalRecord | ReviseResponsibilityRoutePayload | ResponsibilityDelegation | ResponsibilityEscalation | ResponsibilityRouteRevisionRecord | DecisionEffectIntentRecord | DecisionEffectReceiptRecord | ActionAuthorizationRequestRecord | RecordPackValidationPayload | PublishPackTrustPolicyPayload | LocalPackStagingReceipt | StagePackPayload | InstalledPackRecord | PackDataImpactRecord | RecordPackDataImpactPayload | PackInspectionJobRecord | RequestPackInspectionPayload | StartPackInspectionPayload | ExpirePackInspectionPayload | PackInspectionTimeoutEvidence | CompletePackInspectionPayload | PackInspectionBlockEvidence | WaitPackInspectionPayload | PackInspectionWaitingEvidence | CancelPackInspectionPayload | PackInspectionCancellationEvidence | PackInspectionRetryExhaustedEvidence | PackInspectionDeliveryRecord | AcceptPackInspectionDeliveryPayload | PackInspectionLeaseLossEvidence | FailLostPackInspectionPayload | DatabaseDiagnosticResult | ProjectionHealthResult | CliDoctorProjectionResult | LearningCandidateDiagnostic | CliDoctorLearningResult | ReleaseDiagnostic | CliDoctorReleaseResult | OperationDiagnostic | CliDoctorOperationResult | PackInstallDiagnostic | CliDoctorPackResult | PackContentDiagnostic | CliPackValidateResult | PackBuildDiagnostic | CliPackBuildResult | PackSignatureDiagnostic | CliPackSignResult | PackVerificationDiagnostic | CliPackVerifyResult | CliDoctorDataResult | PackInspectionDiagnostic | PackInspectionDiagnosticResponse | CliInspectionDiagnosticResult | PackInspectionFailureEvidence | FailPackInspectionPayload | PackMigrationNonApplicabilityReport | PackEnableProposal | RecordPackConformancePayload | RequestPackEnablePayload | PackDeploymentRevisionRecord | EnablePackPayload | PackEnableRecord | PackCapabilityBinding | PackCapabilityRegistration | RegisterPackCapabilitiesPayload | PackCapabilitySetRecord | PackCapabilityAvailability | PackCapabilityCandidate | PackCapabilityQueryResult | SuspendPackPayload | PackSuspensionRecord | RetirePackPayload | PackRetirementRecord | CompatibleQueryEvidence | RecordCompatibleQueryEvidencePayload | MissionConditionInput | CreateMissionPayload | MissionConditionRecord | MissionRecord | ActivateMissionPayload | SubmitTriggerPayload | MissionTriggerRecord | MissionBlockerRecord | RefreshMissionSummaryPayload | ProjectionRefreshReceipt | PauseMissionPayload | CancelMissionPayload | ResumeMissionPayload | ReviseMissionGoalPayload | CloseMissionPayload | BlockMissionPayload | ResolveBlockerPayload | MissionView | MissionListResult | RunRecord | StartRunPayload | StopStalledRunPayload | CompleteRunPayload | CancelRunPayload | TaskRecord | RunView | RunListResult | ToolCallInspection | ContextManifest | VerificationReport | SubmitVerificationPayload | ToolCapability | ToolBinding | ToolCallRecord | InvokeToolPayload | ToolCallResponse | ModelRoute | ModelCallRecord | ProjectionEnvelope | MissionSummaryProjection | CaptureSignalPayload | LearningSignalRecord | BuildCasePayload | LearningCaseRecord | CreateCandidatePayload | LearningCandidateRecord | ExpireEvaluationPayload | LearningSignalListResult | LearningCaseListResult | LearningCandidateListResult | EvaluationRunListResult | EvaluationProfileRecord | RequestEvaluationPayload | RetryEvaluationPayload | EvaluationRunRecord | EvaluationMetricValue | EvaluationMetricThreshold | SubmitEvaluationResultPayload | EvaluationResultRecord | EvaluationGateFinding | EvaluationUncertainty | EvaluationGateLimitation | BuildGatePayload | EvaluationGateArtifactRecord | LearningGateListResult | ConfigureLearningReleasePayload | AgentTaskContract | RuntimeEvent | ProjectionQueryResult | ProjectionListResult | ProjectionChangedEvent | ActionTimelineProjection | ResponsibilityInboxProjection | InvocationHandle | BuildMissionSummaryPayload | ResolvedDevelopmentConfig | CreateMissionCommand | CreateMissionHttpRequest | ActivateMissionCommand | ActivateMissionHttpRequest | SubmitTriggerCommand | SubmitTriggerHttpRequest | PauseMissionCommand | PauseMissionHttpRequest | CancelMissionCommand | CancelMissionHttpRequest | ResumeMissionCommand | ResumeMissionHttpRequest | ReviseMissionGoalCommand | ReviseMissionGoalHttpRequest | CloseMissionCommand | CloseMissionHttpRequest | BlockMissionCommand | BlockMissionHttpRequest | ResolveBlockerCommand | ResolveBlockerHttpRequest | FailPackInspectionCommand | FailLostPackInspectionCommand | AcceptPackInspectionDeliveryCommand | CancelPackInspectionCommand | WaitPackInspectionCommand | CompletePackInspectionCommand | ExpirePackInspectionCommand | StartPackInspectionCommand | RequestPackInspectionCommand | RecordPackDataImpactCommand | RegisterPackCapabilitiesCommand | RecordCompatibleQueryEvidenceCommand | RetirePackCommand | SuspendPackCommand | EnablePackCommand | RequestPackEnableCommand | RecordPackConformanceCommand | StagePackCommand | PublishPackTrustPolicyCommand | RecordPackValidationCommand | ReviseResponsibilityRouteCommand | DelegateResponsibilitySlotCommand | EscalateResponsibilitySlotCommand | RevokeResponsibilityCommand | ExpireResponsibilityRequestCommand | RetryResponsibilityRouteCommand | OpenTerminalExceptionCommand | ResolveExceptionCommand | ResolveExceptionHttpRequest | ApplyExceptionResolutionEffectCommand | ApplyExceptionResolutionEffectHttpRequest | ProposeCorrectionCommand | ProposeCorrectionHttpRequest | ApplyCorrectionCommand | ApplyCorrectionHttpRequest | CreateScopeAuthorityCommand | EvaluateScopeAuthorityCommand | CaptureQueryCommand | ClaimQueryExitCommand | NotifyOperationWaitCommand | ExecuteWaitPortCommand | NotifyActionWaitCommand | RegisterDurableWaitCommand | RecheckDurableWaitCommand | CancelDurableWaitCommand | PrepareOutboxCommand | RecordOutboxConsumptionCommand | RecordOutboxDeliveryCommand | ConsumeEventCommand | BuildMissionSummaryCommand | RefreshMissionSummaryCommand | RefreshMissionSummaryHttpRequest | RefreshActionAuthorizationCommand | CleanupActionCommand | AggregateActionCommand | RecoverOperationCommand | ApplyReconciliationCommand | CompareOperationCommand | CaptureTransportCommand | RecordOperationReceiptCommand | ClaimDispatchExitCommand | IssueDispatchPermitCommand | SafeRetryOperationCommand | ProposeActionCommand | ProposeActionHttpRequest | StartSafetyStopCommand | StartSafetyStopHttpRequest | CancelActionCommand | CancelActionHttpRequest | RequestAuthorizationCommand | RequestAuthorizationHttpRequest | SubmitDecisionCommand | SubmitDecisionHttpRequest | WithdrawDecisionCommand | WithdrawDecisionHttpRequest | ValidateActionCommand | RegisterOperationPlanCommand | ConfigureLedgerCommand | RegisterLedgerUnitCommand | RegisterLedgerPeriodCommand | ApplyLedgerCorrectionCommand | ReserveAllCommand | ConsumeReservationCommand | ReleaseReservationCommand | RevokeGrantCommand | ConfigureStaticReleaseCommand | ResolveStaticPinsCommand | StopStaticAssignmentCommand | StopStaticAssignmentHttpRequest | RollbackStaticAssignmentCommand | RollbackStaticAssignmentHttpRequest | StoreInlineArtifactCommand | StoreInlineArtifactHttpRequest | TombstoneArtifactCommand | OpenCommitmentCommand | SettleCommitmentCommand | AdjustCommitmentCommand | BeginCloseCommitmentCommand | CloseCommitmentCommand | AssignResponsibilityCommand | OpenResponsibilityRequestCommand | IssueExecutionAuthorityCommand | RevokeExecutionAuthorityCommand | PinActionCommand | ConfigurePolicyCommand | ActivateMandatoryPolicyCommand | ConfigureResourceEnvelopeCommand | ConfigurePurposeCommand | ConfigureConnectionCommand | RevokePurposeCommand | RevokeConnectionCommand | ClaimWorkLeaseCommand | RenewWorkLeaseCommand | ReleaseWorkLeaseCommand | StartRunCommand | StartRunHttpRequest | CompleteRunCommand | CompleteRunHttpRequest | CancelRunCommand | CancelRunHttpRequest | RecoverRunCommand | StopStalledRunCommand | WakeRunCommand | ProposeGraphPatchCommand | ClaimTaskCommand | PrepareInvocationCommand | FinalizeInvocationCommand | CompleteInvocationCommand | ObserveLateInvocationCommand | CommitVerifiedTaskCommand | SubmitVerificationCommand | SubmitVerificationHttpRequest | InvokeToolCommand | InvokeToolHttpRequest | CaptureSignalCommand | CaptureSignalHttpRequest | BuildCaseCommand | BuildCaseHttpRequest | CreateCandidateCommand | CreateCandidateHttpRequest | RequestEvaluationCommand | RequestEvaluationHttpRequest | RetryEvaluationCommand | RetryEvaluationHttpRequest | SubmitEvaluationResultCommand | ExpireEvaluationRunCommand | BuildGateCommand | ConfigureLearningCandidateReleaseCommand | ConfigureLearningCandidateReleaseHttpRequest | CommandEnvelope | GetAssignmentQuery | ListAssignmentsQuery | ListLearningSignalsQuery | ListLearningCasesQuery | ListLearningCandidatesQuery | ListEvaluationRunsQuery | GetEvaluationRunQuery | GetEvaluationResultQuery | GetLearningGateQuery | ListLearningGatesQuery | GetCorrectionQuery | QueryPackCapabilitiesQuery | ListSafetyStopsQuery | GetMissionQuery | ListMissionsQuery | GetRunQuery | GetToolCallQuery | ListRunsQuery | GetContextQuery | GetProjectionQuery | ListProjectionQuery | GetActionQuery | ListActionsQuery | GetDecisionQuery | ListInboxQuery | InspectPackInspectionJobQuery | EventEnvelope | MissionState | RunState | ActionState | ActionOutcome | ActionPosition | OperationState | OperationOutcome | OperationPosition | DecisionState | DecisionEffectState | ResponsibilityRequestState | GrantState | ExecutionAuthorityState | ReservationState | CommitmentState | LedgerState | ReleaseState | InstalledPackState | ArtifactState | AccessRecordState | DurableWaitState | ExternalObservationState | AssignmentState | AttemptState | PackInspectionJobState | ErrorResponse | IdentityProviderVerifyResult | DurableExecutionEnqueueResult | DurableExecutionScheduleWakeupResult | DurableExecutionCancelWakeupResult | DurableExecutionSignalResult | DurableExecutionInspectResult | DurableExecutionDrainResult | ObjectStorePutResult | ObjectStoreReadResult | ObjectStoreStatResult | ObjectStoreDeleteResult;
 
 // @public (undocumented)
 export interface PublishPackTrustPolicyCommand {
@@ -10841,6 +13720,8 @@ export interface QueryPackCapabilitiesQuery {
     kind: RegisteredName;
     // (undocumented)
     limit: number;
+    // (undocumented)
+    safetyStop?: boolean;
     // (undocumented)
     version?: ExactVersion;
     // (undocumented)
@@ -11315,6 +14196,71 @@ export interface RegisterDurableWaitPayload {
 export type RegisteredName = string;
 
 // @public (undocumented)
+export interface RegisterLedgerPeriodCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: RegisterLedgerPeriodPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.period";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.ledger-periods.register";
+}
+
+// @public (undocumented)
+export interface RegisterLedgerPeriodPayload {
+    // (undocumented)
+    endsAt: Time;
+    // (undocumented)
+    purposeNames?: LifecyclePurposeNames;
+    // (undocumented)
+    startsAt: Time;
+}
+
+// @public (undocumented)
+export interface RegisterLedgerUnitCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: RegisterLedgerUnitPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.unit";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.ledger-units.register";
+}
+
+// @public (undocumented)
+export type RegisterLedgerUnitPayload = RegisterLedgerUnitPayload1;
+
+// @public (undocumented)
+export interface RegisterLedgerUnitPayload1 {
+    // (undocumented)
+    currency?: string;
+    // (undocumented)
+    kind: "monetary" | "quantity";
+    // (undocumented)
+    name: RegisteredName;
+    // (undocumented)
+    precision: number;
+    // (undocumented)
+    purposeNames?: LifecyclePurposeNames;
+}
+
+// @public (undocumented)
 export interface RegisterOperationPlanCommand {
     // (undocumented)
     commandId: UUID;
@@ -11384,6 +14330,36 @@ export interface ReleaseBehaviorAsset {
     // (undocumented)
     behaviorSlot: RegisteredName;
     capabilityExactRefs: CapabilityRef[];
+}
+
+// @public (undocumented)
+export interface ReleaseDiagnostic {
+    // (undocumented)
+    activeAssignmentCount: number;
+    // (undocumented)
+    assetCount: number;
+    // (undocumented)
+    assignmentCount: number;
+    // (undocumented)
+    compatibilityReady: boolean;
+    // (undocumented)
+    compatibilityRef: EntityRef;
+    // (undocumented)
+    executionAllowedAssignmentCount: number;
+    gateRefs: EntityRef[];
+    // (undocumented)
+    installedCapabilityCount: number;
+    invalidGateRefs: EntityRef[];
+    // (undocumented)
+    pinSetCount: number;
+    purposeNames: RegisteredName[];
+    // (undocumented)
+    releaseRef: EntityRef;
+    rollbackCandidateRefs: EntityRef[];
+    // (undocumented)
+    status: "Draft" | "Ready" | "Retired" | "Revoked";
+    // (undocumented)
+    stopReasons: ("GATE_EVIDENCE_INVALID" | "COMPATIBILITY_INVALID" | "CAPABILITY_NOT_INSTALLED" | "ASSIGNMENT_MISSING" | "EXECUTION_NOT_ALLOWED" | "PIN_UNAVAILABLE" | "ROLLBACK_CANDIDATE_MISSING")[];
 }
 
 // @public (undocumented)
@@ -11611,6 +14587,46 @@ export interface RequestContextRef {
     type: "abh.request-context";
     // (undocumented)
     version: Version;
+}
+
+// @public (undocumented)
+export interface RequestEvaluationCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: RequestEvaluationPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.learning.request-evaluation";
+}
+
+// @public (undocumented)
+export interface RequestEvaluationHttpRequest {
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: RequestEvaluationPayload;
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface RequestEvaluationPayload {
+    // (undocumented)
+    baselineRef: EntityRef;
+    // (undocumented)
+    candidateRef: EntityRef;
 }
 
 // @public (undocumented)
@@ -11875,6 +14891,61 @@ export interface ResolvedDevelopmentConfig {
 }
 
 // @public (undocumented)
+export interface ResolveExceptionCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ResolveExceptionPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.exception";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.exceptions.resolve";
+}
+
+// @public (undocumented)
+export interface ResolveExceptionHttpRequest {
+    // (undocumented)
+    expectedVersion?: Version;
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: ResolveExceptionPayload;
+    // (undocumented)
+    target: {
+        type: "abh.exception";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface ResolveExceptionPayload {
+    // (undocumented)
+    decisionRef: {
+        type: "abh.decision";
+        id: UUID;
+        version: Version;
+    };
+    evidenceRefs: EntityRef[];
+    // (undocumented)
+    exceptionRef: {
+        type: "abh.exception";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    resolutionKind: "WaitForEvidence" | "RejectAndStop" | "ApplyCorrection" | "RequestCompensation" | "AuthorizedContinue";
+}
+
+// @public (undocumented)
 export interface ResolveStaticPinsCommand {
     // (undocumented)
     commandId: UUID;
@@ -11962,6 +15033,8 @@ export interface ResourceFenceRecord {
     // (undocumented)
     resourceOrganizationId: UUID;
     // (undocumented)
+    safetyStopOperationRef?: OperationRef;
+    // (undocumented)
     unresolvedOperationRef?: OperationRef;
 }
 
@@ -12029,6 +15102,26 @@ export interface ResponsibilityAssignmentRecord {
 }
 
 // @public (undocumented)
+export interface ResponsibilityDelegation {
+    // (undocumented)
+    responsibilityRef: EntityRef;
+    // (undocumented)
+    seatId: NodeKey;
+    // (undocumented)
+    slotId: NodeKey;
+}
+
+// @public (undocumented)
+export interface ResponsibilityEscalation {
+    // (undocumented)
+    responsibilityRef: EntityRef;
+    // (undocumented)
+    seatId: NodeKey;
+    // (undocumented)
+    slotId: NodeKey;
+}
+
+// @public (undocumented)
 export interface ResponsibilityInboxProjection {
     // (undocumented)
     assigneeRef: EntityRef;
@@ -12053,6 +15146,8 @@ export interface ResponsibilityInboxProjection {
 // @public (undocumented)
 export interface ResponsibilityRequestRecord {
     decisionRefs: DecisionRef[];
+    // (undocumented)
+    escalationDepth?: number;
     evidenceRefs: EntityRef[];
     // (undocumented)
     expiresAt: Time;
@@ -12200,6 +15295,44 @@ export interface RetirePackPayload {
 }
 
 // @public (undocumented)
+export interface RetryEvaluationCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: RetryEvaluationPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.learning.retry-evaluation";
+}
+
+// @public (undocumented)
+export interface RetryEvaluationHttpRequest {
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: RetryEvaluationPayload;
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface RetryEvaluationPayload {
+    // (undocumented)
+    runRef: EntityRef;
+}
+
+// @public (undocumented)
 export interface RetryResponsibilityRouteCommand {
     // (undocumented)
     commandId: UUID;
@@ -12304,7 +15437,11 @@ export interface ReviseResponsibilityRouteCommand {
 // @public (undocumented)
 export interface ReviseResponsibilityRoutePayload {
     // (undocumented)
+    delegation?: ResponsibilityDelegation;
+    // (undocumented)
     directoryRef: EntityRef;
+    // (undocumented)
+    escalation?: ResponsibilityEscalation;
     evidenceRefs: EntityRef[];
     // (undocumented)
     expectedRequestRef: RequestRef;
@@ -12461,6 +15598,53 @@ export interface RevokeResponsibilityPayload {
 }
 
 // @public (undocumented)
+export interface RollbackStaticAssignmentCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: RollbackStaticAssignmentPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.assignment";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.assignments.rollback";
+}
+
+// @public (undocumented)
+export interface RollbackStaticAssignmentHttpRequest {
+    // (undocumented)
+    expectedVersion?: Version;
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: RollbackStaticAssignmentPayload;
+    // (undocumented)
+    target: {
+        type: "abh.assignment";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface RollbackStaticAssignmentPayload {
+    // (undocumented)
+    compatibilityRef: EntityRef;
+    gateRefs: EntityRef[];
+    // (undocumented)
+    previousReleaseRef: EntityRef;
+    // (undocumented)
+    reason: Reason;
+}
+
+// @public (undocumented)
 export interface RunListResult {
     // (undocumented)
     asOf: Time;
@@ -12488,6 +15672,10 @@ export interface RunRecord {
         version: Version;
     };
     // (undocumented)
+    progressBudgetSeconds: number;
+    // (undocumented)
+    progressDeadline: Time;
+    // (undocumented)
     resourceOrganizationId: UUID;
     // (undocumented)
     runRef: {
@@ -12499,6 +15687,8 @@ export interface RunRecord {
     status: "Queued" | "Running" | "Waiting" | "Paused" | "Completed" | "Failed" | "Cancelled";
     // (undocumented)
     stopEpoch: number;
+    // (undocumented)
+    stopReason?: "NoProgress";
     // (undocumented)
     triggerKey: RegisteredName;
     // (undocumented)
@@ -12537,6 +15727,70 @@ export interface RunView {
     // (undocumented)
     run: RunRecord;
     tasks: TaskRecord[];
+}
+
+// @public (undocumented)
+export interface SafeRetryOperationCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: SafeRetryOperationPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.operation";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.operations.safe-retry";
+}
+
+// @public (undocumented)
+export interface SafeRetryOperationPayload {
+    // (undocumented)
+    expectedPermitRef: EntityRef;
+    // (undocumented)
+    operationRef: {
+        type: "abh.operation";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    permit: IssueDispatchPermitPayload;
+}
+
+// @public (undocumented)
+export interface SafetyStopCandidate {
+    // (undocumented)
+    accountRef: EntityRef;
+    // (undocumented)
+    blockedByReportRef?: EntityRef;
+    // (undocumented)
+    connectionRef: EntityRef;
+    // (undocumented)
+    fenceRef: EntityRef;
+    // (undocumented)
+    fencingToken: Version;
+    // (undocumented)
+    resourceKey: RegisteredName;
+    // (undocumented)
+    safetyStopOperationRef?: OperationRef;
+    // (undocumented)
+    unresolvedOperationRef: OperationRef;
+}
+
+// @public (undocumented)
+export interface SafetyStopListResult {
+    // (undocumented)
+    asOf: Time;
+    candidates: SafetyStopCandidate[];
+    // (undocumented)
+    complete: boolean;
 }
 
 // @public (undocumented)
@@ -12835,9 +16089,56 @@ export interface StartRunPayload {
         version: Version;
     };
     // (undocumented)
+    progressBudgetSeconds?: number;
+    // (undocumented)
     triggerKey: RegisteredName;
     // (undocumented)
     workflowRef: CapabilityRef;
+}
+
+// @public (undocumented)
+export interface StartSafetyStopCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: ProposeSafetyStopPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.actions.start-safety-stop";
+}
+
+// @public (undocumented)
+export interface StartSafetyStopHttpRequest {
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: ProposeSafetyStopPayload;
+    // (undocumented)
+    target: {
+        type: "abh.organization";
+        id: UUID;
+    };
+}
+
+// @public (undocumented)
+export interface StaticAssignmentListResult {
+    // (undocumented)
+    asOf: Time;
+    assignments: StaticAssignmentRecord[];
+    // (undocumented)
+    counts: {
+        [k: string]: number;
+    };
+    // (undocumented)
+    cursor?: string;
 }
 
 // @public (undocumented)
@@ -12859,6 +16160,10 @@ export interface StaticAssignmentRecord {
     };
     // (undocumented)
     resourceOrganizationId: UUID;
+    // (undocumented)
+    rollbackFromReleaseRef?: EntityRef;
+    // (undocumented)
+    rollbackOfAssignmentRef?: EntityRef;
     scopeRefs: EntityRef[];
     // (undocumented)
     scopeTier: "Object" | "Workspace" | "Organization" | "DomainDefault";
@@ -12866,6 +16171,10 @@ export interface StaticAssignmentRecord {
     selectable: boolean;
     // (undocumented)
     status: AssignmentState;
+    // (undocumented)
+    stopEvidenceRef?: EntityRef;
+    // (undocumented)
+    stopReason?: Reason;
 }
 
 // @public (undocumented)
@@ -12876,6 +16185,35 @@ export interface StatObjectRequest {
     context: PortCallContext;
     // (undocumented)
     objectRef: StoredObjectRef;
+}
+
+// @public (undocumented)
+export interface StopStalledRunCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: StopStalledRunPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.run";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.runs.stop-stalled";
+}
+
+// @public (undocumented)
+export interface StopStalledRunPayload {
+    // (undocumented)
+    causeRef: EntityRef;
+    // (undocumented)
+    runRef: EntityRef;
 }
 
 // @public (undocumented)
@@ -12897,6 +16235,21 @@ export interface StopStaticAssignmentCommand {
     };
     // (undocumented)
     type: "abh.assignments.pause";
+}
+
+// @public (undocumented)
+export interface StopStaticAssignmentHttpRequest {
+    // (undocumented)
+    expectedVersion?: Version;
+    // (undocumented)
+    idempotencyKey?: IdempotencyKey;
+    // (undocumented)
+    payload: StopStaticAssignmentPayload;
+    // (undocumented)
+    target: {
+        type: "abh.assignment";
+        id: UUID;
+    };
 }
 
 // @public (undocumented)
@@ -13044,6 +16397,49 @@ export type SubmitDecisionPayload = {
         version: Version;
     };
 };
+
+// @public (undocumented)
+export interface SubmitEvaluationResultCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: SubmitEvaluationResultPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.evaluation-run";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.learning.submit-evaluation-result";
+}
+
+// @public (undocumented)
+export interface SubmitEvaluationResultPayload {
+    artifactRefs: EntityRef[];
+    // (undocumented)
+    baselineCompletedSamples?: number;
+    // (undocumented)
+    baselineFailedSamples?: number;
+    baselineMetricValues?: EvaluationMetricValue[];
+    // (undocumented)
+    completedSamples: number;
+    // (undocumented)
+    dataDigest: Digest;
+    // (undocumented)
+    evaluatorPrincipal: EntityRef;
+    executionRefs: EntityRef[];
+    // (undocumented)
+    failedSamples: number;
+    metricValues: EvaluationMetricValue[];
+    // (undocumented)
+    runRef: EntityRef;
+}
 
 // @public (undocumented)
 export interface SubmitTriggerCommand {
@@ -13227,6 +16623,23 @@ export interface TaskRecord {
     };
     // (undocumented)
     updatedAt: Time;
+}
+
+// @public (undocumented)
+export interface TaskSpec {
+    // (undocumented)
+    acceptanceRef?: EntityRef;
+    // (undocumented)
+    deadlineSeconds?: number;
+    // (undocumented)
+    goal?: string;
+    inputRefs?: EntityRef[];
+    // (undocumented)
+    outputSchemaRef?: EntityRef;
+    // (undocumented)
+    resourceLimits?: {
+        [k: string]: string;
+    };
 }
 
 // @public (undocumented)
@@ -13487,6 +16900,8 @@ export interface ValidateActionPayload {
 
 // @public (undocumented)
 export interface VerificationReport {
+    // (undocumented)
+    digest: Digest;
     evidenceRefs?: EntityRef[];
     // (undocumented)
     invocationRef: {
@@ -13636,6 +17051,41 @@ export interface WaitRef {
     type: "abh.durable-wait";
     // (undocumented)
     version: Version;
+}
+
+// @public (undocumented)
+export interface WakeRunCommand {
+    // (undocumented)
+    commandId: UUID;
+    // (undocumented)
+    expectedVersion: Version;
+    // (undocumented)
+    idempotencyKey: IdempotencyKey;
+    // (undocumented)
+    payload: WakeRunPayload;
+    // (undocumented)
+    schemaVersion: "0.1.0";
+    // (undocumented)
+    target: {
+        type: "abh.run";
+        id: UUID;
+    };
+    // (undocumented)
+    type: "abh.runs.wake";
+}
+
+// @public (undocumented)
+export interface WakeRunPayload {
+    // (undocumented)
+    causeRef: EntityRef;
+    // (undocumented)
+    runRef: {
+        type: "abh.run";
+        id: UUID;
+        version: Version;
+    };
+    // (undocumented)
+    waitRef: EntityRef;
 }
 
 // @public (undocumented)

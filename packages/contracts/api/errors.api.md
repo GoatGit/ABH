@@ -54,6 +54,13 @@ export const errorRegistry: {
         readonly retryable: false;
         readonly toolCategory: "Conflict";
     };
+    readonly TASK_COMMIT_INCOMPLETE: {
+        readonly code: "TASK_COMMIT_INCOMPLETE";
+        readonly category: "Precondition";
+        readonly httpStatus: 409;
+        readonly retryable: false;
+        readonly toolCategory: "Precondition";
+    };
     readonly BLOCKER_EVIDENCE_INVALID: {
         readonly code: "BLOCKER_EVIDENCE_INVALID";
         readonly category: "Validation";
@@ -313,6 +320,13 @@ export const errorRegistry: {
         readonly retryable: false;
         readonly toolCategory: "Conflict";
     };
+    readonly DELEGATION_EXCEEDS_AUTHORITY: {
+        readonly code: "DELEGATION_EXCEEDS_AUTHORITY";
+        readonly category: "Authorization";
+        readonly httpStatus: 403;
+        readonly retryable: false;
+        readonly toolCategory: "Authorization";
+    };
     readonly DECIDER_NOT_ELIGIBLE: {
         readonly code: "DECIDER_NOT_ELIGIBLE";
         readonly category: "Authorization";
@@ -320,8 +334,22 @@ export const errorRegistry: {
         readonly retryable: false;
         readonly toolCategory: "Authorization";
     };
+    readonly ROUTE_DEPTH_EXCEEDED: {
+        readonly code: "ROUTE_DEPTH_EXCEEDED";
+        readonly category: "Precondition";
+        readonly httpStatus: 409;
+        readonly retryable: false;
+        readonly toolCategory: "Precondition";
+    };
     readonly OPERATION_FACT_CONFLICT: {
         readonly code: "OPERATION_FACT_CONFLICT";
+        readonly category: "Conflict";
+        readonly httpStatus: 409;
+        readonly retryable: false;
+        readonly toolCategory: "Conflict";
+    };
+    readonly CORRECTION_STALE: {
+        readonly code: "CORRECTION_STALE";
         readonly category: "Conflict";
         readonly httpStatus: 409;
         readonly retryable: false;
@@ -343,6 +371,55 @@ export const errorRegistry: {
     };
     readonly LEARNING_PURPOSE_DENIED: {
         readonly code: "LEARNING_PURPOSE_DENIED";
+        readonly category: "Authorization";
+        readonly httpStatus: 403;
+        readonly retryable: false;
+        readonly toolCategory: "Authorization";
+    };
+    readonly CASE_EVIDENCE_INCOMPLETE: {
+        readonly code: "CASE_EVIDENCE_INCOMPLETE";
+        readonly category: "Precondition";
+        readonly httpStatus: 409;
+        readonly retryable: false;
+        readonly toolCategory: "Precondition";
+    };
+    readonly CANDIDATE_SCOPE_EXCEEDED: {
+        readonly code: "CANDIDATE_SCOPE_EXCEEDED";
+        readonly category: "Authorization";
+        readonly httpStatus: 403;
+        readonly retryable: false;
+        readonly toolCategory: "Authorization";
+    };
+    readonly EVALUATION_PROFILE_UNAVAILABLE: {
+        readonly code: "EVALUATION_PROFILE_UNAVAILABLE";
+        readonly category: "Precondition";
+        readonly httpStatus: 409;
+        readonly retryable: false;
+        readonly toolCategory: "Precondition";
+    };
+    readonly EVALUATION_PROFILE_AMBIGUOUS: {
+        readonly code: "EVALUATION_PROFILE_AMBIGUOUS";
+        readonly category: "Conflict";
+        readonly httpStatus: 409;
+        readonly retryable: false;
+        readonly toolCategory: "Conflict";
+    };
+    readonly GATE_EVIDENCE_INVALID: {
+        readonly code: "GATE_EVIDENCE_INVALID";
+        readonly category: "Precondition";
+        readonly httpStatus: 409;
+        readonly retryable: false;
+        readonly toolCategory: "Precondition";
+    };
+    readonly GATE_POLICY_INCOMPLETE: {
+        readonly code: "GATE_POLICY_INCOMPLETE";
+        readonly category: "Precondition";
+        readonly httpStatus: 409;
+        readonly retryable: false;
+        readonly toolCategory: "Precondition";
+    };
+    readonly EVALUATOR_IDENTITY_INVALID: {
+        readonly code: "EVALUATOR_IDENTITY_INVALID";
         readonly category: "Authorization";
         readonly httpStatus: 403;
         readonly retryable: false;

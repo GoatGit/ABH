@@ -19,7 +19,7 @@ export async function submitVerification(database:Database,context:VerifiedConte
   if(locked.some(value=>value.stopFlag))throw new CoreError('EPOCH_REVOKED');
   await assertCurrentGrants(tx,{objectRef:scope,scopeRefs:[{type:'abh.organization',id:c.resourceOrganizationId,version:1}],action:'abh.verification.submit'},refs);
   const result=await executeCommand(tx,command,async()=>{},async()=>{
-   const report=await owner.submit(tx,input.payload);
+   const report=await owner.submit(tx,command,input.payload);
    return report.reportRef;
   });
   return {reportRef:result.receipt.resultRef,commandId:result.receipt.commandRef.id,replayed:result.replayed};

@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-12",
+  "subject": "Evaluation evidence queries and learning purpose withdrawal propagation",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate --check",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/learning-build-case.test.ts",
+    "corepack pnpm --filter @abh/contracts api:update && corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm check",
+    "git diff --check"
+  ],
+  "results": {
+    "completionEstimate": "99.6%",
+    "contractsArtifacts": 51,
+    "contractOpenApiPaths": 46,
+    "publicApiEntryPoints": 13,
+    "evaluationRunCurrentVersionQueryVerified": true,
+    "evaluationResultQueryVerified": true,
+    "learningGateQueryVerified": true,
+    "captureWithdrawalBlocksCaseRead": true,
+    "evaluateWithdrawalBlocksRunAndResultReads": true,
+    "gateWithdrawalBlocksGateRead": true,
+    "immutableFactsPreserved": true,
+    "fullWorkspaceCheckPassed": true
+  },
+  "evidence": [
+    "Real PostgreSQL queries returned the completed Evaluation Run at version 2, immutable Results and the independent Gate artifact",
+    "The Result query was readable under both evaluate and gate purposes before withdrawal and failed closed after the applicable purpose revocation",
+    "PurposeOwner committed capture, evaluate and gate withdrawals atomically; subsequent Signal-to-Case, Run/Result and Gate access paths were denied",
+    "Withdrawal used a tenant-scoped tombstone rather than rewriting immutable learning facts",
+    "Contracts generated 51 artifacts with 46 OpenAPI paths; contracts API reported 9 entry points and core API reported 4 entry points",
+    "Full pnpm check completed with contracts 312 tests, core 561 tests including 6 environment skips, workbench 23 tests and CLI 4 tests; no test failures"
+  ],
+  "limits": [
+    "External evaluation execution, deadlines, retry budget, late evidence and recovery orchestration remain open",
+    "Baseline regression comparison, multiple-comparison controls, confidence intervals and stopping rules remain open",
+    "Release Controller consumption, Workbench/CLI operator surfaces, production hosting, real external systems and independent security review remain open"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-12",
+  "subject": "Bounded Learning Signal, Case and Candidate list queries",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate --check",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/learning-build-case.test.ts",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm check",
+    "git diff --check"
+  ],
+  "results": {
+    "completionEstimate": "99.7%",
+    "contractsArtifacts": 51,
+    "contractOpenApiPaths": 49,
+    "contractsTests": "312 passed, 0 failed",
+    "learningListRegression": "1 passed, 0 failed",
+    "signalFilters": ["signalType", "scopeId"],
+    "caseFilters": ["rootCauseCode", "scopeId"],
+    "candidateFilters": ["candidateStatus", "assetKind", "scopeId"],
+    "aggregateCountsIndependentOfPagination": true,
+    "keysetCursorPageConvergenceVerified": true,
+    "cursorFilterDriftRejected": true,
+    "readAuthorityRequired": true,
+    "purposeWithdrawalBlocksLists": true
+  },
+  "evidence": [
+    "Real PostgreSQL fixture verified Signal, Case and Candidate pages with stable created_at/id ordering and full-eligible-set aggregate counts",
+    "Page-two cursors converged without duplicates or skips, and a cursor reused with a different filter failed closed",
+    "Candidate lists were readable under capture, evaluate and gate purposes when the relevant purposes were available",
+    "Revoking capture, evaluate or gate propagated immutable withdrawal evidence and blocked the governed Learning list reads"
+  ],
+  "limits": [
+    "Continuous projections, operator dashboards and CLI diagnostics for these lists remain outside this batch",
+    "Real evaluation hosts, statistical uncertainty handling and Release Controller consumption remain open",
+    "Production hosting, real governance systems, independent security review and domain acceptance remain outside local engineering completion"
+  ]
+}

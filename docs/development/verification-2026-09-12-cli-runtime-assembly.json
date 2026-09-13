@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-12",
+  "scope": "Explicit CLI runtime service assembly",
+  "summary": "Replaced the abh run composition stub with an explicit business-owned installer that connects assembled HTTP ingress and the owned runtime host.",
+  "commands": [
+    "corepack pnpm --filter @abh/cli build",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "cliBuildPassed": true,
+    "cliTestsPassed": 20,
+    "cliTestsFailed": 0,
+    "runStubRemoved": true,
+    "strictConfigValidationVerified": true,
+    "environmentReferenceOnlyVerified": true,
+    "identityProviderRequired": true,
+    "missionGovernanceRequired": true,
+    "durableDrainPortRequired": true,
+    "runtimeHostInvoked": true,
+    "databaseClosedByRuntimeHost": true,
+    "noDefaultGrantsOrIdentity": true,
+    "docsLinksChecked": 786,
+    "contractArtifactsMatch": 51,
+    "contractsTestsPassed": 313,
+    "coreTestsPassed": 602,
+    "coreTestsSkipped": 7,
+    "coreTestsFailed": 0,
+    "workspaceTestsPassed": 989,
+    "workspaceTestsSkipped": 7,
+    "workspaceTestsFailed": 0,
+    "apiReportsMatch": true,
+    "fullCheckPassed": true
+  },
+  "remainingGaps": [
+    "Real production identity and governance installation",
+    "defineBusiness author surface and runnable hello-business distribution template",
+    "Production hosting, restricted global scan and independent security/performance acceptance"
+  ]
+}

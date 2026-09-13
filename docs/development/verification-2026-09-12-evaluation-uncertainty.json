@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-12",
+  "scope": "evaluation-baseline-comparison-and-uncertainty",
+  "profilePolicy": {
+    "confidenceLevels": [0.8, 0.9, 0.95, 0.99],
+    "interval": "WilsonScore",
+    "minimumRelativeLift": "profile-frozen"
+  },
+  "checks": [
+    "contracts generate",
+    "contracts build",
+    "core build",
+    "core typecheck",
+    "contracts test",
+    "learning doctor real-postgresql regression",
+    "contracts and core api:update",
+    "workspace api:check",
+    "git diff --check",
+    "learning-build-case real-postgresql regression"
+  ],
+  "covered": [
+    "frozen confidence level and minimum relative lift",
+    "baseline metric and sample binding",
+    "weighted multi-run aggregation",
+    "wilson lower-bound absolute threshold",
+    "point and lower-bound relative lift",
+    "gate uncertainty and limitations",
+    "missing baseline fails closed",
+    "idempotent immutable gate replay"
+  ],
+  "status": "passed"
+}

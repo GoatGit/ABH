@@ -37,7 +37,8 @@ test('Run recovery cancels orphan tasks, clears stale mission state, and fences 
   ...(activeRun?{activeRunRef:activeRun}:{})});
  const run=(id:string,status:RunRecord['status'],missionId:string)=>contract('RunRecord',{runRef:{type:'abh.run' as const,id,version:1},
   resourceOrganizationId:org,missionRef:{type:'abh.mission' as const,id:missionId,version:1},triggerKey:'recovery.trigger',
-  goalRevision:1,stopEpoch:0,workflowRef:workflow,assignmentSnapshotRef:ref('abh.artifact'),executionMode:'Production' as const,
+  goalRevision:1,stopEpoch:0,progressBudgetSeconds:3600,progressDeadline:new Date(Date.now()+600_000).toISOString(),
+  workflowRef:workflow,assignmentSnapshotRef:ref('abh.artifact'),executionMode:'Production' as const,
   status,createdBy:c.tenant.actor,createdAt:now,updatedAt:now});
  const taskId=randomUUID(),succeededTaskId=randomUUID(),runId=randomUUID(),missionId=randomUUID();
  const recoveredRun=run(runId,'Completed',missionId),activeRun=run(randomUUID(),'Running',randomUUID());

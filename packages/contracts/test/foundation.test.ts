@@ -165,7 +165,7 @@ test('state documentation mapping detects missing machines, wrong sections and i
   assert.throws(() => buildStateDocumentation(wrong, source.states, source.stateDoc), /Missing normative/);
 });
 
-test('internal evidence permission is registered explicitly without exposing an HTTP command',()=>{
+test('evidence permissions are registered explicitly against exact command contracts',()=>{
   const catalog=createContractCatalog();assert.ok(catalog.success);
   const ref={type:'abh.operation',id:'00000000-0000-4000-8000-000000000001',version:1};
   const target={objectRef:ref,scopeRefs:[{...ref,type:'abh.organization'}],action:'abh.operations.record-receipt'};
@@ -173,6 +173,6 @@ test('internal evidence permission is registered explicitly without exposing an 
   assert.equal(validateRegisteredTarget(catalog.data,target,'abh.action.execute').success,false);
   for(const patch of [{name:'abh.actions.propose'},{targetTypes:['abh.organization']},{purposeNames:['unknown.purpose']},{purposeNames:[]}]){
     const invalid=structuredClone(source.catalog);invalid.actions=[{...invalid.actions[0],...patch}];
-    assert.throws(()=>lintCatalog(invalid,{},source.states,source.protocol,source.manifest.version),/internal action registration/);
+    assert.throws(()=>lintCatalog(invalid,{},source.states,source.protocol,source.manifest.version),/catalog action registration/);
   }
 });

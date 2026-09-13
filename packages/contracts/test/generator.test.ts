@@ -33,7 +33,9 @@ test('two complete generations produce byte-identical artifacts', async () => {
   const openapi = JSON.parse(first['openapi.json']);
   assert.equal(openapi.openapi, '3.1.0');
   assert.equal(openapi['x-abh-runtime-available'], false);
-  assert.equal(Object.keys(openapi.paths).length, 36);
+  assert.equal(Object.keys(openapi.paths).length, 61);
+  assert.equal(openapi.paths['/v1/commands/abh.actions.start-safety-stop'].post['x-abh-permission'], 'abh.action.safety-stop');
+  assert.equal(openapi.paths['/v1/safety-stops'].get['x-abh-permission'], 'abh.actions.read');
   assert.equal(openapi.paths['/v1/queries/abh.capabilities.query'].get['x-abh-permission'], 'abh.capabilities.read');
   assert.equal(openapi.paths['/v1/queries/abh.pack-inspection-jobs.inspect'].get['x-abh-permission'], 'abh.packs.record-data-impact');
   assert.ok(openapi.paths['/v1/commands/abh.artifacts.store-inline'].post.responses['201']);

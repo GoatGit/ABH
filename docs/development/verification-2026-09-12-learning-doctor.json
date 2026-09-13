@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-12",
+  "subject": "Learning candidate readiness doctor",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate --check",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/learning-doctor.test.ts",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm check",
+    "git diff --check"
+  ],
+  "results": {
+    "contractsArtifacts": 51,
+    "learningDoctorRegression": "1 passed, 0 failed",
+    "cliDoctorRegressions": "5 passed, 0 failed",
+    "organizationScopedReadOnlyConnection": true,
+    "rowLimit": 100,
+    "truncationDetection": true,
+    "profileSourceAndAmbiguityReported": true,
+    "evaluationRunAndSettlementCountsReported": true,
+    "gateAndReleaseAssociationReported": true,
+    "withdrawnPurposesReported": true,
+    "closedStopReasons": [
+      "PURPOSE_WITHDRAWN",
+      "PROFILE_MISSING",
+      "PROFILE_AMBIGUOUS",
+      "EVALUATION_MISSING",
+      "EVALUATION_UNSETTLED",
+      "GATE_MISSING",
+      "RELEASE_NOT_LINKED"
+    ],
+    "noDiagnosticMutationOrReleaseCreation": true,
+    "rawDatabaseErrorsAndConnectionStringsSuppressed": true
+  },
+  "evidence": [
+    "The real PostgreSQL doctor fixture advanced one candidate from missing profile, evaluation and gate through queued evaluation, completed run, Pass gate and linked Release to Passed",
+    "A gate-purpose withdrawal changed the required purpose set to withdrawn and the sole stop reason to PURPOSE_WITHDRAWN",
+    "The CLI rejected unknown, duplicate and malformed flags without echoing secrets, and an unavailable database produced a contract-valid bounded diagnostic",
+    "The Core result passed CliDoctorLearningResult validation with commandRef null and no invented evidence refs"
+  ],
+  "limits": [
+    "The doctor observes readiness; it does not build Gate, create Release, assign scope or promote candidates",
+    "External evaluation execution, statistical uncertainty and Release Controller orchestration remain open",
+    "Production hosting, real governance systems, independent security review and domain acceptance remain outside local engineering completion"
+  ]
+}

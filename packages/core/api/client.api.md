@@ -8,25 +8,57 @@ import type { ActionAcceptedResponse } from '@abh/contracts';
 import type { ActionListResponse } from '@abh/contracts';
 import type { ActionQueryResponse } from '@abh/contracts';
 import type { ActivateMissionPayload } from '@abh/contracts';
+import { ApplyCorrectionPayload } from '@abh/contracts';
+import { ApplyExceptionResolutionEffectPayload } from '@abh/contracts';
+import type { ArtifactRecord } from '@abh/contracts';
+import { BuildCasePayload } from '@abh/contracts';
 import type { CancelActionPayload } from '@abh/contracts';
 import type { CancelMissionPayload } from '@abh/contracts';
+import type { CancelRunPayload } from '@abh/contracts';
 import type { CompleteRunPayload } from '@abh/contracts';
+import { ConfigureLearningReleasePayload } from '@abh/contracts';
+import { CorrectionAppliedResponse } from '@abh/contracts';
+import { CorrectionProposedResponse } from '@abh/contracts';
+import { CorrectionRecord } from '@abh/contracts';
+import { CreateCandidatePayload } from '@abh/contracts';
 import { CreateMissionPayload } from '@abh/contracts';
 import type { DecisionInboxResponse } from '@abh/contracts';
 import type { DecisionQueryResponse } from '@abh/contracts';
 import type { DecisionSubmittedResponse } from '@abh/contracts';
 import type { DecisionWithdrawnResponse } from '@abh/contracts';
+import { EntityRef } from '@abh/contracts';
 import type { ErrorResponse } from '@abh/contracts';
+import { EvaluationGateArtifactRecord } from '@abh/contracts';
+import { EvaluationResultRecord } from '@abh/contracts';
+import { EvaluationRunCreatedResponse } from '@abh/contracts';
+import { EvaluationRunListResult } from '@abh/contracts';
+import { EvaluationRunRecord } from '@abh/contracts';
+import { ExceptionResolutionEffectResponse } from '@abh/contracts';
+import { ExceptionResolvedResponse } from '@abh/contracts';
 import type { GetActionQuery } from '@abh/contracts';
+import { GetCorrectionQuery } from '@abh/contracts';
 import type { GetDecisionQuery } from '@abh/contracts';
 import type { GetProjectionQuery } from '@abh/contracts';
 import type { InlineArtifactStoredResponse } from '@abh/contracts';
 import type { InspectPackInspectionJobQuery } from '@abh/contracts';
 import { InvokeToolPayload } from '@abh/contracts';
+import { LearningCandidateCreatedResponse } from '@abh/contracts';
+import { LearningCandidateListResult } from '@abh/contracts';
+import { LearningCaseCreatedResponse } from '@abh/contracts';
+import { LearningCaseListResult } from '@abh/contracts';
+import { LearningGateListResult } from '@abh/contracts';
+import { LearningSignalListResult } from '@abh/contracts';
 import type { ListActionsQuery } from '@abh/contracts';
+import { ListAssignmentsQuery } from '@abh/contracts';
+import type { ListEvaluationRunsQuery } from '@abh/contracts';
 import type { ListInboxQuery } from '@abh/contracts';
+import type { ListLearningCandidatesQuery } from '@abh/contracts';
+import type { ListLearningCasesQuery } from '@abh/contracts';
+import type { ListLearningGatesQuery } from '@abh/contracts';
+import type { ListLearningSignalsQuery } from '@abh/contracts';
 import type { ListMissionsQuery } from '@abh/contracts';
 import type { ListRunsQuery } from '@abh/contracts';
+import { ListSafetyStopsQuery } from '@abh/contracts';
 import type { MissionListResult } from '@abh/contracts';
 import type { MissionRecord } from '@abh/contracts';
 import { MissionTriggerRecord } from '@abh/contracts';
@@ -36,13 +68,23 @@ import type { PackInspectionDiagnosticResponse } from '@abh/contracts';
 import type { PauseMissionPayload } from '@abh/contracts';
 import type { ProjectionQueryResult } from '@abh/contracts';
 import type { ProposeActionPayload } from '@abh/contracts';
+import { ProposeCorrectionPayload } from '@abh/contracts';
+import type { ProposeSafetyStopPayload } from '@abh/contracts';
 import type { QueryPackCapabilitiesQuery } from '@abh/contracts';
 import type { RequestAuthorizationPayload } from '@abh/contracts';
+import { RequestEvaluationPayload } from '@abh/contracts';
+import { ResolveExceptionPayload } from '@abh/contracts';
 import type { ResumeMissionPayload } from '@abh/contracts';
+import { RetryEvaluationPayload } from '@abh/contracts';
+import { RollbackStaticAssignmentPayload } from '@abh/contracts';
 import type { RunListResult } from '@abh/contracts';
 import type { RunRecord } from '@abh/contracts';
 import type { RunView } from '@abh/contracts';
+import { SafetyStopListResult } from '@abh/contracts';
 import type { StartRunPayload } from '@abh/contracts';
+import { StaticAssignmentListResult } from '@abh/contracts';
+import { StaticAssignmentRecord } from '@abh/contracts';
+import { StopStaticAssignmentPayload } from '@abh/contracts';
 import type { StoreInlineArtifactPayload } from '@abh/contracts';
 import type { SubmitDecisionPayload } from '@abh/contracts';
 import type { SubmitTriggerPayload } from '@abh/contracts';
@@ -86,10 +128,21 @@ export interface ClientRequestOptions {
     timeoutMs?: number;
 }
 
+// @public (undocumented)
+export interface CorrectionCommandInput<T> {
+    // (undocumented)
+    idempotencyKey: string;
+    // (undocumented)
+    payload: T;
+    // (undocumented)
+    targetId: string;
+}
+
 // @public
 export function createAbhClient(options: AbhClientOptions): {
     artifacts: {
         storeInline: (input: StoreInlineArtifactInput, opts?: ClientRequestOptions) => Promise<InlineArtifactStoredResponse>;
+        storeObject: (input: StoreObjectArtifactInput, opts?: ClientRequestOptions) => Promise<ObjectArtifactStoredResponse>;
     };
     capabilities: {
         query: (input: QueryPackCapabilitiesQuery, opts?: ClientRequestOptions) => Promise<PackCapabilityQueryResult>;
@@ -102,6 +155,7 @@ export function createAbhClient(options: AbhClientOptions): {
         get: (id: string, input?: GetActionQuery, opts?: ClientRequestOptions) => Promise<ActionQueryResponse>;
         list: (input?: ListActionsQuery, opts?: ClientRequestOptions) => Promise<ActionListResponse>;
         proposeFromArtifact: (input: ProposeStoredActionInput, opts?: ClientRequestOptions) => Promise<ActionAcceptedResponse>;
+        startSafetyStopFromArtifact: (input: StartSafetyStopInput, opts?: ClientRequestOptions) => Promise<ActionAcceptedResponse>;
         cancel: (input: UpdateCommandInput<CancelActionPayload>, opts?: ClientRequestOptions) => Promise<ActionAcceptedResponse>;
         requestAuthorization: (input: UpdateCommandInput<RequestAuthorizationPayload>, opts?: ClientRequestOptions) => Promise<ActionAcceptedResponse>;
     };
@@ -110,6 +164,11 @@ export function createAbhClient(options: AbhClientOptions): {
         listInbox: (input?: ListInboxQuery, opts?: ClientRequestOptions) => Promise<DecisionInboxResponse>;
         submit: (input: DecisionCommandInput<SubmitDecisionPayload>, opts?: ClientRequestOptions) => Promise<DecisionSubmittedResponse>;
         withdraw: (input: DecisionCommandInput<WithdrawDecisionPayload>, opts?: ClientRequestOptions) => Promise<DecisionWithdrawnResponse>;
+    };
+    corrections: {
+        get: (input: GetCorrectionQuery, opts?: ClientRequestOptions) => Promise<CorrectionRecord>;
+        apply: (input: UpdateCommandInput<ApplyCorrectionPayload>, opts?: ClientRequestOptions) => Promise<CorrectionAppliedResponse>;
+        propose: (input: CorrectionCommandInput<ProposeCorrectionPayload>, opts?: ClientRequestOptions) => Promise<CorrectionProposedResponse>;
     };
     missions: {
         get: (id: string, opts?: ClientRequestOptions) => Promise<MissionView>;
@@ -132,9 +191,24 @@ export function createAbhClient(options: AbhClientOptions): {
             };
         }>;
         complete: (input: MissionCommandInput<CompleteRunPayload>, opts?: ClientRequestOptions) => Promise<RunRecord>;
+        cancel: (input: UpdateCommandInput<CancelRunPayload>, opts?: ClientRequestOptions) => Promise<RunRecord>;
     };
     verification: {
         submit: (input: MissionCommandInput<SubmitVerificationPayload>, opts?: ClientRequestOptions) => Promise<VerificationReport>;
+    };
+    learning: {
+        buildCase: (input: LearningCaseInput, opts?: ClientRequestOptions) => Promise<LearningCaseCreatedResponse>;
+        createCandidate: (input: LearningCandidateInput, opts?: ClientRequestOptions) => Promise<LearningCandidateCreatedResponse>;
+        requestEvaluation: (input: EvaluationRequestInput, opts?: ClientRequestOptions) => Promise<EvaluationRunCreatedResponse>;
+        retryEvaluation: (input: EvaluationRetryInput, opts?: ClientRequestOptions) => Promise<EvaluationRunCreatedResponse>;
+        getEvaluationRun: (id: string, opts?: ClientRequestOptions) => Promise<EvaluationRunRecord>;
+        getEvaluationResult: (id: string, opts?: ClientRequestOptions) => Promise<EvaluationResultRecord>;
+        getLearningGate: (id: string, opts?: ClientRequestOptions) => Promise<EvaluationGateArtifactRecord>;
+        listSignals: (input?: ListLearningSignalsQuery, opts?: ClientRequestOptions) => Promise<LearningSignalListResult>;
+        listCases: (input?: ListLearningCasesQuery, opts?: ClientRequestOptions) => Promise<LearningCaseListResult>;
+        listCandidates: (input?: ListLearningCandidatesQuery, opts?: ClientRequestOptions) => Promise<LearningCandidateListResult>;
+        listEvaluationRuns: (input?: ListEvaluationRunsQuery, opts?: ClientRequestOptions) => Promise<EvaluationRunListResult>;
+        listGates: (input?: ListLearningGatesQuery, opts?: ClientRequestOptions) => Promise<LearningGateListResult>;
     };
     projections: {
         get: (id: string, input: GetProjectionQuery, opts?: ClientRequestOptions) => Promise<ProjectionQueryResult>;
@@ -143,10 +217,87 @@ export function createAbhClient(options: AbhClientOptions): {
         get: (id: string, opts?: ClientRequestOptions) => Promise<ToolCallInspection>;
         invoke: (input: MissionCommandInput<InvokeToolPayload>, opts?: ClientRequestOptions) => Promise<ToolCallResponse>;
     };
+    releases: {
+        configureLearningCandidate: (input: LearningReleaseInput, opts?: ClientRequestOptions) => Promise<StaticAssignmentRecord>;
+    };
+    assignments: {
+        get: (id: string, opts?: ClientRequestOptions) => Promise<StaticAssignmentRecord>;
+        list: (input?: ListAssignmentsQuery, opts?: ClientRequestOptions) => Promise<StaticAssignmentListResult>;
+        pause: (input: UpdateCommandInput<StopStaticAssignmentPayload>, opts?: ClientRequestOptions) => Promise<StaticAssignmentRecord>;
+        rollback: (input: UpdateCommandInput<RollbackStaticAssignmentPayload>, opts?: ClientRequestOptions) => Promise<StaticAssignmentRecord>;
+    };
+    safetyStops: {
+        list: (input: ListSafetyStopsQuery, opts?: ClientRequestOptions) => Promise<SafetyStopListResult>;
+        start: (input: StartSafetyStopInput, opts?: ClientRequestOptions) => Promise<ActionAcceptedResponse>;
+    };
+    exceptions: {
+        resolve: (input: UpdateCommandInput<ResolveExceptionPayload>, opts?: ClientRequestOptions) => Promise<ExceptionResolvedResponse>;
+        applyResolutionEffect: (input: CreateTargetCommandInput<ApplyExceptionResolutionEffectPayload>, opts?: ClientRequestOptions) => Promise<ExceptionResolutionEffectResponse>;
+    };
 };
 
 // @public (undocumented)
+export interface CreateTargetCommandInput<T> {
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    idempotencyKey: string;
+    // (undocumented)
+    payload: T;
+}
+
+// @public (undocumented)
 export type DecisionCommandInput<T> = UpdateCommandInput<T>;
+
+// @public (undocumented)
+export interface EvaluationRequestInput {
+    // (undocumented)
+    idempotencyKey: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    payload: RequestEvaluationPayload;
+}
+
+// @public (undocumented)
+export interface EvaluationRetryInput {
+    // (undocumented)
+    idempotencyKey: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    payload: RetryEvaluationPayload;
+}
+
+// @public (undocumented)
+export interface LearningCandidateInput {
+    // (undocumented)
+    idempotencyKey: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    payload: CreateCandidatePayload;
+}
+
+// @public (undocumented)
+export interface LearningCaseInput {
+    // (undocumented)
+    idempotencyKey: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    payload: BuildCasePayload;
+}
+
+// @public (undocumented)
+export interface LearningReleaseInput {
+    // (undocumented)
+    idempotencyKey: string;
+    // (undocumented)
+    payload: ConfigureLearningReleasePayload;
+    // (undocumented)
+    releaseId: string;
+}
 
 // @public (undocumented)
 export interface MissionCommandInput<T> {
@@ -164,6 +315,16 @@ export interface MissionCreateInput {
     organizationId: string;
     // (undocumented)
     payload: CreateMissionPayload;
+}
+
+// @public (undocumented)
+export interface ObjectArtifactStoredResponse {
+    // (undocumented)
+    readonly data: {
+        readonly record: ArtifactRecord;
+    };
+    // (undocumented)
+    readonly success: true;
 }
 
 // @public
@@ -191,6 +352,16 @@ export interface ProposeStoredActionInput {
 }
 
 // @public (undocumented)
+export interface StartSafetyStopInput {
+    // (undocumented)
+    idempotencyKey: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    payload: ProposeSafetyStopPayload;
+}
+
+// @public (undocumented)
 export interface StoreInlineArtifactInput {
     // (undocumented)
     idempotencyKey: string;
@@ -198,6 +369,24 @@ export interface StoreInlineArtifactInput {
     organizationId: string;
     // (undocumented)
     payload: StoreInlineArtifactPayload;
+}
+
+// @public (undocumented)
+export interface StoreObjectArtifactInput {
+    // (undocumented)
+    authorizedContextRef: EntityRef;
+    // (undocumented)
+    content: ReadableStream<Uint8Array> | AsyncIterable<Uint8Array>;
+    // (undocumented)
+    declaredSizeBytes: number;
+    // (undocumented)
+    digest: string;
+    // (undocumented)
+    idempotencyKey: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    payload: Omit<StoreInlineArtifactPayload, 'content'>;
 }
 
 // @public (undocumented)

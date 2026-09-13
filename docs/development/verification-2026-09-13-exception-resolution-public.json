@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-13",
+  "scope": "Public Exception resolution ingress",
+  "summary": "Promoted abh.exceptions.resolve to a public command and wired real PostgreSQL, HTTP and typed-client replay evidence without expanding the internal Exception view.",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm contracts:check",
+    "corepack pnpm api:update",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm --filter @abh/core typecheck",
+    "node --test --test-concurrency=1 packages/contracts/test/generator.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/actions.test.ts",
+    "node --test --test-concurrency=1 packages/core/test/client.test.ts packages/core/test/capability-query.test.ts packages/core/test/resource-fences.test.ts packages/core/test/pack-capabilities.test.ts"
+  ],
+  "results": {
+    "contractArtifacts": 51,
+    "openapiPaths": 59,
+    "generatorTestsPassed": 23,
+    "clientCapabilityFencePackTestsPassed": 30,
+    "coreTypecheckPassed": true,
+    "contractsCheckPassed": true,
+    "apiCheckPassed": true,
+    "docsLinksChecked": 786,
+    "realPostgresVerified": true,
+    "httpSuccessVerified": true,
+    "httpIdempotentReplayVerified": true,
+    "typedClientEquivalenceVerified": true,
+    "reviewPurposeEnforcedByOwner": true,
+    "currentGrantEnforcedByOwner": true,
+    "approvedDecisionEnforcedByOwner": true,
+    "technicalUnknownPreserved": true,
+    "resourceFreezePreserved": true,
+    "internalViewNotExpanded": true
+  },
+  "remainingGaps": [
+    "Post-resolution business orchestration and responsibility rerouting",
+    "Correction-driven governance unfreeze orchestration",
+    "Production governance, hosting and external acceptance"
+  ]
+}

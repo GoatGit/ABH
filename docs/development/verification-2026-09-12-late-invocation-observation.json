@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-12",
+  "subject": "late invocation observation without state adoption",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/core exec tsc --noEmit -p tsconfig.typecheck.json",
+    "corepack pnpm --filter @abh/core exec node --test test/run-execution.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "completionEstimate": "98.5%",
+    "workspaceTests": 920,
+    "workspacePassed": 914,
+    "workspaceSkipped": 6,
+    "workspaceFailed": 0,
+    "coreTests": 556,
+    "corePassed": 550,
+    "coreSkipped": 6,
+    "coreFailed": 0,
+    "activeLeaseObservationRejected": true,
+    "expiredLeaseCompleteRejected": true,
+    "expiredLeaseEvidenceRetained": true,
+    "invocationStateUnchanged": true,
+    "taskStateUnchanged": true,
+    "takeoverStillRequeuesAttemptTwo": true,
+    "duplicateObservationRejectedOrReplayed": true
+  },
+  "limits": [
+    "automatic adoption, reconciliation policy and production scheduling remain open",
+    "real Pi and external providers remain open",
+    "production hosting, real IdP, global release scan and independent security review remain outside this estimate"
+  ]
+}

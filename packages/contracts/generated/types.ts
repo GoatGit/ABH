@@ -44,6 +44,7 @@ export type PublicContract =
   | ResourceRequirement
   | ImpactUpperBound
   | ProposeActionPayload
+  | ProposeSafetyStopPayload
   | ActionProposal
   | CancelActionPayload
   | RequestAuthorizationPayload
@@ -68,6 +69,13 @@ export type PublicContract =
   | ActionListResponse
   | DecisionInboxResponse
   | ActionAcceptedResponse
+  | LearningCaseCreatedResponse
+  | LearningCandidateCreatedResponse
+  | EvaluationRunCreatedResponse
+  | CorrectionProposedResponse
+  | CorrectionAppliedResponse
+  | ExceptionResolvedResponse
+  | ExceptionResolutionEffectResponse
   | DecisionSubmittedResponse
   | DecisionWithdrawnResponse
   | EventChangeSummary
@@ -148,12 +156,21 @@ export type PublicContract =
   | MembershipRecord
   | GrantRecord
   | LedgerRecord
+  | LedgerUnitRecord
+  | LedgerPeriodRecord
+  | RegisterLedgerUnitPayload
+  | RegisterLedgerPeriodPayload
+  | LedgerCorrectionRecord
+  | ApplyLedgerCorrectionPayload
   | ReservationRecord
   | AuditRecord
   | CommandReceipt
   | ArtifactRecord
   | FenceRecord
   | LedgerEntryRecord
+  | LedgerBalanceDiagnostic
+  | LedgerDiagnostic
+  | CliDoctorLedgerResult
   | ConfigureLedgerPayload
   | ReserveAllPayload
   | ConsumeReservationPayload
@@ -163,9 +180,11 @@ export type PublicContract =
   | WorkspaceRecord
   | ReleaseRecord
   | StaticAssignmentRecord
+  | StaticAssignmentListResult
   | ConfigureStaticReleasePayload
   | ResolveStaticPinsPayload
   | StopStaticAssignmentPayload
+  | RollbackStaticAssignmentPayload
   | StoreInlineArtifactPayload
   | TombstoneArtifactPayload
   | CommitmentRecord
@@ -176,6 +195,11 @@ export type PublicContract =
   | BeginCloseCommitmentPayload
   | CloseCommitmentPayload
   | ResponsibilityAssignmentRecord
+  | CorrectionRecord
+  | CorrectionApplicationRecord
+  | ApplyCorrectionPayload
+  | CorrectionCapabilityCandidate
+  | ProposeCorrectionPayload
   | ResponsibilitySeat
   | ResponsibilitySlot
   | ResponsibilityRequestRecord
@@ -213,10 +237,13 @@ export type PublicContract =
   | RenewWorkLeasePayload
   | ReleaseWorkLeasePayload
   | ResourceFenceRecord
+  | SafetyStopCandidate
+  | SafetyStopListResult
   | DispatchPermitRecord
   | AttemptRecord
   | AttemptObservationRecord
   | IssueDispatchPermitPayload
+  | SafeRetryOperationPayload
   | DispatchExitRecord
   | ClaimDispatchExitPayload
   | NormalizedOperationObservation
@@ -225,6 +252,22 @@ export type PublicContract =
   | ApplyReconciliationPayload
   | RecoverOperationPayload
   | RecoverRunPayload
+  | WakeRunPayload
+  | GraphPatchNode
+  | GraphPatchEdge
+  | ProposeGraphPatchPayload
+  | GraphRevisionRecord
+  | TaskSpec
+  | ClaimTaskPayload
+  | PrepareInvocationPayload
+  | FinalizeInvocationPayload
+  | CompleteInvocationPayload
+  | ObserveLateInvocationPayload
+  | LateInvocationObservationRecord
+  | LateInvocationAdjudicationRecord
+  | CommitVerifiedTaskPayload
+  | InvocationRecord
+  | CheckpointRecord
   | ActionResultRecord
   | AggregateActionPayload
   | CleanupActionPayload
@@ -261,10 +304,17 @@ export type PublicContract =
   | OutboxConsumptionRecord
   | RecordOutboxConsumptionPayload
   | ExceptionRecord
+  | ExceptionResolutionRecord
   | OpenTerminalExceptionPayload
+  | ApplyExceptionResolutionEffectPayload
+  | ExceptionResolutionEffectRecord
+  | ResolveExceptionPayload
+  | ExceptionSuccessorDispatchRecord
   | RevokeResponsibilityPayload
   | DecisionWithdrawalRecord
   | ReviseResponsibilityRoutePayload
+  | ResponsibilityDelegation
+  | ResponsibilityEscalation
   | ResponsibilityRouteRevisionRecord
   | DecisionEffectIntentRecord
   | DecisionEffectReceiptRecord
@@ -295,6 +345,22 @@ export type PublicContract =
   | DatabaseDiagnosticResult
   | ProjectionHealthResult
   | CliDoctorProjectionResult
+  | LearningCandidateDiagnostic
+  | CliDoctorLearningResult
+  | ReleaseDiagnostic
+  | CliDoctorReleaseResult
+  | OperationDiagnostic
+  | CliDoctorOperationResult
+  | PackInstallDiagnostic
+  | CliDoctorPackResult
+  | PackContentDiagnostic
+  | CliPackValidateResult
+  | PackBuildDiagnostic
+  | CliPackBuildResult
+  | PackSignatureDiagnostic
+  | CliPackSignResult
+  | PackVerificationDiagnostic
+  | CliPackVerifyResult
   | CliDoctorDataResult
   | PackInspectionDiagnostic
   | PackInspectionDiagnosticResponse
@@ -342,6 +408,7 @@ export type PublicContract =
   | MissionListResult
   | RunRecord
   | StartRunPayload
+  | StopStalledRunPayload
   | CompleteRunPayload
   | CancelRunPayload
   | TaskRecord
@@ -362,6 +429,30 @@ export type PublicContract =
   | MissionSummaryProjection
   | CaptureSignalPayload
   | LearningSignalRecord
+  | BuildCasePayload
+  | LearningCaseRecord
+  | CreateCandidatePayload
+  | LearningCandidateRecord
+  | ExpireEvaluationPayload
+  | LearningSignalListResult
+  | LearningCaseListResult
+  | LearningCandidateListResult
+  | EvaluationRunListResult
+  | EvaluationProfileRecord
+  | RequestEvaluationPayload
+  | RetryEvaluationPayload
+  | EvaluationRunRecord
+  | EvaluationMetricValue
+  | EvaluationMetricThreshold
+  | SubmitEvaluationResultPayload
+  | EvaluationResultRecord
+  | EvaluationGateFinding
+  | EvaluationUncertainty
+  | EvaluationGateLimitation
+  | BuildGatePayload
+  | EvaluationGateArtifactRecord
+  | LearningGateListResult
+  | ConfigureLearningReleasePayload
   | AgentTaskContract
   | RuntimeEvent
   | ProjectionQueryResult
@@ -413,10 +504,20 @@ export type PublicContract =
   | PublishPackTrustPolicyCommand
   | RecordPackValidationCommand
   | ReviseResponsibilityRouteCommand
+  | DelegateResponsibilitySlotCommand
+  | EscalateResponsibilitySlotCommand
   | RevokeResponsibilityCommand
   | ExpireResponsibilityRequestCommand
   | RetryResponsibilityRouteCommand
   | OpenTerminalExceptionCommand
+  | ResolveExceptionCommand
+  | ResolveExceptionHttpRequest
+  | ApplyExceptionResolutionEffectCommand
+  | ApplyExceptionResolutionEffectHttpRequest
+  | ProposeCorrectionCommand
+  | ProposeCorrectionHttpRequest
+  | ApplyCorrectionCommand
+  | ApplyCorrectionHttpRequest
   | CreateScopeAuthorityCommand
   | EvaluateScopeAuthorityCommand
   | CaptureQueryCommand
@@ -444,8 +545,11 @@ export type PublicContract =
   | RecordOperationReceiptCommand
   | ClaimDispatchExitCommand
   | IssueDispatchPermitCommand
+  | SafeRetryOperationCommand
   | ProposeActionCommand
   | ProposeActionHttpRequest
+  | StartSafetyStopCommand
+  | StartSafetyStopHttpRequest
   | CancelActionCommand
   | CancelActionHttpRequest
   | RequestAuthorizationCommand
@@ -457,6 +561,9 @@ export type PublicContract =
   | ValidateActionCommand
   | RegisterOperationPlanCommand
   | ConfigureLedgerCommand
+  | RegisterLedgerUnitCommand
+  | RegisterLedgerPeriodCommand
+  | ApplyLedgerCorrectionCommand
   | ReserveAllCommand
   | ConsumeReservationCommand
   | ReleaseReservationCommand
@@ -464,6 +571,9 @@ export type PublicContract =
   | ConfigureStaticReleaseCommand
   | ResolveStaticPinsCommand
   | StopStaticAssignmentCommand
+  | StopStaticAssignmentHttpRequest
+  | RollbackStaticAssignmentCommand
+  | RollbackStaticAssignmentHttpRequest
   | StoreInlineArtifactCommand
   | StoreInlineArtifactHttpRequest
   | TombstoneArtifactCommand
@@ -494,14 +604,48 @@ export type PublicContract =
   | CancelRunCommand
   | CancelRunHttpRequest
   | RecoverRunCommand
+  | StopStalledRunCommand
+  | WakeRunCommand
+  | ProposeGraphPatchCommand
+  | ClaimTaskCommand
+  | PrepareInvocationCommand
+  | FinalizeInvocationCommand
+  | CompleteInvocationCommand
+  | ObserveLateInvocationCommand
+  | CommitVerifiedTaskCommand
   | SubmitVerificationCommand
   | SubmitVerificationHttpRequest
   | InvokeToolCommand
   | InvokeToolHttpRequest
   | CaptureSignalCommand
   | CaptureSignalHttpRequest
+  | BuildCaseCommand
+  | BuildCaseHttpRequest
+  | CreateCandidateCommand
+  | CreateCandidateHttpRequest
+  | RequestEvaluationCommand
+  | RequestEvaluationHttpRequest
+  | RetryEvaluationCommand
+  | RetryEvaluationHttpRequest
+  | SubmitEvaluationResultCommand
+  | ExpireEvaluationRunCommand
+  | BuildGateCommand
+  | ConfigureLearningCandidateReleaseCommand
+  | ConfigureLearningCandidateReleaseHttpRequest
   | CommandEnvelope
+  | GetAssignmentQuery
+  | ListAssignmentsQuery
+  | ListLearningSignalsQuery
+  | ListLearningCasesQuery
+  | ListLearningCandidatesQuery
+  | ListEvaluationRunsQuery
+  | GetEvaluationRunQuery
+  | GetEvaluationResultQuery
+  | GetLearningGateQuery
+  | ListLearningGatesQuery
+  | GetCorrectionQuery
   | QueryPackCapabilitiesQuery
+  | ListSafetyStopsQuery
   | GetMissionQuery
   | ListMissionsQuery
   | GetRunQuery
@@ -732,13 +876,16 @@ export type PackResources =
 export type AccessRecordState = "Active" | "Revoked" | "Expired";
 export type GrantState = "Active" | "Revoked" | "Expired";
 export type LedgerState = "Open" | "Frozen" | "Closed";
-export type ReservationState = "Held" | "Consumed" | "Committed" | "Released" | "Expired";
-export type ArtifactState = "Staged" | "Available" | "Quarantined" | "Tombstoned";
+export type RegisterLedgerUnitPayload = RegisterLedgerUnitPayload1;
 /**
  * @minItems 1
  * @maxItems 32
  */
 export type LifecyclePurposeNames = RegisteredName[];
+export type ApplyLedgerCorrectionPayload = ApplyLedgerCorrectionPayload1;
+export type ReservationState = "Held" | "Consumed" | "Committed" | "Released" | "Expired";
+export type ArtifactState = "Staged" | "Available" | "Quarantined" | "Tombstoned";
+export type CliDoctorLedgerResult = CliDoctorLedgerResult1;
 export type ReleaseState = "Draft" | "Ready" | "Retired" | "Revoked";
 export type AssignmentState = "Shadow" | "Canary" | "Active" | "Paused" | "Retired";
 export type CommitmentState = "Open" | "Closing" | "Closed";
@@ -752,6 +899,14 @@ export type Digest1 = string;
 export type PackInspectionJobState = "Pending" | "Running" | "Waiting" | "Succeeded" | "Failed" | "Cancelled";
 export type DatabaseDiagnosticResult = DatabaseDiagnosticResult1;
 export type CliDoctorProjectionResult = CliDoctorProjectionResult1;
+export type CliDoctorLearningResult = CliDoctorLearningResult1;
+export type CliDoctorReleaseResult = CliDoctorReleaseResult1;
+export type CliDoctorOperationResult = CliDoctorOperationResult1;
+export type CliDoctorPackResult = CliDoctorPackResult1;
+export type CliPackValidateResult = CliPackValidateResult1;
+export type CliPackBuildResult = CliPackBuildResult1;
+export type CliPackSignResult = CliPackSignResult1;
+export type CliPackVerifyResult = CliPackVerifyResult1;
 export type CliDoctorDataResult = CliDoctorDataResult1;
 export type PackInspectionDiagnostic = PackInspectionDiagnostic1;
 export type CliInspectionDiagnosticResult = CliInspectionDiagnosticResult1;
@@ -817,10 +972,16 @@ export type CommandEnvelope =
   | PublishPackTrustPolicyCommand
   | RecordPackValidationCommand
   | ReviseResponsibilityRouteCommand
+  | DelegateResponsibilitySlotCommand
+  | EscalateResponsibilitySlotCommand
   | RevokeResponsibilityCommand
   | ExpireResponsibilityRequestCommand
   | RetryResponsibilityRouteCommand
   | OpenTerminalExceptionCommand
+  | ResolveExceptionCommand
+  | ApplyExceptionResolutionEffectCommand
+  | ProposeCorrectionCommand
+  | ApplyCorrectionCommand
   | CreateScopeAuthorityCommand
   | EvaluateScopeAuthorityCommand
   | CaptureQueryCommand
@@ -847,7 +1008,9 @@ export type CommandEnvelope =
   | RecordOperationReceiptCommand
   | ClaimDispatchExitCommand
   | IssueDispatchPermitCommand
+  | SafeRetryOperationCommand
   | ProposeActionCommand
+  | StartSafetyStopCommand
   | CancelActionCommand
   | RequestAuthorizationCommand
   | SubmitDecisionCommand
@@ -855,6 +1018,9 @@ export type CommandEnvelope =
   | ValidateActionCommand
   | RegisterOperationPlanCommand
   | ConfigureLedgerCommand
+  | RegisterLedgerUnitCommand
+  | RegisterLedgerPeriodCommand
+  | ApplyLedgerCorrectionCommand
   | ReserveAllCommand
   | ConsumeReservationCommand
   | ReleaseReservationCommand
@@ -862,6 +1028,7 @@ export type CommandEnvelope =
   | ConfigureStaticReleaseCommand
   | ResolveStaticPinsCommand
   | StopStaticAssignmentCommand
+  | RollbackStaticAssignmentCommand
   | StoreInlineArtifactCommand
   | TombstoneArtifactCommand
   | OpenCommitmentCommand
@@ -888,9 +1055,26 @@ export type CommandEnvelope =
   | CompleteRunCommand
   | CancelRunCommand
   | RecoverRunCommand
+  | StopStalledRunCommand
+  | WakeRunCommand
+  | ProposeGraphPatchCommand
+  | ClaimTaskCommand
+  | PrepareInvocationCommand
+  | FinalizeInvocationCommand
+  | CompleteInvocationCommand
+  | ObserveLateInvocationCommand
+  | CommitVerifiedTaskCommand
   | SubmitVerificationCommand
   | InvokeToolCommand
-  | CaptureSignalCommand;
+  | CaptureSignalCommand
+  | BuildCaseCommand
+  | CreateCandidateCommand
+  | RequestEvaluationCommand
+  | RetryEvaluationCommand
+  | SubmitEvaluationResultCommand
+  | ExpireEvaluationRunCommand
+  | BuildGateCommand
+  | ConfigureLearningCandidateReleaseCommand;
 export type MissionState = "Draft" | "Active" | "Paused" | "Blocked" | "Completed" | "Cancelled";
 export type ActionState =
   | "Proposed"
@@ -1586,6 +1770,26 @@ export type EventEnvelope =
     }
   | {
       eventId: UUID;
+      type: "abh.assignment.rollback";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.assignment";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
       type: "abh.assignment.selection-changed";
       schemaVersion: "0.1.0";
       aggregateRef: {
@@ -1746,6 +1950,26 @@ export type EventEnvelope =
     }
   | {
       eventId: UUID;
+      type: "abh.checkpoint.committed";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.checkpoint";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
       type: "abh.commitment.balance-changed";
       schemaVersion: "0.1.0";
       aggregateRef: {
@@ -1850,6 +2074,46 @@ export type EventEnvelope =
       schemaVersion: "0.1.0";
       aggregateRef: {
         type: "abh.connection";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.correction.applied";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.correction-application";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.correction.proposed";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.correction";
         id: UUID;
         version: Version;
       };
@@ -2226,10 +2490,130 @@ export type EventEnvelope =
     }
   | {
       eventId: UUID;
+      type: "abh.evaluation-result.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.evaluation-result";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.evaluation-run.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.evaluation-run";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.evaluation-run.expired";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.evaluation-run";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.exception-resolution-effect.applied";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.exception-resolution-effect";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.exception-successor-dispatch.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.exception-successor-dispatch";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
       type: "abh.exception.created";
       schemaVersion: "0.1.0";
       aggregateRef: {
         type: "abh.exception";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.exception.resolved";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.exception-resolution";
         id: UUID;
         version: Version;
       };
@@ -2446,6 +2830,26 @@ export type EventEnvelope =
     }
   | {
       eventId: UUID;
+      type: "abh.graph-revision.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.graph-revision";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
       type: "abh.inbox.created";
       schemaVersion: "0.1.0";
       aggregateRef: {
@@ -2510,6 +2914,246 @@ export type EventEnvelope =
       schemaVersion: "0.1.0";
       aggregateRef: {
         type: "abh.installed-pack";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.invocation-adjudication.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.invocation-adjudication";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.invocation-observation.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.invocation-observation";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.invocation.completed";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.invocation";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.invocation.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.invocation";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.invocation.running";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.invocation";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.learning-candidate.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.learning-candidate";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.learning-case.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.learning-case";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.learning-gate.created";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.learning-gate";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.learning-signal.corrected";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.learning-signal";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.ledger-correction.applied";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.ledger-correction";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.ledger-period.registered";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.period";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.ledger-unit.registered";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.unit";
         id: UUID;
         version: Version;
       };
@@ -3926,6 +4570,26 @@ export type EventEnvelope =
     }
   | {
       eventId: UUID;
+      type: "abh.resource-fence.report-block-released";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.resource-fence";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
       type: "abh.responsibility-assignment.created";
       schemaVersion: "0.1.0";
       aggregateRef: {
@@ -4226,6 +4890,26 @@ export type EventEnvelope =
     }
   | {
       eventId: UUID;
+      type: "abh.run.stalled";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.run";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
       type: "abh.run.start";
       schemaVersion: "0.1.0";
       aggregateRef: {
@@ -4307,6 +4991,126 @@ export type EventEnvelope =
   | {
       eventId: UUID;
       type: "abh.task.cancelled";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.task.failed";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.task.ready";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.task.skipped";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.task.started";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.task.verified";
+      schemaVersion: "0.1.0";
+      aggregateRef: {
+        type: "abh.task";
+        id: UUID;
+        version: Version;
+      };
+      aggregateVersion: Version;
+      eventOrdinal: number;
+      occurredAt: Time;
+      correlationId: UUID;
+      causationId: UUID;
+      actorRef: Actor;
+      actingOrganizationId: UUID;
+      resourceOrganizationId: UUID;
+      workspaceId?: UUID;
+      payload: EventChangeSummary;
+    }
+  | {
+      eventId: UUID;
+      type: "abh.task.verifying";
       schemaVersion: "0.1.0";
       aggregateRef: {
         type: "abh.task";
@@ -4995,6 +5799,12 @@ export interface ProposeActionPayload {
   sourceVersionRefs: EntityRef[];
   sourceProposalRef: EntityRef;
 }
+export interface ProposeSafetyStopPayload {
+  proposal: ProposeActionPayload;
+  fenceRef: EntityRef;
+  fencingToken: Version;
+  unresolvedOperationRef: OperationRef;
+}
 export interface ActionProposal {
   actionType: RegisteredName;
   /**
@@ -5293,6 +6103,289 @@ export interface ActionAcceptedResponse {
     commandId: UUID;
     trackingRef: ActionRef;
   };
+}
+export interface LearningCaseCreatedResponse {
+  success: true;
+  data: {
+    objectRef: {
+      type: "abh.learning-case";
+      id: UUID;
+      version: Version;
+    };
+    commandId: UUID;
+    learningCase: LearningCaseRecord;
+  };
+}
+export interface LearningCaseRecord {
+  caseRef: {
+    type: "abh.learning-case";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  signalRefs: EntityRef[];
+  rootCauseCode: RegisteredName;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  evidenceRefs: EntityRef[];
+  /**
+   * @maxItems 50
+   */
+  counterEvidenceRefs: EntityRef[];
+  domainOwnerRef: EntityRef;
+  receiptRef: CommandRef;
+  builtBy: Actor;
+  builtAt: Time;
+  digest: Digest;
+}
+export interface LearningCandidateCreatedResponse {
+  success: true;
+  data: {
+    objectRef: {
+      type: "abh.learning-candidate";
+      id: UUID;
+      version: Version;
+    };
+    commandId: UUID;
+    learningCandidate: LearningCandidateRecord;
+  };
+}
+export interface LearningCandidateRecord {
+  candidateRef: {
+    type: "abh.learning-candidate";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  caseRef: EntityRef;
+  assetKind: RegisteredName;
+  baseVersion: Version;
+  candidateArtifactRef: EntityRef;
+  scopeRef: EntityRef;
+  risk: RegisteredName;
+  status: "Draft";
+  producer: Actor;
+  receiptRef: CommandRef;
+  createdAt: Time;
+  digest: Digest;
+}
+export interface EvaluationRunCreatedResponse {
+  success: true;
+  data: {
+    objectRef: {
+      type: "abh.evaluation-run";
+      id: UUID;
+      version: Version;
+    };
+    commandId: UUID;
+    evaluationRun: EvaluationRunRecord;
+  };
+}
+export interface EvaluationRunRecord {
+  runRef: {
+    type: "abh.evaluation-run";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  candidateRef: EntityRef;
+  profileRef: EntityRef;
+  baselineRef: EntityRef;
+  retryOfRef?: EntityRef;
+  assignmentUnit: RegisteredName;
+  seed: number;
+  /**
+   * @maxItems 50
+   */
+  executionRefs: EntityRef[];
+  status: "Queued" | "Completed" | "Inconclusive";
+  requestedBy: Actor;
+  resultRef?: EntityRef;
+  receiptRef: CommandRef;
+  createdAt: Time;
+  expiresAt: Time;
+  digest: Digest;
+}
+export interface CorrectionProposedResponse {
+  success: true;
+  data: {
+    objectRef: {
+      type: "abh.correction";
+      id: UUID;
+      version: Version;
+    };
+    commandId: UUID;
+    correction: CorrectionRecord;
+  };
+}
+export interface CorrectionRecord {
+  correctionRef: {
+    type: "abh.correction";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  subjectRef: EntityRef;
+  subjectVersion: Version;
+  beforeRef: EntityRef;
+  proposedAfterRef: EntityRef;
+  targetOwner: "Domain" | "Memory" | "Run" | "Capability";
+  reason: string;
+  /**
+   * @minItems 0
+   * @maxItems 50
+   */
+  evidenceRefs: EntityRef[];
+  responsibilityRef: EntityRef;
+  purpose: RegisteredName;
+  receiptRef: CommandRef;
+  proposedBy: Actor;
+  proposedAt: Time;
+  digest: Digest;
+}
+export interface CorrectionAppliedResponse {
+  success: true;
+  data: {
+    objectRef: {
+      type: "abh.correction";
+      id: UUID;
+      version: Version;
+    };
+    commandId: UUID;
+    application: CorrectionApplicationRecord;
+  };
+}
+export interface CorrectionApplicationRecord {
+  applicationRef: {
+    type: "abh.correction-application";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  correctionRef: {
+    type: "abh.correction";
+    id: UUID;
+    version: Version;
+  };
+  subjectRef: EntityRef;
+  subjectVersionBefore: Version;
+  targetOwner: "Domain" | "Memory" | "Run" | "Capability";
+  authorityRef: EntityRef;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  evidenceRefs: EntityRef[];
+  resultRef: EntityRef;
+  resultVersion: Version;
+  receiptRef: CommandRef;
+  appliedBy: Actor;
+  appliedAt: Time;
+  digest: Digest;
+}
+export interface ExceptionResolvedResponse {
+  success: true;
+  data: {
+    objectRef: {
+      type: "abh.exception";
+      id: UUID;
+      version: Version;
+    };
+    commandId: UUID;
+    resolution: ExceptionResolutionRecord;
+  };
+}
+export interface ExceptionResolutionRecord {
+  resolutionRef: {
+    type: "abh.exception-resolution";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  exceptionRef: {
+    type: "abh.exception";
+    id: UUID;
+    version: Version;
+  };
+  sourceRef: OperationRef;
+  reportRef: {
+    type: "abh.reconciliation";
+    id: UUID;
+    version: Version;
+  };
+  requestRef: RequestRef;
+  decisionRef: DecisionRef;
+  resolutionKind:
+    "WaitForEvidence" | "RejectAndStop" | "ApplyCorrection" | "RequestCompensation" | "AuthorizedContinue";
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  evidenceRefs: EntityRef[];
+  technicalUnknownPreserved: true;
+  resourceFreezePreserved: true;
+  resolvedBy: Actor;
+  resolvedAt: Time;
+  digest: Digest;
+}
+export interface ExceptionResolutionEffectResponse {
+  success: true;
+  data: {
+    objectRef: {
+      type: "abh.exception-resolution-effect";
+      id: UUID;
+      version: Version;
+    };
+    commandId: UUID;
+    effect: ExceptionResolutionEffectRecord;
+  };
+}
+export interface ExceptionResolutionEffectRecord {
+  effectRef: {
+    type: "abh.exception-resolution-effect";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  resolutionRef: {
+    type: "abh.exception-resolution";
+    id: UUID;
+    version: Version;
+  };
+  exceptionRef: {
+    type: "abh.exception";
+    id: UUID;
+    version: Version;
+  };
+  sourceRef: EntityRef;
+  reportRef: {
+    type: "abh.reconciliation";
+    id: UUID;
+    version: Version;
+  };
+  correctionApplicationRef: {
+    type: "abh.correction-application";
+    id: UUID;
+    version: Version;
+  };
+  fenceRef: {
+    type: "abh.resource-fence";
+    id: UUID;
+    version: Version;
+  };
+  fencingToken: Version;
+  reportBlockReleased: true;
+  unresolvedOperationPreserved: true;
+  fencingTokenPreserved: true;
+  appliedBy: Actor;
+  appliedAt: Time;
+  digest: Digest;
 }
 export interface DecisionSubmittedResponse {
   success: true;
@@ -6578,6 +7671,72 @@ export interface LedgerRecord {
   openCommitment: NonnegativeDecimal;
   status: LedgerState;
 }
+export interface LedgerUnitRecord {
+  unitRef: EntityRef & {
+    type: "abh.unit";
+    [k: string]: unknown;
+  };
+  resourceOrganizationId: UUID;
+  name: RegisteredName;
+  kind: "monetary" | "quantity";
+  currency?: string;
+  precision: number;
+  recordedAt: Time;
+}
+export interface LedgerPeriodRecord {
+  periodRef: EntityRef & {
+    type: "abh.period";
+    [k: string]: unknown;
+  };
+  resourceOrganizationId: UUID;
+  startsAt: Time;
+  endsAt: Time;
+  recordedAt: Time;
+}
+export interface RegisterLedgerUnitPayload1 {
+  name: RegisteredName;
+  kind: "monetary" | "quantity";
+  currency?: string;
+  precision: number;
+  purposeNames?: LifecyclePurposeNames;
+}
+export interface RegisterLedgerPeriodPayload {
+  startsAt: Time;
+  endsAt: Time;
+  purposeNames?: LifecyclePurposeNames;
+}
+export interface LedgerCorrectionRecord {
+  correctionRef: EntityRef & {
+    type: "abh.ledger-correction";
+    [k: string]: unknown;
+  };
+  resourceOrganizationId: UUID;
+  ledgerRef: EntityRef & {
+    type: "abh.ledger";
+    [k: string]: unknown;
+  };
+  sourceRef: EntityRef;
+  kind: "Refund" | "FxRevaluation";
+  usageDelta: Decimal;
+  conversionRef?: EntityRef;
+  inputDigest: Digest;
+  recordedAt: Time;
+}
+export interface ApplyLedgerCorrectionPayload1 {
+  ledgerRef: EntityRef & {
+    type: "abh.ledger";
+    [k: string]: unknown;
+  };
+  sourceRef: EntityRef;
+  kind: "Refund" | "FxRevaluation";
+  usageDelta: Decimal;
+  conversionRef?: EntityRef;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  evidenceRefs: EntityRef[];
+}
 export interface ReservationRecord {
   reservationRef: {
     type: "abh.reservation";
@@ -6694,6 +7853,70 @@ export interface LedgerEntryRecord {
   evidenceRefs: EntityRef[];
   effectiveAt: Time;
   recordedAt: Time;
+}
+export interface LedgerBalanceDiagnostic {
+  limit: NonnegativeDecimal;
+  confirmedUsage: NonnegativeDecimal;
+  heldReservation: NonnegativeDecimal;
+  openCommitment: NonnegativeDecimal;
+}
+export interface LedgerDiagnostic {
+  ledgerRef: EntityRef & {
+    type?: "abh.ledger";
+    [k: string]: unknown;
+  };
+  resourceType: RegisteredName;
+  meteringMode: "cumulative" | "capacity";
+  unit: RegisteredName;
+  status: LedgerState;
+  periodRef: EntityRef & {
+    type?: "abh.period";
+    [k: string]: unknown;
+  };
+  entryCount: number;
+  lastEntryRef:
+    | null
+    | (EntityRef & {
+        type?: "abh.ledger-entry";
+        [k: string]: unknown;
+      });
+  current: LedgerBalanceDiagnostic;
+  recomputed: LedgerBalanceDiagnostic;
+  heldReservationCount: number;
+  expiredHeldCount: number;
+  openCommitmentCount: number;
+  openCommitmentRemaining: NonnegativeDecimal;
+  /**
+   * @minItems 0
+   * @maxItems 6
+   */
+  stopReasons: (
+    | "LEDGER_RECORD_DRIFT"
+    | "ENTRY_RECORD_INVALID"
+    | "ENTRY_LIMIT_EXCEEDED"
+    | "BALANCE_DRIFT"
+    | "OBLIGATION_DRIFT"
+    | "EXPIRED_HOLD"
+  )[];
+}
+export interface CliDoctorLedgerResult1 {
+  checkId: "ledger.balance-audit";
+  organizationId: UUID;
+  status: "Passed" | "Failed";
+  errorCode:
+    null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+  violationCount: number;
+  /**
+   * @minItems 0
+   * @maxItems 1
+   */
+  ledgers: LedgerDiagnostic[];
+  commandRef: null;
+  /**
+   * @maxItems 0
+   */
+  evidenceRefs: EntityRef[];
+  remediation: null | string;
 }
 export interface ConfigureLedgerPayload {
   scopeRef: EntityRef;
@@ -6837,6 +8060,21 @@ export interface StaticAssignmentRecord {
    * @maxItems 100
    */
   evidenceRefs: EntityRef[];
+  stopReason?: Reason;
+  stopEvidenceRef?: EntityRef;
+  rollbackOfAssignmentRef?: EntityRef;
+  rollbackFromReleaseRef?: EntityRef;
+}
+export interface StaticAssignmentListResult {
+  /**
+   * @maxItems 100
+   */
+  assignments: StaticAssignmentRecord[];
+  counts: {
+    [k: string]: number;
+  };
+  cursor?: string;
+  asOf: Time;
 }
 export interface ConfigureStaticReleasePayload {
   release: ReleaseRecord;
@@ -6876,6 +8114,16 @@ export interface ResolveStaticPinsPayload {
 }
 export interface StopStaticAssignmentPayload {
   evidenceRef: EntityRef;
+  reason: Reason;
+}
+export interface RollbackStaticAssignmentPayload {
+  previousReleaseRef: EntityRef;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  gateRefs: EntityRef[];
+  compatibilityRef: EntityRef;
   reason: Reason;
 }
 export interface StoreInlineArtifactPayload {
@@ -7009,6 +8257,38 @@ export interface ResponsibilityAssignmentRecord {
   templateRef: EntityRef;
   status: AccessRecordState;
 }
+export interface ApplyCorrectionPayload {
+  subjectRef: EntityRef;
+  authorityRef: EntityRef;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  evidenceRefs: EntityRef[];
+  candidate?: CorrectionCapabilityCandidate;
+}
+export interface CorrectionCapabilityCandidate {
+  caseRef: EntityRef;
+  baseVersion?: Version;
+  assetKind: RegisteredName;
+  scopeRef: EntityRef;
+  risk: RegisteredName;
+}
+export interface ProposeCorrectionPayload {
+  subjectRef: EntityRef;
+  expectedVersion: Version;
+  beforeRef: EntityRef;
+  newArtifactRef: EntityRef;
+  targetOwner: "Domain" | "Memory" | "Run" | "Capability";
+  reason: string;
+  /**
+   * @minItems 0
+   * @maxItems 50
+   */
+  evidenceRefs: EntityRef[];
+  responsibilityRef: EntityRef;
+  purpose: RegisteredName;
+}
 export interface ResponsibilitySeat {
   seatId: NodeKey;
   /**
@@ -7062,6 +8342,7 @@ export interface ResponsibilityRequestRecord {
   decisionRefs: DecisionRef[];
   expiresAt: Time;
   status: ResponsibilityRequestState;
+  escalationDepth?: number;
 }
 export interface DecisionRecord {
   decisionRef: DecisionRef;
@@ -7239,6 +8520,7 @@ export interface ActionIntentRecord {
   expiresAt: Time;
   digest: Digest;
   purposeNames: LifecyclePurposeNames;
+  safetyStop?: boolean;
 }
 export interface PolicyDecision {
   allow: boolean;
@@ -7635,6 +8917,25 @@ export interface ResourceFenceRecord {
     id: UUID;
     version: Version;
   };
+  safetyStopOperationRef?: OperationRef;
+}
+export interface SafetyStopCandidate {
+  fenceRef: EntityRef;
+  connectionRef: EntityRef;
+  accountRef: EntityRef;
+  resourceKey: RegisteredName;
+  fencingToken: Version;
+  unresolvedOperationRef: OperationRef;
+  safetyStopOperationRef?: OperationRef;
+  blockedByReportRef?: EntityRef;
+}
+export interface SafetyStopListResult {
+  /**
+   * @maxItems 100
+   */
+  candidates: SafetyStopCandidate[];
+  complete: boolean;
+  asOf: Time;
 }
 export interface DispatchPermitRecord {
   permitRef: {
@@ -7745,6 +9046,15 @@ export interface IssueDispatchPermitPayload {
     version: Version;
   };
   leaseFencingToken: Version;
+}
+export interface SafeRetryOperationPayload {
+  operationRef: {
+    type: "abh.operation";
+    id: UUID;
+    version: Version;
+  };
+  expectedPermitRef: EntityRef;
+  permit: IssueDispatchPermitPayload;
 }
 export interface DispatchExitRecord {
   exitRef: {
@@ -7863,6 +9173,243 @@ export interface RecoverRunPayload {
   causeRef: EntityRef;
   leaseRef: EntityRef;
   leaseFencingToken: Version;
+}
+export interface WakeRunPayload {
+  runRef: {
+    type: "abh.run";
+    id: UUID;
+    version: Version;
+  };
+  causeRef: EntityRef;
+  waitRef: EntityRef;
+}
+export interface GraphPatchNode {
+  nodeKey: RegisteredName;
+  kind: "Agent" | "Compute" | "StructuredModelJob" | "Wait" | "DomainCommand";
+  /**
+   * @maxItems 100
+   */
+  inputRefs: EntityRef[];
+  outputSchemaRef?: EntityRef;
+  deadlineSeconds?: number;
+  required: boolean;
+}
+export interface GraphPatchEdge {
+  from: RegisteredName;
+  to: RegisteredName;
+}
+export interface ProposeGraphPatchPayload {
+  runRef: EntityRef;
+  baseRevision: number;
+  /**
+   * @maxItems 50
+   */
+  addNodes: GraphPatchNode[];
+  /**
+   * @maxItems 100
+   */
+  addEdges: GraphPatchEdge[];
+  /**
+   * @maxItems 50
+   */
+  supersedePendingNodes: RegisteredName[];
+  rationaleRef: EntityRef;
+}
+export interface GraphRevisionRecord {
+  revisionRef: {
+    type: "abh.graph-revision";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  runRef: EntityRef;
+  baseRevision: number;
+  revision: number;
+  patchDigest: Digest;
+  proposerRef: EntityRef;
+  /**
+   * @maxItems 100
+   */
+  nodes: GraphPatchNode[];
+  /**
+   * @maxItems 300
+   */
+  edges: GraphPatchEdge[];
+  /**
+   * @maxItems 50
+   */
+  supersededNodeKeys: RegisteredName[];
+  rationaleRef: EntityRef;
+  createdBy: Actor;
+  createdAt: Time;
+  updatedAt: Time;
+}
+export interface TaskSpec {
+  goal?: string;
+  /**
+   * @maxItems 100
+   */
+  inputRefs?: EntityRef[];
+  outputSchemaRef?: EntityRef;
+  deadlineSeconds?: number;
+  acceptanceRef?: EntityRef;
+  resourceLimits?: {
+    [k: string]: string;
+  };
+}
+export interface ClaimTaskPayload {
+  taskRef: EntityRef;
+  workerId: UUID;
+  leaseSeconds: number;
+}
+export interface PrepareInvocationPayload {
+  taskRef: EntityRef;
+  leaseRef: EntityRef;
+  workerId: UUID;
+  leaseFencingToken: Version;
+  taskSpec: TaskSpec;
+  /**
+   * @maxItems 100
+   */
+  identityBasisRefs: EntityRef[];
+}
+export interface FinalizeInvocationPayload {
+  invocationRef: EntityRef;
+  leaseRef: EntityRef;
+  workerId: UUID;
+  leaseFencingToken: Version;
+  manifestRef: EntityRef;
+  /**
+   * @maxItems 100
+   */
+  bindingRefs: EntityRef[];
+  contractDigest: Digest;
+}
+export interface CompleteInvocationPayload {
+  invocationRef: EntityRef;
+  leaseRef: EntityRef;
+  workerId: UUID;
+  leaseFencingToken: Version;
+  stopReason: "Completed" | "Failed" | "Cancelled" | "Deadline" | "BudgetExceeded" | "InvalidOutput" | "Unknown";
+  resultArtifactRef?: EntityRef;
+  usageRef?: EntityRef;
+}
+export interface ObserveLateInvocationPayload {
+  invocationRef: EntityRef;
+  leaseRef: EntityRef;
+  workerId: UUID;
+  leaseFencingToken: Version;
+  stopReason: "Completed" | "Failed" | "Cancelled" | "Deadline" | "BudgetExceeded" | "InvalidOutput" | "Unknown";
+  resultArtifactRef?: EntityRef;
+  usageRef?: EntityRef;
+}
+export interface LateInvocationObservationRecord {
+  observationRef: {
+    type: "abh.invocation-observation";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  runRef: EntityRef;
+  taskRef: EntityRef;
+  invocationRef: EntityRef;
+  leaseRef: EntityRef;
+  workerId: UUID;
+  leaseFencingToken: Version;
+  status: "Observed";
+  stopReason: "Completed" | "Failed" | "Cancelled" | "Deadline" | "BudgetExceeded" | "InvalidOutput";
+  resultArtifactRef?: EntityRef;
+  usageRef?: EntityRef;
+  observedAt: Time;
+  createdBy: Actor;
+}
+export interface LateInvocationAdjudicationRecord {
+  adjudicationRef: {
+    type: "abh.invocation-adjudication";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  runRef: EntityRef;
+  taskRef: EntityRef;
+  invocationRef: EntityRef;
+  observationRef: EntityRef;
+  decision: "Adopted" | "Rejected";
+  reason: "CompletedEvidence" | "NotCompletedEvidence" | "TaskAlreadyAdvanced";
+  observedLeaseRef: EntityRef;
+  observedWorkerId: UUID;
+  observedFencingToken: Version;
+  ownerLeaseRef: EntityRef;
+  ownerFencingToken: Version;
+  createdBy: Actor;
+  createdAt: Time;
+}
+export interface CommitVerifiedTaskPayload {
+  taskRef: EntityRef;
+  invocationRef: EntityRef;
+  verificationRef: EntityRef;
+  /**
+   * @maxItems 100
+   */
+  domainCommandReceiptRefs: EntityRef[];
+}
+export interface InvocationRecord {
+  invocationRef: {
+    type: "abh.invocation";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  runRef: EntityRef;
+  taskRef: EntityRef;
+  attemptOrdinal: number;
+  taskSpecDigest: Digest;
+  taskSpec: TaskSpec;
+  principalRef: EntityRef;
+  status: "Created" | "Running" | "Succeeded" | "Failed" | "Cancelled";
+  manifestRef?: EntityRef;
+  /**
+   * @maxItems 100
+   */
+  bindingRefs?: EntityRef[];
+  contractDigest?: Digest;
+  resultArtifactRef?: EntityRef;
+  usageRef?: EntityRef;
+  stopReason?: "Completed" | "Failed" | "Cancelled" | "Deadline" | "BudgetExceeded" | "InvalidOutput";
+  createdBy: Actor;
+  createdAt: Time;
+  updatedAt: Time;
+}
+export interface CheckpointRecord {
+  checkpointRef: {
+    type: "abh.checkpoint";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  runRef: EntityRef;
+  taskRef: EntityRef;
+  graphRevisionRef: EntityRef;
+  sequence: number;
+  /**
+   * @maxItems 100
+   */
+  completedTaskRefs: EntityRef[];
+  /**
+   * @maxItems 100
+   */
+  verifiedOutputRefs: EntityRef[];
+  /**
+   * @maxItems 100
+   */
+  waitRefs: EntityRef[];
+  resourceUsageRef?: EntityRef;
+  /**
+   * @maxItems 100
+   */
+  domainCommandReceiptRefs: EntityRef[];
+  watermark: Digest;
+  createdAt: Time;
 }
 export interface ActionResultRecord {
   resultRef: {
@@ -8166,6 +9713,7 @@ export interface DurableWakeupRecord {
     version: Version;
   };
   createdAt: Time;
+  expiresAt?: Time;
   digest: Digest;
 }
 export interface RecheckDurableWaitPayload {
@@ -8599,6 +10147,67 @@ export interface OpenTerminalExceptionPayload {
   };
   responsibility: OpenResponsibilityRequestPayload;
 }
+export interface ApplyExceptionResolutionEffectPayload {
+  resolutionRef: {
+    type: "abh.exception-resolution";
+    id: UUID;
+    version: Version;
+  };
+  correctionApplicationRef: {
+    type: "abh.correction-application";
+    id: UUID;
+    version: Version;
+  };
+}
+export interface ResolveExceptionPayload {
+  exceptionRef: {
+    type: "abh.exception";
+    id: UUID;
+    version: Version;
+  };
+  resolutionKind:
+    "WaitForEvidence" | "RejectAndStop" | "ApplyCorrection" | "RequestCompensation" | "AuthorizedContinue";
+  decisionRef: {
+    type: "abh.decision";
+    id: UUID;
+    version: Version;
+  };
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  evidenceRefs: EntityRef[];
+}
+export interface ExceptionSuccessorDispatchRecord {
+  dispatchRef: {
+    type: "abh.exception-successor-dispatch";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  resolutionRef: {
+    type: "abh.exception-resolution";
+    id: UUID;
+    version: Version;
+  };
+  exceptionRef: {
+    type: "abh.exception";
+    id: UUID;
+    version: Version;
+  };
+  sourceRef: EntityRef;
+  reportRef: {
+    type: "abh.reconciliation";
+    id: UUID;
+    version: Version;
+  };
+  resolutionKind:
+    "WaitForEvidence" | "RejectAndStop" | "ApplyCorrection" | "RequestCompensation" | "AuthorizedContinue";
+  successorRef: EntityRef;
+  dispatchedBy: Actor;
+  dispatchedAt: Time;
+  digest: Digest;
+}
 export interface RevokeResponsibilityPayload {
   assignmentRef: {
     type: "abh.responsibility-assignment";
@@ -8644,6 +10253,18 @@ export interface ReviseResponsibilityRoutePayload {
    */
   evidenceRefs: EntityRef[];
   reason: Reason;
+  delegation?: ResponsibilityDelegation;
+  escalation?: ResponsibilityEscalation;
+}
+export interface ResponsibilityDelegation {
+  slotId: NodeKey;
+  seatId: NodeKey;
+  responsibilityRef: EntityRef;
+}
+export interface ResponsibilityEscalation {
+  slotId: NodeKey;
+  seatId: NodeKey;
+  responsibilityRef: EntityRef;
 }
 export interface ResponsibilityRouteRevisionRecord {
   previousRequest: ResponsibilityRequestRecord;
@@ -9189,6 +10810,370 @@ export interface CliDoctorProjectionResult1 {
   evidenceRefs: EntityRef[];
   remediation: null | string;
 }
+export interface LearningCandidateDiagnostic {
+  candidateRef: EntityRef;
+  status: "Draft";
+  assetKind: RegisteredName;
+  risk: RegisteredName;
+  /**
+   * @minItems 3
+   * @maxItems 3
+   */
+  requiredPurposes: RegisteredName[];
+  /**
+   * @maxItems 3
+   */
+  withdrawnPurposes: RegisteredName[];
+  profileRef: EntityRef | null;
+  profileCount: number;
+  /**
+   * @maxItems 50
+   */
+  evaluationRunRefs: EntityRef[];
+  settledEvaluationCount: number;
+  gateRef: EntityRef | null;
+  /**
+   * @maxItems 100
+   */
+  releaseRefs: EntityRef[];
+  /**
+   * @maxItems 7
+   */
+  stopReasons: (
+    | "PURPOSE_WITHDRAWN"
+    | "PROFILE_MISSING"
+    | "PROFILE_AMBIGUOUS"
+    | "EVALUATION_MISSING"
+    | "EVALUATION_UNSETTLED"
+    | "GATE_MISSING"
+    | "RELEASE_NOT_LINKED"
+  )[];
+}
+export interface CliDoctorLearningResult1 {
+  checkId: "learning.candidate-readiness";
+  organizationId: string;
+  status: "Passed" | "Failed";
+  errorCode:
+    null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+  violationCount: number;
+  truncated: boolean;
+  /**
+   * @maxItems 100
+   */
+  candidates: LearningCandidateDiagnostic[];
+  commandRef: null;
+  /**
+   * @maxItems 0
+   */
+  evidenceRefs: EntityRef[];
+  remediation: null | string;
+}
+export interface ReleaseDiagnostic {
+  releaseRef: EntityRef;
+  status: "Draft" | "Ready" | "Retired" | "Revoked";
+  /**
+   * @minItems 1
+   * @maxItems 32
+   */
+  purposeNames: RegisteredName[];
+  assetCount: number;
+  installedCapabilityCount: number;
+  assignmentCount: number;
+  activeAssignmentCount: number;
+  executionAllowedAssignmentCount: number;
+  pinSetCount: number;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  gateRefs: EntityRef[];
+  /**
+   * @maxItems 100
+   */
+  invalidGateRefs: EntityRef[];
+  compatibilityRef: EntityRef;
+  compatibilityReady: boolean;
+  /**
+   * @maxItems 100
+   */
+  rollbackCandidateRefs: EntityRef[];
+  /**
+   * @maxItems 8
+   */
+  stopReasons: (
+    | "GATE_EVIDENCE_INVALID"
+    | "COMPATIBILITY_INVALID"
+    | "CAPABILITY_NOT_INSTALLED"
+    | "ASSIGNMENT_MISSING"
+    | "EXECUTION_NOT_ALLOWED"
+    | "PIN_UNAVAILABLE"
+    | "ROLLBACK_CANDIDATE_MISSING"
+  )[];
+}
+export interface CliDoctorReleaseResult1 {
+  checkId: "release.readiness";
+  organizationId: string;
+  status: "Passed" | "Failed";
+  errorCode:
+    null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+  violationCount: number;
+  truncated: boolean;
+  /**
+   * @minItems 0
+   * @maxItems 1
+   */
+  releases: ReleaseDiagnostic[];
+  commandRef: null;
+  /**
+   * @maxItems 0
+   */
+  evidenceRefs: EntityRef[];
+  remediation: null | string;
+}
+export interface OperationDiagnostic {
+  operationRef: OperationRef;
+  actionRef: ActionRef;
+  planRef: PlanRef;
+  nodeKey: NodeKey;
+  position: OperationPosition;
+  attemptCount: number;
+  providerIdempotencyKey: IdempotencyKey;
+  payloadDigest: Digest;
+  permitRef: null | {
+    type: "abh.dispatch-permit";
+    id: UUID;
+    version: Version;
+  };
+  permitExpiresAt: null | Time;
+  permitExpired: boolean;
+  receiptCount: number;
+  lastReceiptAt: null | Time;
+  reconciliationRef: null | EntityRef;
+  reconciliationVerdict: null | ("ConfirmedSuccess" | "ConfirmedNoEffect" | "Pending" | "Ambiguous" | "Conflicting");
+  resourceFenceRef: null | EntityRef;
+  remainingResponsibility: boolean;
+  safeRetry: boolean;
+  /**
+   * @minItems 0
+   * @maxItems 8
+   */
+  stopReasons: (
+    | "PERMIT_MISSING"
+    | "PERMIT_EXPIRED"
+    | "RECEIPT_MISSING"
+    | "RECONCILIATION_MISSING"
+    | "UNKNOWN_OUTCOME_RETAINED"
+    | "UNKNOWN_OUTCOME_UNPROTECTED"
+    | "CLOSED_WITHOUT_RECONCILIATION"
+  )[];
+}
+export interface CliDoctorOperationResult1 {
+  checkId: "operation.readiness";
+  organizationId: UUID;
+  status: "Passed" | "Failed";
+  errorCode:
+    null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+  violationCount: number;
+  truncated: boolean;
+  /**
+   * @minItems 0
+   * @maxItems 1
+   */
+  operations: OperationDiagnostic[];
+  commandRef: null;
+  /**
+   * @maxItems 0
+   */
+  evidenceRefs: EntityRef[];
+  remediation: null | string;
+}
+export interface PackInstallDiagnostic {
+  packRef: EntityRef & {
+    type?: "abh.installed-pack";
+    [k: string]: unknown;
+  };
+  packId: RegisteredName;
+  packVersion: ExactVersion;
+  status: "Staged" | "Enabled" | "Suspended" | "Retired";
+  deploymentVersion: Version;
+  packageDigest: Digest;
+  validationEvidenceBound: boolean;
+  governanceEvidenceBound: boolean;
+  capabilitySetRef:
+    | null
+    | (EntityRef & {
+        type?: "abh.pack-capability-set";
+        [k: string]: unknown;
+      });
+  expectedCapabilityCount: number;
+  registeredCapabilityCount: number;
+  deploymentRevisionRef:
+    | null
+    | (EntityRef & {
+        type?: "abh.pack-deployment-revision";
+        [k: string]: unknown;
+      });
+  manifestMigrationCount: number;
+  /**
+   * @minItems 0
+   * @maxItems 9
+   */
+  stopReasons: (
+    | "RECORD_DRIFT"
+    | "VALIDATION_EVIDENCE_MISSING"
+    | "GOVERNANCE_EVIDENCE_MISSING"
+    | "CAPABILITY_REGISTRATION_INVALID"
+    | "DEPLOYMENT_REVISION_MISSING"
+    | "ENABLEMENT_MISSING"
+    | "SUSPENSION_MISSING"
+    | "RETIREMENT_MISSING"
+  )[];
+}
+export interface CliDoctorPackResult1 {
+  checkId: "pack.install-readiness";
+  organizationId: UUID;
+  status: "Passed" | "Failed";
+  errorCode:
+    null | "INVALID_ARGUMENT" | "FORBIDDEN" | "PRECONDITION_FAILED" | "DEPENDENCY_TIMEOUT" | "DEPENDENCY_UNAVAILABLE";
+  violationCount: number;
+  /**
+   * @minItems 0
+   * @maxItems 1
+   */
+  packs: PackInstallDiagnostic[];
+  commandRef: null;
+  /**
+   * @maxItems 0
+   */
+  evidenceRefs: EntityRef[];
+  remediation: null | string;
+}
+export interface PackContentDiagnostic {
+  packId: RegisteredName;
+  packVersion: ExactVersion;
+  kind: "DomainPack" | "ConnectorPack" | "RuntimeAdapter" | "WorkbenchExtension";
+  trustMode: "Declarative" | "TrustedCode" | "Isolated";
+  license: string;
+  artifactCount: number;
+  migrationCount: number;
+  manifestDigest: Digest;
+  artifactSetDigest: Digest;
+  packageDigest: Digest;
+}
+export interface CliPackValidateResult1 {
+  checkId: "pack.content-validation";
+  status: "Passed" | "Failed";
+  errorCode:
+    | null
+    | "INVALID_ARGUMENT"
+    | "FORBIDDEN"
+    | "LIMIT_EXCEEDED"
+    | "PRECONDITION_FAILED"
+    | "DEPENDENCY_TIMEOUT"
+    | "DEPENDENCY_UNAVAILABLE";
+  violationCount: number;
+  diagnostic: null | PackContentDiagnostic;
+  commandRef: null;
+  /**
+   * @maxItems 0
+   */
+  evidenceRefs: EntityRef[];
+  remediation: null | string;
+}
+export interface PackBuildDiagnostic {
+  packId: RegisteredName;
+  packVersion: ExactVersion;
+  kind: "DomainPack" | "ConnectorPack" | "RuntimeAdapter" | "WorkbenchExtension";
+  trustMode: "Declarative" | "TrustedCode" | "Isolated";
+  license: string;
+  artifactCount: number;
+  migrationCount: number;
+  manifestDigest: Digest;
+  artifactSetDigest: Digest;
+  packageDigest: Digest;
+  outputBytes: number;
+}
+export interface CliPackBuildResult1 {
+  checkId: "pack.manifest-build";
+  status: "Passed" | "Failed";
+  errorCode:
+    | null
+    | "INVALID_ARGUMENT"
+    | "LIMIT_EXCEEDED"
+    | "PRECONDITION_FAILED"
+    | "DEPENDENCY_TIMEOUT"
+    | "DEPENDENCY_UNAVAILABLE";
+  violationCount: number;
+  diagnostic: null | PackBuildDiagnostic;
+  commandRef: null;
+  /**
+   * @maxItems 0
+   */
+  evidenceRefs: EntityRef[];
+  remediation: null | string;
+}
+export interface PackSignatureDiagnostic {
+  packId: RegisteredName;
+  packVersion: ExactVersion;
+  packageDigest: Digest;
+  bundleDigest: Digest;
+  bundleBytes: number;
+}
+export interface CliPackSignResult1 {
+  checkId: "pack.signature";
+  status: "Passed" | "Failed";
+  errorCode:
+    | null
+    | "INVALID_ARGUMENT"
+    | "FORBIDDEN"
+    | "LIMIT_EXCEEDED"
+    | "PRECONDITION_FAILED"
+    | "DEPENDENCY_TIMEOUT"
+    | "DEPENDENCY_UNAVAILABLE";
+  violationCount: number;
+  diagnostic: null | PackSignatureDiagnostic;
+  commandRef: null;
+  /**
+   * @maxItems 0
+   */
+  evidenceRefs: EntityRef[];
+  remediation: null | string;
+}
+export interface PackVerificationDiagnostic {
+  packId: RegisteredName;
+  packVersion: ExactVersion;
+  subjectDigest: Digest;
+  manifestDigest: Digest;
+  artifactSetDigest: Digest;
+  deploymentPolicyDigest: Digest;
+  signatureBundleDigest: Digest;
+  provenanceBundleDigest: Digest;
+  conformanceBundleDigest: Digest;
+  conformanceReportDigest: Digest;
+  validatedAt: Time;
+  validUntil: Time;
+  reportDigest: Digest;
+}
+export interface CliPackVerifyResult1 {
+  checkId: "pack.supply-chain-validation";
+  status: "Passed" | "Failed";
+  errorCode:
+    | null
+    | "INVALID_ARGUMENT"
+    | "FORBIDDEN"
+    | "LIMIT_EXCEEDED"
+    | "PRECONDITION_FAILED"
+    | "DEPENDENCY_TIMEOUT"
+    | "DEPENDENCY_UNAVAILABLE";
+  violationCount: number;
+  diagnostic: null | PackVerificationDiagnostic;
+  commandRef: null;
+  /**
+   * @maxItems 0
+   */
+  evidenceRefs: EntityRef[];
+  remediation: null | string;
+}
 export interface CliDoctorDataResult1 {
   checkId: "data.security-manifest";
   status: "Passed" | "Failed";
@@ -9320,6 +11305,7 @@ export interface PackCapabilityBinding {
   schemaPath: PackPath;
   implementationRef: EntityRef;
   healthRef: EntityRef;
+  safetyStop?: boolean;
   permissionEnvelope: {
     /**
      * @maxItems 1000
@@ -9352,6 +11338,7 @@ export interface PackCapabilityRegistration {
   schemaPath: PackPath;
   implementationRef: EntityRef;
   healthRef: EntityRef;
+  safetyStop?: boolean;
   permissionEnvelope: {
     /**
      * @maxItems 1000
@@ -9422,6 +11409,7 @@ export interface PackCapabilityCandidate {
   };
   registrationDigest: Digest;
   schemaDigest: Digest;
+  safetyStop: boolean;
   compatible: boolean;
   healthy: boolean;
 }
@@ -9785,6 +11773,9 @@ export interface RunRecord {
   triggerKey: RegisteredName;
   goalRevision: Version;
   stopEpoch: number;
+  progressBudgetSeconds: number;
+  progressDeadline: Time;
+  stopReason?: "NoProgress";
   workflowRef: CapabilityRef;
   assignmentSnapshotRef: EntityRef;
   executionMode: "Production" | "Shadow" | "IsolatedEvaluation";
@@ -9807,6 +11798,11 @@ export interface StartRunPayload {
     version: Version;
   };
   executionMode: "Production" | "Shadow" | "IsolatedEvaluation";
+  progressBudgetSeconds?: number;
+}
+export interface StopStalledRunPayload {
+  runRef: EntityRef;
+  causeRef: EntityRef;
 }
 export interface CompleteRunPayload {
   runRef: {
@@ -9969,6 +11965,7 @@ export interface VerificationReport {
     version: Version;
   };
   resultDigest: Digest;
+  digest: Digest;
   verdict: "Pass" | "Reject" | "NeedsResponsibility" | "Inconclusive";
   verifierRef?: EntityRef;
   /**
@@ -10187,6 +12184,286 @@ export interface LearningSignalRecord {
   purposeOfUse: RegisteredName;
   quality?: number;
   capturedAt: Time;
+}
+export interface BuildCasePayload {
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  signalRefs: EntityRef[];
+  rootCauseCode: RegisteredName;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  evidenceRefs: EntityRef[];
+  /**
+   * @maxItems 50
+   */
+  counterEvidenceRefs: EntityRef[];
+  domainOwnerRef: EntityRef;
+}
+export interface CreateCandidatePayload {
+  caseRef: EntityRef;
+  assetKind: RegisteredName;
+  baseVersion: Version;
+  candidateArtifactRef: EntityRef;
+  scopeRef: EntityRef;
+  risk: RegisteredName;
+}
+export interface ExpireEvaluationPayload {
+  runRef: EntityRef;
+}
+export interface LearningSignalListResult {
+  /**
+   * @maxItems 100
+   */
+  signals: LearningSignalRecord[];
+  counts: {
+    [k: string]: number;
+  };
+  cursor?: string;
+  asOf: Time;
+}
+export interface LearningCaseListResult {
+  /**
+   * @maxItems 100
+   */
+  cases: LearningCaseRecord[];
+  counts: {
+    [k: string]: number;
+  };
+  cursor?: string;
+  asOf: Time;
+}
+export interface LearningCandidateListResult {
+  /**
+   * @maxItems 100
+   */
+  candidates: LearningCandidateRecord[];
+  counts: {
+    [k: string]: number;
+  };
+  cursor?: string;
+  asOf: Time;
+}
+export interface EvaluationRunListResult {
+  /**
+   * @maxItems 100
+   */
+  runs: EvaluationRunRecord[];
+  counts: {
+    [k: string]: number;
+  };
+  cursor?: string;
+  asOf: Time;
+}
+export interface EvaluationProfileRecord {
+  profileRef: {
+    type: "abh.evaluation-profile";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  assetKind: RegisteredName;
+  risk: RegisteredName;
+  suiteRef: EntityRef;
+  datasetSnapshotRef: EntityRef;
+  evaluatorRef: EntityRef;
+  metricThresholdRef: EntityRef;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  metricThresholds: EvaluationMetricThreshold[];
+  stoppingRuleRef: EntityRef;
+  assignmentUnit: RegisteredName;
+  minimumSamples: number;
+  confidenceLevel: 0.8 | 0.9 | 0.95 | 0.99;
+  minimumRelativeLift: number;
+  approvedBy: Actor;
+  approvedAt: Time;
+  digest: Digest;
+}
+export interface EvaluationMetricThreshold {
+  name: RegisteredName;
+  minimum: number;
+}
+export interface RequestEvaluationPayload {
+  candidateRef: EntityRef;
+  baselineRef: EntityRef;
+}
+export interface RetryEvaluationPayload {
+  runRef: EntityRef;
+}
+export interface EvaluationMetricValue {
+  name: RegisteredName;
+  value: number;
+}
+export interface SubmitEvaluationResultPayload {
+  runRef: EntityRef;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  artifactRefs: EntityRef[];
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  executionRefs: EntityRef[];
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  metricValues: EvaluationMetricValue[];
+  completedSamples: number;
+  failedSamples: number;
+  /**
+   * @maxItems 50
+   */
+  baselineMetricValues?: EvaluationMetricValue[];
+  baselineCompletedSamples?: number;
+  baselineFailedSamples?: number;
+  dataDigest: Digest;
+  evaluatorPrincipal: EntityRef;
+}
+export interface EvaluationResultRecord {
+  resultRef: {
+    type: "abh.evaluation-result";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  runRef: EntityRef;
+  candidateRef: EntityRef;
+  profileRef: EntityRef;
+  status: "Completed" | "Inconclusive";
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  artifactRefs: EntityRef[];
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  executionRefs: EntityRef[];
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  metricValues: EvaluationMetricValue[];
+  completedSamples: number;
+  failedSamples: number;
+  /**
+   * @maxItems 50
+   */
+  baselineMetricValues?: EvaluationMetricValue[];
+  baselineCompletedSamples?: number;
+  baselineFailedSamples?: number;
+  dataDigest: Digest;
+  evaluatorPrincipal: EntityRef;
+  receiptRef: CommandRef;
+  submittedAt: Time;
+  digest: Digest;
+}
+export interface EvaluationGateFinding {
+  metric: RegisteredName;
+  actual?: number;
+  minimum: number;
+  outcome: "Pass" | "Fail" | "Missing";
+  lowerBound?: number;
+  baseline?: number;
+  baselineLowerBound?: number;
+  relativeLift?: number;
+  lowerRelativeLift?: number;
+}
+export interface EvaluationUncertainty {
+  metric: RegisteredName;
+  method: "WilsonScore";
+  confidenceLevel: 0.8 | 0.9 | 0.95 | 0.99;
+  estimate: number;
+  lowerBound: number;
+  upperBound: number;
+  sampleCount: number;
+}
+export interface EvaluationGateLimitation {
+  code: RegisteredName;
+  detail: string;
+}
+export interface BuildGatePayload {
+  candidateRef: EntityRef;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  evaluationRefs: EntityRef[];
+}
+export interface EvaluationGateArtifactRecord {
+  gateRef: {
+    type: "abh.learning-gate";
+    id: UUID;
+    version: Version;
+  };
+  resourceOrganizationId: UUID;
+  candidateRef: EntityRef;
+  profileRef: EntityRef;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  evaluationRefs: EntityRef[];
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  metricThresholds: EvaluationMetricThreshold[];
+  /**
+   * @maxItems 50
+   */
+  metricValues: EvaluationMetricValue[];
+  /**
+   * @maxItems 50
+   */
+  baselineMetricValues: EvaluationMetricValue[];
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  uncertainty: EvaluationUncertainty[];
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  limitations: EvaluationGateLimitation[];
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  findings: EvaluationGateFinding[];
+  verdict: "Pass" | "Fail" | "Inconclusive";
+  signedBy: Actor;
+  createdAt: Time;
+  digest: Digest;
+}
+export interface LearningGateListResult {
+  /**
+   * @maxItems 100
+   */
+  gates: EvaluationGateArtifactRecord[];
+  counts: {
+    [k: string]: number;
+  };
+  cursor?: string;
+  asOf: Time;
+}
+export interface ConfigureLearningReleasePayload {
+  candidateRef: EntityRef;
+  gateRef: EntityRef;
+  release: ReleaseRecord;
+  assignment: StaticAssignmentRecord;
+  purposeNames?: LifecyclePurposeNames;
 }
 export interface AgentTaskContract {
   goalArtifactRef: {
@@ -10795,6 +13072,30 @@ export interface ReviseResponsibilityRouteCommand {
   payload: ReviseResponsibilityRoutePayload;
   expectedVersion: Version;
 }
+export interface DelegateResponsibilitySlotCommand {
+  type: "abh.responsibility-requests.delegate-slot";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.responsibility-request";
+    id: UUID;
+  };
+  payload: ReviseResponsibilityRoutePayload;
+  expectedVersion: Version;
+}
+export interface EscalateResponsibilitySlotCommand {
+  type: "abh.responsibility-requests.escalate-slot";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.responsibility-request";
+    id: UUID;
+  };
+  payload: ReviseResponsibilityRoutePayload;
+  expectedVersion: Version;
+}
 export interface RevokeResponsibilityCommand {
   type: "abh.responsibilities.revoke";
   schemaVersion: "0.1.0";
@@ -10841,6 +13142,86 @@ export interface OpenTerminalExceptionCommand {
     id: UUID;
   };
   payload: OpenTerminalExceptionPayload;
+}
+export interface ResolveExceptionCommand {
+  type: "abh.exceptions.resolve";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.exception";
+    id: UUID;
+  };
+  payload: ResolveExceptionPayload;
+  expectedVersion: Version;
+}
+export interface ResolveExceptionHttpRequest {
+  target: {
+    type: "abh.exception";
+    id: UUID;
+  };
+  payload: ResolveExceptionPayload;
+  expectedVersion?: Version;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface ApplyExceptionResolutionEffectCommand {
+  type: "abh.exceptions.apply-resolution-effect";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.exception-resolution";
+    id: UUID;
+  };
+  payload: ApplyExceptionResolutionEffectPayload;
+}
+export interface ApplyExceptionResolutionEffectHttpRequest {
+  target: {
+    type: "abh.exception-resolution";
+    id: UUID;
+  };
+  payload: ApplyExceptionResolutionEffectPayload;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface ProposeCorrectionCommand {
+  type: "abh.corrections.propose";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.correction";
+    id: UUID;
+  };
+  payload: ProposeCorrectionPayload;
+}
+export interface ProposeCorrectionHttpRequest {
+  target: {
+    type: "abh.correction";
+    id: UUID;
+  };
+  payload: ProposeCorrectionPayload;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface ApplyCorrectionCommand {
+  type: "abh.corrections.apply";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.correction";
+    id: UUID;
+  };
+  payload: ApplyCorrectionPayload;
+  expectedVersion: Version;
+}
+export interface ApplyCorrectionHttpRequest {
+  target: {
+    type: "abh.correction";
+    id: UUID;
+  };
+  payload: ApplyCorrectionPayload;
+  expectedVersion?: Version;
+  idempotencyKey?: IdempotencyKey;
 }
 export interface CreateScopeAuthorityCommand {
   type: "abh.execution-authority.create";
@@ -11160,6 +13541,18 @@ export interface IssueDispatchPermitCommand {
   payload: IssueDispatchPermitPayload;
   expectedVersion: Version;
 }
+export interface SafeRetryOperationCommand {
+  type: "abh.operations.safe-retry";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.operation";
+    id: UUID;
+  };
+  payload: SafeRetryOperationPayload;
+  expectedVersion: Version;
+}
 export interface ProposeActionCommand {
   type: "abh.actions.propose";
   schemaVersion: "0.1.0";
@@ -11177,6 +13570,25 @@ export interface ProposeActionHttpRequest {
     id: UUID;
   };
   payload: ProposeActionPayload;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface StartSafetyStopCommand {
+  type: "abh.actions.start-safety-stop";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: ProposeSafetyStopPayload;
+}
+export interface StartSafetyStopHttpRequest {
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: ProposeSafetyStopPayload;
   idempotencyKey?: IdempotencyKey;
 }
 export interface CancelActionCommand {
@@ -11298,6 +13710,39 @@ export interface ConfigureLedgerCommand {
   };
   payload: ConfigureLedgerPayload;
 }
+export interface RegisterLedgerUnitCommand {
+  type: "abh.ledger-units.register";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.unit";
+    id: UUID;
+  };
+  payload: RegisterLedgerUnitPayload;
+}
+export interface RegisterLedgerPeriodCommand {
+  type: "abh.ledger-periods.register";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.period";
+    id: UUID;
+  };
+  payload: RegisterLedgerPeriodPayload;
+}
+export interface ApplyLedgerCorrectionCommand {
+  type: "abh.ledger-corrections.apply";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.ledger-correction";
+    id: UUID;
+  };
+  payload: ApplyLedgerCorrectionPayload;
+}
 export interface ReserveAllCommand {
   type: "abh.reservations.reserve";
   schemaVersion: "0.1.0";
@@ -11378,6 +13823,36 @@ export interface StopStaticAssignmentCommand {
   };
   payload: StopStaticAssignmentPayload;
   expectedVersion: Version;
+}
+export interface StopStaticAssignmentHttpRequest {
+  target: {
+    type: "abh.assignment";
+    id: UUID;
+  };
+  payload: StopStaticAssignmentPayload;
+  expectedVersion?: Version;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface RollbackStaticAssignmentCommand {
+  type: "abh.assignments.rollback";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.assignment";
+    id: UUID;
+  };
+  payload: RollbackStaticAssignmentPayload;
+  expectedVersion: Version;
+}
+export interface RollbackStaticAssignmentHttpRequest {
+  target: {
+    type: "abh.assignment";
+    id: UUID;
+  };
+  payload: RollbackStaticAssignmentPayload;
+  expectedVersion?: Version;
+  idempotencyKey?: IdempotencyKey;
 }
 export interface StoreInlineArtifactCommand {
   type: "abh.artifacts.store-inline";
@@ -11713,6 +14188,113 @@ export interface RecoverRunCommand {
   payload: RecoverRunPayload;
   expectedVersion: Version;
 }
+export interface StopStalledRunCommand {
+  type: "abh.runs.stop-stalled";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.run";
+    id: UUID;
+  };
+  payload: StopStalledRunPayload;
+  expectedVersion: Version;
+}
+export interface WakeRunCommand {
+  type: "abh.runs.wake";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.run";
+    id: UUID;
+  };
+  payload: WakeRunPayload;
+  expectedVersion: Version;
+}
+export interface ProposeGraphPatchCommand {
+  type: "abh.graph-patches.propose";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.run";
+    id: UUID;
+  };
+  payload: ProposeGraphPatchPayload;
+  expectedVersion: Version;
+}
+export interface ClaimTaskCommand {
+  type: "abh.tasks.claim";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.task";
+    id: UUID;
+  };
+  payload: ClaimTaskPayload;
+  expectedVersion: Version;
+}
+export interface PrepareInvocationCommand {
+  type: "abh.invocations.prepare";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.task";
+    id: UUID;
+  };
+  payload: PrepareInvocationPayload;
+  expectedVersion: Version;
+}
+export interface FinalizeInvocationCommand {
+  type: "abh.invocations.finalize";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.invocation";
+    id: UUID;
+  };
+  payload: FinalizeInvocationPayload;
+  expectedVersion: Version;
+}
+export interface CompleteInvocationCommand {
+  type: "abh.invocations.complete";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.invocation";
+    id: UUID;
+  };
+  payload: CompleteInvocationPayload;
+  expectedVersion: Version;
+}
+export interface ObserveLateInvocationCommand {
+  type: "abh.invocations.observe-late";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.invocation";
+    id: UUID;
+  };
+  payload: ObserveLateInvocationPayload;
+}
+export interface CommitVerifiedTaskCommand {
+  type: "abh.tasks.commit-verified";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.task";
+    id: UUID;
+  };
+  payload: CommitVerifiedTaskPayload;
+  expectedVersion: Version;
+}
 export interface SubmitVerificationCommand {
   type: "abh.verification.submit";
   schemaVersion: "0.1.0";
@@ -11770,11 +14352,198 @@ export interface CaptureSignalHttpRequest {
   payload: CaptureSignalPayload;
   idempotencyKey?: IdempotencyKey;
 }
+export interface BuildCaseCommand {
+  type: "abh.learning.build-case";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: BuildCasePayload;
+}
+export interface BuildCaseHttpRequest {
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: BuildCasePayload;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface CreateCandidateCommand {
+  type: "abh.learning.create-candidate";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: CreateCandidatePayload;
+}
+export interface CreateCandidateHttpRequest {
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: CreateCandidatePayload;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface RequestEvaluationCommand {
+  type: "abh.learning.request-evaluation";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: RequestEvaluationPayload;
+}
+export interface RequestEvaluationHttpRequest {
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: RequestEvaluationPayload;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface RetryEvaluationCommand {
+  type: "abh.learning.retry-evaluation";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: RetryEvaluationPayload;
+}
+export interface RetryEvaluationHttpRequest {
+  target: {
+    type: "abh.organization";
+    id: UUID;
+  };
+  payload: RetryEvaluationPayload;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface SubmitEvaluationResultCommand {
+  type: "abh.learning.submit-evaluation-result";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.evaluation-run";
+    id: UUID;
+  };
+  payload: SubmitEvaluationResultPayload;
+  expectedVersion: Version;
+}
+export interface ExpireEvaluationRunCommand {
+  type: "abh.learning.expire-evaluation";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.evaluation-run";
+    id: UUID;
+  };
+  payload: ExpireEvaluationPayload;
+  expectedVersion: Version;
+}
+export interface BuildGateCommand {
+  type: "abh.learning.build-gate";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.learning-candidate";
+    id: UUID;
+  };
+  payload: BuildGatePayload;
+  expectedVersion: Version;
+}
+export interface ConfigureLearningCandidateReleaseCommand {
+  type: "abh.releases.configure-learning-candidate";
+  schemaVersion: "0.1.0";
+  commandId: UUID;
+  idempotencyKey: IdempotencyKey;
+  target: {
+    type: "abh.release";
+    id: UUID;
+  };
+  payload: ConfigureLearningReleasePayload;
+}
+export interface ConfigureLearningCandidateReleaseHttpRequest {
+  target: {
+    type: "abh.release";
+    id: UUID;
+  };
+  payload: ConfigureLearningReleasePayload;
+  idempotencyKey?: IdempotencyKey;
+}
+export interface GetAssignmentQuery {
+  id: UUID;
+}
+export interface ListAssignmentsQuery {
+  releaseId?: UUID;
+  assignmentStatus?: AssignmentState;
+  cursor?: string;
+  limit?: number;
+}
+export interface ListLearningSignalsQuery {
+  signalType?: RegisteredName;
+  scopeId?: UUID;
+  cursor?: string;
+  limit?: number;
+}
+export interface ListLearningCasesQuery {
+  rootCauseCode?: RegisteredName;
+  scopeId?: UUID;
+  cursor?: string;
+  limit?: number;
+}
+export interface ListLearningCandidatesQuery {
+  candidateStatus?: "Draft";
+  assetKind?: RegisteredName;
+  scopeId?: UUID;
+  cursor?: string;
+  limit?: number;
+}
+export interface ListEvaluationRunsQuery {
+  candidateId?: UUID;
+  runStatus?: "Queued" | "Completed" | "Inconclusive";
+  cursor?: string;
+  limit?: number;
+}
+export interface GetEvaluationRunQuery {
+  id: UUID;
+}
+export interface GetEvaluationResultQuery {
+  id: UUID;
+}
+export interface GetLearningGateQuery {
+  id: UUID;
+}
+export interface ListLearningGatesQuery {
+  candidateId?: UUID;
+  verdict?: "Pass" | "Fail" | "Inconclusive";
+  cursor?: string;
+  limit?: number;
+}
+export interface GetCorrectionQuery {
+  id: UUID;
+}
 export interface QueryPackCapabilitiesQuery {
   kind: RegisteredName;
   capabilityId?: RegisteredName;
   version?: ExactVersion;
   versionRange?: string;
+  safetyStop?: boolean;
+  limit: number;
+}
+export interface ListSafetyStopsQuery {
   limit: number;
 }
 export interface GetMissionQuery {
@@ -11883,6 +14652,13 @@ export interface ErrorResponse {
     | {
         code: "RUN_ALREADY_ACTIVE";
         category: "Conflict";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
+        code: "TASK_COMMIT_INCOMPLETE";
+        category: "Precondition";
         message: string;
         retryable: false;
         correlationId: UUID;
@@ -12147,6 +14923,13 @@ export interface ErrorResponse {
         correlationId: UUID;
       }
     | {
+        code: "DELEGATION_EXCEEDS_AUTHORITY";
+        category: "Authorization";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
         code: "DECIDER_NOT_ELIGIBLE";
         category: "Authorization";
         message: string;
@@ -12154,7 +14937,21 @@ export interface ErrorResponse {
         correlationId: UUID;
       }
     | {
+        code: "ROUTE_DEPTH_EXCEEDED";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
         code: "OPERATION_FACT_CONFLICT";
+        category: "Conflict";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
+        code: "CORRECTION_STALE";
         category: "Conflict";
         message: string;
         retryable: false;
@@ -12176,6 +14973,55 @@ export interface ErrorResponse {
       }
     | {
         code: "LEARNING_PURPOSE_DENIED";
+        category: "Authorization";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
+        code: "CASE_EVIDENCE_INCOMPLETE";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
+        code: "CANDIDATE_SCOPE_EXCEEDED";
+        category: "Authorization";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
+        code: "EVALUATION_PROFILE_UNAVAILABLE";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
+        code: "EVALUATION_PROFILE_AMBIGUOUS";
+        category: "Conflict";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
+        code: "GATE_EVIDENCE_INVALID";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
+        code: "GATE_POLICY_INCOMPLETE";
+        category: "Precondition";
+        message: string;
+        retryable: false;
+        correlationId: UUID;
+      }
+    | {
+        code: "EVALUATOR_IDENTITY_INVALID";
         category: "Authorization";
         message: string;
         retryable: false;

@@ -17,7 +17,7 @@ if (decision) {
 
 Decision 入口：get、listInbox、submit、withdraw。写入输入是 `{ id, expectedVersion, idempotencyKey, payload }`，payload 分别复用 SubmitDecisionPayload / WithdrawDecisionPayload。客户端把版本变成强 If-Match，原样保留幂等键；packageDigest、response 和 conditionRefs 必须来自明确业务操作。相同操作查回/重放时保留原幂等键和参数；不自动换键或重试。
 
-Action 入口：get(id, query?)、list、cancel、requestAuthorization，以及低层 proposeFromArtifact。后者输入 `{ organizationId, idempotencyKey, payload }`，payload 使用现有 ProposeActionPayload，要求服务器已有正式 Artifact/来源引用；Create 不发送 If-Match。它不实现 V1 的业务输入上传和稳定子键编排。Core actionProposal、actionQuery、actionList、actionCancellation 与 actionAuthorizationRequest 已通过真实身份/Grant/Owner 及客户端验证。requestAuthorization 返回持久受理的 202 回执和 Action trackingRef，后续由显式安装的 Service 宿主推进，不能把受理视为已经执行授权。StoreArtifact HTTP 和高层 actions.propose 自动编排尚未完成。
+Action 入口：get(id, query?)、list、cancel、requestAuthorization、proposeFromArtifact 和高层 propose。低层提案输入 `{ organizationId, idempotencyKey, payload }`，payload 使用现有 ProposeActionPayload，要求服务器已有正式 Artifact/来源引用；Create 不发送 If-Match。高层 `actions.propose` 先规范化 JSON input 并调用 StoreArtifact，再以同一幂等键派生子键提交 Action Proposal。Core actionProposal、actionQuery、actionList、actionCancellation、actionAuthorizationRequest、store-inline 和高层自动编排已通过真实身份/Grant/Owner 及客户端验证。requestAuthorization 返回持久受理的 202 回执和 Action trackingRef，后续由显式安装的 Service 宿主推进，不能把受理视为已经执行授权。
 
 baseUrl 必须是无凭据、查询串和片段的 HTTP(S) 地址，可包含部署路径前缀。headers 回调每次调用重新获取凭据并接收 AbortSignal；方法、内容类型、版本和幂等键由本次协议调用决定，不继承凭据回调的陈旧值。禁止自动跟随重定向。
 
@@ -31,13 +31,15 @@ AbhClientError.code 为 INVALID_ARGUMENT、TRANSPORT_ERROR、PROTOCOL_ERROR 或 
 
 客户端不把错误消息作为回滚证明，不自动重试写操作，不签发权限。取消和期限结束仅停止客户端等待；持久结果应通过原命令和对象查询确认。Inbox nextCursor 原样交回下一页，保留筛选条件；空页仍可能带 nextCursor。客户端不将来源指纹水位用于订阅或 GC。
 
-验证位于 `test/client.test.ts`，覆盖四个 Decision 和五个 Action 调用、幂等/版本头、参数与 DTO 校验、错误/期限/流上限、晚到响应取消，以及 esbuild 浏览器依赖图；`test/decisions.test.ts` 另覆盖实际身份、Grant、PostgreSQL 和提交效果的客户端重放。完整客户端 SDK、Mission、上传便捷流程、发行/独立上手验收仍在 V1 缺口清单中。
+验证位于 `test/client.test.ts`，覆盖四个 Decision 和五个 Action 调用、幂等/版本头、参数与 DTO 校验、错误/期限/流上限、晚到响应取消，以及 esbuild 浏览器依赖图；`test/decisions.test.ts` 另覆盖实际身份、Grant、PostgreSQL 和提交效果的客户端重放。完整客户端 SDK、发行/独立上手验收仍在 V1 缺口清单中。
 
-`artifacts.storeInline({ organizationId, idempotencyKey, payload })` 提交 StoreInlineArtifactPayload，不发送 If-Match，返回正式 Artifact objectRef 和原 commandId。它与 `actions.proposeFromArtifact` 可组合使用，重试需保持同一幂等键和内容；201 是原存储受理事实，后续读取/提案仍检查当前 Artifact 状态与权限。大对象流式上传和高层提案自动子键编排仍待实现。
+`artifacts.storeInline({ organizationId, idempotencyKey, payload })` 提交 StoreInlineArtifactPayload，不发送 If-Match，返回正式 Artifact objectRef 和原 commandId。它与 `actions.proposeFromArtifact` 可组合使用，重试需保持同一幂等键和内容；201 是原存储受理事实，后续读取/提案仍检查当前 Artifact 状态与权限。
+
+`artifacts.storeObject({ organizationId, idempotencyKey, payload, content, digest, declaredSizeBytes, authorizedContextRef })` 以 binary body 加 canonical metadata header 直传大对象。客户端把 `ReadableStream`/async iterable 转成上传流，服务端执行当前 Grant/治理、T1 预约、ObjectStore put、digest/size 复核和 T2 发布；同一幂等键重放返回同一 Artifact 记录。响应丢失时必须用同一键和规范 metadata 重试，不能自动新建上传。
 
 ### 高层 JSON 提案
 
-`actions.propose({ organizationId, idempotencyKey, input, artifact, action })` 先规范化 JSON input，以 application/json 保存 64 KiB 以内的 Artifact，再以其引用同时作为 payloadRef/sourceProposalRef 创建 Action。artifact 提供 owner、用途、数据分级、来源、地域和保留参数；action 提供既有提案类型、目标和来源版本，不能覆盖权限或受信业务定义。两步在首次写入前校验，输入在异步调用前复制，整次调用共享期限和取消信号。
+`actions.propose({ organizationId, idempotencyKey, input, artifact, action })` 先规范化 JSON input，以 application/json 保存 64 KiB 以内的 Artifact，再以其引用同时作为 payloadRef/sourceProposalRef 创建 Action。artifact 提供 owner、用途、数据分级、来源、地域和保留参数；action 提供既有提案类型、目标和来源版本，不能覆盖权限或受信业务定义。两步在首次写入前校验，输入在异步调用前复制，整次调用共享期限和取消信号。`defineBusiness` 现提供封闭声明、稳定摘要和本地输入校验；`@abh/core/pack` 的 `compileBusinessPack` 可编译为未签名本地 Manifest 和显式 `NotRun` CTK 计划。签名、部署验收和执行授权仍待部署方完成。
 
 子键使用固定版本命名空间、组织和调用者幂等键的摘要，不包含输入内容。同键异参交给真实 Owner 拒绝。响应丢失后以同一调用参数重试，原存储/提案回执去重，不自动重试或删除已提交 Artifact。部分写入后的取消返回 Unknown；错误响应也不代表前一步没有提交。此方法只编排公开存储与提案，服务端提案后的自动创建授权请求与生产推进安装仍待完成。
 

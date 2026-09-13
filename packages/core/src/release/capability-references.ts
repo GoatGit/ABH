@@ -20,11 +20,12 @@ export interface CapabilityReferenceAdmission {
  * references outside PinSet require their own Owner checks. Start a new sweep
  * after reaching the end; UUID ordering is pagination, not a time watermark. */
 export async function queryCapabilityReferences(database:Database,context:VerifiedContext,options:TransactionOptions,
- input:{capability:CapabilityRef;limit?:number;afterId?:string},admission:CapabilityReferenceAdmission){
+ input:{capability:CapabilityRef;limit?:number;afterId?:string;beforeAt?:string},admission:CapabilityReferenceAdmission){
  requireVerifiedContext(context);
  const capability=contract('CapabilityRef',structuredClone(input.capability)),limit=input.limit??100,afterId=input.afterId,limits={...options};
  if(!Number.isSafeInteger(limit)||limit<1||limit>100)throw new CoreError('INVALID_ARGUMENT');
  if(afterId!==undefined)contract('UUID',afterId);
+ if(input.beforeAt!==undefined&&Number.isNaN(Date.parse(input.beforeAt)))throw new CoreError('INVALID_ARGUMENT');
  const fences=admission.fenceRefs.bind(admission),admit=admission.admit.bind(admission),canRead=admission.canRead.bind(admission);
  return database.transaction(context,limits,async tx=>{
   const c=tx.context.tenant,work=migrationWorkOptions(tx,limits),scope={type:'abh.organization',id:c.resourceOrganizationId,version:1};
@@ -34,7 +35,8 @@ export async function queryCapabilityReferences(database:Database,context:Verifi
   const pattern=JSON.stringify({pins:[{capabilityExactRefs:[capability]}]});
   const rows=await tx.owner('CapabilityRelease')`SELECT id,version,record,subject_type,subject_id,subject_input_digest,required_slots_digest FROM release.pin_sets
    WHERE resource_organization_id=${c.resourceOrganizationId} AND deleted_at IS NULL AND ${c.purposeOfUse}=ANY(purpose_names)
-    AND (workspace_id IS NULL OR workspace_id=${c.workspaceId??null}::uuid) AND (${afterId??null}::uuid IS NULL OR id>${afterId??null}::uuid)
+   AND (workspace_id IS NULL OR workspace_id=${c.workspaceId??null}::uuid) AND (${afterId??null}::uuid IS NULL OR id>${afterId??null}::uuid)
+   AND (${input.beforeAt??null}::timestamptz IS NULL OR created_at<${input.beforeAt ?? null}::timestamptz)
     AND record @> ${pattern}::text::jsonb ORDER BY id LIMIT ${limit+1}`;
   const scanned=rows.slice(0,limit),references:{pinSetRef:EntityRef;subjectRef:PinSet['subjectRef'];pinSetDigest:string;behaviorSlots:string[]}[]=[];
   for(const row of scanned){

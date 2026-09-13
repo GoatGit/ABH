@@ -945,6 +945,22 @@ export const contractShapes = {
       }
     }
   },
+  "ProposeSafetyStopPayload": {
+    "properties": {
+      "proposal": {
+        "ref": "ProposeActionPayload"
+      },
+      "fenceRef": {
+        "ref": "EntityRef"
+      },
+      "fencingToken": {
+        "ref": "Version"
+      },
+      "unresolvedOperationRef": {
+        "ref": "OperationRef"
+      }
+    }
+  },
   "ActionProposal": {
     "properties": {
       "actionType": {
@@ -1661,6 +1677,230 @@ export const contractShapes = {
           },
           "trackingRef": {
             "ref": "ActionRef"
+          }
+        }
+      }
+    },
+    "constants": {
+      "success": true
+    }
+  },
+  "LearningCaseCreatedResponse": {
+    "properties": {
+      "success": {},
+      "data": {
+        "properties": {
+          "objectRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.learning-case"
+            }
+          },
+          "commandId": {
+            "ref": "UUID"
+          },
+          "learningCase": {
+            "ref": "LearningCaseRecord"
+          }
+        }
+      }
+    },
+    "constants": {
+      "success": true
+    }
+  },
+  "LearningCandidateCreatedResponse": {
+    "properties": {
+      "success": {},
+      "data": {
+        "properties": {
+          "objectRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.learning-candidate"
+            }
+          },
+          "commandId": {
+            "ref": "UUID"
+          },
+          "learningCandidate": {
+            "ref": "LearningCandidateRecord"
+          }
+        }
+      }
+    },
+    "constants": {
+      "success": true
+    }
+  },
+  "EvaluationRunCreatedResponse": {
+    "properties": {
+      "success": {},
+      "data": {
+        "properties": {
+          "objectRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.evaluation-run"
+            }
+          },
+          "commandId": {
+            "ref": "UUID"
+          },
+          "evaluationRun": {
+            "ref": "EvaluationRunRecord"
+          }
+        }
+      }
+    },
+    "constants": {
+      "success": true
+    }
+  },
+  "CorrectionProposedResponse": {
+    "properties": {
+      "success": {},
+      "data": {
+        "properties": {
+          "objectRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.correction"
+            }
+          },
+          "commandId": {
+            "ref": "UUID"
+          },
+          "correction": {
+            "ref": "CorrectionRecord"
+          }
+        }
+      }
+    },
+    "constants": {
+      "success": true
+    }
+  },
+  "CorrectionAppliedResponse": {
+    "properties": {
+      "success": {},
+      "data": {
+        "properties": {
+          "objectRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.correction"
+            }
+          },
+          "commandId": {
+            "ref": "UUID"
+          },
+          "application": {
+            "ref": "CorrectionApplicationRecord"
+          }
+        }
+      }
+    },
+    "constants": {
+      "success": true
+    }
+  },
+  "ExceptionResolvedResponse": {
+    "properties": {
+      "success": {},
+      "data": {
+        "properties": {
+          "objectRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.exception"
+            }
+          },
+          "commandId": {
+            "ref": "UUID"
+          },
+          "resolution": {
+            "ref": "ExceptionResolutionRecord"
+          }
+        }
+      }
+    },
+    "constants": {
+      "success": true
+    }
+  },
+  "ExceptionResolutionEffectResponse": {
+    "properties": {
+      "success": {},
+      "data": {
+        "properties": {
+          "objectRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.exception-resolution-effect"
+            }
+          },
+          "commandId": {
+            "ref": "UUID"
+          },
+          "effect": {
+            "ref": "ExceptionResolutionEffectRecord"
           }
         }
       }
@@ -3951,6 +4191,188 @@ export const contractShapes = {
       }
     }
   },
+  "LedgerUnitRecord": {
+    "properties": {
+      "unitRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {
+            "properties": {
+              "type": {}
+            },
+            "constants": {
+              "type": "abh.unit"
+            }
+          }
+        ]
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "name": {
+        "ref": "RegisteredName"
+      },
+      "kind": {},
+      "currency": {},
+      "precision": {},
+      "recordedAt": {
+        "ref": "Time"
+      }
+    }
+  },
+  "LedgerPeriodRecord": {
+    "properties": {
+      "periodRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {
+            "properties": {
+              "type": {}
+            },
+            "constants": {
+              "type": "abh.period"
+            }
+          }
+        ]
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "startsAt": {
+        "ref": "Time"
+      },
+      "endsAt": {
+        "ref": "Time"
+      },
+      "recordedAt": {
+        "ref": "Time"
+      }
+    }
+  },
+  "RegisterLedgerUnitPayload": {
+    "properties": {
+      "name": {
+        "ref": "RegisteredName"
+      },
+      "kind": {},
+      "currency": {},
+      "precision": {},
+      "purposeNames": {
+        "ref": "LifecyclePurposeNames"
+      }
+    },
+    "branches": [
+      {},
+      {}
+    ]
+  },
+  "RegisterLedgerPeriodPayload": {
+    "properties": {
+      "startsAt": {
+        "ref": "Time"
+      },
+      "endsAt": {
+        "ref": "Time"
+      },
+      "purposeNames": {
+        "ref": "LifecyclePurposeNames"
+      }
+    }
+  },
+  "LedgerCorrectionRecord": {
+    "properties": {
+      "correctionRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {
+            "properties": {
+              "type": {}
+            },
+            "constants": {
+              "type": "abh.ledger-correction"
+            }
+          }
+        ]
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "ledgerRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {
+            "properties": {
+              "type": {}
+            },
+            "constants": {
+              "type": "abh.ledger"
+            }
+          }
+        ]
+      },
+      "sourceRef": {
+        "ref": "EntityRef"
+      },
+      "kind": {},
+      "usageDelta": {
+        "ref": "Decimal"
+      },
+      "conversionRef": {
+        "ref": "EntityRef"
+      },
+      "inputDigest": {
+        "ref": "Digest"
+      },
+      "recordedAt": {
+        "ref": "Time"
+      }
+    }
+  },
+  "ApplyLedgerCorrectionPayload": {
+    "properties": {
+      "ledgerRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {
+            "properties": {
+              "type": {}
+            },
+            "constants": {
+              "type": "abh.ledger"
+            }
+          }
+        ]
+      },
+      "sourceRef": {
+        "ref": "EntityRef"
+      },
+      "kind": {},
+      "usageDelta": {
+        "ref": "Decimal"
+      },
+      "conversionRef": {
+        "ref": "EntityRef"
+      },
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      }
+    },
+    "branches": [
+      {}
+    ]
+  },
   "ReservationRecord": {
     "properties": {
       "reservationRef": {
@@ -4213,6 +4635,138 @@ export const contractShapes = {
         "ref": "Time"
       }
     }
+  },
+  "LedgerBalanceDiagnostic": {
+    "properties": {
+      "limit": {
+        "ref": "NonnegativeDecimal"
+      },
+      "confirmedUsage": {
+        "ref": "NonnegativeDecimal"
+      },
+      "heldReservation": {
+        "ref": "NonnegativeDecimal"
+      },
+      "openCommitment": {
+        "ref": "NonnegativeDecimal"
+      }
+    }
+  },
+  "LedgerDiagnostic": {
+    "properties": {
+      "ledgerRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {
+            "properties": {
+              "type": {}
+            },
+            "constants": {
+              "type": "abh.ledger"
+            }
+          }
+        ]
+      },
+      "resourceType": {
+        "ref": "RegisteredName"
+      },
+      "meteringMode": {},
+      "unit": {
+        "ref": "RegisteredName"
+      },
+      "status": {
+        "ref": "LedgerState"
+      },
+      "periodRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {
+            "properties": {
+              "type": {}
+            },
+            "constants": {
+              "type": "abh.period"
+            }
+          }
+        ]
+      },
+      "entryCount": {},
+      "lastEntryRef": {
+        "branches": [
+          {},
+          {
+            "branches": [
+              {
+                "ref": "EntityRef"
+              },
+              {
+                "properties": {
+                  "type": {}
+                },
+                "constants": {
+                  "type": "abh.ledger-entry"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "current": {
+        "ref": "LedgerBalanceDiagnostic"
+      },
+      "recomputed": {
+        "ref": "LedgerBalanceDiagnostic"
+      },
+      "heldReservationCount": {},
+      "expiredHeldCount": {},
+      "openCommitmentCount": {},
+      "openCommitmentRemaining": {
+        "ref": "NonnegativeDecimal"
+      },
+      "stopReasons": {
+        "items": {}
+      }
+    }
+  },
+  "CliDoctorLedgerResult": {
+    "properties": {
+      "checkId": {},
+      "organizationId": {
+        "ref": "UUID"
+      },
+      "status": {},
+      "errorCode": {},
+      "violationCount": {},
+      "ledgers": {
+        "items": {
+          "ref": "LedgerDiagnostic"
+        }
+      },
+      "commandRef": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "remediation": {
+        "branches": [
+          {},
+          {}
+        ]
+      }
+    },
+    "constants": {
+      "checkId": "ledger.balance-audit"
+    },
+    "branches": [
+      {},
+      {},
+      {}
+    ]
   },
   "ConfigureLedgerPayload": {
     "properties": {
@@ -4503,6 +5057,32 @@ export const contractShapes = {
           "ref": "EntityRef"
         },
         "set": true
+      },
+      "stopReason": {
+        "ref": "Reason"
+      },
+      "stopEvidenceRef": {
+        "ref": "EntityRef"
+      },
+      "rollbackOfAssignmentRef": {
+        "ref": "EntityRef"
+      },
+      "rollbackFromReleaseRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "StaticAssignmentListResult": {
+    "properties": {
+      "assignments": {
+        "items": {
+          "ref": "StaticAssignmentRecord"
+        }
+      },
+      "counts": {},
+      "cursor": {},
+      "asOf": {
+        "ref": "Time"
       }
     }
   },
@@ -4525,6 +5105,25 @@ export const contractShapes = {
   "StopStaticAssignmentPayload": {
     "properties": {
       "evidenceRef": {
+        "ref": "EntityRef"
+      },
+      "reason": {
+        "ref": "Reason"
+      }
+    }
+  },
+  "RollbackStaticAssignmentPayload": {
+    "properties": {
+      "previousReleaseRef": {
+        "ref": "EntityRef"
+      },
+      "gateRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "compatibilityRef": {
         "ref": "EntityRef"
       },
       "reason": {
@@ -4834,6 +5433,202 @@ export const contractShapes = {
       }
     }
   },
+  "CorrectionRecord": {
+    "properties": {
+      "correctionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.correction"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "subjectRef": {
+        "ref": "EntityRef"
+      },
+      "subjectVersion": {
+        "ref": "Version"
+      },
+      "beforeRef": {
+        "ref": "EntityRef"
+      },
+      "proposedAfterRef": {
+        "ref": "EntityRef"
+      },
+      "targetOwner": {},
+      "reason": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "responsibilityRef": {
+        "ref": "EntityRef"
+      },
+      "purpose": {
+        "ref": "RegisteredName"
+      },
+      "receiptRef": {
+        "ref": "CommandRef"
+      },
+      "proposedBy": {
+        "ref": "Actor"
+      },
+      "proposedAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "CorrectionApplicationRecord": {
+    "properties": {
+      "applicationRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.correction-application"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "correctionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.correction"
+        }
+      },
+      "subjectRef": {
+        "ref": "EntityRef"
+      },
+      "subjectVersionBefore": {
+        "ref": "Version"
+      },
+      "targetOwner": {},
+      "authorityRef": {
+        "ref": "EntityRef"
+      },
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "resultRef": {
+        "ref": "EntityRef"
+      },
+      "resultVersion": {
+        "ref": "Version"
+      },
+      "receiptRef": {
+        "ref": "CommandRef"
+      },
+      "appliedBy": {
+        "ref": "Actor"
+      },
+      "appliedAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "ApplyCorrectionPayload": {
+    "properties": {
+      "subjectRef": {
+        "ref": "EntityRef"
+      },
+      "authorityRef": {
+        "ref": "EntityRef"
+      },
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "candidate": {
+        "ref": "CorrectionCapabilityCandidate"
+      }
+    }
+  },
+  "CorrectionCapabilityCandidate": {
+    "properties": {
+      "caseRef": {
+        "ref": "EntityRef"
+      },
+      "baseVersion": {
+        "ref": "Version"
+      },
+      "assetKind": {
+        "ref": "RegisteredName"
+      },
+      "scopeRef": {
+        "ref": "EntityRef"
+      },
+      "risk": {
+        "ref": "RegisteredName"
+      }
+    }
+  },
+  "ProposeCorrectionPayload": {
+    "properties": {
+      "subjectRef": {
+        "ref": "EntityRef"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      },
+      "beforeRef": {
+        "ref": "EntityRef"
+      },
+      "newArtifactRef": {
+        "ref": "EntityRef"
+      },
+      "targetOwner": {},
+      "reason": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "responsibilityRef": {
+        "ref": "EntityRef"
+      },
+      "purpose": {
+        "ref": "RegisteredName"
+      }
+    }
+  },
   "ResponsibilitySeat": {
     "properties": {
       "seatId": {
@@ -4924,7 +5719,8 @@ export const contractShapes = {
       },
       "status": {
         "ref": "ResponsibilityRequestState"
-      }
+      },
+      "escalationDepth": {}
     }
   },
   "DecisionRecord": {
@@ -5279,7 +6075,8 @@ export const contractShapes = {
       },
       "purposeNames": {
         "ref": "LifecyclePurposeNames"
-      }
+      },
+      "safetyStop": {}
     }
   },
   "PolicyDecision": {
@@ -6131,6 +6928,50 @@ export const contractShapes = {
         "constants": {
           "type": "abh.reconciliation"
         }
+      },
+      "safetyStopOperationRef": {
+        "ref": "OperationRef"
+      }
+    }
+  },
+  "SafetyStopCandidate": {
+    "properties": {
+      "fenceRef": {
+        "ref": "EntityRef"
+      },
+      "connectionRef": {
+        "ref": "EntityRef"
+      },
+      "accountRef": {
+        "ref": "EntityRef"
+      },
+      "resourceKey": {
+        "ref": "RegisteredName"
+      },
+      "fencingToken": {
+        "ref": "Version"
+      },
+      "unresolvedOperationRef": {
+        "ref": "OperationRef"
+      },
+      "safetyStopOperationRef": {
+        "ref": "OperationRef"
+      },
+      "blockedByReportRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "SafetyStopListResult": {
+    "properties": {
+      "candidates": {
+        "items": {
+          "ref": "SafetyStopCandidate"
+        }
+      },
+      "complete": {},
+      "asOf": {
+        "ref": "Time"
       }
     }
   },
@@ -6413,6 +7254,30 @@ export const contractShapes = {
       },
       "leaseFencingToken": {
         "ref": "Version"
+      }
+    }
+  },
+  "SafeRetryOperationPayload": {
+    "properties": {
+      "operationRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.operation"
+        }
+      },
+      "expectedPermitRef": {
+        "ref": "EntityRef"
+      },
+      "permit": {
+        "ref": "IssueDispatchPermitPayload"
       }
     }
   },
@@ -6703,6 +7568,524 @@ export const contractShapes = {
       },
       "leaseFencingToken": {
         "ref": "Version"
+      }
+    }
+  },
+  "WakeRunPayload": {
+    "properties": {
+      "runRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.run"
+        }
+      },
+      "causeRef": {
+        "ref": "EntityRef"
+      },
+      "waitRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "GraphPatchNode": {
+    "properties": {
+      "nodeKey": {
+        "ref": "RegisteredName"
+      },
+      "kind": {},
+      "inputRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "outputSchemaRef": {
+        "ref": "EntityRef"
+      },
+      "deadlineSeconds": {},
+      "required": {}
+    }
+  },
+  "GraphPatchEdge": {
+    "properties": {
+      "from": {
+        "ref": "RegisteredName"
+      },
+      "to": {
+        "ref": "RegisteredName"
+      }
+    }
+  },
+  "ProposeGraphPatchPayload": {
+    "properties": {
+      "runRef": {
+        "ref": "EntityRef"
+      },
+      "baseRevision": {},
+      "addNodes": {
+        "items": {
+          "ref": "GraphPatchNode"
+        }
+      },
+      "addEdges": {
+        "items": {
+          "ref": "GraphPatchEdge"
+        }
+      },
+      "supersedePendingNodes": {
+        "items": {
+          "ref": "RegisteredName"
+        }
+      },
+      "rationaleRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "GraphRevisionRecord": {
+    "properties": {
+      "revisionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.graph-revision"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "runRef": {
+        "ref": "EntityRef"
+      },
+      "baseRevision": {},
+      "revision": {},
+      "patchDigest": {
+        "ref": "Digest"
+      },
+      "proposerRef": {
+        "ref": "EntityRef"
+      },
+      "nodes": {
+        "items": {
+          "ref": "GraphPatchNode"
+        }
+      },
+      "edges": {
+        "items": {
+          "ref": "GraphPatchEdge"
+        }
+      },
+      "supersededNodeKeys": {
+        "items": {
+          "ref": "RegisteredName"
+        }
+      },
+      "rationaleRef": {
+        "ref": "EntityRef"
+      },
+      "createdBy": {
+        "ref": "Actor"
+      },
+      "createdAt": {
+        "ref": "Time"
+      },
+      "updatedAt": {
+        "ref": "Time"
+      }
+    }
+  },
+  "TaskSpec": {
+    "properties": {
+      "goal": {},
+      "inputRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "outputSchemaRef": {
+        "ref": "EntityRef"
+      },
+      "deadlineSeconds": {},
+      "acceptanceRef": {
+        "ref": "EntityRef"
+      },
+      "resourceLimits": {}
+    }
+  },
+  "ClaimTaskPayload": {
+    "properties": {
+      "taskRef": {
+        "ref": "EntityRef"
+      },
+      "workerId": {
+        "ref": "UUID"
+      },
+      "leaseSeconds": {}
+    }
+  },
+  "PrepareInvocationPayload": {
+    "properties": {
+      "taskRef": {
+        "ref": "EntityRef"
+      },
+      "leaseRef": {
+        "ref": "EntityRef"
+      },
+      "workerId": {
+        "ref": "UUID"
+      },
+      "leaseFencingToken": {
+        "ref": "Version"
+      },
+      "taskSpec": {
+        "ref": "TaskSpec"
+      },
+      "identityBasisRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      }
+    }
+  },
+  "FinalizeInvocationPayload": {
+    "properties": {
+      "invocationRef": {
+        "ref": "EntityRef"
+      },
+      "leaseRef": {
+        "ref": "EntityRef"
+      },
+      "workerId": {
+        "ref": "UUID"
+      },
+      "leaseFencingToken": {
+        "ref": "Version"
+      },
+      "manifestRef": {
+        "ref": "EntityRef"
+      },
+      "bindingRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "contractDigest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "CompleteInvocationPayload": {
+    "properties": {
+      "invocationRef": {
+        "ref": "EntityRef"
+      },
+      "leaseRef": {
+        "ref": "EntityRef"
+      },
+      "workerId": {
+        "ref": "UUID"
+      },
+      "leaseFencingToken": {
+        "ref": "Version"
+      },
+      "stopReason": {},
+      "resultArtifactRef": {
+        "ref": "EntityRef"
+      },
+      "usageRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "ObserveLateInvocationPayload": {
+    "properties": {
+      "invocationRef": {
+        "ref": "EntityRef"
+      },
+      "leaseRef": {
+        "ref": "EntityRef"
+      },
+      "workerId": {
+        "ref": "UUID"
+      },
+      "leaseFencingToken": {
+        "ref": "Version"
+      },
+      "stopReason": {},
+      "resultArtifactRef": {
+        "ref": "EntityRef"
+      },
+      "usageRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "LateInvocationObservationRecord": {
+    "properties": {
+      "observationRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation-observation"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "runRef": {
+        "ref": "EntityRef"
+      },
+      "taskRef": {
+        "ref": "EntityRef"
+      },
+      "invocationRef": {
+        "ref": "EntityRef"
+      },
+      "leaseRef": {
+        "ref": "EntityRef"
+      },
+      "workerId": {
+        "ref": "UUID"
+      },
+      "leaseFencingToken": {
+        "ref": "Version"
+      },
+      "status": {},
+      "stopReason": {},
+      "resultArtifactRef": {
+        "ref": "EntityRef"
+      },
+      "usageRef": {
+        "ref": "EntityRef"
+      },
+      "observedAt": {
+        "ref": "Time"
+      },
+      "createdBy": {
+        "ref": "Actor"
+      }
+    },
+    "constants": {
+      "status": "Observed"
+    }
+  },
+  "LateInvocationAdjudicationRecord": {
+    "properties": {
+      "adjudicationRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation-adjudication"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "runRef": {
+        "ref": "EntityRef"
+      },
+      "taskRef": {
+        "ref": "EntityRef"
+      },
+      "invocationRef": {
+        "ref": "EntityRef"
+      },
+      "observationRef": {
+        "ref": "EntityRef"
+      },
+      "decision": {},
+      "reason": {},
+      "observedLeaseRef": {
+        "ref": "EntityRef"
+      },
+      "observedWorkerId": {
+        "ref": "UUID"
+      },
+      "observedFencingToken": {
+        "ref": "Version"
+      },
+      "ownerLeaseRef": {
+        "ref": "EntityRef"
+      },
+      "ownerFencingToken": {
+        "ref": "Version"
+      },
+      "createdBy": {
+        "ref": "Actor"
+      },
+      "createdAt": {
+        "ref": "Time"
+      }
+    }
+  },
+  "CommitVerifiedTaskPayload": {
+    "properties": {
+      "taskRef": {
+        "ref": "EntityRef"
+      },
+      "invocationRef": {
+        "ref": "EntityRef"
+      },
+      "verificationRef": {
+        "ref": "EntityRef"
+      },
+      "domainCommandReceiptRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      }
+    }
+  },
+  "InvocationRecord": {
+    "properties": {
+      "invocationRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "runRef": {
+        "ref": "EntityRef"
+      },
+      "taskRef": {
+        "ref": "EntityRef"
+      },
+      "attemptOrdinal": {},
+      "taskSpecDigest": {
+        "ref": "Digest"
+      },
+      "taskSpec": {
+        "ref": "TaskSpec"
+      },
+      "principalRef": {
+        "ref": "EntityRef"
+      },
+      "status": {},
+      "manifestRef": {
+        "ref": "EntityRef"
+      },
+      "bindingRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "contractDigest": {
+        "ref": "Digest"
+      },
+      "resultArtifactRef": {
+        "ref": "EntityRef"
+      },
+      "usageRef": {
+        "ref": "EntityRef"
+      },
+      "stopReason": {},
+      "createdBy": {
+        "ref": "Actor"
+      },
+      "createdAt": {
+        "ref": "Time"
+      },
+      "updatedAt": {
+        "ref": "Time"
+      }
+    }
+  },
+  "CheckpointRecord": {
+    "properties": {
+      "checkpointRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.checkpoint"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "runRef": {
+        "ref": "EntityRef"
+      },
+      "taskRef": {
+        "ref": "EntityRef"
+      },
+      "graphRevisionRef": {
+        "ref": "EntityRef"
+      },
+      "sequence": {},
+      "completedTaskRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "verifiedOutputRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "waitRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "resourceUsageRef": {
+        "ref": "EntityRef"
+      },
+      "domainCommandReceiptRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "watermark": {
+        "ref": "Digest"
+      },
+      "createdAt": {
+        "ref": "Time"
       }
     }
   },
@@ -7447,6 +8830,9 @@ export const contractShapes = {
         }
       },
       "createdAt": {
+        "ref": "Time"
+      },
+      "expiresAt": {
         "ref": "Time"
       },
       "digest": {
@@ -8508,6 +9894,86 @@ export const contractShapes = {
       "severity": "High"
     }
   },
+  "ExceptionResolutionRecord": {
+    "properties": {
+      "resolutionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-resolution"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "exceptionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception"
+        }
+      },
+      "sourceRef": {
+        "ref": "OperationRef"
+      },
+      "reportRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.reconciliation"
+        }
+      },
+      "requestRef": {
+        "ref": "RequestRef"
+      },
+      "decisionRef": {
+        "ref": "DecisionRef"
+      },
+      "resolutionKind": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "technicalUnknownPreserved": {},
+      "resourceFreezePreserved": {},
+      "resolvedBy": {
+        "ref": "Actor"
+      },
+      "resolvedAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    },
+    "constants": {
+      "technicalUnknownPreserved": true,
+      "resourceFreezePreserved": true
+    }
+  },
   "OpenTerminalExceptionPayload": {
     "properties": {
       "reportRef": {
@@ -8526,6 +9992,270 @@ export const contractShapes = {
       },
       "responsibility": {
         "ref": "OpenResponsibilityRequestPayload"
+      }
+    }
+  },
+  "ApplyExceptionResolutionEffectPayload": {
+    "properties": {
+      "resolutionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-resolution"
+        }
+      },
+      "correctionApplicationRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.correction-application"
+        }
+      }
+    }
+  },
+  "ExceptionResolutionEffectRecord": {
+    "properties": {
+      "effectRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-resolution-effect"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "resolutionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-resolution"
+        }
+      },
+      "exceptionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception"
+        }
+      },
+      "sourceRef": {
+        "ref": "EntityRef"
+      },
+      "reportRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.reconciliation"
+        }
+      },
+      "correctionApplicationRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.correction-application"
+        }
+      },
+      "fenceRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.resource-fence"
+        }
+      },
+      "fencingToken": {
+        "ref": "Version"
+      },
+      "reportBlockReleased": {},
+      "unresolvedOperationPreserved": {},
+      "fencingTokenPreserved": {},
+      "appliedBy": {
+        "ref": "Actor"
+      },
+      "appliedAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    },
+    "constants": {
+      "reportBlockReleased": true,
+      "unresolvedOperationPreserved": true,
+      "fencingTokenPreserved": true
+    }
+  },
+  "ResolveExceptionPayload": {
+    "properties": {
+      "exceptionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception"
+        }
+      },
+      "resolutionKind": {},
+      "decisionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.decision"
+        }
+      },
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      }
+    }
+  },
+  "ExceptionSuccessorDispatchRecord": {
+    "properties": {
+      "dispatchRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-successor-dispatch"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "resolutionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-resolution"
+        }
+      },
+      "exceptionRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.exception"
+        }
+      },
+      "sourceRef": {
+        "ref": "EntityRef"
+      },
+      "reportRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.reconciliation"
+        }
+      },
+      "resolutionKind": {},
+      "successorRef": {
+        "ref": "EntityRef"
+      },
+      "dispatchedBy": {
+        "ref": "Actor"
+      },
+      "dispatchedAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
       }
     }
   },
@@ -8614,6 +10344,38 @@ export const contractShapes = {
       },
       "reason": {
         "ref": "Reason"
+      },
+      "delegation": {
+        "ref": "ResponsibilityDelegation"
+      },
+      "escalation": {
+        "ref": "ResponsibilityEscalation"
+      }
+    }
+  },
+  "ResponsibilityDelegation": {
+    "properties": {
+      "slotId": {
+        "ref": "NodeKey"
+      },
+      "seatId": {
+        "ref": "NodeKey"
+      },
+      "responsibilityRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "ResponsibilityEscalation": {
+    "properties": {
+      "slotId": {
+        "ref": "NodeKey"
+      },
+      "seatId": {
+        "ref": "NodeKey"
+      },
+      "responsibilityRef": {
+        "ref": "EntityRef"
       }
     }
   },
@@ -9713,6 +11475,674 @@ export const contractShapes = {
       {}
     ]
   },
+  "LearningCandidateDiagnostic": {
+    "properties": {
+      "candidateRef": {
+        "ref": "EntityRef"
+      },
+      "status": {},
+      "assetKind": {
+        "ref": "RegisteredName"
+      },
+      "risk": {
+        "ref": "RegisteredName"
+      },
+      "requiredPurposes": {
+        "items": {
+          "ref": "RegisteredName"
+        }
+      },
+      "withdrawnPurposes": {
+        "items": {
+          "ref": "RegisteredName"
+        }
+      },
+      "profileRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {}
+        ]
+      },
+      "profileCount": {},
+      "evaluationRunRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "settledEvaluationCount": {},
+      "gateRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {}
+        ]
+      },
+      "releaseRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "stopReasons": {
+        "items": {}
+      }
+    },
+    "constants": {
+      "status": "Draft"
+    }
+  },
+  "CliDoctorLearningResult": {
+    "properties": {
+      "checkId": {},
+      "organizationId": {},
+      "status": {},
+      "errorCode": {},
+      "violationCount": {},
+      "truncated": {},
+      "candidates": {
+        "items": {
+          "ref": "LearningCandidateDiagnostic"
+        }
+      },
+      "commandRef": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "remediation": {
+        "branches": [
+          {},
+          {}
+        ]
+      }
+    },
+    "constants": {
+      "checkId": "learning.candidate-readiness"
+    },
+    "branches": [
+      {},
+      {}
+    ]
+  },
+  "ReleaseDiagnostic": {
+    "properties": {
+      "releaseRef": {
+        "ref": "EntityRef"
+      },
+      "status": {},
+      "purposeNames": {
+        "items": {
+          "ref": "RegisteredName"
+        }
+      },
+      "assetCount": {},
+      "installedCapabilityCount": {},
+      "assignmentCount": {},
+      "activeAssignmentCount": {},
+      "executionAllowedAssignmentCount": {},
+      "pinSetCount": {},
+      "gateRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "invalidGateRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "compatibilityRef": {
+        "ref": "EntityRef"
+      },
+      "compatibilityReady": {},
+      "rollbackCandidateRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "stopReasons": {
+        "items": {}
+      }
+    }
+  },
+  "CliDoctorReleaseResult": {
+    "properties": {
+      "checkId": {},
+      "organizationId": {},
+      "status": {},
+      "errorCode": {},
+      "violationCount": {},
+      "truncated": {},
+      "releases": {
+        "items": {
+          "ref": "ReleaseDiagnostic"
+        }
+      },
+      "commandRef": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "remediation": {
+        "branches": [
+          {},
+          {}
+        ]
+      }
+    },
+    "constants": {
+      "checkId": "release.readiness"
+    },
+    "branches": [
+      {},
+      {},
+      {}
+    ]
+  },
+  "OperationDiagnostic": {
+    "properties": {
+      "operationRef": {
+        "ref": "OperationRef"
+      },
+      "actionRef": {
+        "ref": "ActionRef"
+      },
+      "planRef": {
+        "ref": "PlanRef"
+      },
+      "nodeKey": {
+        "ref": "NodeKey"
+      },
+      "position": {
+        "ref": "OperationPosition"
+      },
+      "attemptCount": {},
+      "providerIdempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "payloadDigest": {
+        "ref": "Digest"
+      },
+      "permitRef": {
+        "branches": [
+          {},
+          {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.dispatch-permit"
+            }
+          }
+        ]
+      },
+      "permitExpiresAt": {
+        "branches": [
+          {},
+          {
+            "ref": "Time"
+          }
+        ]
+      },
+      "permitExpired": {},
+      "receiptCount": {},
+      "lastReceiptAt": {
+        "branches": [
+          {},
+          {
+            "ref": "Time"
+          }
+        ]
+      },
+      "reconciliationRef": {
+        "branches": [
+          {},
+          {
+            "ref": "EntityRef"
+          }
+        ]
+      },
+      "reconciliationVerdict": {
+        "branches": [
+          {},
+          {}
+        ]
+      },
+      "resourceFenceRef": {
+        "branches": [
+          {},
+          {
+            "ref": "EntityRef"
+          }
+        ]
+      },
+      "remainingResponsibility": {},
+      "safeRetry": {},
+      "stopReasons": {
+        "items": {}
+      }
+    }
+  },
+  "CliDoctorOperationResult": {
+    "properties": {
+      "checkId": {},
+      "organizationId": {
+        "ref": "UUID"
+      },
+      "status": {},
+      "errorCode": {},
+      "violationCount": {},
+      "truncated": {},
+      "operations": {
+        "items": {
+          "ref": "OperationDiagnostic"
+        }
+      },
+      "commandRef": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "remediation": {
+        "branches": [
+          {},
+          {}
+        ]
+      }
+    },
+    "constants": {
+      "checkId": "operation.readiness"
+    },
+    "branches": [
+      {},
+      {},
+      {}
+    ]
+  },
+  "PackInstallDiagnostic": {
+    "properties": {
+      "packRef": {
+        "branches": [
+          {
+            "ref": "EntityRef"
+          },
+          {
+            "properties": {
+              "type": {}
+            },
+            "constants": {
+              "type": "abh.installed-pack"
+            }
+          }
+        ]
+      },
+      "packId": {
+        "ref": "RegisteredName"
+      },
+      "packVersion": {
+        "ref": "ExactVersion"
+      },
+      "status": {},
+      "deploymentVersion": {
+        "ref": "Version"
+      },
+      "packageDigest": {
+        "ref": "Digest"
+      },
+      "validationEvidenceBound": {},
+      "governanceEvidenceBound": {},
+      "capabilitySetRef": {
+        "branches": [
+          {},
+          {
+            "branches": [
+              {
+                "ref": "EntityRef"
+              },
+              {
+                "properties": {
+                  "type": {}
+                },
+                "constants": {
+                  "type": "abh.pack-capability-set"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "expectedCapabilityCount": {},
+      "registeredCapabilityCount": {},
+      "deploymentRevisionRef": {
+        "branches": [
+          {},
+          {
+            "branches": [
+              {
+                "ref": "EntityRef"
+              },
+              {
+                "properties": {
+                  "type": {}
+                },
+                "constants": {
+                  "type": "abh.pack-deployment-revision"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "manifestMigrationCount": {},
+      "stopReasons": {
+        "items": {}
+      }
+    }
+  },
+  "CliDoctorPackResult": {
+    "properties": {
+      "checkId": {},
+      "organizationId": {
+        "ref": "UUID"
+      },
+      "status": {},
+      "errorCode": {},
+      "violationCount": {},
+      "packs": {
+        "items": {
+          "ref": "PackInstallDiagnostic"
+        }
+      },
+      "commandRef": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "remediation": {
+        "branches": [
+          {},
+          {}
+        ]
+      }
+    },
+    "constants": {
+      "checkId": "pack.install-readiness"
+    },
+    "branches": [
+      {},
+      {},
+      {}
+    ]
+  },
+  "PackContentDiagnostic": {
+    "properties": {
+      "packId": {
+        "ref": "RegisteredName"
+      },
+      "packVersion": {
+        "ref": "ExactVersion"
+      },
+      "kind": {},
+      "trustMode": {},
+      "license": {},
+      "artifactCount": {},
+      "migrationCount": {},
+      "manifestDigest": {
+        "ref": "Digest"
+      },
+      "artifactSetDigest": {
+        "ref": "Digest"
+      },
+      "packageDigest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "CliPackValidateResult": {
+    "properties": {
+      "checkId": {},
+      "status": {},
+      "errorCode": {},
+      "violationCount": {},
+      "diagnostic": {
+        "branches": [
+          {},
+          {
+            "ref": "PackContentDiagnostic"
+          }
+        ]
+      },
+      "commandRef": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "remediation": {
+        "branches": [
+          {},
+          {}
+        ]
+      }
+    },
+    "constants": {
+      "checkId": "pack.content-validation"
+    },
+    "branches": [
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  "PackBuildDiagnostic": {
+    "properties": {
+      "packId": {
+        "ref": "RegisteredName"
+      },
+      "packVersion": {
+        "ref": "ExactVersion"
+      },
+      "kind": {},
+      "trustMode": {},
+      "license": {},
+      "artifactCount": {},
+      "migrationCount": {},
+      "manifestDigest": {
+        "ref": "Digest"
+      },
+      "artifactSetDigest": {
+        "ref": "Digest"
+      },
+      "packageDigest": {
+        "ref": "Digest"
+      },
+      "outputBytes": {}
+    }
+  },
+  "CliPackBuildResult": {
+    "properties": {
+      "checkId": {},
+      "status": {},
+      "errorCode": {},
+      "violationCount": {},
+      "diagnostic": {
+        "branches": [
+          {},
+          {
+            "ref": "PackBuildDiagnostic"
+          }
+        ]
+      },
+      "commandRef": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "remediation": {
+        "branches": [
+          {},
+          {}
+        ]
+      }
+    },
+    "constants": {
+      "checkId": "pack.manifest-build"
+    },
+    "branches": [
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  "PackSignatureDiagnostic": {
+    "properties": {
+      "packId": {
+        "ref": "RegisteredName"
+      },
+      "packVersion": {
+        "ref": "ExactVersion"
+      },
+      "packageDigest": {
+        "ref": "Digest"
+      },
+      "bundleDigest": {
+        "ref": "Digest"
+      },
+      "bundleBytes": {}
+    }
+  },
+  "CliPackSignResult": {
+    "properties": {
+      "checkId": {},
+      "status": {},
+      "errorCode": {},
+      "violationCount": {},
+      "diagnostic": {
+        "branches": [
+          {},
+          {
+            "ref": "PackSignatureDiagnostic"
+          }
+        ]
+      },
+      "commandRef": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "remediation": {
+        "branches": [
+          {},
+          {}
+        ]
+      }
+    },
+    "constants": {
+      "checkId": "pack.signature"
+    },
+    "branches": [
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
+  "PackVerificationDiagnostic": {
+    "properties": {
+      "packId": {
+        "ref": "RegisteredName"
+      },
+      "packVersion": {
+        "ref": "ExactVersion"
+      },
+      "subjectDigest": {
+        "ref": "Digest"
+      },
+      "manifestDigest": {
+        "ref": "Digest"
+      },
+      "artifactSetDigest": {
+        "ref": "Digest"
+      },
+      "deploymentPolicyDigest": {
+        "ref": "Digest"
+      },
+      "signatureBundleDigest": {
+        "ref": "Digest"
+      },
+      "provenanceBundleDigest": {
+        "ref": "Digest"
+      },
+      "conformanceBundleDigest": {
+        "ref": "Digest"
+      },
+      "conformanceReportDigest": {
+        "ref": "Digest"
+      },
+      "validatedAt": {
+        "ref": "Time"
+      },
+      "validUntil": {
+        "ref": "Time"
+      },
+      "reportDigest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "CliPackVerifyResult": {
+    "properties": {
+      "checkId": {},
+      "status": {},
+      "errorCode": {},
+      "violationCount": {},
+      "diagnostic": {
+        "branches": [
+          {},
+          {
+            "ref": "PackVerificationDiagnostic"
+          }
+        ]
+      },
+      "commandRef": {},
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        }
+      },
+      "remediation": {
+        "branches": [
+          {},
+          {}
+        ]
+      }
+    },
+    "constants": {
+      "checkId": "pack.supply-chain-validation"
+    },
+    "branches": [
+      {},
+      {},
+      {},
+      {}
+    ]
+  },
   "CliDoctorDataResult": {
     "properties": {
       "checkId": {},
@@ -10268,6 +12698,7 @@ export const contractShapes = {
       "healthRef": {
         "ref": "EntityRef"
       },
+      "safetyStop": {},
       "permissionEnvelope": {
         "properties": {
           "dataClasses": {
@@ -10316,6 +12747,7 @@ export const contractShapes = {
       "healthRef": {
         "ref": "EntityRef"
       },
+      "safetyStop": {},
       "permissionEnvelope": {
         "properties": {
           "dataClasses": {
@@ -10474,6 +12906,7 @@ export const contractShapes = {
       "schemaDigest": {
         "ref": "Digest"
       },
+      "safetyStop": {},
       "compatible": {},
       "healthy": {}
     }
@@ -11441,6 +13874,11 @@ export const contractShapes = {
         "ref": "Version"
       },
       "stopEpoch": {},
+      "progressBudgetSeconds": {},
+      "progressDeadline": {
+        "ref": "Time"
+      },
+      "stopReason": {},
       "workflowRef": {
         "branches": [
           {
@@ -11504,7 +13942,18 @@ export const contractShapes = {
           "type": "abh.mission-authority"
         }
       },
-      "executionMode": {}
+      "executionMode": {},
+      "progressBudgetSeconds": {}
+    }
+  },
+  "StopStalledRunPayload": {
+    "properties": {
+      "runRef": {
+        "ref": "EntityRef"
+      },
+      "causeRef": {
+        "ref": "EntityRef"
+      }
     }
   },
   "CompleteRunPayload": {
@@ -11801,6 +14250,9 @@ export const contractShapes = {
         }
       },
       "resultDigest": {
+        "ref": "Digest"
+      },
+      "digest": {
         "ref": "Digest"
       },
       "verdict": {},
@@ -12394,6 +14846,657 @@ export const contractShapes = {
       "quality": {},
       "capturedAt": {
         "ref": "Time"
+      }
+    }
+  },
+  "BuildCasePayload": {
+    "properties": {
+      "signalRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "rootCauseCode": {
+        "ref": "RegisteredName"
+      },
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "counterEvidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "domainOwnerRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "LearningCaseRecord": {
+    "properties": {
+      "caseRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.learning-case"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "signalRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "rootCauseCode": {
+        "ref": "RegisteredName"
+      },
+      "evidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "counterEvidenceRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "domainOwnerRef": {
+        "ref": "EntityRef"
+      },
+      "receiptRef": {
+        "ref": "CommandRef"
+      },
+      "builtBy": {
+        "ref": "Actor"
+      },
+      "builtAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "CreateCandidatePayload": {
+    "properties": {
+      "caseRef": {
+        "ref": "EntityRef"
+      },
+      "assetKind": {
+        "ref": "RegisteredName"
+      },
+      "baseVersion": {
+        "ref": "Version"
+      },
+      "candidateArtifactRef": {
+        "ref": "EntityRef"
+      },
+      "scopeRef": {
+        "ref": "EntityRef"
+      },
+      "risk": {
+        "ref": "RegisteredName"
+      }
+    }
+  },
+  "LearningCandidateRecord": {
+    "properties": {
+      "candidateRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.learning-candidate"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "caseRef": {
+        "ref": "EntityRef"
+      },
+      "assetKind": {
+        "ref": "RegisteredName"
+      },
+      "baseVersion": {
+        "ref": "Version"
+      },
+      "candidateArtifactRef": {
+        "ref": "EntityRef"
+      },
+      "scopeRef": {
+        "ref": "EntityRef"
+      },
+      "risk": {
+        "ref": "RegisteredName"
+      },
+      "status": {},
+      "producer": {
+        "ref": "Actor"
+      },
+      "receiptRef": {
+        "ref": "CommandRef"
+      },
+      "createdAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    },
+    "constants": {
+      "status": "Draft"
+    }
+  },
+  "ExpireEvaluationPayload": {
+    "properties": {
+      "runRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "LearningSignalListResult": {
+    "properties": {
+      "signals": {
+        "items": {
+          "ref": "LearningSignalRecord"
+        }
+      },
+      "counts": {},
+      "cursor": {},
+      "asOf": {
+        "ref": "Time"
+      }
+    }
+  },
+  "LearningCaseListResult": {
+    "properties": {
+      "cases": {
+        "items": {
+          "ref": "LearningCaseRecord"
+        }
+      },
+      "counts": {},
+      "cursor": {},
+      "asOf": {
+        "ref": "Time"
+      }
+    }
+  },
+  "LearningCandidateListResult": {
+    "properties": {
+      "candidates": {
+        "items": {
+          "ref": "LearningCandidateRecord"
+        }
+      },
+      "counts": {},
+      "cursor": {},
+      "asOf": {
+        "ref": "Time"
+      }
+    }
+  },
+  "EvaluationRunListResult": {
+    "properties": {
+      "runs": {
+        "items": {
+          "ref": "EvaluationRunRecord"
+        }
+      },
+      "counts": {},
+      "cursor": {},
+      "asOf": {
+        "ref": "Time"
+      }
+    }
+  },
+  "EvaluationProfileRecord": {
+    "properties": {
+      "profileRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.evaluation-profile"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "assetKind": {
+        "ref": "RegisteredName"
+      },
+      "risk": {
+        "ref": "RegisteredName"
+      },
+      "suiteRef": {
+        "ref": "EntityRef"
+      },
+      "datasetSnapshotRef": {
+        "ref": "EntityRef"
+      },
+      "evaluatorRef": {
+        "ref": "EntityRef"
+      },
+      "metricThresholdRef": {
+        "ref": "EntityRef"
+      },
+      "metricThresholds": {
+        "items": {
+          "ref": "EvaluationMetricThreshold"
+        }
+      },
+      "stoppingRuleRef": {
+        "ref": "EntityRef"
+      },
+      "assignmentUnit": {
+        "ref": "RegisteredName"
+      },
+      "minimumSamples": {},
+      "confidenceLevel": {},
+      "minimumRelativeLift": {},
+      "approvedBy": {
+        "ref": "Actor"
+      },
+      "approvedAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "RequestEvaluationPayload": {
+    "properties": {
+      "candidateRef": {
+        "ref": "EntityRef"
+      },
+      "baselineRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "RetryEvaluationPayload": {
+    "properties": {
+      "runRef": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "EvaluationRunRecord": {
+    "properties": {
+      "runRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.evaluation-run"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "candidateRef": {
+        "ref": "EntityRef"
+      },
+      "profileRef": {
+        "ref": "EntityRef"
+      },
+      "baselineRef": {
+        "ref": "EntityRef"
+      },
+      "retryOfRef": {
+        "ref": "EntityRef"
+      },
+      "assignmentUnit": {
+        "ref": "RegisteredName"
+      },
+      "seed": {},
+      "executionRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "status": {},
+      "requestedBy": {
+        "ref": "Actor"
+      },
+      "resultRef": {
+        "ref": "EntityRef"
+      },
+      "receiptRef": {
+        "ref": "CommandRef"
+      },
+      "createdAt": {
+        "ref": "Time"
+      },
+      "expiresAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "EvaluationMetricValue": {
+    "properties": {
+      "name": {
+        "ref": "RegisteredName"
+      },
+      "value": {}
+    }
+  },
+  "EvaluationMetricThreshold": {
+    "properties": {
+      "name": {
+        "ref": "RegisteredName"
+      },
+      "minimum": {}
+    }
+  },
+  "SubmitEvaluationResultPayload": {
+    "properties": {
+      "runRef": {
+        "ref": "EntityRef"
+      },
+      "artifactRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "executionRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "metricValues": {
+        "items": {
+          "ref": "EvaluationMetricValue"
+        }
+      },
+      "completedSamples": {},
+      "failedSamples": {},
+      "baselineMetricValues": {
+        "items": {
+          "ref": "EvaluationMetricValue"
+        }
+      },
+      "baselineCompletedSamples": {},
+      "baselineFailedSamples": {},
+      "dataDigest": {
+        "ref": "Digest"
+      },
+      "evaluatorPrincipal": {
+        "ref": "EntityRef"
+      }
+    }
+  },
+  "EvaluationResultRecord": {
+    "properties": {
+      "resultRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.evaluation-result"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "runRef": {
+        "ref": "EntityRef"
+      },
+      "candidateRef": {
+        "ref": "EntityRef"
+      },
+      "profileRef": {
+        "ref": "EntityRef"
+      },
+      "status": {},
+      "artifactRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "executionRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "metricValues": {
+        "items": {
+          "ref": "EvaluationMetricValue"
+        }
+      },
+      "completedSamples": {},
+      "failedSamples": {},
+      "baselineMetricValues": {
+        "items": {
+          "ref": "EvaluationMetricValue"
+        }
+      },
+      "baselineCompletedSamples": {},
+      "baselineFailedSamples": {},
+      "dataDigest": {
+        "ref": "Digest"
+      },
+      "evaluatorPrincipal": {
+        "ref": "EntityRef"
+      },
+      "receiptRef": {
+        "ref": "CommandRef"
+      },
+      "submittedAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "EvaluationGateFinding": {
+    "properties": {
+      "metric": {
+        "ref": "RegisteredName"
+      },
+      "actual": {},
+      "minimum": {},
+      "outcome": {},
+      "lowerBound": {},
+      "baseline": {},
+      "baselineLowerBound": {},
+      "relativeLift": {},
+      "lowerRelativeLift": {}
+    }
+  },
+  "EvaluationUncertainty": {
+    "properties": {
+      "metric": {
+        "ref": "RegisteredName"
+      },
+      "method": {},
+      "confidenceLevel": {},
+      "estimate": {},
+      "lowerBound": {},
+      "upperBound": {},
+      "sampleCount": {}
+    },
+    "constants": {
+      "method": "WilsonScore"
+    }
+  },
+  "EvaluationGateLimitation": {
+    "properties": {
+      "code": {
+        "ref": "RegisteredName"
+      },
+      "detail": {}
+    }
+  },
+  "BuildGatePayload": {
+    "properties": {
+      "candidateRef": {
+        "ref": "EntityRef"
+      },
+      "evaluationRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      }
+    }
+  },
+  "EvaluationGateArtifactRecord": {
+    "properties": {
+      "gateRef": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          },
+          "version": {
+            "ref": "Version"
+          }
+        },
+        "constants": {
+          "type": "abh.learning-gate"
+        }
+      },
+      "resourceOrganizationId": {
+        "ref": "UUID"
+      },
+      "candidateRef": {
+        "ref": "EntityRef"
+      },
+      "profileRef": {
+        "ref": "EntityRef"
+      },
+      "evaluationRefs": {
+        "items": {
+          "ref": "EntityRef"
+        },
+        "set": true
+      },
+      "metricThresholds": {
+        "items": {
+          "ref": "EvaluationMetricThreshold"
+        }
+      },
+      "metricValues": {
+        "items": {
+          "ref": "EvaluationMetricValue"
+        }
+      },
+      "baselineMetricValues": {
+        "items": {
+          "ref": "EvaluationMetricValue"
+        }
+      },
+      "uncertainty": {
+        "items": {
+          "ref": "EvaluationUncertainty"
+        }
+      },
+      "limitations": {
+        "items": {
+          "ref": "EvaluationGateLimitation"
+        }
+      },
+      "findings": {
+        "items": {
+          "ref": "EvaluationGateFinding"
+        }
+      },
+      "verdict": {},
+      "signedBy": {
+        "ref": "Actor"
+      },
+      "createdAt": {
+        "ref": "Time"
+      },
+      "digest": {
+        "ref": "Digest"
+      }
+    }
+  },
+  "LearningGateListResult": {
+    "properties": {
+      "gates": {
+        "items": {
+          "ref": "EvaluationGateArtifactRecord"
+        }
+      },
+      "counts": {},
+      "cursor": {},
+      "asOf": {
+        "ref": "Time"
+      }
+    }
+  },
+  "ConfigureLearningReleasePayload": {
+    "properties": {
+      "candidateRef": {
+        "ref": "EntityRef"
+      },
+      "gateRef": {
+        "ref": "EntityRef"
+      },
+      "release": {
+        "ref": "ReleaseRecord"
+      },
+      "assignment": {
+        "ref": "StaticAssignmentRecord"
+      },
+      "purposeNames": {
+        "ref": "LifecyclePurposeNames"
       }
     }
   },
@@ -13932,6 +17035,72 @@ export const contractShapes = {
       "schemaVersion": "0.1.0"
     }
   },
+  "DelegateResponsibilitySlotCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.responsibility-request"
+        }
+      },
+      "payload": {
+        "ref": "ReviseResponsibilityRoutePayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.responsibility-requests.delegate-slot",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "EscalateResponsibilitySlotCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.responsibility-request"
+        }
+      },
+      "payload": {
+        "ref": "ReviseResponsibilityRoutePayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.responsibility-requests.escalate-slot",
+      "schemaVersion": "0.1.0"
+    }
+  },
   "RevokeResponsibilityCommand": {
     "properties": {
       "type": {},
@@ -14059,6 +17228,222 @@ export const contractShapes = {
     "constants": {
       "type": "abh.exceptions.open-terminal",
       "schemaVersion": "0.1.0"
+    }
+  },
+  "ResolveExceptionCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.exception"
+        }
+      },
+      "payload": {
+        "ref": "ResolveExceptionPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.exceptions.resolve",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ResolveExceptionHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.exception"
+        }
+      },
+      "payload": {
+        "ref": "ResolveExceptionPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
+  "ApplyExceptionResolutionEffectCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-resolution"
+        }
+      },
+      "payload": {
+        "ref": "ApplyExceptionResolutionEffectPayload"
+      }
+    },
+    "constants": {
+      "type": "abh.exceptions.apply-resolution-effect",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ApplyExceptionResolutionEffectHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-resolution"
+        }
+      },
+      "payload": {
+        "ref": "ApplyExceptionResolutionEffectPayload"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
+  "ProposeCorrectionCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.correction"
+        }
+      },
+      "payload": {
+        "ref": "ProposeCorrectionPayload"
+      }
+    },
+    "constants": {
+      "type": "abh.corrections.propose",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ProposeCorrectionHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.correction"
+        }
+      },
+      "payload": {
+        "ref": "ProposeCorrectionPayload"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
+  "ApplyCorrectionCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.correction"
+        }
+      },
+      "payload": {
+        "ref": "ApplyCorrectionPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.corrections.apply",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ApplyCorrectionHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.correction"
+        }
+      },
+      "payload": {
+        "ref": "ApplyCorrectionPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
     }
   },
   "CreateScopeAuthorityCommand": {
@@ -14934,6 +18319,39 @@ export const contractShapes = {
       "schemaVersion": "0.1.0"
     }
   },
+  "SafeRetryOperationCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.operation"
+        }
+      },
+      "payload": {
+        "ref": "SafeRetryOperationPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.operations.safe-retry",
+      "schemaVersion": "0.1.0"
+    }
+  },
   "ProposeActionCommand": {
     "properties": {
       "type": {},
@@ -14979,6 +18397,57 @@ export const contractShapes = {
       },
       "payload": {
         "ref": "ProposeActionPayload"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
+  "StartSafetyStopCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "ProposeSafetyStopPayload"
+      }
+    },
+    "constants": {
+      "type": "abh.actions.start-safety-stop",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "StartSafetyStopHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "ProposeSafetyStopPayload"
       },
       "idempotencyKey": {
         "ref": "IdempotencyKey"
@@ -15309,6 +18778,96 @@ export const contractShapes = {
       "schemaVersion": "0.1.0"
     }
   },
+  "RegisterLedgerUnitCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.unit"
+        }
+      },
+      "payload": {
+        "ref": "RegisterLedgerUnitPayload"
+      }
+    },
+    "constants": {
+      "type": "abh.ledger-units.register",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "RegisterLedgerPeriodCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.period"
+        }
+      },
+      "payload": {
+        "ref": "RegisterLedgerPeriodPayload"
+      }
+    },
+    "constants": {
+      "type": "abh.ledger-periods.register",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ApplyLedgerCorrectionCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.ledger-correction"
+        }
+      },
+      "payload": {
+        "ref": "ApplyLedgerCorrectionPayload"
+      }
+    },
+    "constants": {
+      "type": "abh.ledger-corrections.apply",
+      "schemaVersion": "0.1.0"
+    }
+  },
   "ReserveAllCommand": {
     "properties": {
       "type": {},
@@ -15529,6 +19088,87 @@ export const contractShapes = {
     "constants": {
       "type": "abh.assignments.pause",
       "schemaVersion": "0.1.0"
+    }
+  },
+  "StopStaticAssignmentHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.assignment"
+        }
+      },
+      "payload": {
+        "ref": "StopStaticAssignmentPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
+  "RollbackStaticAssignmentCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.assignment"
+        }
+      },
+      "payload": {
+        "ref": "RollbackStaticAssignmentPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.assignments.rollback",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "RollbackStaticAssignmentHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.assignment"
+        }
+      },
+      "payload": {
+        "ref": "RollbackStaticAssignmentPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
     }
   },
   "StoreInlineArtifactCommand": {
@@ -16443,6 +20083,300 @@ export const contractShapes = {
       "schemaVersion": "0.1.0"
     }
   },
+  "StopStalledRunCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.run"
+        }
+      },
+      "payload": {
+        "ref": "StopStalledRunPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.runs.stop-stalled",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "WakeRunCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.run"
+        }
+      },
+      "payload": {
+        "ref": "WakeRunPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.runs.wake",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ProposeGraphPatchCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.run"
+        }
+      },
+      "payload": {
+        "ref": "ProposeGraphPatchPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.graph-patches.propose",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ClaimTaskCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.task"
+        }
+      },
+      "payload": {
+        "ref": "ClaimTaskPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.tasks.claim",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "PrepareInvocationCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.task"
+        }
+      },
+      "payload": {
+        "ref": "PrepareInvocationPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.invocations.prepare",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "FinalizeInvocationCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation"
+        }
+      },
+      "payload": {
+        "ref": "FinalizeInvocationPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.invocations.finalize",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "CompleteInvocationCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation"
+        }
+      },
+      "payload": {
+        "ref": "CompleteInvocationPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.invocations.complete",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ObserveLateInvocationCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation"
+        }
+      },
+      "payload": {
+        "ref": "ObserveLateInvocationPayload"
+      }
+    },
+    "constants": {
+      "type": "abh.invocations.observe-late",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "CommitVerifiedTaskCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.task"
+        }
+      },
+      "payload": {
+        "ref": "CommitVerifiedTaskPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.tasks.commit-verified",
+      "schemaVersion": "0.1.0"
+    }
+  },
   "SubmitVerificationCommand": {
     "properties": {
       "type": {},
@@ -16596,6 +20530,360 @@ export const contractShapes = {
       }
     }
   },
+  "BuildCaseCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "BuildCasePayload"
+      }
+    },
+    "constants": {
+      "type": "abh.learning.build-case",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "BuildCaseHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "BuildCasePayload"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
+  "CreateCandidateCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "CreateCandidatePayload"
+      }
+    },
+    "constants": {
+      "type": "abh.learning.create-candidate",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "CreateCandidateHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "CreateCandidatePayload"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
+  "RequestEvaluationCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "RequestEvaluationPayload"
+      }
+    },
+    "constants": {
+      "type": "abh.learning.request-evaluation",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "RequestEvaluationHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "RequestEvaluationPayload"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
+  "RetryEvaluationCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "RetryEvaluationPayload"
+      }
+    },
+    "constants": {
+      "type": "abh.learning.retry-evaluation",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "RetryEvaluationHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.organization"
+        }
+      },
+      "payload": {
+        "ref": "RetryEvaluationPayload"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
+  "SubmitEvaluationResultCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.evaluation-run"
+        }
+      },
+      "payload": {
+        "ref": "SubmitEvaluationResultPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.learning.submit-evaluation-result",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ExpireEvaluationRunCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.evaluation-run"
+        }
+      },
+      "payload": {
+        "ref": "ExpireEvaluationPayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.learning.expire-evaluation",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "BuildGateCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.learning-candidate"
+        }
+      },
+      "payload": {
+        "ref": "BuildGatePayload"
+      },
+      "expectedVersion": {
+        "ref": "Version"
+      }
+    },
+    "constants": {
+      "type": "abh.learning.build-gate",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ConfigureLearningCandidateReleaseCommand": {
+    "properties": {
+      "type": {},
+      "schemaVersion": {},
+      "commandId": {
+        "ref": "UUID"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      },
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.release"
+        }
+      },
+      "payload": {
+        "ref": "ConfigureLearningReleasePayload"
+      }
+    },
+    "constants": {
+      "type": "abh.releases.configure-learning-candidate",
+      "schemaVersion": "0.1.0"
+    }
+  },
+  "ConfigureLearningCandidateReleaseHttpRequest": {
+    "properties": {
+      "target": {
+        "properties": {
+          "type": {},
+          "id": {
+            "ref": "UUID"
+          }
+        },
+        "constants": {
+          "type": "abh.release"
+        }
+      },
+      "payload": {
+        "ref": "ConfigureLearningReleasePayload"
+      },
+      "idempotencyKey": {
+        "ref": "IdempotencyKey"
+      }
+    }
+  },
   "CommandEnvelope": {
     "branches": [
       {
@@ -16692,6 +20980,12 @@ export const contractShapes = {
         "ref": "ReviseResponsibilityRouteCommand"
       },
       {
+        "ref": "DelegateResponsibilitySlotCommand"
+      },
+      {
+        "ref": "EscalateResponsibilitySlotCommand"
+      },
+      {
         "ref": "RevokeResponsibilityCommand"
       },
       {
@@ -16702,6 +20996,18 @@ export const contractShapes = {
       },
       {
         "ref": "OpenTerminalExceptionCommand"
+      },
+      {
+        "ref": "ResolveExceptionCommand"
+      },
+      {
+        "ref": "ApplyExceptionResolutionEffectCommand"
+      },
+      {
+        "ref": "ProposeCorrectionCommand"
+      },
+      {
+        "ref": "ApplyCorrectionCommand"
       },
       {
         "ref": "CreateScopeAuthorityCommand"
@@ -16782,7 +21088,13 @@ export const contractShapes = {
         "ref": "IssueDispatchPermitCommand"
       },
       {
+        "ref": "SafeRetryOperationCommand"
+      },
+      {
         "ref": "ProposeActionCommand"
+      },
+      {
+        "ref": "StartSafetyStopCommand"
       },
       {
         "ref": "CancelActionCommand"
@@ -16806,6 +21118,15 @@ export const contractShapes = {
         "ref": "ConfigureLedgerCommand"
       },
       {
+        "ref": "RegisterLedgerUnitCommand"
+      },
+      {
+        "ref": "RegisterLedgerPeriodCommand"
+      },
+      {
+        "ref": "ApplyLedgerCorrectionCommand"
+      },
+      {
         "ref": "ReserveAllCommand"
       },
       {
@@ -16825,6 +21146,9 @@ export const contractShapes = {
       },
       {
         "ref": "StopStaticAssignmentCommand"
+      },
+      {
+        "ref": "RollbackStaticAssignmentCommand"
       },
       {
         "ref": "StoreInlineArtifactCommand"
@@ -16905,6 +21229,33 @@ export const contractShapes = {
         "ref": "RecoverRunCommand"
       },
       {
+        "ref": "StopStalledRunCommand"
+      },
+      {
+        "ref": "WakeRunCommand"
+      },
+      {
+        "ref": "ProposeGraphPatchCommand"
+      },
+      {
+        "ref": "ClaimTaskCommand"
+      },
+      {
+        "ref": "PrepareInvocationCommand"
+      },
+      {
+        "ref": "FinalizeInvocationCommand"
+      },
+      {
+        "ref": "CompleteInvocationCommand"
+      },
+      {
+        "ref": "ObserveLateInvocationCommand"
+      },
+      {
+        "ref": "CommitVerifiedTaskCommand"
+      },
+      {
         "ref": "SubmitVerificationCommand"
       },
       {
@@ -16912,8 +21263,136 @@ export const contractShapes = {
       },
       {
         "ref": "CaptureSignalCommand"
+      },
+      {
+        "ref": "BuildCaseCommand"
+      },
+      {
+        "ref": "CreateCandidateCommand"
+      },
+      {
+        "ref": "RequestEvaluationCommand"
+      },
+      {
+        "ref": "RetryEvaluationCommand"
+      },
+      {
+        "ref": "SubmitEvaluationResultCommand"
+      },
+      {
+        "ref": "ExpireEvaluationRunCommand"
+      },
+      {
+        "ref": "BuildGateCommand"
+      },
+      {
+        "ref": "ConfigureLearningCandidateReleaseCommand"
       }
     ]
+  },
+  "GetAssignmentQuery": {
+    "properties": {
+      "id": {
+        "ref": "UUID"
+      }
+    }
+  },
+  "ListAssignmentsQuery": {
+    "properties": {
+      "releaseId": {
+        "ref": "UUID"
+      },
+      "assignmentStatus": {
+        "ref": "AssignmentState"
+      },
+      "cursor": {},
+      "limit": {}
+    }
+  },
+  "ListLearningSignalsQuery": {
+    "properties": {
+      "signalType": {
+        "ref": "RegisteredName"
+      },
+      "scopeId": {
+        "ref": "UUID"
+      },
+      "cursor": {},
+      "limit": {}
+    }
+  },
+  "ListLearningCasesQuery": {
+    "properties": {
+      "rootCauseCode": {
+        "ref": "RegisteredName"
+      },
+      "scopeId": {
+        "ref": "UUID"
+      },
+      "cursor": {},
+      "limit": {}
+    }
+  },
+  "ListLearningCandidatesQuery": {
+    "properties": {
+      "candidateStatus": {},
+      "assetKind": {
+        "ref": "RegisteredName"
+      },
+      "scopeId": {
+        "ref": "UUID"
+      },
+      "cursor": {},
+      "limit": {}
+    }
+  },
+  "ListEvaluationRunsQuery": {
+    "properties": {
+      "candidateId": {
+        "ref": "UUID"
+      },
+      "runStatus": {},
+      "cursor": {},
+      "limit": {}
+    }
+  },
+  "GetEvaluationRunQuery": {
+    "properties": {
+      "id": {
+        "ref": "UUID"
+      }
+    }
+  },
+  "GetEvaluationResultQuery": {
+    "properties": {
+      "id": {
+        "ref": "UUID"
+      }
+    }
+  },
+  "GetLearningGateQuery": {
+    "properties": {
+      "id": {
+        "ref": "UUID"
+      }
+    }
+  },
+  "ListLearningGatesQuery": {
+    "properties": {
+      "candidateId": {
+        "ref": "UUID"
+      },
+      "verdict": {},
+      "cursor": {},
+      "limit": {}
+    }
+  },
+  "GetCorrectionQuery": {
+    "properties": {
+      "id": {
+        "ref": "UUID"
+      }
+    }
   },
   "QueryPackCapabilitiesQuery": {
     "properties": {
@@ -16927,6 +21406,12 @@ export const contractShapes = {
         "ref": "ExactVersion"
       },
       "versionRange": {},
+      "safetyStop": {},
+      "limit": {}
+    }
+  },
+  "ListSafetyStopsQuery": {
+    "properties": {
       "limit": {}
     }
   },
@@ -18990,6 +23475,61 @@ export const contractShapes = {
           }
         },
         "constants": {
+          "type": "abh.assignment.rollback",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.assignment"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
           "type": "abh.assignment.selection-changed",
           "schemaVersion": "0.1.0"
         }
@@ -19397,6 +23937,61 @@ export const contractShapes = {
               }
             },
             "constants": {
+              "type": "abh.checkpoint"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.checkpoint.committed",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
               "type": "abh.commitment"
             }
           },
@@ -19706,6 +24301,116 @@ export const contractShapes = {
         },
         "constants": {
           "type": "abh.connection.revoked",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.correction-application"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.correction.applied",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.correction"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.correction.proposed",
           "schemaVersion": "0.1.0"
         }
       },
@@ -20717,6 +25422,281 @@ export const contractShapes = {
               }
             },
             "constants": {
+              "type": "abh.evaluation-result"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.evaluation-result.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.evaluation-run"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.evaluation-run.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.evaluation-run"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.evaluation-run.expired",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.exception-resolution-effect"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-resolution-effect.applied",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.exception-successor-dispatch"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.exception-successor-dispatch.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
               "type": "abh.exception"
             }
           },
@@ -20751,6 +25731,61 @@ export const contractShapes = {
         },
         "constants": {
           "type": "abh.exception.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.exception-resolution"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.exception.resolved",
           "schemaVersion": "0.1.0"
         }
       },
@@ -21322,6 +26357,61 @@ export const contractShapes = {
               }
             },
             "constants": {
+              "type": "abh.graph-revision"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.graph-revision.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
               "type": "abh.inbox"
             }
           },
@@ -21521,6 +26611,666 @@ export const contractShapes = {
         },
         "constants": {
           "type": "abh.installed-pack.suspend",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.invocation-adjudication"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation-adjudication.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.invocation-observation"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation-observation.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.invocation"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation.completed",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.invocation"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.invocation"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.invocation.running",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.learning-candidate"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.learning-candidate.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.learning-case"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.learning-case.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.learning-gate"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.learning-gate.created",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.learning-signal"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.learning-signal.corrected",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.ledger-correction"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.ledger-correction.applied",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.period"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.ledger-period.registered",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.unit"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.ledger-unit.registered",
           "schemaVersion": "0.1.0"
         }
       },
@@ -25392,6 +31142,61 @@ export const contractShapes = {
               }
             },
             "constants": {
+              "type": "abh.resource-fence"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.resource-fence.report-block-released",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
               "type": "abh.responsibility-assignment"
             }
           },
@@ -26250,6 +32055,61 @@ export const contractShapes = {
           }
         },
         "constants": {
+          "type": "abh.run.stalled",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.run"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
           "type": "abh.run.start",
           "schemaVersion": "0.1.0"
         }
@@ -26471,6 +32331,336 @@ export const contractShapes = {
         },
         "constants": {
           "type": "abh.task.cancelled",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.task"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.task.failed",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.task"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.task.ready",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.task"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.task.skipped",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.task"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.task.started",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.task"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.task.verified",
+          "schemaVersion": "0.1.0"
+        }
+      },
+      {
+        "properties": {
+          "eventId": {
+            "ref": "UUID"
+          },
+          "type": {},
+          "schemaVersion": {},
+          "aggregateRef": {
+            "properties": {
+              "type": {},
+              "id": {
+                "ref": "UUID"
+              },
+              "version": {
+                "ref": "Version"
+              }
+            },
+            "constants": {
+              "type": "abh.task"
+            }
+          },
+          "aggregateVersion": {
+            "ref": "Version"
+          },
+          "eventOrdinal": {},
+          "occurredAt": {
+            "ref": "Time"
+          },
+          "correlationId": {
+            "ref": "UUID"
+          },
+          "causationId": {
+            "ref": "UUID"
+          },
+          "actorRef": {
+            "ref": "Actor"
+          },
+          "actingOrganizationId": {
+            "ref": "UUID"
+          },
+          "resourceOrganizationId": {
+            "ref": "UUID"
+          },
+          "workspaceId": {
+            "ref": "UUID"
+          },
+          "payload": {
+            "ref": "EventChangeSummary"
+          }
+        },
+        "constants": {
+          "type": "abh.task.verifying",
           "schemaVersion": "0.1.0"
         }
       },
@@ -27075,6 +33265,22 @@ export const contractShapes = {
               }
             },
             "constants": {
+              "code": "TASK_COMMIT_INCOMPLETE",
+              "category": "Precondition",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
               "code": "BLOCKER_EVIDENCE_INVALID",
               "category": "Validation",
               "retryable": false
@@ -27663,6 +33869,22 @@ export const contractShapes = {
               }
             },
             "constants": {
+              "code": "DELEGATION_EXCEEDS_AUTHORITY",
+              "category": "Authorization",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
               "code": "DECIDER_NOT_ELIGIBLE",
               "category": "Authorization",
               "retryable": false
@@ -27679,7 +33901,39 @@ export const contractShapes = {
               }
             },
             "constants": {
+              "code": "ROUTE_DEPTH_EXCEEDED",
+              "category": "Precondition",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
               "code": "OPERATION_FACT_CONFLICT",
+              "category": "Conflict",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
+              "code": "CORRECTION_STALE",
               "category": "Conflict",
               "retryable": false
             }
@@ -27728,6 +33982,118 @@ export const contractShapes = {
             },
             "constants": {
               "code": "LEARNING_PURPOSE_DENIED",
+              "category": "Authorization",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
+              "code": "CASE_EVIDENCE_INCOMPLETE",
+              "category": "Precondition",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
+              "code": "CANDIDATE_SCOPE_EXCEEDED",
+              "category": "Authorization",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
+              "code": "EVALUATION_PROFILE_UNAVAILABLE",
+              "category": "Precondition",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
+              "code": "EVALUATION_PROFILE_AMBIGUOUS",
+              "category": "Conflict",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
+              "code": "GATE_EVIDENCE_INVALID",
+              "category": "Precondition",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
+              "code": "GATE_POLICY_INCOMPLETE",
+              "category": "Precondition",
+              "retryable": false
+            }
+          },
+          {
+            "properties": {
+              "code": {},
+              "category": {},
+              "message": {},
+              "retryable": {},
+              "correlationId": {
+                "ref": "UUID"
+              }
+            },
+            "constants": {
+              "code": "EVALUATOR_IDENTITY_INVALID",
               "category": "Authorization",
               "retryable": false
             }

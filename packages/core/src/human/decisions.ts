@@ -142,7 +142,67 @@ export class DecisionOwner {
     if(!['Open','Unresolved'].includes(current.status))throw new CoreError('PRECONDITION_FAILED');
     const [clock]=await sql`SELECT clock_timestamp() AS now`;
     if(Date.parse(current.expiresAt)<=clock!.now.getTime())throw new CoreError('DECISION_STALE');
-    const expected={...current,requestRef:{...current.requestRef,version:current.requestRef.version+1},routeRevision:current.routeRevision+1,requiredSlots:proposed.requiredSlots,decisionRefs:[],status:'Unresolved'};
+    const [scope]=await sql`SELECT workspace_id,purpose_names FROM human.requests WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${current.requestRef.id}`;
+    if(!scope)throw new CoreError('RESOURCE_NOT_FOUND');
+    if(input.delegation){
+      const {slotId,seatId,responsibilityRef}=input.delegation,currentSlot=current.requiredSlots.find(slot=>slot.slotId===slotId);
+      const currentSeat=currentSlot?.seats.find(seat=>seat.seatId===seatId),proposedSlot=proposed.requiredSlots.find(slot=>slot.slotId===slotId);
+      const proposedSeat=proposedSlot?.seats.find(seat=>seat.seatId===seatId);
+      if(!currentSlot||!currentSeat||!proposedSlot||!proposedSeat)throw new CoreError('DELEGATION_EXCEEDS_AUTHORITY');
+      if(proposedSeat.responsibilityRefs.length!==1||!exact(proposedSeat.responsibilityRefs[0]!,responsibilityRef)
+        ||currentSeat.responsibilityRefs.some(ref=>exact(ref,responsibilityRef)))
+        throw new CoreError('DELEGATION_EXCEEDS_AUTHORITY');
+      for(const slot of current.requiredSlots){
+        const replacement=proposed.requiredSlots.find(candidate=>candidate.slotId===slot.slotId);
+        if(!replacement||replacement.seats.length!==slot.seats.length)throw new CoreError('DELEGATION_EXCEEDS_AUTHORITY');
+        if(slot.slotId===slotId)continue;
+        if(canonicalJson(slot)!==canonicalJson(replacement))throw new CoreError('DELEGATION_EXCEEDS_AUTHORITY');
+        for(const seat of slot.seats){
+          const nextSeat=replacement.seats.find(candidate=>candidate.seatId===seat.seatId);
+          if(!nextSeat||canonicalJson(seat)!==canonicalJson(nextSeat))throw new CoreError('DELEGATION_EXCEEDS_AUTHORITY');
+        }
+      }
+      const assignment=await currentResponsibility(tx,responsibilityRef,scope.workspace_id);
+      if(!assignment||assignment.responsibilityType!==currentSlot.responsibilityType
+        ||Date.parse(assignment.validUntil)>Date.parse(current.expiresAt)
+        ||!assignment.scopeRefs.some(candidate=>identity(candidate,current.subjectRef)||
+          candidate.type==='abh.organization'&&candidate.id===c.resourceOrganizationId))
+      throw new CoreError('DELEGATION_EXCEEDS_AUTHORITY');
+    }
+    if(input.escalation){
+      if(current.status!=='Unresolved')throw new CoreError('PRECONDITION_FAILED');
+      const {slotId,seatId,responsibilityRef}=input.escalation,currentSlot=current.requiredSlots.find(slot=>slot.slotId===slotId);
+      const currentSeat=currentSlot?.seats.find(seat=>seat.seatId===seatId),proposedSlot=proposed.requiredSlots.find(slot=>slot.slotId===slotId);
+      const proposedSeat=proposedSlot?.seats.find(seat=>seat.seatId===seatId);
+      if(!currentSlot||!currentSeat||!proposedSlot||!proposedSeat)throw new CoreError('ROUTE_DEPTH_EXCEEDED');
+      if(proposedSeat.responsibilityRefs.length!==1||!exact(proposedSeat.responsibilityRefs[0]!,responsibilityRef)
+        ||currentSeat.responsibilityRefs.some(ref=>exact(ref,responsibilityRef)))
+        throw new CoreError('ROUTE_DEPTH_EXCEEDED');
+      for(const slot of current.requiredSlots){
+        const replacement=proposed.requiredSlots.find(candidate=>candidate.slotId===slot.slotId);
+        if(!replacement||replacement.seats.length!==slot.seats.length)throw new CoreError('ROUTE_DEPTH_EXCEEDED');
+        if(slot.slotId===slotId)continue;
+        if(canonicalJson(slot)!==canonicalJson(replacement))throw new CoreError('ROUTE_DEPTH_EXCEEDED');
+        for(const seat of slot.seats){
+          const nextSeat=replacement.seats.find(candidate=>candidate.seatId===seat.seatId);
+          if(!nextSeat||canonicalJson(seat)!==canonicalJson(nextSeat))throw new CoreError('ROUTE_DEPTH_EXCEEDED');
+        }
+      }
+      const assignment=await currentResponsibility(tx,responsibilityRef,scope.workspace_id);
+      if(!assignment||assignment.responsibilityType!==currentSlot.responsibilityType
+        ||Date.parse(assignment.validUntil)>Date.parse(current.expiresAt)
+        ||!assignment.scopeRefs.some(candidate=>identity(candidate,current.subjectRef)||
+          candidate.type==='abh.organization'&&candidate.id===c.resourceOrganizationId))
+        throw new CoreError('ROUTE_DEPTH_EXCEEDED');
+      const currentDepth=current.escalationDepth??0,nextDepth=currentDepth+1;
+      if(nextDepth>4||proposed.escalationDepth!==nextDepth)throw new CoreError('ROUTE_DEPTH_EXCEEDED');
+    }
+    const escalationDepth=input.escalation
+      ?(current.escalationDepth??0)+1
+      :current.escalationDepth;
+    const expected={...current,...(escalationDepth===undefined?{}:{escalationDepth}),
+      requestRef:{...current.requestRef,version:current.requestRef.version+1},routeRevision:current.routeRevision+1,
+      requiredSlots:proposed.requiredSlots,decisionRefs:[],status:'Unresolved'};
     // Re-routing cannot silently replace the subject, proposal, evidence, deadline or required responsibility kinds.
     if(canonicalJson(proposed)!==canonicalJson(expected)||proposed.requiredSlots.length>8||proposed.requiredSlots.some(slot=>slot.responsibleOrganizationId!==c.resourceOrganizationId))throw new CoreError('DECISION_PACKAGE_INCOMPLETE');
     for(const slot of current.requiredSlots.filter(slot=>slot.required)){
@@ -152,8 +212,6 @@ export class DecisionOwner {
         ||replacement.seats.length<slot.seats.length)throw new CoreError('DECISION_PACKAGE_INCOMPLETE');
     }
     await govern(tx,current,input);
-    const [scope]=await sql`SELECT workspace_id,purpose_names FROM human.requests WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${current.requestRef.id}`;
-    if(!scope)throw new CoreError('RESOURCE_NOT_FOUND');
     const {decisions,routable}=await this.#candidates(tx,input.proposal,eligibility,scope.workspace_id);
     const rows=await sql`SELECT record,version,status FROM human.decisions WHERE resource_organization_id=${c.resourceOrganizationId} AND request_id=${current.requestRef.id}
       AND route_revision=${current.routeRevision} AND deleted_at IS NULL AND (workspace_id IS NULL OR workspace_id=${c.workspaceId??null}::uuid) ORDER BY id`;

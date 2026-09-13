@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-12",
+  "subject": "internal ready-task claim, invocation assembly/completion, verified checkpoint commit and downstream graph dispatch",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/core exec node --test test/database.test.ts",
+    "corepack pnpm --filter @abh/core exec node --test test/run-execution.test.ts test/run-commands.test.ts test/run-graph.test.ts test/run-wake.test.ts test/run-recovery.test.ts",
+    "corepack pnpm --filter @abh/core exec tsc --noEmit -p tsconfig.typecheck.json",
+    "corepack pnpm api:check"
+  ],
+  "results": {
+    "completionEstimate": "95%",
+    "workspaceTests": 920,
+    "workspacePassed": 914,
+    "workspaceSkipped": 6,
+    "workspaceFailed": 0,
+    "coreTests": 556,
+    "corePassed": 550,
+    "coreSkipped": 6,
+    "coreFailed": 0,
+    "contractsTests": 312,
+    "contractsPassed": 312,
+    "databaseManifestVersion": 66,
+    "runExecutionFocusedTests": 6,
+    "runExecutionFocusedPassed": 6,
+    "readyTaskDiscoveryVerified": true,
+    "leaseTakeoverAndFencingVerified": true,
+    "createdInvocationPersisted": true,
+    "contractDigestBindingVerified": true,
+    "runningTaskAndInvocationCASVerified": true,
+    "verificationSourceAndVersionRevalidated": true,
+    "verificationAuditAndOutboxAtomic": true,
+    "checkpointSequenceAndWatermarkVerified": true,
+    "downstreamTaskDispatched": true,
+    "idempotentReplaysVerified": true,
+    "organizationScopedDiscoveryVerifiedByTenantRLS": true
+  },
+  "evidence": [
+    "Expired Task lease is taken over with a higher fencing token and the old token cannot assemble the Invocation",
+    "TaskSpec digest, Manifest, Bindings and computed Contract Digest are fixed before Running",
+    "Completed Invocation evidence moves the Task to Verifying and a Pass report is required before checkpoint commit",
+    "Commit stores Checkpoint v1, marks the Task Succeeded and changes the dependent Pending Task to Ready",
+    "Same command keys return the durable result without duplicate Invocation, Checkpoint or downstream event writes",
+    "Run lifecycle, graph patch, wake and recovery regressions remain green on PostgreSQL 16"
+  ],
+  "limits": [
+    "this batch verifies Owner persistence and state transitions; it does not call Pi, a model provider or an external tool",
+    "automatic wakeup worker, ready-task worker hosting, late-evidence reconciliation and production deployment remain open",
+    "real IdP, production governance, global release scan and independent security review remain outside the 95% engineering estimate"
+  ]
+}

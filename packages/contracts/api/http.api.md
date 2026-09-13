@@ -345,6 +345,24 @@ export const protocolRegistry: {
         readonly payload: "ReviseResponsibilityRoutePayload";
         readonly errors: readonly ["AUTHORITY_REQUIRED", "VERSION_CONFLICT", "DECISION_STALE", "DECISION_PACKAGE_INCOMPLETE", "PRECONDITION_FAILED"];
     }, {
+        readonly type: "abh.responsibility-requests.delegate-slot";
+        readonly name: "DelegateResponsibilitySlot";
+        readonly owner: "HumanGateway";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.responsibility-request";
+        readonly payload: "ReviseResponsibilityRoutePayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "VERSION_CONFLICT", "DECISION_STALE", "DECISION_PACKAGE_INCOMPLETE", "PRECONDITION_FAILED", "DELEGATION_EXCEEDS_AUTHORITY"];
+    }, {
+        readonly type: "abh.responsibility-requests.escalate-slot";
+        readonly name: "EscalateResponsibilitySlot";
+        readonly owner: "HumanGateway";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.responsibility-request";
+        readonly payload: "ReviseResponsibilityRoutePayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "VERSION_CONFLICT", "DECISION_STALE", "DECISION_PACKAGE_INCOMPLETE", "PRECONDITION_FAILED", "ROUTE_DEPTH_EXCEEDED"];
+    }, {
         readonly type: "abh.responsibilities.revoke";
         readonly name: "RevokeResponsibility";
         readonly owner: "HumanGateway";
@@ -380,6 +398,58 @@ export const protocolRegistry: {
         readonly targetType: "abh.reconciliation";
         readonly payload: "OpenTerminalExceptionPayload";
         readonly errors: readonly ["AUTHORITY_REQUIRED", "PRECONDITION_FAILED", "VERSION_CONFLICT", "IDEMPOTENCY_CONFLICT"];
+    }, {
+        readonly type: "abh.exceptions.resolve";
+        readonly name: "ResolveException";
+        readonly owner: "HumanGateway";
+        readonly visibility: "Public";
+        readonly mode: "Update";
+        readonly targetType: "abh.exception";
+        readonly payload: "ResolveExceptionPayload";
+        readonly permission: "abh.exceptions.resolve";
+        readonly purposeNames: readonly ["abh.decision.review"];
+        readonly response: "ExceptionResolvedResponse";
+        readonly status: 200;
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "DECISION_STALE", "OPERATION_FACT_CONFLICT", "PRECONDITION_FAILED", "VERSION_CONFLICT", "IDEMPOTENCY_CONFLICT"];
+    }, {
+        readonly type: "abh.exceptions.apply-resolution-effect";
+        readonly name: "ApplyExceptionResolutionEffect";
+        readonly owner: "HumanGateway";
+        readonly visibility: "Public";
+        readonly mode: "Create";
+        readonly targetType: "abh.exception-resolution";
+        readonly payload: "ApplyExceptionResolutionEffectPayload";
+        readonly permission: "abh.exceptions.resolve";
+        readonly purposeNames: readonly ["abh.decision.review"];
+        readonly response: "ExceptionResolutionEffectResponse";
+        readonly status: 201;
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "DECISION_STALE", "OPERATION_FACT_CONFLICT", "PRECONDITION_FAILED", "VERSION_CONFLICT", "IDEMPOTENCY_CONFLICT"];
+    }, {
+        readonly type: "abh.corrections.propose";
+        readonly name: "ProposeCorrection";
+        readonly owner: "HumanGateway";
+        readonly visibility: "Public";
+        readonly mode: "Create";
+        readonly targetType: "abh.correction";
+        readonly payload: "ProposeCorrectionPayload";
+        readonly permission: "abh.corrections.propose";
+        readonly purposeNames: readonly ["abh.correction.propose"];
+        readonly response: "CorrectionProposedResponse";
+        readonly status: 201;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "AUTHORITY_REQUIRED", "VERSION_CONFLICT", "CORRECTION_STALE", "PRECONDITION_FAILED"];
+    }, {
+        readonly type: "abh.corrections.apply";
+        readonly name: "ApplyCorrection";
+        readonly owner: "HumanGateway";
+        readonly visibility: "Public";
+        readonly mode: "Update";
+        readonly targetType: "abh.correction";
+        readonly payload: "ApplyCorrectionPayload";
+        readonly permission: "abh.corrections.apply";
+        readonly purposeNames: readonly ["abh.mission.manage", "abh.runtime.deliver", "abh.learning.capture"];
+        readonly response: "CorrectionAppliedResponse";
+        readonly status: 200;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "AUTHORITY_REQUIRED", "VERSION_CONFLICT", "CORRECTION_STALE", "PRECONDITION_FAILED", "GOAL_AUTHORITY_INSUFFICIENT"];
     }, {
         readonly type: "abh.execution-authority.create";
         readonly name: "CreateScopeAuthority";
@@ -619,6 +689,15 @@ export const protocolRegistry: {
         readonly payload: "IssueDispatchPermitPayload";
         readonly errors: readonly ["AUTHORITY_REQUIRED", "VERSION_CONFLICT", "PRECONDITION_FAILED", "POLICY_DENIED", "EPOCH_REVOKED"];
     }, {
+        readonly type: "abh.operations.safe-retry";
+        readonly name: "SafeRetryOperation";
+        readonly owner: "OperationController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.operation";
+        readonly payload: "SafeRetryOperationPayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "VERSION_CONFLICT", "OPERATION_FACT_CONFLICT", "PRECONDITION_FAILED", "POLICY_DENIED", "EPOCH_REVOKED"];
+    }, {
         readonly type: "abh.actions.propose";
         readonly name: "ProposeAction";
         readonly owner: "ActionEngine";
@@ -630,6 +709,19 @@ export const protocolRegistry: {
         readonly status: 202;
         readonly permission: "abh.actions.propose";
         readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "ACTION_DOMAIN_INVALID", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.actions.start-safety-stop";
+        readonly name: "StartSafetyStop";
+        readonly owner: "ActionEngine";
+        readonly visibility: "Public";
+        readonly mode: "Create";
+        readonly targetType: "abh.organization";
+        readonly payload: "ProposeSafetyStopPayload";
+        readonly response: "ActionAcceptedResponse";
+        readonly status: 202;
+        readonly permission: "abh.action.safety-stop";
+        readonly purposeNames: readonly ["abh.action.safety-stop"];
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "ACTION_DOMAIN_INVALID", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
     }, {
         readonly type: "abh.actions.cancel";
         readonly name: "CancelAction";
@@ -706,6 +798,33 @@ export const protocolRegistry: {
         readonly payload: "ConfigureLedgerPayload";
         readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "INVALID_ARGUMENT"];
     }, {
+        readonly type: "abh.ledger-units.register";
+        readonly name: "RegisterLedgerUnit";
+        readonly owner: "ResourceLedger";
+        readonly visibility: "Internal";
+        readonly mode: "Create";
+        readonly targetType: "abh.unit";
+        readonly payload: "RegisterLedgerUnitPayload";
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "INVALID_ARGUMENT"];
+    }, {
+        readonly type: "abh.ledger-periods.register";
+        readonly name: "RegisterLedgerPeriod";
+        readonly owner: "ResourceLedger";
+        readonly visibility: "Internal";
+        readonly mode: "Create";
+        readonly targetType: "abh.period";
+        readonly payload: "RegisterLedgerPeriodPayload";
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "INVALID_ARGUMENT"];
+    }, {
+        readonly type: "abh.ledger-corrections.apply";
+        readonly name: "ApplyLedgerCorrection";
+        readonly owner: "ResourceLedger";
+        readonly visibility: "Internal";
+        readonly mode: "Create";
+        readonly targetType: "abh.ledger-correction";
+        readonly payload: "ApplyLedgerCorrectionPayload";
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "PRECONDITION_FAILED", "RESOURCE_EXHAUSTED", "VERSION_CONFLICT"];
+    }, {
         readonly type: "abh.reservations.reserve";
         readonly name: "ReserveAll";
         readonly owner: "ResourceLedger";
@@ -763,11 +882,28 @@ export const protocolRegistry: {
         readonly type: "abh.assignments.pause";
         readonly name: "StopStaticAssignment";
         readonly owner: "CapabilityRelease";
-        readonly visibility: "Internal";
+        readonly visibility: "Public";
         readonly mode: "Update";
         readonly targetType: "abh.assignment";
         readonly payload: "StopStaticAssignmentPayload";
-        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "AUTHORITY_REQUIRED", "PIN_INPUT_CONFLICT"];
+        readonly purposeNames: readonly ["abh.release.manage"];
+        readonly permission: "abh.release.manage";
+        readonly response: "StaticAssignmentRecord";
+        readonly status: 200;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "INVALID_ARGUMENT", "FORBIDDEN", "PRECONDITION_FAILED", "PURPOSE_DENIED", "RESOURCE_NOT_FOUND", "VERSION_CONFLICT"];
+    }, {
+        readonly type: "abh.assignments.rollback";
+        readonly name: "RollbackStaticAssignment";
+        readonly owner: "CapabilityRelease";
+        readonly visibility: "Public";
+        readonly mode: "Update";
+        readonly targetType: "abh.assignment";
+        readonly payload: "RollbackStaticAssignmentPayload";
+        readonly purposeNames: readonly ["abh.release.manage"];
+        readonly permission: "abh.release.manage";
+        readonly response: "StaticAssignmentRecord";
+        readonly status: 200;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "INVALID_ARGUMENT", "FORBIDDEN", "PRECONDITION_FAILED", "PURPOSE_DENIED", "RESOURCE_NOT_FOUND", "VERSION_CONFLICT"];
     }, {
         readonly type: "abh.artifacts.store-inline";
         readonly name: "StoreInlineArtifact";
@@ -996,6 +1132,19 @@ export const protocolRegistry: {
         readonly status: 200;
         readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PURPOSE_DENIED"];
     }, {
+        readonly type: "abh.runs.cancel";
+        readonly name: "CancelRun";
+        readonly owner: "MissionController";
+        readonly visibility: "Public";
+        readonly mode: "Update";
+        readonly targetType: "abh.run";
+        readonly payload: "CancelRunPayload";
+        readonly permission: "abh.runs.cancel";
+        readonly purposeNames: readonly ["abh.mission.manage"];
+        readonly response: "RunRecord";
+        readonly status: 200;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
         readonly type: "abh.runs.recover";
         readonly name: "RecoverRun";
         readonly owner: "MissionController";
@@ -1004,6 +1153,88 @@ export const protocolRegistry: {
         readonly targetType: "abh.run";
         readonly payload: "RecoverRunPayload";
         readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED"];
+    }, {
+        readonly type: "abh.runs.stop-stalled";
+        readonly name: "StopStalledRun";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.run";
+        readonly payload: "StopStalledRunPayload";
+        readonly purposeNames: readonly ["abh.runtime.deliver"];
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.runs.wake";
+        readonly name: "WakeRun";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.run";
+        readonly payload: "WakeRunPayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.graph-patches.propose";
+        readonly name: "ProposeGraphPatch";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.run";
+        readonly payload: "ProposeGraphPatchPayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.tasks.claim";
+        readonly name: "ClaimTask";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.task";
+        readonly payload: "ClaimTaskPayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.invocations.prepare";
+        readonly name: "PrepareInvocation";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.task";
+        readonly payload: "PrepareInvocationPayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.invocations.finalize";
+        readonly name: "FinalizeInvocation";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.invocation";
+        readonly payload: "FinalizeInvocationPayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.invocations.complete";
+        readonly name: "CompleteInvocation";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.invocation";
+        readonly payload: "CompleteInvocationPayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.invocations.observe-late";
+        readonly name: "ObserveLateInvocation";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Create";
+        readonly targetType: "abh.invocation";
+        readonly payload: "ObserveLateInvocationPayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.tasks.commit-verified";
+        readonly name: "CommitVerifiedTask";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.task";
+        readonly payload: "CommitVerifiedTaskPayload";
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "IDEMPOTENCY_CONFLICT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "TASK_COMMIT_INCOMPLETE", "PURPOSE_DENIED"];
     }, {
         readonly type: "abh.verification.submit";
         readonly name: "SubmitVerification";
@@ -1043,8 +1274,229 @@ export const protocolRegistry: {
         readonly response: "LearningSignalRecord";
         readonly status: 201;
         readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "LEARNING_PURPOSE_DENIED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.learning.build-case";
+        readonly name: "BuildCase";
+        readonly owner: "MissionController";
+        readonly visibility: "Public";
+        readonly mode: "Create";
+        readonly targetType: "abh.organization";
+        readonly payload: "BuildCasePayload";
+        readonly permission: "abh.learning.capture";
+        readonly purposeNames: readonly ["abh.learning.capture"];
+        readonly response: "LearningCaseCreatedResponse";
+        readonly status: 201;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "CASE_EVIDENCE_INCOMPLETE", "LEARNING_PURPOSE_DENIED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.learning.create-candidate";
+        readonly name: "CreateCandidate";
+        readonly owner: "MissionController";
+        readonly visibility: "Public";
+        readonly mode: "Create";
+        readonly targetType: "abh.organization";
+        readonly payload: "CreateCandidatePayload";
+        readonly permission: "abh.learning.capture";
+        readonly purposeNames: readonly ["abh.learning.capture"];
+        readonly response: "LearningCandidateCreatedResponse";
+        readonly status: 201;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "CANDIDATE_SCOPE_EXCEEDED", "CASE_EVIDENCE_INCOMPLETE", "LEARNING_PURPOSE_DENIED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.learning.request-evaluation";
+        readonly name: "RequestEvaluation";
+        readonly owner: "MissionController";
+        readonly visibility: "Public";
+        readonly mode: "Create";
+        readonly targetType: "abh.organization";
+        readonly payload: "RequestEvaluationPayload";
+        readonly permission: "abh.learning.evaluate";
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly response: "EvaluationRunCreatedResponse";
+        readonly status: 201;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "CANDIDATE_SCOPE_EXCEEDED", "EVALUATION_PROFILE_AMBIGUOUS", "EVALUATION_PROFILE_UNAVAILABLE", "EVALUATOR_IDENTITY_INVALID", "LEARNING_PURPOSE_DENIED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.learning.retry-evaluation";
+        readonly name: "RetryEvaluation";
+        readonly owner: "MissionController";
+        readonly visibility: "Public";
+        readonly mode: "Create";
+        readonly targetType: "abh.organization";
+        readonly payload: "RetryEvaluationPayload";
+        readonly permission: "abh.learning.evaluate";
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly response: "EvaluationRunCreatedResponse";
+        readonly status: 201;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "CANDIDATE_SCOPE_EXCEEDED", "EVALUATION_PROFILE_AMBIGUOUS", "EVALUATION_PROFILE_UNAVAILABLE", "EVALUATOR_IDENTITY_INVALID", "LEARNING_PURPOSE_DENIED", "PURPOSE_DENIED", "PRECONDITION_FAILED", "RESOURCE_NOT_FOUND"];
+    }, {
+        readonly type: "abh.learning.submit-evaluation-result";
+        readonly name: "SubmitEvaluationResult";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.evaluation-run";
+        readonly payload: "SubmitEvaluationResultPayload";
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "EVALUATOR_IDENTITY_INVALID", "INVALID_ARGUMENT", "VERSION_CONFLICT", "PRECONDITION_FAILED", "PURPOSE_DENIED"];
+    }, {
+        readonly type: "abh.learning.expire-evaluation";
+        readonly name: "ExpireEvaluationRun";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.evaluation-run";
+        readonly payload: "ExpireEvaluationPayload";
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly errors: readonly ["AUTHORITY_REQUIRED", "FORBIDDEN", "IDEMPOTENCY_CONFLICT", "INVALID_ARGUMENT", "LEARNING_PURPOSE_DENIED", "PRECONDITION_FAILED", "PURPOSE_DENIED", "VERSION_CONFLICT"];
+    }, {
+        readonly type: "abh.learning.build-gate";
+        readonly name: "BuildGate";
+        readonly owner: "MissionController";
+        readonly visibility: "Internal";
+        readonly mode: "Update";
+        readonly targetType: "abh.learning-candidate";
+        readonly payload: "BuildGatePayload";
+        readonly purposeNames: readonly ["abh.learning.gate"];
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "GATE_EVIDENCE_INVALID", "GATE_POLICY_INCOMPLETE", "INVALID_ARGUMENT", "PRECONDITION_FAILED", "PURPOSE_DENIED", "VERSION_CONFLICT"];
+    }, {
+        readonly type: "abh.releases.configure-learning-candidate";
+        readonly name: "ConfigureLearningCandidateRelease";
+        readonly owner: "CapabilityRelease";
+        readonly visibility: "Public";
+        readonly mode: "Create";
+        readonly targetType: "abh.release";
+        readonly payload: "ConfigureLearningReleasePayload";
+        readonly purposeNames: readonly ["abh.release.manage"];
+        readonly permission: "abh.release.manage";
+        readonly response: "StaticAssignmentRecord";
+        readonly status: 201;
+        readonly errors: readonly ["IDEMPOTENCY_CONFLICT", "INVALID_ARGUMENT", "LEARNING_PURPOSE_DENIED", "PRECONDITION_FAILED", "PURPOSE_DENIED", "VERSION_CONFLICT"];
     }];
     readonly queries: readonly [{
+        readonly name: "GetAssignment";
+        readonly type: "abh.assignments.get";
+        readonly owner: "CapabilityRelease";
+        readonly path: "/v1/queries/abh.assignments.get";
+        readonly response: "StaticAssignmentRecord";
+        readonly permission: "abh.release.manage";
+        readonly targetTypes: readonly ["abh.assignment"];
+        readonly purposeNames: readonly ["abh.release.manage"];
+        readonly filters: readonly ["id"];
+        readonly requiredFilters: readonly ["id"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "ListAssignments";
+        readonly type: "abh.assignments.list";
+        readonly owner: "CapabilityRelease";
+        readonly path: "/v1/queries/abh.assignments.list";
+        readonly response: "StaticAssignmentListResult";
+        readonly permission: "abh.release.manage";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.release.manage"];
+        readonly filters: readonly ["releaseId", "assignmentStatus", "cursor", "limit"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "ListLearningSignals";
+        readonly type: "abh.learning-signals.list";
+        readonly owner: "MissionController";
+        readonly path: "/v1/queries/abh.learning-signals.list";
+        readonly response: "LearningSignalListResult";
+        readonly permission: "abh.learning.read";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.capture"];
+        readonly filters: readonly ["signalType", "scopeId", "cursor", "limit"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "ListLearningCases";
+        readonly type: "abh.learning-cases.list";
+        readonly owner: "MissionController";
+        readonly path: "/v1/queries/abh.learning-cases.list";
+        readonly response: "LearningCaseListResult";
+        readonly permission: "abh.learning.read";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.capture"];
+        readonly filters: readonly ["rootCauseCode", "scopeId", "cursor", "limit"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "ListLearningCandidates";
+        readonly type: "abh.learning-candidates.list";
+        readonly owner: "MissionController";
+        readonly path: "/v1/queries/abh.learning-candidates.list";
+        readonly response: "LearningCandidateListResult";
+        readonly permission: "abh.learning.read";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.capture", "abh.learning.evaluate", "abh.learning.gate"];
+        readonly filters: readonly ["candidateStatus", "assetKind", "scopeId", "cursor", "limit"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "ListEvaluationRuns";
+        readonly type: "abh.evaluation-runs.list";
+        readonly owner: "MissionController";
+        readonly path: "/v1/queries/abh.evaluation-runs.list";
+        readonly response: "EvaluationRunListResult";
+        readonly permission: "abh.learning.read";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly filters: readonly ["candidateId", "runStatus", "cursor", "limit"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "GetEvaluationRun";
+        readonly type: "abh.evaluation-runs.get";
+        readonly owner: "MissionController";
+        readonly path: "/v1/queries/abh.evaluation-runs.get";
+        readonly response: "EvaluationRunRecord";
+        readonly permission: "abh.learning.evaluate";
+        readonly targetTypes: readonly ["abh.evaluation-run"];
+        readonly purposeNames: readonly ["abh.learning.evaluate"];
+        readonly filters: readonly ["id"];
+        readonly requiredFilters: readonly ["id"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "GetEvaluationResult";
+        readonly type: "abh.evaluation-results.get";
+        readonly owner: "MissionController";
+        readonly path: "/v1/queries/abh.evaluation-results.get";
+        readonly response: "EvaluationResultRecord";
+        readonly permission: "abh.learning.evaluate";
+        readonly targetTypes: readonly ["abh.evaluation-result"];
+        readonly purposeNames: readonly ["abh.learning.evaluate", "abh.learning.gate"];
+        readonly filters: readonly ["id"];
+        readonly requiredFilters: readonly ["id"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "GetLearningGate";
+        readonly type: "abh.learning-gates.get";
+        readonly owner: "MissionController";
+        readonly path: "/v1/queries/abh.learning-gates.get";
+        readonly response: "EvaluationGateArtifactRecord";
+        readonly permission: "abh.learning.gate";
+        readonly targetTypes: readonly ["abh.learning-gate"];
+        readonly purposeNames: readonly ["abh.learning.gate"];
+        readonly filters: readonly ["id"];
+        readonly requiredFilters: readonly ["id"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "ListLearningGates";
+        readonly type: "abh.learning-gates.list";
+        readonly owner: "MissionController";
+        readonly path: "/v1/queries/abh.learning-gates.list";
+        readonly response: "LearningGateListResult";
+        readonly permission: "abh.learning.read";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.learning.gate"];
+        readonly filters: readonly ["candidateId", "verdict", "cursor", "limit"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "GetCorrection";
+        readonly type: "abh.corrections.get";
+        readonly owner: "HumanGateway";
+        readonly path: "/v1/queries/abh.corrections.get";
+        readonly response: "CorrectionRecord";
+        readonly permission: "abh.corrections.read";
+        readonly targetTypes: readonly ["abh.correction"];
+        readonly purposeNames: readonly ["abh.correction.propose"];
+        readonly filters: readonly ["id"];
+        readonly requiredFilters: readonly ["id"];
+        readonly errors: readonly [];
+    }, {
         readonly name: "QueryPackCapabilities";
         readonly type: "abh.capabilities.query";
         readonly owner: "PackLoader";
@@ -1053,8 +1505,20 @@ export const protocolRegistry: {
         readonly permission: "abh.capabilities.read";
         readonly targetTypes: readonly ["abh.organization"];
         readonly purposeNames: readonly ["abh.action.prepare", "abh.action.execute", "abh.operation.reconcile"];
-        readonly filters: readonly ["kind", "capabilityId", "version", "versionRange", "limit"];
+        readonly filters: readonly ["kind", "capabilityId", "version", "versionRange", "safetyStop", "limit"];
         readonly requiredFilters: readonly ["kind", "limit"];
+        readonly errors: readonly [];
+    }, {
+        readonly name: "ListSafetyStops";
+        readonly type: "abh.safety-stops.list";
+        readonly owner: "OperationController";
+        readonly path: "/v1/safety-stops";
+        readonly response: "SafetyStopListResult";
+        readonly permission: "abh.actions.read";
+        readonly targetTypes: readonly ["abh.organization"];
+        readonly purposeNames: readonly ["abh.action.safety-stop"];
+        readonly filters: readonly ["limit"];
+        readonly requiredFilters: readonly ["limit"];
         readonly errors: readonly [];
     }, {
         readonly name: "GetMission";
@@ -1133,8 +1597,8 @@ export const protocolRegistry: {
         readonly path: "/v1/queries/abh.projections.get";
         readonly response: "ProjectionQueryResult";
         readonly permission: "abh.projections.read";
-        readonly targetTypes: readonly ["abh.mission", "abh.decision"];
-        readonly purposeNames: readonly ["abh.mission.manage", "abh.decision.review", "abh.runtime.deliver"];
+        readonly targetTypes: readonly ["abh.mission", "abh.decision", "abh.action", "abh.run", "abh.organization"];
+        readonly purposeNames: readonly ["abh.mission.manage", "abh.missions.read", "abh.decision.review", "abh.runtime.deliver", "abh.action.prepare", "abh.action.execute", "abh.operation.reconcile", "abh.runs.read"];
         readonly filters: readonly ["id", "type", "fieldSet"];
         readonly requiredFilters: readonly ["id", "type"];
         readonly errors: readonly [];
@@ -1209,6 +1673,46 @@ export const protocolRegistry: {
         readonly errors: readonly [];
     }];
     readonly events: readonly [{
+        readonly type: "abh.ledger-unit.registered";
+        readonly aggregateType: "abh.unit";
+        readonly owner: "ResourceLedger";
+    }, {
+        readonly type: "abh.ledger-period.registered";
+        readonly aggregateType: "abh.period";
+        readonly owner: "ResourceLedger";
+    }, {
+        readonly type: "abh.ledger-correction.applied";
+        readonly aggregateType: "abh.ledger-correction";
+        readonly owner: "ResourceLedger";
+    }, {
+        readonly type: "abh.learning-signal.corrected";
+        readonly aggregateType: "abh.learning-signal";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.learning-case.created";
+        readonly aggregateType: "abh.learning-case";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.learning-candidate.created";
+        readonly aggregateType: "abh.learning-candidate";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.evaluation-run.created";
+        readonly aggregateType: "abh.evaluation-run";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.evaluation-run.expired";
+        readonly aggregateType: "abh.evaluation-run";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.evaluation-result.created";
+        readonly aggregateType: "abh.evaluation-result";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.learning-gate.created";
+        readonly aggregateType: "abh.learning-gate";
+        readonly owner: "MissionController";
+    }, {
         readonly type: "abh.mission.created";
         readonly aggregateType: "abh.mission";
         readonly owner: "MissionController";
@@ -1247,6 +1751,26 @@ export const protocolRegistry: {
     }, {
         readonly type: "abh.exception.created";
         readonly aggregateType: "abh.exception";
+        readonly owner: "HumanGateway";
+    }, {
+        readonly type: "abh.exception.resolved";
+        readonly aggregateType: "abh.exception-resolution";
+        readonly owner: "HumanGateway";
+    }, {
+        readonly type: "abh.exception-resolution-effect.applied";
+        readonly aggregateType: "abh.exception-resolution-effect";
+        readonly owner: "HumanGateway";
+    }, {
+        readonly type: "abh.resource-fence.report-block-released";
+        readonly aggregateType: "abh.resource-fence";
+        readonly owner: "OperationController";
+    }, {
+        readonly type: "abh.correction.proposed";
+        readonly aggregateType: "abh.correction";
+        readonly owner: "HumanGateway";
+    }, {
+        readonly type: "abh.correction.applied";
+        readonly aggregateType: "abh.correction-application";
         readonly owner: "HumanGateway";
     }, {
         readonly type: "abh.organization.created";
@@ -1298,6 +1822,10 @@ export const protocolRegistry: {
         readonly owner: "CapabilityRelease";
     }, {
         readonly type: "abh.assignment.selection-changed";
+        readonly aggregateType: "abh.assignment";
+        readonly owner: "CapabilityRelease";
+    }, {
+        readonly type: "abh.assignment.rollback";
         readonly aggregateType: "abh.assignment";
         readonly owner: "CapabilityRelease";
     }, {
@@ -1561,8 +2089,64 @@ export const protocolRegistry: {
         readonly aggregateType: "abh.run";
         readonly owner: "MissionController";
     }, {
+        readonly type: "abh.run.stalled";
+        readonly aggregateType: "abh.run";
+        readonly owner: "MissionController";
+    }, {
         readonly type: "abh.task.cancelled";
         readonly aggregateType: "abh.task";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.task.ready";
+        readonly aggregateType: "abh.task";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.task.started";
+        readonly aggregateType: "abh.task";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.task.verifying";
+        readonly aggregateType: "abh.task";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.task.verified";
+        readonly aggregateType: "abh.task";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.task.failed";
+        readonly aggregateType: "abh.task";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.checkpoint.committed";
+        readonly aggregateType: "abh.checkpoint";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.invocation.created";
+        readonly aggregateType: "abh.invocation";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.invocation.running";
+        readonly aggregateType: "abh.invocation";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.invocation.completed";
+        readonly aggregateType: "abh.invocation";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.invocation-observation.created";
+        readonly aggregateType: "abh.invocation-observation";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.invocation-adjudication.created";
+        readonly aggregateType: "abh.invocation-adjudication";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.task.skipped";
+        readonly aggregateType: "abh.task";
+        readonly owner: "MissionController";
+    }, {
+        readonly type: "abh.graph-revision.created";
+        readonly aggregateType: "abh.graph-revision";
         readonly owner: "MissionController";
     }, {
         readonly type: "abh.verification.created";

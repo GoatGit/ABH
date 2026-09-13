@@ -30,7 +30,8 @@ export async function preparePackCapabilities(manifest:PackManifest,packRef:Enti
   if(!provided.has(identity)||seen.has(identity))throw new CoreError('PRECONDITION_FAILED');seen.add(identity);
   if(!pack.artifacts.some(entry=>entry.ref===binding.schemaPath))throw new CoreError('PRECONDITION_FAILED');paths.add(binding.schemaPath);
   for(const field of Object.keys(pack.permissions) as (keyof PackManifest['permissions'])[])if(binding.permissionEnvelope[field].some(item=>!pack.permissions[field].includes(item)))throw new CoreError('FORBIDDEN');
- }
+  if(binding.safetyStop===true&&!binding.permissionEnvelope.purposes.includes('abh.action.safety-stop'))throw new CoreError('FORBIDDEN');
+}
  const chunks=new Map<string,Uint8Array[]>(),sizes=new Map<string,number>();
  const verifiedSource:PackContentSource={refs,open:async(path,work)=>{
   const stream=await open(path,work);
@@ -51,7 +52,7 @@ export async function preparePackCapabilities(manifest:PackManifest,packRef:Enti
  for(const binding of [...input].sort((a,b)=>key(a.capability)<key(b.capability)?-1:1)){
   await boundedCallback(work=>schema(structuredClone(binding),Uint8Array.from(schemas.get(binding.schemaPath)!),work),current);active();
   await boundedCallback(work=>implementation(structuredClone(binding),structuredClone(pack),work),current);active();
-  const record=contract('PackCapabilityRegistration',{...binding,packRef:reference,subjectDigest:pack.integrity.packageDigest,schemaDigest:pack.artifacts.find(entry=>entry.ref===binding.schemaPath)!.digest,registrationDigest:'sha256:'+'0'.repeat(64)});
+  const record=contract('PackCapabilityRegistration',{...binding,safetyStop:binding.safetyStop===true,packRef:reference,subjectDigest:pack.integrity.packageDigest,schemaDigest:pack.artifacts.find(entry=>entry.ref===binding.schemaPath)!.digest,registrationDigest:'sha256:'+'0'.repeat(64)});
   result.push({...record,registrationDigest:await digestContract('PackCapabilityRegistration',record)});active();
  }
  return result;

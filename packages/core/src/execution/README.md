@@ -311,13 +311,17 @@ Action 回归 63 项通过，包含调用启动后同时替换输入／策略／
 
 ## 2026-09-09：扫描页到 Action 的恢复投递
 
-新增内部 deliverActionSuspensionPage：从持久 Artifact 回读并核验完整扫描页，为每个 Action 刷新独立 Service 身份，在相同组织/Workspace 中调用实际暂停消费者。页面读取权限与业务通知权限分别检查；消费者额外核对页内 pinSetDigest 与实际 Pin。Run 等未安装 Owner 类型整页拒绝，不能静默跳过。
+新增内部 deliverActionSuspensionPage：从持久 Artifact 回读并核验完整扫描页，为每个 Action 或 Run 刷新独立 Service 身份，在相同组织/Workspace 中调用对应实际暂停消费者。页面读取权限与业务通知权限分别检查；消费者额外核对页内 pinSetDigest 与实际 Pin。未知 Owner 类型或缺 Run admission 整页失败，不能静默跳过。
 
 每个效果以原暂停事件和原 Action 消费者为 Inbox 去重依据，分页边界、重新扫描与既有队列投递共享相同回执。当前目标失败只回滚它自己的事务；已完成目标仍可在新数据库连接中回放。可选 onHandled 在效果提交后有界执行，确认丢失不会重复写入观察。输入、回调及策略配置在等待前固定，整页共用调用方截止时间和取消信号。
 
 真实签名链联测覆盖：第一条已完成而第二条写入失败、第二条成功后确认丢失、新连接恢复、重复消费、真实扫描从一页拆为两页后仍返回原回执、跨 Workspace 身份拒绝、伪造 Pin 摘要拒绝、取消与撤权后重放拒绝。scanPackSuspension 的 accept 已在联测中组合实际 storeSuspensionPage 与该投递入口，只有全页返回后推进扫描。
 
-此入口完成一页中实际 Action 的效果，不写入原事件的冻结路由或全局消费完成凭证。跨范围发现、宿主持久任务调度、新订阅回填水位及 Run 暂停 Owner 仍待实现；Retire、兼容查回和其余 V1 范围不变。验证见 [分页投递记录](../../../../docs/development/verification-2026-09-09-suspension-page-delivery.json)。
+此入口完成一页中实际 Action/Run 的效果，不写入原事件的冻结路由或全局消费完成凭证。dispatch worker 现在为显式 scope 保存数据库时钟高水位和持久页 cursor；自动跨范围发现、生产 scope 目录和托管调度仍待实现。Run 效果只保存观察，不改 Run 状态。Retire、兼容查回和其余 V1 范围不变。验证见 [分页投递记录](../../../../docs/development/verification-2026-09-09-suspension-page-delivery.json)。
+
+## Safety Stop 提案
+
+`abh.actions.start-safety-stop` 把有界候选发现接到公开业务编排：调用者选择候选，Owner 在提案事务内复核当前 fence、token、未决 Operation 和专用用途后创建 safety intent。它不授权、不派发，也不代替安全 Action 的 T1/T2 或事后 reconciliation。
 
 ## 2026-09-09：Action 暂停扫描、保存与投递的正式组合
 

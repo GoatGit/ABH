@@ -28,21 +28,30 @@ export class ResourceFenceOwner {
     if(record.fenceRef.id!==row.id||record.resourceOrganizationId!==c.resourceOrganizationId||record.fenceRef.version!==Number(row.version)||record.fencingToken!==Number(row.fencing_token)
       ||(record.unresolvedOperationRef?.id??null)!==row.unresolved_operation_id||!same(record.connectionRef,key.connectionRef)||!same(record.accountRef,key.accountRef)||record.resourceKey!==key.resourceKey)throw new CoreError('INTERNAL_ERROR');return record;
   }
-  /** Controller first verifies current authorization/plan. A committed Permit must be paired in this same UoW. */
-  async occupy(tx:TenantTransaction,command:CommandIdentity,key:ResourceKey,operationRef:EntityRef,purposeNames:string[]):Promise<ResourceFenceRecord>{
+  /** Controller first verifies current authorization/plan. A committed Permit must be paired in this same UoW.
+   * A proven safe retry by the same unresolved Operation rotates the token; no other Operation may share the slot. */
+  async occupy(tx:TenantTransaction,command:CommandIdentity,key:ResourceKey,operationRef:EntityRef,purposeNames:string[],
+    options:{retry?:boolean;safetyStop?:boolean}={}):Promise<ResourceFenceRecord>{
     const target=contract('OperationRef',operationRef),c=tx.context.tenant,purposes=lifecyclePurposes(purposeNames,c.purposeOfUse);
     const current=await this.lock(tx,key);
-    if(current?.unresolvedOperationRef||current?.blockedByReportRef)throw new CoreError('PRECONDITION_FAILED');
+    const retry=current?.unresolvedOperationRef&&same(current.unresolvedOperationRef,target);
+    if(current?.blockedByReportRef||(current?.safetyStopOperationRef&&!options.safetyStop)
+      ||(options.safetyStop?!current?.unresolvedOperationRef:(current?.unresolvedOperationRef&&(!retry||!options.retry))))
+      throw new CoreError('PRECONDITION_FAILED');
     const record=contract('ResourceFenceRecord',{fenceRef:{type:'abh.resource-fence',id:current?.fenceRef.id??randomUUID(),version:(current?.fenceRef.version??0)+1},resourceOrganizationId:c.resourceOrganizationId,
-      connectionRef:key.connectionRef,accountRef:key.accountRef,resourceKey:key.resourceKey,fencingToken:(current?.fencingToken??0)+1,unresolvedOperationRef:target});
+      connectionRef:key.connectionRef,accountRef:key.accountRef,resourceKey:key.resourceKey,fencingToken:(current?.fencingToken??0)+1,
+      unresolvedOperationRef:options.safetyStop?current!.unresolvedOperationRef:target,
+      ...(options.safetyStop?{safetyStopOperationRef:target}:{})});
     if(current)await this.#save(tx,current,record);
     else await tx.owner('OperationController')`INSERT INTO execution.resource_fences(resource_organization_id,id,workspace_id,purpose_names,connection_id,account_type,account_id,resource_key,fencing_token,unresolved_operation_id,record)
-      VALUES (${c.resourceOrganizationId},${record.fenceRef.id},${c.workspaceId??null},${purposes},${key.connectionRef.id},${key.accountRef.type},${key.accountRef.id},${key.resourceKey},1,${target.id},${JSON.stringify(record)}::text::jsonb)`;
+      VALUES (${c.resourceOrganizationId},${record.fenceRef.id},${c.workspaceId??null},${purposes},${key.connectionRef.id},${key.accountRef.type},${key.accountRef.id},${key.resourceKey},1,${record.unresolvedOperationRef!.id},${JSON.stringify(record)}::text::jsonb)`;
     await appendChange(tx,{command,target:record.fenceRef,eventType:current?'abh.resource-fence.occupied':'abh.resource-fence.created',changedFields:['unresolvedOperationRef','fencingToken'],relatedRefs:[target]});return record;
   }
   async requireCurrent(tx:TenantTransaction,key:ResourceKey,operationRef:EntityRef,token:number):Promise<ResourceFenceRecord>{
     contract('OperationRef',operationRef);contract('Version',token);const current=await this.lock(tx,key);
-    if(!current?.unresolvedOperationRef||!same(current.unresolvedOperationRef,operationRef)||current.fencingToken!==token)throw new CoreError('PRECONDITION_FAILED');return current;
+    const owned=current?.unresolvedOperationRef&&same(current.unresolvedOperationRef,operationRef)
+      ||current?.safetyStopOperationRef&&same(current.safetyStopOperationRef,operationRef);
+    if(!owned||current.fencingToken!==token)throw new CoreError('PRECONDITION_FAILED');return current;
   }
   /** A verified terminal contradiction blocks new dispatch, without replacing an unresolved occupant. */
   async block(tx:TenantTransaction,command:CommandIdentity,key:ResourceKey,reportRef:EntityRef,
@@ -64,6 +73,31 @@ export class ResourceFenceOwner {
     const next=contract('ResourceFenceRecord',{...fields,fenceRef:{...current.fenceRef,version:current.fenceRef.version+1}});
     await this.#save(tx,current,next);
     await appendChange(tx,{command,target:next.fenceRef,eventType:'abh.resource-fence.cleared',changedFields:['unresolvedOperationRef'],relatedRefs:[operationRef,evidence]});return next;
+  }
+  /** Retire only the safety exception; the original Unknown stays responsible until its own reconciliation. */
+  async clearSafetyStop(tx:TenantTransaction,command:CommandIdentity,key:ResourceKey,operationRef:EntityRef,token:number,
+    evidence:EntityRef):Promise<ResourceFenceRecord>{
+    contract('EntityRef',evidence);const current=await this.requireCurrent(tx,key,operationRef,token);
+    if(!current.safetyStopOperationRef||!same(current.safetyStopOperationRef,operationRef)||!current.unresolvedOperationRef)throw new CoreError('PRECONDITION_FAILED');
+    const {safetyStopOperationRef:_,...fields}=current,next=contract('ResourceFenceRecord',{...fields,fenceRef:{...current.fenceRef,version:current.fenceRef.version+1}});
+    await this.#save(tx,current,next);
+    await appendChange(tx,{command,target:next.fenceRef,eventType:'abh.resource-fence.occupied',changedFields:['safetyStopOperationRef'],relatedRefs:[operationRef,current.unresolvedOperationRef,evidence]});
+    return next;
+  }
+  /** Governance evidence may release the report hold; the original Unknown keeps the slot and token. */
+  async releaseReportBlock(tx:TenantTransaction,command:CommandIdentity,key:ResourceKey,reportRef:EntityRef,
+    verify:(tx:TenantTransaction,current:ResourceFenceRecord)=>Promise<void>):Promise<ResourceFenceRecord>{
+    contract('EntityRef',reportRef);if(reportRef.type!=='abh.reconciliation')throw new CoreError('INVALID_ARGUMENT');
+    const current=await this.lock(tx,key);if(!current)throw new CoreError('OPERATION_FACT_CONFLICT');
+    if(!current.blockedByReportRef||!same(current.blockedByReportRef,reportRef)||!current.unresolvedOperationRef)
+      throw new CoreError('OPERATION_FACT_CONFLICT');
+    await verify(tx,current);
+    const {blockedByReportRef:_,...fields}=current;
+    const next=contract('ResourceFenceRecord',{...fields,fenceRef:{...current.fenceRef,version:current.fenceRef.version+1}});
+    await this.#save(tx,current,next);
+    await appendChange(tx,{command,target:next.fenceRef,eventType:'abh.resource-fence.report-block-released',
+      changedFields:['blockedByReportRef','fenceRef'],relatedRefs:[reportRef,current.unresolvedOperationRef]});
+    return next;
   }
   async #save(tx:TenantTransaction,current:ResourceFenceRecord,next:ResourceFenceRecord):Promise<void>{
     const c=tx.context.tenant,rows=await tx.owner('OperationController')`UPDATE execution.resource_fences SET version=version+1,record=${JSON.stringify(next)}::text::jsonb,fencing_token=${next.fencingToken},

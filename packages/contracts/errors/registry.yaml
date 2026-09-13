@@ -32,6 +32,11 @@ entries:
     httpStatus: 409
     retryable: false
     toolCategory: Conflict
+  - code: TASK_COMMIT_INCOMPLETE
+    category: Precondition
+    httpStatus: 409
+    retryable: false
+    toolCategory: Precondition
   - code: BLOCKER_EVIDENCE_INVALID
     category: Validation
     httpStatus: 400
@@ -217,12 +222,27 @@ entries:
     httpStatus: 409
     retryable: false
     toolCategory: Conflict
+  - code: DELEGATION_EXCEEDS_AUTHORITY
+    category: Authorization
+    httpStatus: 403
+    retryable: false
+    toolCategory: Authorization
   - code: DECIDER_NOT_ELIGIBLE
     category: Authorization
     httpStatus: 403
     retryable: false
     toolCategory: Authorization
+  - code: ROUTE_DEPTH_EXCEEDED
+    category: Precondition
+    httpStatus: 409
+    retryable: false
+    toolCategory: Precondition
   - code: OPERATION_FACT_CONFLICT
+    category: Conflict
+    httpStatus: 409
+    retryable: false
+    toolCategory: Conflict
+  - code: CORRECTION_STALE
     category: Conflict
     httpStatus: 409
     retryable: false
@@ -238,6 +258,41 @@ entries:
     retryable: false
     toolCategory: Authorization
   - code: LEARNING_PURPOSE_DENIED
+    category: Authorization
+    httpStatus: 403
+    retryable: false
+    toolCategory: Authorization
+  - code: CASE_EVIDENCE_INCOMPLETE
+    category: Precondition
+    httpStatus: 409
+    retryable: false
+    toolCategory: Precondition
+  - code: CANDIDATE_SCOPE_EXCEEDED
+    category: Authorization
+    httpStatus: 403
+    retryable: false
+    toolCategory: Authorization
+  - code: EVALUATION_PROFILE_UNAVAILABLE
+    category: Precondition
+    httpStatus: 409
+    retryable: false
+    toolCategory: Precondition
+  - code: EVALUATION_PROFILE_AMBIGUOUS
+    category: Conflict
+    httpStatus: 409
+    retryable: false
+    toolCategory: Conflict
+  - code: GATE_EVIDENCE_INVALID
+    category: Precondition
+    httpStatus: 409
+    retryable: false
+    toolCategory: Precondition
+  - code: GATE_POLICY_INCOMPLETE
+    category: Precondition
+    httpStatus: 409
+    retryable: false
+    toolCategory: Precondition
+  - code: EVALUATOR_IDENTITY_INVALID
     category: Authorization
     httpStatus: 403
     retryable: false

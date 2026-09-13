@@ -14,7 +14,7 @@ import {test} from 'node:test';
 import {PgBossDeliveryAdapter} from '@abh/adapter-pg-boss';
 import type {EnqueueJobRequest} from '@abh/contracts';
 import {validatePortResult} from '@abh/contracts/ports';
-import {createDatabaseFixture} from './database-fixture.ts';
+import {createDatabaseFixture,seedLedgerCatalog} from './database-fixture.ts';
 
 const ref=<T extends string>(type:T,id:string=randomUUID())=>({type,id,version:1 as const});
 const fetchReady=async(adapter:Awaited<ReturnType<typeof PgBossDeliveryAdapter.start>>,queue:'control'|'reconcile'|'background',
@@ -151,7 +151,8 @@ test('real pg-boss owns isolated queue storage and preserves deterministic deliv
       await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status) VALUES (${org},${grant.grantRef.id},${principal.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
       for(const subject of [organization,principal,grant.grantRef])await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch) VALUES (${org},${randomUUID()},${subject.type},${subject.id},1)`;
     });
-    const config=()=>({id:randomUUID(),scopeRef:organization,resourceType:'hello.queue-effect',meteringMode:'cumulative' as const,unit:'hello.credit',periodRef:ref('abh.period'),limit:'1'});
+    const catalog=await seedLedgerCatalog(f.database,human,'hello.credit');
+    const config=()=>({id:randomUUID(),scopeRef:organization,resourceType:'hello.queue-effect',meteringMode:'cumulative' as const,unit:'hello.credit',periodRef:catalog.periodRef,limit:'1'});
     const source=config(),command:CommandIdentity={type:'abh.ledgers.configure',commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(source)};let sourceLedger:LedgerRecord;
     await f.database.transaction(human,txOptions(),tx=>executeCommand(tx,command,async()=>{},async()=>{sourceLedger=await owner.configure(tx,command,source);return sourceLedger.ledgerRef;}));
     const event=await f.database.transaction(worker,txOptions(),async tx=>{const [row]=await tx.owner('DurableExecution')`SELECT id FROM data.outbox WHERE aggregate_id=${sourceLedger!.ledgerRef.id} AND record->>'type'='abh.ledger.created'`;return readCommittedEvent(tx,ref('abh.event',row!.id));});

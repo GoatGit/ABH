@@ -1,0 +1,77 @@
+{
+  "date": "2026-09-13",
+  "scope": "Durable suspension backfill watermark for explicitly installed scopes",
+  "summary": "Added runtime.suspension_sweeps and SuspensionSweepOwner. Each event/capability/scope generation stores a database-clock high-water boundary, monotonic page cursor and completion fact. The dispatch worker opens and advances state per successful page; failures do not advance progress.",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test test/database.test.ts",
+    "ABH_TEST_COSIGN=/tmp/abh-cosign-bin/cosign corepack pnpm --filter @abh/core exec node --test test/signed-connector.test.ts",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "typecheckPassed": true,
+    "databaseReadinessPassed": true,
+    "realPostgresPassed": true,
+    "realCosignSignaturePassed": true,
+    "testsPassed": 14,
+    "testsFailed": 0,
+    "workerGenerationsPersisted": 2,
+    "workerCompletedStatesPersisted": 4,
+    "highWaterExcludesLaterPinSets": true,
+    "cursorRegressionRejected": true,
+    "completedGenerationReopensNextGeneration": true,
+    "originalEventInboxDeduplicationPreserved": true,
+    "existingActionAndRunSuspensionRegressionsPassed": true
+  },
+  "finalCheck": {
+    "command": "corepack pnpm check",
+    "passed": true,
+    "docsLinksChecked": 790,
+    "contractArtifactsMatched": 51,
+    "publicApiEntryPoints": {
+      "contracts": 9,
+      "core": 6
+    },
+    "testsTotal": 1001,
+    "testsPassed": 994,
+    "testsFailed": 0,
+    "testsSkipped": 7,
+    "packages": {
+      "contracts": {
+        "passed": 313,
+        "failed": 0,
+        "skipped": 0
+      },
+      "adapterPi": {
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0
+      },
+      "adapterFastify": {
+        "passed": 15,
+        "failed": 0,
+        "skipped": 0
+      },
+      "core": {
+        "passed": 606,
+        "failed": 0,
+        "skipped": 7
+      },
+      "workbench": {
+        "passed": 28,
+        "failed": 0,
+        "skipped": 0
+      },
+      "cli": {
+        "passed": 22,
+        "failed": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "boundaries": [
+    "Business scopes remain explicit trusted installation input; no automatic scope enumeration",
+    "A completed generation is not a retirement deletion proof or global notification completion",
+    "No production managed scheduler, cross-tenant discovery or external governance acceptance"
+  ]
+}

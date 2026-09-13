@@ -1,0 +1,45 @@
+{
+  "date": "2026-09-12",
+  "subject": "Operation recovery readiness doctor",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate --check",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/operation-doctor.test.ts",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/cli typecheck",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm typecheck",
+    "corepack pnpm build",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "git diff --check"
+  ],
+  "results": {
+    "contractsArtifacts": 51,
+    "contractsTests": "312 passed, 0 failed",
+    "coreTests": "579 passed, 6 skipped, 0 failed",
+    "cliRegressions": "7 passed, 0 failed",
+    "operationDoctorRegression": "5 scenarios passed, 0 failed",
+    "documentLinksChecked": 777,
+    "contractsApiReports": "9 public and 5 core entry points matched",
+    "readOnlyTenantAndWorkspaceContext": true,
+    "invalidArgumentsNeverQueryDatabase": true,
+    "unknownOperationHasEmptyDiagnostics": true,
+    "pendingValidPermitReportsSafeRetry": true,
+    "unknownWithoutReceiptRetainsFenceAndBoundedStopReasons": true,
+    "closedConfirmedSuccessIsConsistent": true,
+    "noDiagnosticMutationOrProviderCall": true,
+    "rawDatabaseErrorsAndConnectionStringsSuppressed": true
+  },
+  "evidence": [
+    "The real PostgreSQL fixture exercised pending, unknown and closed operation transitions through the contract-valid read-only diagnostic",
+    "The unknown scenario reported RECEIPT_MISSING, RECONCILIATION_MISSING and UNKNOWN_OUTCOME_RETAINED while retaining the unresolved fence",
+    "The closed scenario reported ConfirmedSuccess only after reconciliation and fence responsibility were consistent",
+    "CLI tests covered invalid UUID, timeout, duplicate/unknown flags, missing database URL and bounded dependency failure"
+  ],
+  "limits": [
+    "The doctor observes recovery facts; it does not call providers, dispatch work, reconcile mutations, release fences or synthesize evidence",
+    "Production orchestration, hosting, real external systems, independent security review and production governance remain open"
+  ]
+}

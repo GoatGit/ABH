@@ -1,0 +1,37 @@
+{
+  "date": "2026-09-14",
+  "scope": "Dedicated responsibility EscalateSlot command",
+  "summary": "Added an internal EscalateSlot command for Unresolved responsibility requests. It replaces exactly one seat with the next governed responsibility assignment, records escalation depth, reuses Route Revision locks/CAS/audit/Outbox, and rejects a fifth escalation. The next candidate is revalidated for active Human membership, responsibility type, Workspace/Subject scope and limited expiry before fresh decisions are routed.",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/decisions.test.ts",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "contractArtifactsMatched": 51,
+    "decisionsTestsPassed": 35,
+    "dedicatedEscalateSlotTestPassed": true,
+    "unresolvedOnly": true,
+    "onlyTargetSeatChanged": true,
+    "nextCandidateRevalidated": true,
+    "limitedExpiryEnforced": true,
+    "escalationDepthPersisted": true,
+    "maximumFourEscalations": true,
+    "routeRevisionCasPreserved": true,
+    "contractsApiEntryPointsMatched": 9,
+    "coreApiEntryPointsMatched": 6,
+    "coreTestsPassed": 622,
+    "docsLinksChecked": 805,
+    "fullCheckPassed": true
+  },
+  "boundaries": [
+    "Production routing-policy directory, reviewer qualification and governance assembly remain externally bounded",
+    "Capability-correction candidates and broader exception successor orchestration remain open"
+  ]
+}

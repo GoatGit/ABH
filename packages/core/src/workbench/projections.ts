@@ -13,6 +13,8 @@ import {CoreError} from '../internal/errors.ts';
 import {requestVerifiedContext,type ContextSource} from '../identity/context-source.ts';
 import {setTimeout as delay} from 'node:timers/promises';
 import {MissionOwner} from '../mission/missions.ts';
+import {RunOwner} from '../mission/runs.ts';
+import {ActionOwner} from '../execution/actions.ts';
 import {recordProjectionMetric,type ProjectionMetrics} from './projection-metrics.ts';
 
 export type MissionSummarySourceVector={
@@ -24,7 +26,7 @@ export type MissionSummarySourceVector={
 };
 export interface ProjectionChangeEvent {
   readonly eventId:string;readonly cursor:string;readonly projectionType:string;
-  readonly subjectRef:{type:'abh.mission';id:string;version:number};
+  readonly subjectRef:{type:string;id:string;version:number};
   readonly version:number;
   readonly watermark:number;readonly stale:boolean;
 }
@@ -36,7 +38,11 @@ const missionSummaryEventTypes=['abh.mission.activate','abh.mission.pause','abh.
   'abh.mission.projection-refresh-requested'] as const;
 const missionSummaryDataFields=new Set(['missionRef','goalDigest','domainType','status','goalRevision',
   'activeRunRef','pendingTriggerCount','blockerCount','updatedAt']);
-  missionSummaryDataFields.add('businessStageRef');missionSummaryDataFields.add('resultRefs');
+missionSummaryDataFields.add('businessStageRef');missionSummaryDataFields.add('resultRefs');
+const actionStatusProjectionType='abh.projection.action-status';
+const runStatusProjectionType='abh.projection.run-status';
+const organizationProjectionType='abh.projection.organization-feed';
+const zeroEventId='00000000-0000-0000-0000-000000000000';
 
 export function redactMissionSummaryData(projection:ProjectionEnvelope,fieldSet?:string,
   metrics?:ProjectionMetrics):ProjectionEnvelope{
@@ -365,7 +371,6 @@ export class MissionSummaryEventConsumer implements InstalledEventConsumer {
 }
 
 const missionSummaryConsumerId='abh.projection-consumer.mission-summary';
-const zeroEventId='00000000-0000-0000-0000-000000000000';
 
 /** Authorized projection hints. Hints are generated only from committed Inbox effects. */
 export async function* subscribeMissionSummaryChanges(database:Database,
@@ -439,6 +444,241 @@ export async function* subscribeMissionSummaryChanges(database:Database,
         await delay(pollIntervalMs,undefined,{signal:options.signal});
     }
   } catch {
+    if(!options.signal.aborted)yield {kind:'reset'};
+  }
+}
+
+/** Authorized Action status hints. Only immutable committed source events trigger invalidation. */
+export async function* subscribeActionStatusChanges(database:Database,
+  suppliedContext:VerifiedContext|RequestContext,options:TransactionOptions,subjectId:string,
+  grantRefs:readonly EntityRef[],afterEventId?:string,
+  pollIntervalMs=500):AsyncGenerator<ProjectionSubscriptionHint>{
+  if(!Number.isSafeInteger(pollIntervalMs)||pollIntervalMs<50||pollIntervalMs>60000)
+    throw new CoreError('INVALID_ARGUMENT');
+  try {
+    if(afterEventId!==undefined)contract('UUID',afterEventId);
+    const context='tenant' in suppliedContext&&'request' in suppliedContext?
+      suppliedContext:deriveVerifiedContext(suppliedContext);
+    const organization={type:'abh.organization' as const,id:context.tenant.resourceOrganizationId,version:1};
+    let cursor=afterEventId;
+    while(!options.signal.aborted){
+      const changes=await database.transaction(context,options,async tx=>{
+        const action=await new ActionOwner().get(tx,subjectId);
+        if(context.tenant.actor.type==='Human'){
+          const [membership]=await tx.owner('Identity')`SELECT 1 AS present
+            FROM identity.memberships WHERE resource_organization_id=${context.tenant.resourceOrganizationId}
+              AND principal_id=${context.tenant.actor.id} AND status='Active'`;
+          if(!membership)throw new CoreError('FORBIDDEN');
+        }
+        await assertCurrentGrants(tx,{objectRef:{...action.actionRef,version:action.actionRef.version},
+          scopeRefs:[organization],action:'abh.projections.read'},grantRefs);
+        if(cursor===undefined){
+          const [latest]=await tx.owner('DurableExecution')`SELECT id FROM data.outbox
+            WHERE resource_organization_id=${context.tenant.resourceOrganizationId}
+              AND aggregate_type='abh.action' AND aggregate_id=${subjectId}
+              AND (workspace_id IS NULL OR workspace_id=${context.tenant.workspaceId??null}::uuid)
+            ORDER BY created_at DESC,id DESC LIMIT 1`;
+          return {baseline:latest?.id??null,rows:[]};
+        }
+        if(cursor!==zeroEventId&&cursor===afterEventId){
+          const [anchor]=await tx.owner('DurableExecution')`SELECT id FROM data.outbox
+            WHERE resource_organization_id=${context.tenant.resourceOrganizationId} AND id=${cursor}
+              AND aggregate_type='abh.action' AND aggregate_id=${subjectId}`;
+          if(!anchor)throw new CoreError('RESOURCE_NOT_FOUND');
+        }
+        const rows=await tx.owner('DurableExecution')`SELECT id,record FROM data.outbox
+          WHERE resource_organization_id=${context.tenant.resourceOrganizationId}
+            AND aggregate_type='abh.action' AND aggregate_id=${subjectId}
+            AND (workspace_id IS NULL OR workspace_id=${context.tenant.workspaceId??null}::uuid)
+            AND (created_at,id)>COALESCE(
+              (SELECT (anchor.created_at,anchor.id) FROM data.outbox anchor
+                WHERE resource_organization_id=${context.tenant.resourceOrganizationId} AND anchor.id=${cursor}),
+              ('-infinity'::timestamptz,${zeroEventId}::uuid))
+          ORDER BY created_at,id LIMIT 32`;
+        return {baseline:null,rows};
+      });
+      if(cursor===undefined&&changes.baseline!==null)cursor=changes.baseline;
+      for(const row of changes.rows){
+        if(options.signal.aborted)return;
+        const event=contract('EventEnvelope',row.record);
+        const current=await database.transaction(context,options,async tx=>{
+          if(event.eventId!==row.id||event.aggregateRef.type!=='abh.action'||event.aggregateRef.id!==subjectId)
+            throw new CoreError('INTERNAL_ERROR');
+          const action=await new ActionOwner().get(tx,subjectId);
+          if(context.tenant.actor.type==='Human'){
+            const [membership]=await tx.owner('Identity')`SELECT 1 AS present
+              FROM identity.memberships WHERE resource_organization_id=${context.tenant.resourceOrganizationId}
+                AND principal_id=${context.tenant.actor.id} AND status='Active'`;
+            if(!membership)throw new CoreError('FORBIDDEN');
+          }
+          await assertCurrentGrants(tx,{objectRef:{...action.actionRef,version:event.aggregateVersion},
+            scopeRefs:[organization],action:'abh.projections.read'},grantRefs);
+          return action;
+        });
+        cursor=event.eventId;
+        yield {kind:'change',eventId:event.eventId,cursor:event.eventId,
+          projectionType:actionStatusProjectionType,subjectRef:current.actionRef,
+          version:current.actionRef.version,watermark:current.actionRef.version,stale:false};
+      }
+      if(changes.rows.length<32&&!options.signal.aborted)
+        await delay(pollIntervalMs,undefined,{signal:options.signal});
+    }
+  }catch(error){
+    console.error('organization feed failed',error);
+    if(!options.signal.aborted)yield {kind:'reset'};
+  }
+}
+
+/** Authorized Run status hints. Outbox identity is revalidated before each current-record read. */
+export async function* subscribeRunStatusChanges(database:Database,
+  suppliedContext:VerifiedContext|RequestContext,options:TransactionOptions,subjectId:string,
+  grantRefs:readonly EntityRef[],afterEventId?:string,
+  pollIntervalMs=500):AsyncGenerator<ProjectionSubscriptionHint>{
+  if(!Number.isSafeInteger(pollIntervalMs)||pollIntervalMs<50||pollIntervalMs>60000)
+    throw new CoreError('INVALID_ARGUMENT');
+  try {
+    if(afterEventId!==undefined)contract('UUID',afterEventId);
+    const context='tenant' in suppliedContext&&'request' in suppliedContext?
+      suppliedContext:deriveVerifiedContext(suppliedContext);
+    const organization={type:'abh.organization' as const,id:context.tenant.resourceOrganizationId,version:1};
+    let cursor=afterEventId;
+    while(!options.signal.aborted){
+      const changes=await database.transaction(context,options,async tx=>{
+        await new RunOwner().get(tx,subjectId);
+        await assertCurrentGrants(tx,{objectRef:{type:'abh.run',id:subjectId,version:1},
+          scopeRefs:[organization],action:'abh.projections.read'},grantRefs);
+        if(cursor===undefined){
+          const [latest]=await tx.owner('DurableExecution')`SELECT id FROM data.outbox
+            WHERE resource_organization_id=${context.tenant.resourceOrganizationId}
+              AND aggregate_type='abh.run' AND aggregate_id=${subjectId}
+              AND (workspace_id IS NULL OR workspace_id=${context.tenant.workspaceId??null}::uuid)
+            ORDER BY created_at DESC,id DESC LIMIT 1`;
+          return {baseline:latest?.id??null,rows:[]};
+        }
+        if(cursor!==zeroEventId&&cursor===afterEventId){
+          const [anchor]=await tx.owner('DurableExecution')`SELECT id FROM data.outbox
+            WHERE resource_organization_id=${context.tenant.resourceOrganizationId} AND id=${cursor}
+              AND aggregate_type='abh.run' AND aggregate_id=${subjectId}`;
+          if(!anchor)throw new CoreError('RESOURCE_NOT_FOUND');
+        }
+        return {baseline:null,rows:await tx.owner('DurableExecution')`SELECT id,record FROM data.outbox
+          WHERE resource_organization_id=${context.tenant.resourceOrganizationId}
+            AND aggregate_type='abh.run' AND aggregate_id=${subjectId}
+            AND (workspace_id IS NULL OR workspace_id=${context.tenant.workspaceId??null}::uuid)
+            AND (created_at,id)>COALESCE(
+              (SELECT (anchor.created_at,anchor.id) FROM data.outbox anchor
+                WHERE resource_organization_id=${context.tenant.resourceOrganizationId} AND anchor.id=${cursor}),
+              ('-infinity'::timestamptz,${zeroEventId}::uuid))
+          ORDER BY created_at,id LIMIT 32`};
+      });
+      if(cursor===undefined&&changes.baseline!==null)cursor=changes.baseline;
+      for(const row of changes.rows){
+        if(options.signal.aborted)return;
+        const event=contract('EventEnvelope',row.record);
+        const current=await database.transaction(context,options,async tx=>{
+          if(event.eventId!==row.id||event.aggregateRef.type!=='abh.run'||event.aggregateRef.id!==subjectId)
+            throw new CoreError('INTERNAL_ERROR');
+          const run=await new RunOwner().get(tx,subjectId);
+          if(context.tenant.actor.type==='Human'){
+            const [membership]=await tx.owner('Identity')`SELECT 1 AS present
+              FROM identity.memberships WHERE resource_organization_id=${context.tenant.resourceOrganizationId}
+                AND principal_id=${context.tenant.actor.id} AND status='Active'`;
+            if(!membership)throw new CoreError('FORBIDDEN');
+          }
+          await assertCurrentGrants(tx,{objectRef:{...run.runRef,version:event.aggregateVersion},
+            scopeRefs:[organization],action:'abh.projections.read'},grantRefs);
+          return run;
+        });
+        cursor=event.eventId;
+        yield {kind:'change',eventId:event.eventId,cursor:event.eventId,
+          projectionType:runStatusProjectionType,subjectRef:current.runRef,
+          version:current.runRef.version,watermark:current.runRef.version,stale:false};
+      }
+      if(changes.rows.length<32&&!options.signal.aborted)
+        await delay(pollIntervalMs,undefined,{signal:options.signal});
+    }
+  }catch{
+    if(!options.signal.aborted)yield {kind:'reset'};
+  }
+}
+
+/** Organization feed hints invalidate authorized lists without exposing event payloads. */
+export async function* subscribeOrganizationProjectionChanges(database:Database,
+  suppliedContext:VerifiedContext|RequestContext,options:TransactionOptions,subjectId:string,
+  grantRefs:readonly EntityRef[],afterEventId?:string,
+  pollIntervalMs=500):AsyncGenerator<ProjectionSubscriptionHint>{
+  if(!Number.isSafeInteger(pollIntervalMs)||pollIntervalMs<50||pollIntervalMs>60000)
+    throw new CoreError('INVALID_ARGUMENT');
+  try {
+    if(afterEventId!==undefined)contract('UUID',afterEventId);
+    const context='tenant' in suppliedContext&&'request' in suppliedContext?
+      suppliedContext:deriveVerifiedContext(suppliedContext);
+    const organization={type:'abh.organization' as const,id:context.tenant.resourceOrganizationId,version:1};
+    if(subjectId!==organization.id)throw new CoreError('RESOURCE_NOT_FOUND');
+    let cursor=afterEventId;
+    while(!options.signal.aborted){
+      const changes=await database.transaction(context,options,async tx=>{
+        const [current]=await tx.owner('Identity')`SELECT 1 AS present FROM identity.organizations
+          WHERE resource_organization_id=${organization.id} AND id=${organization.id} AND status='Active'`;
+        if(!current)throw new CoreError('RESOURCE_NOT_FOUND');
+        await assertCurrentGrants(tx,{objectRef:organization,scopeRefs:[organization],
+          action:'abh.projections.read'},grantRefs);
+        if(cursor===undefined){
+          const [latest]=await tx.owner('DurableExecution')`SELECT id FROM data.outbox
+            WHERE resource_organization_id=${organization.id}
+              AND (aggregate_type='abh.mission' OR aggregate_type='abh.decision'
+                OR aggregate_type='abh.action')
+            ORDER BY created_at DESC,id DESC LIMIT 1`;
+          return {baseline:latest?.id??null,rows:[]};
+        }
+        if(cursor!==zeroEventId&&cursor===afterEventId){
+          const [anchor]=await tx.owner('DurableExecution')`SELECT id FROM data.outbox
+            WHERE resource_organization_id=${organization.id} AND id=${cursor}
+              AND (aggregate_type='abh.mission' OR aggregate_type='abh.decision'
+                OR aggregate_type='abh.action')`;
+          if(!anchor)throw new CoreError('RESOURCE_NOT_FOUND');
+        }
+        return {baseline:null,rows:await tx.owner('DurableExecution')`SELECT id,record FROM data.outbox
+          WHERE resource_organization_id=${organization.id}
+            AND (aggregate_type='abh.mission' OR aggregate_type='abh.decision'
+              OR aggregate_type='abh.action')
+            AND (created_at,id)>COALESCE(
+              (SELECT (anchor.created_at,anchor.id) FROM data.outbox anchor
+                WHERE resource_organization_id=${organization.id} AND anchor.id=${cursor}),
+              ('-infinity'::timestamptz,${zeroEventId}::uuid))
+          ORDER BY created_at,id LIMIT 64`};
+      });
+      if(cursor===undefined&&changes.baseline!==null)cursor=changes.baseline;
+      for(const row of changes.rows){
+        if(options.signal.aborted)return;
+        const event=contract('EventEnvelope',row.record);
+        if(event.eventId!==row.id||!['abh.mission','abh.decision','abh.action'].includes(event.aggregateRef.type)
+          ||event.resourceOrganizationId!==organization.id)
+          throw new CoreError('INTERNAL_ERROR');
+        const current=await database.transaction(context,options,async tx=>{
+          const [organizationRow]=await tx.owner('Identity')`SELECT id,version FROM identity.organizations
+            WHERE resource_organization_id=${organization.id} AND id=${organization.id} AND status='Active'`;
+          if(!organizationRow)throw new CoreError('RESOURCE_NOT_FOUND');
+          if(context.tenant.actor.type==='Human'){
+            const [membership]=await tx.owner('Identity')`SELECT 1 AS present
+              FROM identity.memberships WHERE resource_organization_id=${organization.id}
+                AND principal_id=${context.tenant.actor.id} AND status='Active'`;
+            if(!membership)throw new CoreError('FORBIDDEN');
+          }
+          await assertCurrentGrants(tx,{objectRef:{...organization,version:Number(organizationRow.version)},
+            scopeRefs:[organization],action:'abh.projections.read'},grantRefs);
+          return Number(organizationRow.version);
+        });
+        cursor=event.eventId;
+        yield {kind:'change',eventId:event.eventId,cursor:event.eventId,
+          projectionType:organizationProjectionType,
+          subjectRef:{type:'abh.organization',id:organization.id,version:current},
+          version:current,watermark:event.aggregateVersion,stale:false};
+      }
+      if(changes.rows.length<64&&!options.signal.aborted)
+        await delay(pollIntervalMs,undefined,{signal:options.signal});
+    }
+  }catch{
     if(!options.signal.aborted)yield {kind:'reset'};
   }
 }

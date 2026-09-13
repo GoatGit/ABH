@@ -25,7 +25,7 @@ export interface ResolvePackCapabilityAdmission {
 /** Resolve only a persisted pinned exact capability. Result remains internal;
  * the caller must not invoke external effects inside this database transaction. */
 export async function resolvePackCapability<T>(tx:TenantTransaction,options:TransactionOptions,
- input:{exactRef:CapabilityRef;pinSet:PinSet;request:ResolveAndPinRequest;behaviorSlot:string},
+ input:{exactRef:CapabilityRef;requireSafetyStop?:boolean;pinSet:PinSet;request:ResolveAndPinRequest;behaviorSlot:string},
  binding:InstalledCapabilityImplementation<T>,readGrants:readonly EntityRef[],admission:ResolvePackCapabilityAdmission){
  const value=structuredClone(input),release=new StaticReleaseOwner();
  let assignmentRef:EntityRef|undefined;

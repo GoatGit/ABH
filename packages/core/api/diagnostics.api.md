@@ -4,6 +4,11 @@
 
 ```ts
 
+import type { CliDoctorLearningResult } from '@abh/contracts';
+import type { CliDoctorLedgerResult } from '@abh/contracts';
+import type { CliDoctorOperationResult } from '@abh/contracts';
+import type { CliDoctorPackResult } from '@abh/contracts';
+import type { CliDoctorReleaseResult } from '@abh/contracts';
 import { DatabaseDiagnosticResult } from '@abh/contracts';
 import type { ProjectionHealthResult } from '@abh/contracts';
 
@@ -23,7 +28,88 @@ export { DatabaseDiagnosticResult }
 export function inspectDatabaseReadiness(options: DatabaseDiagnosticOptions): Promise<DatabaseDiagnosticResult>;
 
 // @public
+export function inspectLearningCandidateReadiness(options: LearningDiagnosticOptions): Promise<CliDoctorLearningResult>;
+
+// @public
+export function inspectLedgerBalanceAudit(options: LedgerDiagnosticOptions): Promise<CliDoctorLedgerResult>;
+
+// @public
+export function inspectOperationReadiness(options: OperationDiagnosticOptions): Promise<CliDoctorOperationResult>;
+
+// @public
+export function inspectPackInstallReadiness(options: PackDiagnosticOptions): Promise<CliDoctorPackResult>;
+
+// @public
 export function inspectProjectionHealth(options: ProjectionDiagnosticOptions): Promise<ProjectionDiagnosticOutcome>;
+
+// @public
+export function inspectReleaseReadiness(options: ReleaseDiagnosticOptions): Promise<CliDoctorReleaseResult>;
+
+// @public (undocumented)
+export interface LearningDiagnosticOptions {
+    // (undocumented)
+    assetKind?: string;
+    // (undocumented)
+    candidateId?: string;
+    // (undocumented)
+    connectionString: string;
+    // (undocumented)
+    limit?: number;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    signal: AbortSignal;
+    // (undocumented)
+    timeoutMs?: number;
+    // (undocumented)
+    workspaceId?: string;
+}
+
+// @public (undocumented)
+export interface LedgerDiagnosticOptions {
+    // (undocumented)
+    connectionString: string;
+    // (undocumented)
+    ledgerId: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    signal: AbortSignal;
+    // (undocumented)
+    timeoutMs?: number;
+}
+
+// @public (undocumented)
+export interface OperationDiagnosticOptions {
+    // (undocumented)
+    connectionString: string;
+    // (undocumented)
+    operationId: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    signal: AbortSignal;
+    // (undocumented)
+    timeoutMs?: number;
+    // (undocumented)
+    workspaceId?: string;
+}
+
+// @public (undocumented)
+export interface PackDiagnosticOptions {
+    // (undocumented)
+    connectionString: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    packId: string;
+    // (undocumented)
+    packVersion: string;
+    // (undocumented)
+    signal: AbortSignal;
+    // (undocumented)
+    timeoutMs?: number;
+}
 
 // @public (undocumented)
 export interface ProjectionDiagnosticOptions {
@@ -59,6 +145,22 @@ export interface ProjectionDiagnosticOutcome {
     subjectId: string;
     // (undocumented)
     violationCount: number;
+}
+
+// @public (undocumented)
+export interface ReleaseDiagnosticOptions {
+    // (undocumented)
+    connectionString: string;
+    // (undocumented)
+    organizationId: string;
+    // (undocumented)
+    releaseId: string;
+    // (undocumented)
+    signal: AbortSignal;
+    // (undocumented)
+    timeoutMs?: number;
+    // (undocumented)
+    workspaceId?: string;
 }
 
 // (No @packageDocumentation comment for this package)

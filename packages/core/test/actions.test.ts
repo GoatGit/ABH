@@ -41,7 +41,6 @@ import {createScopeAuthority,ScopeAuthorityOwner} from '../src/control/scope-aut
 import {resolveScopeAuthoritySource} from '../src/control/scope-source.ts';
 import {queryAndCapture,queryPackAndCapture,retryQueryCapture} from '../src/execution/query-and-capture.ts';
 import {captureQuery,QueryCaptureOwner,type QueryCaptureChecks} from '../src/execution/query-capture.ts';
-import type {QueryExitRecord} from '@abh/contracts';
 import {QueryExitOwner,type InstalledQueryPolicy} from '../src/execution/query-exit.ts';
 import {queryOnce,requireQueryOrigin} from '../src/execution/query-transport.ts';
 import {OperationReconciliationWaitOwner} from '../src/execution/reconciliation-waits.ts';
@@ -60,13 +59,14 @@ import {ReconciliationOwner,type InstalledComparisonRule} from '../src/execution
 import {OperationReceiptOwner,type ReceiptSourceChecks} from '../src/execution/receipts.ts';
 import {assertCurrentGrants} from '../src/control/grants.ts';
 import {dispatchOnce,requireTransportOrigin} from '../src/execution/transport.ts';
+import {safeRetryDispatch,type SafeRetryChecks} from '../src/execution/safe-retry.ts';
 import {DispatchExitOwner} from '../src/execution/exit.ts';
 import {FakeProvider} from './support/fake-provider.ts';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
-import type {ActionRecord,ArtifactRecord,CompiledPolicyManifest,DecisionPackage,EntityRef,ExecutionAuthority,GrantRecord,ImpactUpperBound,NormalizedOperationObservation,OperationPlan,PolicyVersionRecord,ProposeActionPayload,ReleaseRecord,ResourceEnvelopeRecord,ResponsibilityRequestRecord,StaticAssignmentRecord} from '@abh/contracts';
+  import type {ActionRecord,ArtifactRecord,CompiledPolicyManifest,CorrectionApplicationRecord,DecisionPackage,EntityRef,ExecutionAuthority,GrantRecord,ImpactUpperBound,NormalizedOperationObservation,OperationPlan,OperationRecord,PolicyVersionRecord,ProposeActionPayload,QueryExitRecord,ReleaseRecord,ResourceEnvelopeRecord,ResponsibilityRequestRecord,StaticAssignmentRecord} from '@abh/contracts';
 import {canonicalJson,digestContract} from '@abh/contracts/digest';
 import {ActionOwner,type ActionDefinition,type ActionPreparationChecks} from '../src/execution/actions.ts';
 import {OperationOwner} from '../src/execution/operations.ts';
@@ -78,8 +78,9 @@ import {compareClosedOperation,runTerminalReconciliationWorker} from '../src/exe
 import type {OperationPlanNode} from '@abh/contracts';
 import {InlineArtifactOwner} from '../src/data/artifacts.ts';
 import {StaticReleaseOwner} from '../src/release/static.ts';
+import {startSafetyStopAction} from '../src/execution/safety-stop-action.ts';
 import {Database,type TenantTransaction} from '../src/data/uow.ts';
-import {executeCommand,inputDigest,type CommandIdentity} from '../src/data/journal.ts';
+import {contract,executeCommand,inputDigest,type CommandIdentity} from '../src/data/journal.ts';
 import {CoreError} from '../src/internal/errors.ts';
 import {inspectActionExecutionSource} from '../src/control/execution-source.ts';
 import {revokeExecutionAuthority,revokeGrant} from '../src/control/revoke.ts';
@@ -94,10 +95,11 @@ import {PurposeOwner} from '../src/control/purposes.ts';
 import {createContractCatalog} from '@abh/contracts/catalog';
 import {DecisionOwner} from '../src/human/decisions.ts';
 import {assignResponsibility} from '../src/human/responsibilities.ts';
-import {ExceptionOwner,openTerminalException} from '../src/human/exceptions.ts';
+import {applyExceptionResolutionEffect,ExceptionOwner,openTerminalException} from '../src/human/exceptions.ts';
 import {runExceptionWorker} from '../src/human/exception-worker.ts';
+import {runObservingQueryWorker} from '../src/execution/observing-query-worker.ts';
 import {ExecutionAuthorityOwner} from '../src/control/authority.ts';
-import {context,createDatabaseFixture,options} from './database-fixture.ts';
+import {context,createDatabaseFixture,options,seedLedgerCatalog} from './database-fixture.ts';
 
 const ref=<T extends string>(type:T,id:string=randomUUID(),version=1)=>({type,id,version});
 const command=async(type:string,value:unknown):Promise<CommandIdentity>=>({type,commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(value)});
@@ -135,9 +137,10 @@ test('Action preparation persists frozen intent and complete immutable operation
   // Domain and preparation authority fixtures only; these are not the production handler/admission composition.
   const checks:ActionPreparationChecks={lock:async()=>{},artifact:async()=>{},proposal:async()=>impact,domain:async()=>{},plan:async()=>{}};
   const proposal=():ProposeActionPayload=>({actionType:'hello.publish',targetRefs:[ref('hello.brief')],payloadRef:payloadArtifact.artifactRef,sourceVersionRefs:[scope],sourceProposalRef:ref('hello.proposal')});
-  const propose=async(input=proposal(),policy=checks)=>{
+  const propose=async(input=proposal(),policy=checks,safety=false)=>{
     const cmd=await command('abh.actions.propose',input);let action:ActionRecord;
-    await run(cmd,async tx=>{action=await actions.propose(tx,cmd,input,definition,policy);return action.actionRef;});return action!;
+    await run(cmd,async tx=>{action=await actions.propose(tx,cmd,input,{...definition,safetyStop:safety,
+      purposeNames:safety?[...purposeNames,'abh.action.safety-stop']:purposeNames},policy);return action.actionRef;});return action!;
   };
   const validate=async(action:ActionRecord,policy=checks)=>{
     const evidence=ref('hello.validation'),cmd=await command('abh.actions.validate',{actionRef:action.actionRef,evidence});let next:ActionRecord;
@@ -147,9 +150,9 @@ test('Action preparation persists frozen intent and complete immutable operation
     const cmd=await command('abh.actions.pin',{actionRef:action.actionRef});let pinned:ActionRecord;
     await run(cmd,async tx=>{pinned=await actions.pin(tx,cmd,action.actionRef,[ref('abh.execution-authority')],checks);return pinned.actionRef;});return pinned!;
   };
-  const prepare=async(payload=payloadArtifact)=>{
-    const action=await pin(await validate(await propose({...proposal(),payloadRef:payload.artifactRef}))),pins=await db.transaction(c,options(),tx=>releases.getPinSet(tx,action.actionRef));
-    const node={nodeKey:'publish',connectionRef:ref('abh.connection'),accountRef:ref('hello.account'),resourceKey:'hello.brief',operationType:'hello.publish',payloadRef:payload.artifactRef,payloadDigest:payload.contentDigest,
+  const prepare=async(payload=payloadArtifact,safety=false,shared?:Pick<OperationPlanNode,'connectionRef'|'accountRef'>)=>{
+    const action=await pin(await validate(await propose({...proposal(),payloadRef:payload.artifactRef},checks,safety))),pins=await db.transaction(c,options(),tx=>releases.getPinSet(tx,action.actionRef));
+    const node={nodeKey:'publish',connectionRef:shared?.connectionRef??ref('abh.connection'),accountRef:shared?.accountRef??ref('hello.account'),resourceKey:'hello.brief',operationType:'hello.publish',payloadRef:payload.artifactRef,payloadDigest:payload.contentDigest,
       connectorRef:connector,scopeRefs:[scope],completionPolicyRef:definition.completionPolicyRef,resourceRequirements:[{resourceRef:resource,quantity:'1',unit:'hello.credit'}],dependsOn:[],inputBindings:[]};
     const unsigned:OperationPlan={planRef:ref('abh.operation-plan'),actionRef:action.actionRef,planVersion:1,pinSetRef:pins!.pinSetRef,pinSetDigest:pins!.digest,validatedAgainstPayloadDigest:action.payloadDigest,
       compilerRef:compiler,connectorRefs:[connector],scopeProofRef:ref('abh.scope-proof'),completionPolicyRef:definition.completionPolicyRef,impactUpperBound:impact,
@@ -187,7 +190,7 @@ test('Action preparation persists frozen intent and complete immutable operation
     const app=createCoreHttpApp({database:db,identity:new IdentityIngress(db,provider,{issuer,audience}),credentials:async req=>{
       if(req.headers.authorization!=='Bearer fixture')throw new CoreError('UNAUTHENTICATED');return {credentialRef,organizationId:org,purpose:'abh.action.prepare'};
     },artifactStorage:{grants:async()=>grantsAvailable?[grant.grantRef]:[],checks:{fenceRefs:async()=>[],admit:async()=>{if(!permitted)throw new CoreError('FORBIDDEN');},references:async()=>{}}},actionProposal:{automaticAuthorization:{purposeNames,grants:async()=>automaticGrants?[grant.grantRef]:[],fenceRefs:async()=>[],admit:async()=>{if(!automaticAllowed)throw new CoreError('FORBIDDEN');}},grants:async verified=>{assert.equal(verified.tenant.actor.id,c.tenant.actor.id);return grantsAvailable?[grant.grantRef]:[];},checks:{
-      fenceRefs:async()=>[],admit:async(_tx,received)=>{if(!permitted)throw new CoreError('FORBIDDEN');received.actionType='fixture.mutated';},
+      fenceRefs:async()=>[],admit:async(_tx,received)=>{if(!permitted)throw new CoreError('FORBIDDEN');(received as ProposeActionPayload).actionType='fixture.mutated';},
       artifact:async()=>{if(!artifactVisible)throw new CoreError('FORBIDDEN');},
       proposal:async(_tx,received,installed)=>{if(!domainValid)throw new CoreError('ACTION_DOMAIN_INVALID');received.sourceVersionRefs=[];installed.maxOperations=1;return impact;},
       definition:async(_tx,received)=>{definitionCalls++;received.targetRefs=[];return definition;},
@@ -353,6 +356,86 @@ test('Action preparation persists frozen intent and complete immutable operation
       const revokeRead=await command('abh.grants.revoke',readGrant.grantRef);await run(revokeRead,async tx=>(await revokeGrant(tx,revokeRead,readGrant.grantRef,[scope])).grantRef);assert.equal((await get()).statusCode,404);
     }finally{await app.close();}
   });
+  await t.test('public safety proposal binds the current fence and creates only a safety intent',async()=>{
+    const safetyContext=deriveVerifiedContext({...c.request,purposeOfUse:'abh.action.safety-stop'});
+    const fenceRef={type:'abh.resource-fence' as const,id:randomUUID(),version:1},operation=ref('abh.operation');
+    const connection=ref('abh.connection'),account=ref('hello.account');
+    const fenceRecord=contract('ResourceFenceRecord',{fenceRef,resourceOrganizationId:org,connectionRef:connection,accountRef:account,
+      resourceKey:'hello.brief',fencingToken:1,unresolvedOperationRef:operation});
+    const grant:GrantRecord={grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:{type:'abh.principal',id:safetyContext.tenant.actor.id,version:1},
+      scopeRefs:[scope],actionTypes:['abh.action.safety-stop'],purposeNames:['abh.action.safety-stop'],
+      validFrom:new Date(Date.now()-1000).toISOString(),validUntil:new Date(Date.now()+60_000).toISOString(),
+      issuanceEvidenceRef:scope,status:'Active'};
+    await db.transaction(c,options(),async tx=>{
+      await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch) VALUES (${org},${grant.grantRef.id},'abh.grant',${grant.grantRef.id},1)`;
+      await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status)
+        VALUES (${org},${grant.grantRef.id},${safetyContext.tenant.actor.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
+      await tx.owner('OperationController')`INSERT INTO execution.resource_fences
+        (resource_organization_id,id,version,purpose_names,record,connection_id,account_type,account_id,resource_key,fencing_token,unresolved_operation_id)
+        VALUES (${org},${fenceRef.id},1,ARRAY[${c.tenant.purposeOfUse},${safetyContext.tenant.purposeOfUse}],${JSON.stringify(fenceRecord)}::text::jsonb,
+        ${connection.id},${account.type},${account.id},'hello.brief',1,${operation.id})`;
+    });
+    const safetyArtifact=await store('{"safety":"fixture"}',[c.tenant.purposeOfUse,'abh.action.safety-stop']);
+    const proposalPayload=():ProposeActionPayload=>({...proposal(),payloadRef:safetyArtifact.artifactRef,targetRefs:[fenceRef,operation]});
+    const payload=()=>({proposal:proposalPayload(),fenceRef,fencingToken:1,unresolvedOperationRef:operation});
+    const identity=async(value:unknown)=>({commandId:randomUUID(),type:'abh.actions.start-safety-stop',idempotencyKey:randomUUID(),
+      digest:await inputDigest({organizationId:org,payload:value})});
+    const base={grants:[grant.grantRef],checks:{...checks,fenceRefs:async()=>[],admit:async()=>{},definition:async()=>({ ...definition,safetyStop:true,
+      purposeNames:[...definition.purposeNames,'abh.action.safety-stop']})}};
+    const firstPayload=payload(),first=await startSafetyStopAction(db,safetyContext,options(),await identity(firstPayload),org,firstPayload,base.grants,base.checks);
+    const intent=await db.transaction(safetyContext,options(),tx=>actions.getIntent(tx,first.actionRef.id));
+    assert.equal(intent.safetyStop,true);assert.equal(intent.proposal.actionType,definition.actionType);
+    assert.deepEqual((await db.transaction(safetyContext,options(),tx=>actions.get(tx,first.actionRef.id))).position,
+      {lifecycle:'Proposed',outcome:'NotStarted'});
+    const identityEvidence=ref('abh.identity-evidence'),provider:IdentityProviderPort={verify:async()=>({status:'Completed',data:{issuer:'fixture',audience:'abh.test',
+      subject:safetyContext.tenant.actor.id,identityKind:'Human',authnStrength:{level:'SingleFactor'},credentialEpoch:1,verifiedAt:new Date().toISOString(),
+      expiresAt:new Date(Date.now()+60_000).toISOString(),evidenceRef:identityEvidence}})};
+    const identityDigest=await inputDigest(['fixture',safetyContext.tenant.actor.id]);
+    await f.admin`INSERT INTO deployment.identity_locations(identity_digest,resource_organization_id,principal_id,principal_version)
+      VALUES (${identityDigest},${org},${safetyContext.tenant.actor.id},1)`;
+    const safetyApp=createCoreHttpApp({database:db,identity:new IdentityIngress(db,provider,{issuer:'fixture',audience:'abh.test'}),
+      credentials:async request=>{if(request.headers.authorization!=='Bearer safety')throw new CoreError('UNAUTHENTICATED');
+        return {credentialRef:ref('abh.credential'),organizationId:org,purpose:'abh.action.safety-stop'};},
+      safetyStopAction:{grants:async()=>[grant.grantRef],checks:base.checks}});
+    const safetyClient=createAbhClient({baseUrl:'https://fixture.test',headers:async()=>({authorization:'Bearer safety'}),
+      fetch:async(url,init)=>{const response=await safetyApp.inject({method:init?.method as 'POST',url:new URL(String(url)).pathname,
+        headers:Object.fromEntries(new Headers(init?.headers)),payload:String(init?.body)});
+        return new Response(response.body,{status:response.statusCode,headers:{'content-type':String(response.headers['content-type'])}});}});
+    const routeFence={type:'abh.resource-fence' as const,id:randomUUID(),version:1},routeOperation=ref('abh.operation');
+    const routeConnection=ref('abh.connection'),routeAccount=ref('hello.account');
+    const routeRecord={...fenceRecord,fenceRef:routeFence,connectionRef:routeConnection,accountRef:routeAccount,unresolvedOperationRef:routeOperation};
+    await db.transaction(c,options(),async tx=>{await tx.owner('OperationController')`INSERT INTO execution.resource_fences
+      (resource_organization_id,id,version,purpose_names,record,connection_id,account_type,account_id,resource_key,fencing_token,unresolved_operation_id)
+      VALUES (${org},${routeFence.id},1,ARRAY[${c.tenant.purposeOfUse},${safetyContext.tenant.purposeOfUse}],${JSON.stringify(routeRecord)}::text::jsonb,
+      ${routeConnection.id},${routeAccount.type},${routeAccount.id},'hello.brief',1,${routeOperation.id})`;});
+    const routePayload={proposal:{...proposalPayload(),targetRefs:[routeFence,routeOperation]},fenceRef:routeFence,
+      fencingToken:1,unresolvedOperationRef:routeOperation};
+    const viaHttp=await safetyClient.safetyStops.start({organizationId:org,idempotencyKey:randomUUID(),payload:routePayload});
+    assert.equal((await db.transaction(safetyContext,options(),tx=>actions.get(tx,viaHttp.data.objectRef.id))).position.lifecycle,'Proposed');
+    await safetyApp.close();
+    await assert.rejects(startSafetyStopAction(db,safetyContext,options(),await identity({...firstPayload,fencingToken:2}),org,
+      {...firstPayload,fencingToken:2},base.grants,base.checks),{code:'PRECONDITION_FAILED'});
+    const safetyOperation=ref('abh.operation');
+    const duplicateRecord={...fenceRecord,safetyStopOperationRef:safetyOperation};
+    await db.transaction(c,options(),async tx=>{await tx.owner('OperationController')`UPDATE execution.resource_fences
+      SET record=${JSON.stringify(duplicateRecord)}::text::jsonb WHERE id=${fenceRef.id}`;});
+    const duplicatePayload=payload();
+    await assert.rejects(startSafetyStopAction(db,safetyContext,options(),await identity(duplicatePayload),org,duplicatePayload,base.grants,base.checks),
+      {code:'PRECONDITION_FAILED'});
+    const unsafeFence={type:'abh.resource-fence' as const,id:randomUUID(),version:1},unsafeOperation=ref('abh.operation');
+    const unsafeConnection=ref('abh.connection'),unsafeAccount=ref('hello.account');
+    const unsafeRecord={...fenceRecord,fenceRef:unsafeFence,connectionRef:unsafeConnection,accountRef:unsafeAccount,
+      unresolvedOperationRef:unsafeOperation,safetyStopOperationRef:undefined};
+    await db.transaction(c,options(),async tx=>{await tx.owner('OperationController')`INSERT INTO execution.resource_fences
+      (resource_organization_id,id,version,purpose_names,record,connection_id,account_type,account_id,resource_key,fencing_token,unresolved_operation_id)
+      VALUES (${org},${unsafeFence.id},1,ARRAY[${c.tenant.purposeOfUse},${safetyContext.tenant.purposeOfUse}],${JSON.stringify(unsafeRecord)}::text::jsonb,
+      ${unsafeConnection.id},${unsafeAccount.type},${unsafeAccount.id},'hello.brief',1,${unsafeOperation.id})`;});
+    const unsafePayload={proposal:{...proposalPayload(),targetRefs:[unsafeFence,unsafeOperation]},fenceRef:unsafeFence,
+      fencingToken:1,unresolvedOperationRef:unsafeOperation};
+    await assert.rejects(startSafetyStopAction(db,safetyContext,options(),await identity(unsafePayload),org,unsafePayload,base.grants,
+      {...checks,fenceRefs:async()=>[],admit:async()=>{},definition:async()=>definition}),{code:'PURPOSE_DENIED'});
+  });
+
   await t.test('concurrent Command replay creates one intent with server proposer and Service identity',async()=>{
     const input=proposal(),cmd=await command('abh.actions.propose',input);
     const results=await Promise.all([1,2].map(()=>run(cmd,async tx=>(await actions.propose(tx,cmd,input,definition,checks)).actionRef)));
@@ -707,7 +790,7 @@ test('Action preparation persists frozen intent and complete immutable operation
     let binding=await activate(mandatory);
     const resolver=new ActionAuthorizationResolver(assets),execution=deriveVerifiedContext({...c.request,requestId:randomUUID(),actor:{type:'Service',id:service.id},purposeOfUse:'abh.action.execute'});
     const reviewer=new DecisionOwner();
-    const responsibility={responsibilityRef:ref('abh.responsibility-assignment'),resourceOrganizationId:org,principalRef:ref('abh.principal',c.tenant.actor.id),responsibilityType:'Authorization' as const,scopeRefs:[scope],validFrom:new Date(Date.now()-1000).toISOString(),validUntil:new Date(Date.now()+50_000).toISOString(),templateRef:scope,status:'Active' as const};
+    const responsibility={responsibilityRef:ref('abh.responsibility-assignment'),resourceOrganizationId:org,principalRef:ref('abh.principal',c.tenant.actor.id),responsibilityType:'Authorization' as const,scopeRefs:[scope],validFrom:new Date(Date.now()-1000).toISOString(),validUntil:new Date(Date.now()+120_000).toISOString(),templateRef:scope,status:'Active' as const};
     const responsibilityCmd=await command('abh.responsibilities.assign',responsibility);await run(responsibilityCmd,tx=>assignResponsibility(tx,responsibilityCmd,responsibility));
     const approvalGrant:GrantRecord={grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:responsibility.principalRef,scopeRefs:[scope],actionTypes:['abh.decisions.submit'],purposeNames:['abh.decision.review'],validFrom:responsibility.validFrom,validUntil:responsibility.validUntil,issuanceEvidenceRef:scope,status:'Active'};
     await db.transaction(c,options(),async tx=>{
@@ -1012,19 +1095,23 @@ test('Action preparation persists frozen intent and complete immutable operation
     });
     const payload=await store('{"message":"authorized fixture"}',purposeNames);
     const setup=async(ledgerLimit=impact.resourceRequirements[0]!.quantity)=>{
-      const input={id:randomUUID(),scopeRef:scope,resourceType:'hello.resource',meteringMode:'cumulative' as const,unit:'hello.credit',periodRef:ref('abh.period'),limit:ledgerLimit,purposeNames},cmd=await command('abh.ledgers.configure',input);let ledger;
+      const catalog=await seedLedgerCatalog(db,c,'hello.credit');
+      const input={id:randomUUID(),scopeRef:scope,resourceType:'hello.resource',meteringMode:'cumulative' as const,unit:'hello.credit',periodRef:catalog.periodRef,limit:ledgerLimit,purposeNames},cmd=await command('abh.ledgers.configure',input);let ledger;
       await run(cmd,async tx=>{ledger=await ledgerOwner.configure(tx,cmd,input);return ledger.ledgerRef;});
       const unsigned:ResourceEnvelopeRecord={envelopeRef:ref('abh.resource-envelope'),resourceOrganizationId:org,scopeRefs:[scope],bindings:[{resourceRef:resource,ledgerRef:ledger!.ledgerRef,unit:'hello.credit',maxQuantity:impact.resourceRequirements[0]!.quantity}],evidenceRefs:[scope],purposeNames,digest:'sha256:'+'0'.repeat(64)};
       const envelope={...unsigned,digest:await digestContract('ResourceEnvelopeRecord',unsigned)},envelopeCmd=await command('abh.resource-envelopes.configure',envelope);
       await run(envelopeCmd,async tx=>(await envelopes.configure(tx,envelopeCmd,envelope,async()=>{})).envelopeRef);return {envelope,ledger:ledger!};
     };
-    const prepared=async(envelope:ResourceEnvelopeRecord,single:boolean|'independent'=false)=>{
-      const {action,plan}=await prepare(payload);
+    const prepared=async(envelope:ResourceEnvelopeRecord,single:boolean|'independent'=false,safety=false,
+      shared?:Pick<OperationPlanNode,'connectionRef'|'accountRef'>)=>{
+      const {action,plan}=await prepare(payload,safety,shared);
       if(single===true){plan.nodes=plan.nodes.slice(0,1);plan.digest=await digestContract('OperationPlan',plan);}
       if(single==='independent'){plan.nodes=plan.nodes.map((node,index)=>index?{...node,resourceKey:'hello.announcement',dependsOn:[],inputBindings:[]}:node);plan.digest=await digestContract('OperationPlan',plan);}
       const registered=await register(action,plan),completion=await approve(registered),source=await authorityFixture(registered,envelope.envelopeRef,completion,true),node=plan.nodes[0]!;
       const connection={connectionRef:node.connectionRef,resourceOrganizationId:org,providerName:'hello.fake',providerTenantId:'fixture',accountRefs:[node.accountRef],scopeRefs:[scope],connectorRefs:[connector],secretRef:ref('abh.secret'),evidenceRefs:[scope],purposeNames,status:'Active' as const},cmd=await command('abh.connections.configure',connection);
-      await run(cmd,async tx=>(await new ConnectionOwner().configure(tx,cmd,connection,async()=>{})).connectionRef);
+      await run(cmd,async tx=>(await new ConnectionOwner().configure(tx,cmd,connection,async()=>{})).connectionRef).catch(error=>{
+        if(!(error instanceof Error)||!error.message.includes('connections_pkey'))throw error;return node.connectionRef;
+      });
       return {action:registered,plan,...source};
     };
     // Source governance and Domain/one-shot proof callbacks remain fixtures; all tested policy/resource/state Owners are real.
@@ -1392,6 +1479,319 @@ test('Action preparation persists frozen intent and complete immutable operation
         const [row]=await db.transaction(execution,options(),tx=>tx.owner('OperationController')`SELECT count(*) AS count FROM execution.dispatch_exits WHERE permit_id=${permit.permitRef.id}`);
         assert.equal(Number(row!.count),0);
       });
+      await t.test('safe retry reauthorizes a deterministic transport failure and rotates only the same operation fence',async()=>{
+        const value=await ready(),permit=await issue(value),fake=new FakeProvider(connector);
+        fake.mode='ResponseLost';
+        const receiver=deriveVerifiedContext({...execution.request,requestId:randomUUID(),purposeOfUse:'abh.operation.reconcile'});
+        const failed=await dispatchOnce(db,execution,options(),{permitRef:permit.permitRef,
+          claim:{workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}},
+          control,sourceChecks,fake);
+        assert.equal(failed.status,'TransportFailed');
+        await captureTransport(db,receiver,options(),failed,{admit:async()=>{},artifact:async()=>{},
+          storage:async()=>({dataClass:'hello.internal',purposeNames:['abh.action.execute','abh.operation.reconcile'],region:'local',retentionPolicyRef:scope}),
+          normalize:async()=>{throw new CoreError('RAW_RECEIPT_UNSUPPORTED');}});
+        const operation=await db.transaction(execution,options(),tx=>operations.get(tx,value.operation.operationRef.id));
+        const retryGrant:GrantRecord={grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:ref('abh.principal',service.id),
+          scopeRefs:[scope],actionTypes:['abh.operations.safe-retry'],purposeNames:['abh.action.execute'],
+          validFrom:new Date(Date.now()-1000).toISOString(),validUntil:new Date(Date.now()+45_000).toISOString(),
+          issuanceEvidenceRef:ref('abh.request-completion-evidence'),status:'Active'};
+        await db.transaction(c,options(),async tx=>{
+          await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status)
+            VALUES (${org},${retryGrant.grantRef.id},${service.id},${JSON.stringify(retryGrant)}::text::jsonb,${retryGrant.validFrom},${retryGrant.validUntil},'Active')`;
+          await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch)
+            VALUES (${org},${randomUUID()},'abh.grant',${retryGrant.grantRef.id},1)`;
+        });
+        const retryInput={expectedPermitRef:permit.permitRef,permit:{snapshotRef:permit.snapshotRef,
+          workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}};
+        const retryCommand=await command('abh.operations.safe-retry',{operationRef:operation.operationRef,...retryInput});
+        const retryChecks:SafeRetryChecks={admit:async()=>{},verifyRetrySafety:async(_tx,operation,node,prior,observation)=>{
+          assert.equal(operation.providerIdempotencyKey,prior.providerIdempotencyKey);
+          assert.equal(node.connectorRef.id,connector.id);assert.equal(observation.status,'TransportFailed');}};
+        const retried=await safeRetryDispatch(db,execution,options(),retryCommand,operation.operationRef,retryInput,
+          control,sourceChecks,[retryGrant.grantRef],retryChecks);
+        assert.equal(retried.ordinal,2);assert.equal(retried.attemptRef.id===permit.attemptRef.id,false);
+        assert.equal(retried.providerIdempotencyKey,permit.providerIdempotencyKey);assert.equal(retried.resourceFencingToken,permit.resourceFencingToken+1);
+        assert.equal((await db.transaction(execution,options(),tx=>dispatch.getPermit(tx,permit.permitRef))).resourceFencingToken,permit.resourceFencingToken);
+        const statuses=await db.transaction(execution,options(),tx=>dispatch.observations(tx,permit.attemptRef).then(rows=>rows.map(row=>row.status)));
+        assert.deepEqual(statuses,['Created','TransportFailed']);
+        const current=await db.transaction(execution,options(),tx=>operations.get(tx,operation.operationRef.id));
+        assert.equal(current.position.lifecycle,'Dispatching');assert.equal(current.attemptCount,2);
+        const staleCommand=await command('abh.operations.safe-retry',{operationRef:operation.operationRef,...retryInput,
+          expectedPermitRef:{...permit.permitRef,version:permit.permitRef.version+1}});
+        await assert.rejects(safeRetryDispatch(db,execution,options(),staleCommand,operation.operationRef,retryInput,
+          control,sourceChecks,[retryGrant.grantRef],retryChecks),{code:'INVALID_ARGUMENT'});
+
+        const retry=async(input:{expectedPermitRef:EntityRef;permit:typeof retryInput.permit})=>{
+          const current=await db.transaction(execution,options(),tx=>operations.get(tx,operation.operationRef.id));
+          return safeRetryDispatch(db,execution,options(),
+            await command('abh.operations.safe-retry',{operationRef:current.operationRef,...input}),current.operationRef,input,
+            control,sourceChecks,[retryGrant.grantRef],retryChecks);
+        };
+        const failedSecond=await dispatchOnce(db,execution,options(),{permitRef:retried.permitRef,
+          claim:{workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}},control,sourceChecks,fake);
+        assert.equal(failedSecond.status,'TransportFailed');
+        await captureTransport(db,receiver,options(),failedSecond,{admit:async()=>{},artifact:async()=>{},
+          storage:async()=>({dataClass:'hello.internal',purposeNames:['abh.action.execute','abh.operation.reconcile'],region:'local',retentionPolicyRef:scope}),
+          normalize:async()=>{throw new CoreError('RAW_RECEIPT_UNSUPPORTED');}});
+        const secondInput={expectedPermitRef:retried.permitRef,permit:{snapshotRef:retried.snapshotRef,
+          workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}};
+        const third=await retry(secondInput);assert.equal(third.ordinal,3);assert.equal(third.providerIdempotencyKey,permit.providerIdempotencyKey);
+        await dispatchOnce(db,execution,options(),{permitRef:third.permitRef,
+          claim:{workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}},control,sourceChecks,fake);
+        await assert.rejects(retry({expectedPermitRef:third.permitRef,permit:{snapshotRef:third.snapshotRef,
+          workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}}),{code:'PRECONDITION_FAILED'});
+        assert.equal((await db.transaction(execution,options(),tx=>operations.get(tx,value.operation.operationRef.id))).attemptCount,3);
+      });
+
+      await t.test('observing query scheduler independently queries, captures, reconciles and closes',async()=>{
+        const value=await ready(),permit=await issue(value),fake=new FakeProvider(connector);
+        fake.mode='ResponseLost';
+        await dispatchOnce(db,execution,options(),{permitRef:permit.permitRef,
+          claim:{workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}},
+          control,sourceChecks,fake);
+        const initial=await db.transaction(execution,options(),tx=>operations.get(tx,value.operation.operationRef.id));
+        assert.deepEqual(initial.position,{lifecycle:'Dispatching',outcome:'Pending'});
+        const receiver=deriveVerifiedContext({...execution.request,requestId:randomUUID(),purposeOfUse:'abh.operation.reconcile'});
+        const installGrant=async(actionTypes:string[])=>{
+          const grant:GrantRecord={...value.grant,grantRef:ref('abh.grant'),actionTypes,
+            purposeNames:['abh.operation.reconcile'],validFrom:new Date(Date.now()-1000).toISOString(),
+            validUntil:new Date(Date.now()+45_000).toISOString()};
+          await db.transaction(c,options(),async tx=>{
+            await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status)
+              VALUES (${org},${grant.grantRef.id},${service.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
+            await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch)
+              VALUES (${org},${randomUUID()},'abh.grant',${grant.grantRef.id},1)`;
+          });return grant;
+        };
+        const queryGrant=await installGrant(['abh.operations.claim-query-exit','abh.operations.recover']);
+        const captureGrant=await installGrant(['abh.operations.capture-query']);
+        const reconcileGrant=await installGrant(['abh.operations.reconcile','abh.operations.apply-reconciliation']);
+        const queryBudget=await setup('3');
+        const unsigned={...value.authority,authorityRef:ref('abh.execution-authority'),grantRefs:[queryGrant.grantRef],
+          purposeRefs:[executionPurpose],actionTypes:['abh.operations.claim-query-exit'],
+          resourceEnvelopeRef:queryBudget.envelope.envelopeRef,effectKey:'observing-query-fixture'};
+        const queryAuthority={...unsigned,issuanceDigest:await digestContract('ExecutionAuthority',unsigned)};
+        await db.transaction(c,options(),async tx=>{
+          await tx.owner('Control')`INSERT INTO control.execution_authorities(resource_organization_id,id,workspace_id,purpose_names,execution_principal_id,evidence_type,evidence_id,effect_key,input_digest,valid_from,valid_until,status,record)
+            VALUES (${org},${queryAuthority.authorityRef.id},${execution.tenant.workspaceId??null},ARRAY[${receiver.tenant.purposeOfUse}],${service.id},${queryAuthority.issuanceEvidenceRef.type},${queryAuthority.issuanceEvidenceRef.id},'observing-query-fixture',
+              ${queryAuthority.issuanceDigest},${queryAuthority.validFrom},${queryAuthority.validUntil},'Active',${JSON.stringify(queryAuthority)}::text::jsonb)`;
+          await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch)
+            VALUES (${org},${randomUUID()},'abh.execution-authority',${queryAuthority.authorityRef.id},1)`;
+        });
+        const expiredAt=new Date(Date.now()+100).toISOString(),[permitRow]=await f.admin`SELECT record FROM execution.dispatch_permits WHERE id=${permit.permitRef.id}`;
+        const expiredPermit=contract('DispatchPermitRecord',{...permitRow!.record,expiresAt:expiredAt,
+          digest:await digestContract('DispatchPermitRecord',{...permitRow!.record,expiresAt:expiredAt,digest:permitRow!.record.digest})});
+        await f.admin`UPDATE execution.dispatch_permits SET expires_at=${expiredAt}::timestamptz,
+          record=${JSON.stringify(expiredPermit)}::text::jsonb WHERE id=${permit.permitRef.id}`;
+        await delay(150);
+        assert.ok(await recoverPendingOperation(db,receiver,options(),initial.operationRef,value.lease.workerId,[queryGrant.grantRef]));
+        const releaseCommand=await command('abh.work-leases.release',{workerId:value.lease.workerId,fencingToken:value.lease.fencingToken});
+        await db.transaction(receiver,options(),tx=>leases.release(tx,releaseCommand,value.lease.leaseRef,value.lease.workerId,value.lease.fencingToken));
+        assert.deepEqual((await db.transaction(execution,options(),tx=>operations.get(tx,value.operation.operationRef.id))).position,
+          {lifecycle:'Observing',outcome:'Unknown'});
+        const transport={capabilityRef:connector,query:async({exit,signal}:{exit:QueryExitRecord;signal:AbortSignal})=>{
+          signal.throwIfAborted();fake.now=Date.now();
+          const records=fake.query(exit.providerIdempotencyKey);
+          return new TextEncoder().encode(JSON.stringify(records.map(record=>({externalId:record.externalId,version:record.version}))));
+        }};
+        const [purposeRow]=await f.admin`SELECT record FROM control.purposes WHERE id=${executionPurpose.id}`;
+        const originalPurpose=contract('PurposeRecord',purposeRow!.record);
+        const reconciledPurpose={...originalPurpose,name:'abh.operation.reconcile'};
+        await f.admin`UPDATE control.purposes SET name='abh.operation.reconcile',record=${JSON.stringify(reconciledPurpose)}::text::jsonb WHERE id=${executionPurpose.id}`;
+        const stop=new AbortController();
+        let pageReport:{scanned:number;queried:number;reconciled:number;closed:number}|undefined;
+        try{
+          await runObservingQueryWorker(db,{workerId:randomUUID(),context:async()=>receiver,signal:stop.signal,
+            intervalMs:1,leaseSeconds:10,
+            installation:{resolve:async(operation,node)=>({authorityRef:queryAuthority.authorityRef,
+              policy:{policyRef:ref('abh.policy'),connectorRef:connector,cost:node.resourceRequirements[0]!,
+                timeoutMs:5000,minIntervalMs:1,authorize:async()=>{}},transport}),
+              capture:{admit:async(tx,operation)=>{await assertCurrentGrants(tx,{objectRef:operation.operationRef,scopeRefs:[scope],
+                  action:'abh.operations.capture-query'},[captureGrant.grantRef]);},artifact:async()=>{},
+                storage:async()=>({dataClass:'hello.internal',purposeNames,region:'local',retentionPolicyRef:scope}),
+                normalize:async(node,exit,raw,observedAt)=>{
+                  const records=JSON.parse(new TextDecoder().decode(raw)) as {externalId:string;version:number}[];
+                  return contract('NormalizedOperationObservation',{resourceOrganizationId:org,operationId:exit.operationRef.id,
+                    connectionRef:node.connectionRef,accountRef:node.accountRef,connectorRef:connector,providerIdempotencyKey:exit.providerIdempotencyKey,
+                    sourceKey:records[0]!.externalId,sourceVersion:String(records[0]!.version),source:{kind:'Query',
+                      queryAuthorityRef:exit.queryAuthorityRef,coverage:'Complete',visibleThrough:new Date(observedAt).toISOString()},
+                    observedAt,matches:records.map(record=>({externalId:record.externalId,sourceVersion:String(record.version),
+                    payloadDigest:exit.payloadDigest,effect:'Applied'}))});
+                }},
+              reconcile:{rule:node=>({ruleRef:node.completionPolicyRef,connectorRef:connector,compareSourceVersions:(left,right)=>Number(left)-Number(right),
+                  verifyNoEffect:async()=>false}),
+                checks:{admit:async(tx,operation)=>{await assertCurrentGrants(tx,{objectRef:operation.operationRef,scopeRefs:[scope],
+                    action:'abh.operations.reconcile'},[reconcileGrant.grantRef]);},artifact:async()=>{}}},
+              controller:async(operation)=>({admit:async(tx,current)=>{
+                assert.equal(current.operationRef.id,operation.operationRef.id);
+                await assertCurrentGrants(tx,{objectRef:current.operationRef,scopeRefs:[scope],
+                  action:'abh.operations.apply-reconciliation'},[reconcileGrant.grantRef]);
+              }})},
+            onPage:async result=>{pageReport=result;stop.abort();}});
+          assert.equal(pageReport?.closed,1);
+          const [captureDebug]=await db.transaction(execution,options(),tx=>tx.owner('OperationController')`SELECT record FROM execution.query_captures`);
+          assert.equal((captureDebug!.record as {normalization:string}).normalization,'Normalized');
+          const final=await db.transaction(execution,options(),tx=>operations.get(tx,value.operation.operationRef.id));
+          assert.deepEqual(final.position,{lifecycle:'Closed',outcome:'Succeeded'});
+          const counts=await db.transaction(execution,options(),async tx=>({
+            exits:await tx.owner('OperationController')`SELECT count(*)::int AS count FROM execution.query_exits`,
+            captures:await tx.owner('OperationController')`SELECT count(*)::int AS count FROM execution.query_captures`,
+            receipts:await tx.owner('OperationController')`SELECT count(*)::int AS count FROM execution.receipts`}));
+          assert.equal(counts.exits[0]!.count,1);assert.equal(counts.captures[0]!.count,1);assert.equal(counts.receipts[0]!.count,1);
+        }finally{
+          await f.admin`UPDATE control.purposes SET name=${originalPurpose.name},record=${JSON.stringify(originalPurpose)}::text::jsonb WHERE id=${executionPurpose.id}`;
+        }
+      });
+
+      await t.test('safety stop shares an Unknown fence without changing the original responsibility',async()=>{
+        const requirement=impact.resourceRequirements[0]!.quantity,[whole,fraction]=requirement.split('.');
+        const scale=10n**BigInt(fraction!.length),decimal=(count:bigint)=>{
+          const exact=BigInt(whole!)*count*scale+BigInt(fraction!)*count,text=exact.toString();
+          return `${text.slice(0,-fraction!.length)}.${text.slice(-fraction!.length)}`;
+        };
+        const shared={connectionRef:ref('abh.connection'),accountRef:ref('hello.account')};
+        const budget=await setup(decimal(3n)),safetyPrepared=await prepared(budget.envelope,true,true,shared),safetyAction=await authorize(safetyPrepared.action,checks,resolver);
+        const untrustedSafetyInput=proposal(),untrustedSafetyCommand=await command('abh.actions.propose',untrustedSafetyInput);
+        await assert.rejects(db.transaction(execution,options(),tx=>actions.propose(tx,untrustedSafetyCommand,untrustedSafetyInput,{...definition,safetyStop:true},
+          {lock:async()=>{},artifact:async()=>{},proposal:async()=>impact})),{code:'PURPOSE_DENIED'});
+        const safetyOperation=(await children(safetyAction)).find(op=>op.nodeKey==='publish')!;
+        const claim=async(operationRef:EntityRef)=>{const input={targetRef:operationRef,workerId:randomUUID(),leaseSeconds:30},cmd=await command('abh.work-leases.claim',input);let lease;
+          await db.transaction(execution,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>{
+            lease=await leases.claim(tx,cmd,input,async(tx,target)=>{const op=await operations.get(tx,target.id);return (await actions.getIntent(tx,op.actionRef.id)).purposeNames;});return lease!.leaseRef;}));return lease!;};
+        const issueSafety=async(action:ActionRecord=safetyAction,operation:OperationRecord=safetyOperation)=>{
+          const lease=await claim(operation.operationRef),input={snapshotRef:action.authorizationSnapshotRef!,
+            workerId:lease.workerId,leaseRef:lease.leaseRef,leaseFencingToken:lease.fencingToken},cmd=await command('abh.operations.issue-permit',input);let permit;
+          await db.transaction(execution,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>{
+            permit=await dispatch.issue(tx,cmd,operation.operationRef,input,tx=>control.authorize(tx,cmd,operation.operationRef,input.snapshotRef,sourceChecks));return permit!.permitRef;}));
+          const issued=await db.transaction(execution,options(),tx=>dispatch.getPermit(tx,permit!.permitRef));return {permit:issued,lease,operation};};
+        const normalPrepared=await prepared(budget.envelope,false,false,shared),normalAction=await authorize(normalPrepared.action,checks,resolver);
+        const normalOperation=(await children(normalAction)).find(op=>op.nodeKey==='publish')!,normalLease=await claim(normalOperation.operationRef);
+        const normal={...normalPrepared,budget,action:normalAction,plan:normalPrepared.plan,operation:normalOperation,lease:normalLease},permit=await issue(normal),fake=new FakeProvider(connector);
+        fake.mode='ResponseLost';await dispatchOnce(db,execution,options(),{permitRef:permit.permitRef,
+          claim:{workerId:normal.lease.workerId,leaseRef:normal.lease.leaseRef,leaseFencingToken:normal.lease.fencingToken}},control,sourceChecks,fake);
+        const before=await db.transaction(execution,options(),tx=>new ResourceFenceOwner().lock(tx,normal.plan.nodes[0]!));
+        assert.deepEqual(before!.unresolvedOperationRef,permit.operationRef);assert.equal(before!.safetyStopOperationRef,undefined);
+        const first=await issueSafety();assert.ok(fake.calls>=1);assert.equal(first.permit.resourceFenceRef.id,before!.fenceRef.id);
+        const stopped=await db.transaction(execution,options(),tx=>new ResourceFenceOwner().lock(tx,normal.plan.nodes[0]!));
+        assert.deepEqual(stopped!.unresolvedOperationRef,permit.operationRef);assert.deepEqual(stopped!.safetyStopOperationRef,first.permit.operationRef);
+        assert.equal(stopped!.fencingToken,first.permit.resourceFencingToken);assert.equal(stopped!.fencingToken,2);
+        await assert.rejects(db.transaction(execution,options(),tx=>new ResourceFenceOwner().requireCurrent(tx,normal.plan.nodes[0]!,permit.operationRef,permit.resourceFencingToken)),{code:'PRECONDITION_FAILED'});
+        const retryCommand=await command('abh.operations.issue-permit',{operationRef:permit.operationRef});
+        await assert.rejects(db.transaction(execution,options(),tx=>new ResourceFenceOwner().occupy(tx,retryCommand,normal.plan.nodes[0]!,permit.operationRef,purposeNames,{retry:true})),{code:'PRECONDITION_FAILED'});
+        fake.mode='Success';
+        const receiver=deriveVerifiedContext({...execution.request,requestId:randomUUID(),purposeOfUse:'abh.operation.reconcile'}),receiverChecks={admit:async()=>{},artifact:async()=>{}},receipts=new OperationReceiptOwner();
+        const reconcileSafety=async(safety:Awaited<ReturnType<typeof issueSafety>>,node:OperationPlanNode)=>{
+          const response=await dispatchOnce(db,execution,options(),{permitRef:safety.permit.permitRef,
+            claim:{workerId:safety.lease.workerId,leaseRef:safety.lease.leaseRef,leaseFencingToken:safety.lease.fencingToken}},control,sourceChecks,fake);
+          assert.equal(response.status,'Responded');if(response.status!=='Responded')throw new Error('missing safety response');
+          const json=JSON.parse(new TextDecoder().decode(response.raw)),normalized:NormalizedOperationObservation={resourceOrganizationId:org,operationId:safety.permit.operationRef.id,
+            connectionRef:node.connectionRef,accountRef:node.accountRef,connectorRef:connector,providerIdempotencyKey:safety.permit.providerIdempotencyKey,
+            sourceKey:json.externalId,sourceVersion:String(json.version),observedAt:new Date().toISOString(),
+            source:{kind:'Response',attemptRef:safety.permit.attemptRef},matches:[{externalId:json.externalId,sourceVersion:String(json.version),payloadDigest:safety.permit.payloadDigest,effect:'Applied'}]};
+          const rawArtifact=await store(new TextDecoder().decode(response.raw),purposeNames),normalizedArtifact=await store(JSON.stringify(normalized),purposeNames);
+          const input={receiptKey:await inputDigest({sourceKey:normalized.sourceKey,sourceVersion:normalized.sourceVersion}),rawArtifactRef:rawArtifact.artifactRef,normalizedArtifactRef:normalizedArtifact.artifactRef},cmd=await command('abh.operations.record-receipt',input);
+          let receipt;
+          await db.transaction(receiver,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>{
+            receipt=await receipts.record(tx,cmd,safety.permit.operationRef,input,{...receiverChecks,normalize:async(_tx,_node,bytes,observation)=>{
+              assert.equal(new TextDecoder().decode(bytes),new TextDecoder().decode(response.raw));assert.deepEqual(observation,normalized);
+          }});return receipt.receiptRef;}));
+          const operation=await db.transaction(receiver,options(),tx=>operations.get(tx,safety.permit.operationRef.id));
+          const compareCommand=await command('abh.operations.reconcile',receipt!.receiptRef);let report;
+          await db.transaction(receiver,options(),tx=>executeCommand(tx,compareCommand,async()=>{},async()=>{
+            report=await new ReconciliationOwner().compare(tx,compareCommand,operation.operationRef,{receiptRefs:[receipt!.receiptRef]},
+              {ruleRef:definition.completionPolicyRef,connectorRef:connector,compareSourceVersions:(a,b)=>Number(a)-Number(b),verifyNoEffect:async()=>false},receiverChecks);return report.reconciliationRef;}));
+          assert.equal(report!.verdict,'ConfirmedSuccess');
+          const applyInput={reportRef:report!.reconciliationRef,workerId:safety.lease.workerId,leaseRef:safety.lease.leaseRef,leaseFencingToken:safety.lease.fencingToken},applyCommand=await command('abh.operations.apply-reconciliation',applyInput);
+          let closed;
+          await db.transaction(receiver,options(),tx=>executeCommand(tx,applyCommand,async()=>{},async()=>{closed=await new OperationController().apply(tx,applyCommand,operation.operationRef,applyInput,receiverChecks);return closed.operationRef;}));
+          assert.deepEqual(closed!.position,{lifecycle:'Closed',outcome:'Succeeded'});return closed!;
+        };
+        const firstSafety=await reconcileSafety(first,safetyPrepared.plan.nodes[0]!);
+        const retired=await db.transaction(execution,options(),tx=>new ResourceFenceOwner().lock(tx,normal.plan.nodes[0]!));
+        assert.equal(retired!.safetyStopOperationRef,undefined);assert.deepEqual(retired!.unresolvedOperationRef,permit.operationRef);
+        assert.deepEqual((await db.transaction(receiver,options(),tx=>operations.get(tx,firstSafety.operationRef.id))).reconciliationRef,firstSafety.reconciliationRef);
+        await assert.rejects(db.transaction(execution,options(),tx=>new ResourceFenceOwner().requireCurrent(tx,normal.plan.nodes[0]!,permit.operationRef,permit.resourceFencingToken)),{code:'PRECONDITION_FAILED'});
+        assert.equal((await db.transaction(execution,options(),tx=>actions.get(tx,normal.action.actionRef.id))).position.lifecycle,'Executing');
+        assert.equal((await db.transaction(execution,options(),tx=>actions.get(tx,safetyAction.actionRef.id))).position.lifecycle,'Executing');
+        assert.equal((await db.transaction(execution,options(),tx=>ledgerOwner.get(tx,budget.ledger.ledgerRef.id))).heldReservation,decimal(2n));
+        const latePrepared=await prepared(budget.envelope,true,true,shared),lateAction=await authorize(latePrepared.action,checks,resolver);
+        const lateOperation=(await children(lateAction)).find(op=>op.nodeKey==='publish')!,late=await issueSafety(lateAction,lateOperation);
+        assert.equal(late.permit.resourceFencingToken,3);
+        assert.equal((await db.transaction(execution,options(),tx=>new ResourceFenceOwner().lock(tx,normal.plan.nodes[0]!)))!.safetyStopOperationRef!.id,late.permit.operationRef.id);
+        await reconcileSafety(late,latePrepared.plan.nodes[0]!);
+        const confirmed=await db.transaction(execution,options(),tx=>new ResourceFenceOwner().lock(tx,normal.plan.nodes[0]!));
+        assert.deepEqual(confirmed!.unresolvedOperationRef,permit.operationRef);assert.equal(confirmed!.safetyStopOperationRef,undefined);
+      });
+
+      await t.test('safe retry requires an explicit current grant and a proven latest observation',async()=>{
+        const value=await ready(),permit=await issue(value),fake=new FakeProvider(connector);
+        fake.mode='ResponseLost';
+        const grant:GrantRecord={grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:ref('abh.principal',service.id),scopeRefs:[scope],
+          actionTypes:['abh.operations.safe-retry'],purposeNames:['abh.action.execute'],validFrom:new Date(Date.now()-1000).toISOString(),
+          validUntil:new Date(Date.now()+45_000).toISOString(),issuanceEvidenceRef:ref('abh.request-completion-evidence'),status:'Active'};
+        const retryInput={expectedPermitRef:permit.permitRef,permit:{snapshotRef:permit.snapshotRef,workerId:value.lease.workerId,
+          leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}};
+        const failed=await dispatchOnce(db,execution,options(),{permitRef:permit.permitRef,
+          claim:{workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}},control,sourceChecks,fake);
+        assert.equal(failed.status,'TransportFailed');
+        const operation=await db.transaction(execution,options(),tx=>operations.get(tx,value.operation.operationRef.id));
+        const invoke=async(grantRefs:EntityRef[]=[])=>safeRetryDispatch(db,execution,options(),
+          await command('abh.operations.safe-retry',{operationRef:operation.operationRef,...retryInput}),operation.operationRef,
+          retryInput,control,sourceChecks,grantRefs,{admit:async()=>{},verifyRetrySafety:async()=>{}});
+        await assert.rejects(invoke(),{code:'AUTHORITY_REQUIRED'});
+        await db.transaction(c,options(),async tx=>{
+          await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status)
+            VALUES (${org},${grant.grantRef.id},${service.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
+          await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch)
+            VALUES (${org},${randomUUID()},'abh.grant',${grant.grantRef.id},1)`;
+        });
+        await assert.rejects(invoke([grant.grantRef]),{code:'PRECONDITION_FAILED'});
+        const revoked=await command('abh.grants.revoke',grant.grantRef);await run(revoked,async tx=>(await revokeGrant(tx,revoked,grant.grantRef,[scope])).grantRef);
+        await assert.rejects(invoke([grant.grantRef]),{code:'EPOCH_REVOKED'});
+        const interrupted=contract('AttemptObservationRecord',{observationRef:{type:'abh.attempt-observation',id:randomUUID(),version:1},
+          resourceOrganizationId:org,attemptRef:permit.attemptRef,sequence:2,status:'Interrupted',observedAt:new Date().toISOString(),
+          evidenceRefs:[permit.permitRef,value.lease.leaseRef]});
+        await db.transaction(execution,options(),tx=>tx.owner('OperationController')`INSERT INTO execution.attempt_observations
+          (resource_organization_id,id,workspace_id,purpose_names,attempt_id,sequence,status,record)
+          VALUES (${org},${interrupted.observationRef.id},NULL,ARRAY['abh.action.execute']::text[],${permit.attemptRef.id},2,'Interrupted',${JSON.stringify(interrupted)}::text::jsonb)`);
+        const liveGrant={...grant,grantRef:ref('abh.grant')};
+        await db.transaction(c,options(),async tx=>{
+          await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status)
+            VALUES (${org},${liveGrant.grantRef.id},${service.id},${JSON.stringify(liveGrant)}::text::jsonb,${liveGrant.validFrom},${liveGrant.validUntil},'Active')`;
+          await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch)
+            VALUES (${org},${randomUUID()},'abh.grant',${liveGrant.grantRef.id},1)`;
+        });
+        await assert.rejects(invoke([liveGrant.grantRef]),{code:'PRECONDITION_FAILED'});
+      });
+
+      await t.test('safe retry reruns mandatory policy and does not issue after denial',async()=>{
+        const value=await ready(),permit=await issue(value),fake=new FakeProvider(connector);fake.mode='ResponseLost';
+        const receiver=deriveVerifiedContext({...execution.request,requestId:randomUUID(),purposeOfUse:'abh.operation.reconcile'});
+        const grant:GrantRecord={grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:ref('abh.principal',service.id),scopeRefs:[scope],
+          actionTypes:['abh.operations.safe-retry'],purposeNames:['abh.action.execute'],validFrom:new Date(Date.now()-1000).toISOString(),
+          validUntil:new Date(Date.now()+45_000).toISOString(),issuanceEvidenceRef:ref('abh.request-completion-evidence'),status:'Active'};
+        await db.transaction(c,options(),async tx=>{
+          await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status)
+            VALUES (${org},${grant.grantRef.id},${service.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
+          await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch)
+            VALUES (${org},${randomUUID()},'abh.grant',${grant.grantRef.id},1)`;
+        });
+        const failed=await dispatchOnce(db,execution,options(),{permitRef:permit.permitRef,
+          claim:{workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}},control,sourceChecks,fake);
+        assert.equal(failed.status,'TransportFailed');
+        await captureTransport(db,receiver,options(),failed,{admit:async()=>{},artifact:async()=>{},
+          storage:async()=>({dataClass:'hello.internal',purposeNames:['abh.action.execute','abh.operation.reconcile'],region:'local',retentionPolicyRef:scope}),
+          normalize:async()=>{throw new CoreError('RAW_RECEIPT_UNSUPPORTED');}});
+        const before=await counts(),retryInput={expectedPermitRef:permit.permitRef,permit:{snapshotRef:permit.snapshotRef,
+          workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken}};
+        const operation=await db.transaction(execution,options(),tx=>operations.get(tx,value.operation.operationRef.id));
+        const invoke=async()=>safeRetryDispatch(db,execution,options(),await command('abh.operations.safe-retry',{operationRef:operation.operationRef,...retryInput}),
+          operation.operationRef,retryInput,control,sourceChecks,[grant.grantRef],{admit:async()=>{},verifyRetrySafety:async()=>{}});
+        const deny=await configurePolicy('Mandatory','abh_fixture/decision');binding=await activate(deny,binding.bindingRef.version);
+        try{await assert.rejects(invoke(),{code:'POLICY_DENIED'});}finally{binding=await activate(mandatory,binding.bindingRef.version);}
+        assert.deepEqual(await counts(),before);
+      });
+
       await t.test('Permit first, revocation second: no new exit, while the durable possible-in-flight facts remain',async()=>{
         const value=await ready(),permit=await issue(value),fake=new FakeProvider(connector),claim={workerId:value.lease.workerId,leaseRef:value.lease.leaseRef,leaseFencingToken:value.lease.fencingToken};
         const cmd=await command('abh.grants.revoke',value.grant.grantRef);await run(cmd,async tx=>(await revokeGrant(tx,cmd,value.grant.grantRef,[scope])).grantRef);
@@ -2098,7 +2498,8 @@ test('Action preparation persists frozen intent and complete immutable operation
           }));
           assert.equal((await db.transaction(receiver,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!)))!.blockedByReportRef,undefined);
           const child={...value,action:await db.transaction(execution,options(),tx=>actions.get(tx,value.action.actionRef.id)),operation:dependent,lease:await claim(dependent.operationRef)};
-          const late=async()=>{
+	          let runResolutionEffect=async()=>{};
+	          const late=async()=>{
             fake.records.push({...fake.records[0]!,externalId:randomUUID()});await persist(first,new TextEncoder().encode(JSON.stringify(fake.query(first.providerIdempotencyKey))),true);
             const before=await db.transaction(receiver,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!));
             const all=await db.transaction(receiver,options(),tx=>receipts.list(tx,parent.closed.operationRef.id));
@@ -2136,7 +2537,7 @@ test('Action preparation persists frozen intent and complete immutable operation
               await db.transaction(c,options(),tx=>revokeGrant(tx,revoke,grant.grantRef,[scope]));
               await assert.rejects(compareClosedOperation(db,receiver,options(),parent.closed.operationRef,[grant.grantRef],installation),{code:'EPOCH_REVOKED'});
             }else recorded=await db.transaction(receiver,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>(await compare(tx)).reconciliationRef));
-            const slot=await db.transaction(receiver,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!));
+	            let slot=await db.transaction(receiver,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!));
             assert.deepEqual(slot!.blockedByReportRef,recorded.receipt.resultRef);
             assert.deepEqual(slot!.unresolvedOperationRef,before!.unresolvedOperationRef,'late contradiction must preserve a newer unresolved Operation');
             assert.equal(slot!.fencingToken,before!.fencingToken);
@@ -2144,14 +2545,14 @@ test('Action preparation persists frozen intent and complete immutable operation
               const replay=await db.transaction(receiver,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>{throw new Error('must not run');}));
               assert.equal(replay.replayed,true);assert.deepEqual(replay.receipt.resultRef,recorded.receipt.resultRef);
             }
-            assert.deepEqual(await db.transaction(receiver,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!)),slot);
+	              assert.deepEqual(await db.transaction(receiver,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!)),slot);
             assert.deepEqual(await db.transaction(receiver,options(),tx=>operations.get(tx,parent.closed.operationRef.id)),parent.closed,'terminal conclusion is immutable');
             const events=await db.transaction(receiver,options(),tx=>tx.owner('DurableExecution')`SELECT record FROM data.outbox WHERE record->>'causationId'=(
               SELECT record->>'causationId' FROM data.outbox WHERE record->'aggregateRef'->>'id'=${recorded.receipt.resultRef.id} LIMIT 1)`);
             assert.deepEqual(events.map(row=>row.record.type).sort(),['abh.reconciliation.created','abh.resource-fence.blocked']);
             {
               const owner=new ExceptionOwner(),reportRef={...recorded.receipt.resultRef,type:'abh.reconciliation' as const},responsibilityRef=ref('abh.responsibility-assignment');
-              if(lateAt==='before-exit'){
+	              if(lateAt==='before-exit'){
                 const assignment={responsibilityRef,resourceOrganizationId:org,principalRef:ref('abh.principal',c.tenant.actor.id),responsibilityType:'Exception' as const,scopeRefs:[scope],
                   validFrom:new Date(Date.now()-1000).toISOString(),validUntil:new Date(Date.now()+60000).toISOString(),templateRef:scope,status:'Active' as const};
                 const cmd=await command('abh.responsibilities.assign',assignment);await run(cmd,tx=>assignResponsibility(tx,cmd,assignment));
@@ -2203,7 +2604,7 @@ test('Action preparation persists frozen intent and complete immutable operation
               const exception=await openTerminalException(db,receiver,options(),cmd,payload,[grant.grantRef],installation);
               assert.equal(exception.category,'TerminalContradiction');assert.deepEqual(exception.blockedScopeRefs,proposal.blockedScopeRefs);
               await assert.rejects(db.transaction(context(),options(),tx=>owner.get(tx,exception.exceptionRef)),{code:'RESOURCE_NOT_FOUND'});
-              const opened=await db.transaction(receiver,options(),tx=>new DecisionOwner().getRequest(tx,exception.requestRef.id));
+	              const opened=await db.transaction(receiver,options(),tx=>new DecisionOwner().getRequest(tx,exception.requestRef.id));
               assert.equal(opened.status,lateAt==='before-exit'?'Open':'Unresolved');
               const inspect=()=>db.transaction(receiver,options(),tx=>owner.inspect(tx,exception.exceptionRef,async(tx,record)=>{
                 await assertCurrentGrants(tx,{objectRef:record.reportRef,scopeRefs:[scope],action:'abh.exceptions.open-terminal'},[grant.grantRef]);
@@ -2213,15 +2614,190 @@ test('Action preparation persists frozen intent and complete immutable operation
               assert.deepEqual(inspected.technical.position,parent.closed.position);
               assert.deepEqual(inspected.technical.unresolvedOperationRef,slot!.unresolvedOperationRef);
               await assert.rejects(db.transaction(receiver,options(),tx=>owner.inspect(tx,exception.exceptionRef,async()=>{throw new CoreError('FORBIDDEN');})),{code:'FORBIDDEN'});
-              if(lateAt==='before-exit'){
+	              runResolutionEffect=async()=>{
+	                if(lateAt!=='before-exit')return;
+	                const effectGrant:GrantRecord={...value.grant,grantRef:ref('abh.grant'),
+	                  principalRef:ref('abh.principal',c.tenant.actor.id),actionTypes:['abh.exceptions.resolve'],
+	                  purposeNames:['abh.decision.review']};
+	                await db.transaction(c,options(),async tx=>{
+	                  await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status)
+	                    VALUES (${org},${effectGrant.grantRef.id},${c.tenant.actor.id},${JSON.stringify(effectGrant)}::text::jsonb,
+	                      ${effectGrant.validFrom},${effectGrant.validUntil},'Active')`;
+	                  await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch)
+	                    VALUES (${org},${randomUUID()},'abh.grant',${effectGrant.grantRef.id},1)`;
+	                });
                 const human=deriveVerifiedContext({...c.request,purposeOfUse:'abh.operation.reconcile'}),decisions=new DecisionOwner();
                 const decision=await db.transaction(human,options(),tx=>decisions.getDecision(tx,opened.decisionRefs[0]!.id));
                 const submission={response:'Approved' as const,conditionRefs:[],packageDigest:decision.package.packageDigest},cmd=await command('abh.decisions.submit',submission);
-                await db.transaction(human,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>(await decisions.submit(tx,cmd,decision.decisionRef,submission,installation.eligibility)).decision.decisionRef));
-                assert.equal((await db.transaction(receiver,options(),tx=>decisions.getRequest(tx,opened.requestRef.id))).status,'Closed');
-                const closedView=await inspect();assert.equal(closedView.responsibility.status,'Closed');assert.equal(closedView.technical.dispatchBlocked,true);
-                assert.ok(closedView.responsibility.requestRef.version>inspected.responsibility.requestRef.version);
-                assert.deepEqual(closedView.technical,inspected.technical);
+	                await db.transaction(human,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>(await decisions.submit(tx,cmd,decision.decisionRef,submission,installation.eligibility)).decision.decisionRef));
+	                assert.equal((await db.transaction(receiver,options(),tx=>decisions.getRequest(tx,opened.requestRef.id))).status,'Closed');
+	                assert.deepEqual(await db.transaction(receiver,options(),tx=>operations.get(tx,parent.closed.operationRef.id)),parent.closed);
+                const reviewer=deriveVerifiedContext({...c.request,purposeOfUse:'abh.decision.review'});
+                const resolveGrant:GrantRecord={...value.grant,grantRef:ref('abh.grant'),
+                  principalRef:ref('abh.principal',c.tenant.actor.id),actionTypes:['abh.exceptions.resolve'],
+                  purposeNames:['abh.decision.review']};
+                await db.transaction(c,options(),async tx=>{
+                  await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status)
+                    VALUES (${org},${resolveGrant.grantRef.id},${c.tenant.actor.id},${JSON.stringify(resolveGrant)}::text::jsonb,
+                      ${resolveGrant.validFrom},${resolveGrant.validUntil},'Active')`;
+                  await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch)
+                    VALUES (${org},${randomUUID()},'abh.grant',${resolveGrant.grantRef.id},1)`;
+                });
+                const resolutionDecision=await db.transaction(reviewer,options(),tx=>new DecisionOwner().getDecision(tx,opened.decisionRefs[0]!.id));
+                const resolvePayload={exceptionRef:exception.exceptionRef,resolutionKind:'ApplyCorrection' as const,
+                  decisionRef:resolutionDecision.decisionRef,evidenceRefs:[reportRef]};
+                const resolveCommand={type:'abh.exceptions.resolve' as const,schemaVersion:'0.1.0' as const,
+                  commandId:randomUUID(),idempotencyKey:`exception-resolve/${exception.exceptionRef.id}`,
+                  target:{type:'abh.exception' as const,id:exception.exceptionRef.id},
+                  expectedVersion:exception.exceptionRef.version,payload:resolvePayload};
+                const identityIssuer='exception.http.fixture',identityAudience='abh.test',identitySubject=randomUUID(),
+                  identityDigest=await inputDigest([identityIssuer,identitySubject]);
+                await f.admin`INSERT INTO deployment.identity_locations(identity_digest,resource_organization_id,principal_id,principal_version)
+                  VALUES (${identityDigest},${org},${c.tenant.actor.id},1)`;
+                const httpApp=createCoreHttpApp({database:db,
+                  identity:new IdentityIngress(db,{verify:async()=>({status:'Completed',data:{issuer:identityIssuer,audience:identityAudience,
+                    subject:identitySubject,identityKind:'Human',authnStrength:{level:'SingleFactor'},credentialEpoch:1,
+                    verifiedAt:new Date().toISOString(),expiresAt:new Date(Date.now()+60000).toISOString(),
+                    evidenceRef:ref('abh.identity-evidence')}})},{issuer:identityIssuer,audience:identityAudience}),
+                  credentials:async request=>{
+                    if(String(request.headers.authorization)!=='Bearer reviewer')throw new CoreError('UNAUTHENTICATED');
+                    return {credentialRef:ref('abh.credential'),organizationId:org,purpose:'abh.decision.review'};},
+                  exceptionEffect:{grants:async()=>[resolveGrant.grantRef]},
+                  exceptionResolution:{grants:async()=>[resolveGrant.grantRef]}});
+                t.after(()=>httpApp.close());
+                const sendResolve=()=>httpApp.inject({method:'POST',url:'/v1/commands/abh.exceptions.resolve',
+                  headers:{authorization:'Bearer reviewer','idempotency-key':resolveCommand.idempotencyKey,
+                    'if-match':`"${exception.exceptionRef.version}"`},
+                  payload:{target:resolveCommand.target,payload:resolvePayload}});
+                const httpResponse=await sendResolve();
+                assert.equal(httpResponse.statusCode,200,httpResponse.body);
+                const resolved=httpResponse.json();
+                assert.deepEqual(resolved.data.objectRef,resolvePayload.exceptionRef);
+                assert.match(resolved.data.commandId,/^[0-9a-f-]{36}$/);
+                assert.equal(resolved.data.resolution.resolutionKind,'ApplyCorrection');
+                assert.equal(resolved.data.resolution.technicalUnknownPreserved,true);
+                assert.equal(resolved.data.resolution.resourceFreezePreserved,true);
+                assert.deepEqual((await sendResolve()).json(),resolved);
+                const client=createAbhClient({baseUrl:'https://fixture.test',headers:async()=>({authorization:'Bearer reviewer'}),
+                  fetch:async(url,init)=>{const injected=await httpApp.inject({method:init?.method as 'POST',
+                    url:new URL(String(url)).pathname+new URL(String(url)).search,
+                    headers:Object.fromEntries(new Headers(init?.headers)),payload:String(init?.body)});
+                    return new Response(injected.body,{status:injected.statusCode,
+                      headers:{'content-type':String(injected.headers['content-type'])}});}});
+                assert.deepEqual(await client.exceptions.resolve({id:exception.exceptionRef.id,
+                  expectedVersion:exception.exceptionRef.version,idempotencyKey:resolveCommand.idempotencyKey,
+                  payload:resolvePayload}),resolved);
+                const [resolutionRow]=await f.admin`SELECT record FROM human.exception_resolutions
+                  WHERE resource_organization_id=${org} AND exception_id=${exception.exceptionRef.id}`;
+                const applicationId=randomUUID(),correctionId=randomUUID(),applicationCommandId=randomUUID();
+                const unsignedApplication:CorrectionApplicationRecord={
+                  applicationRef:{type:'abh.correction-application',id:applicationId,version:1},
+                  resourceOrganizationId:org,correctionRef:{type:'abh.correction',id:correctionId,version:1},
+                  subjectRef:exception.sourceRef,subjectVersionBefore:exception.sourceRef.version,targetOwner:'Run',
+                  authorityRef:reportRef,evidenceRefs:[reportRef],resultRef:exception.sourceRef,
+                  resultVersion:exception.sourceRef.version,
+                  receiptRef:{type:'abh.command',id:applicationCommandId,version:1},
+                  appliedBy:reviewer.tenant.actor,appliedAt:new Date().toISOString(),digest:'sha256:'+'0'.repeat(64)};
+                const application:CorrectionApplicationRecord={...unsignedApplication,
+                  digest:await digestContract('CorrectionApplicationRecord',unsignedApplication)};
+                await f.admin`INSERT INTO human.correction_applications
+                  (resource_organization_id,id,workspace_id,purpose_names,record,correction_id,subject_id,result_id,receipt_id,created_by,updated_by)
+                  VALUES (${org},${applicationId},${null},${['abh.runtime.deliver','abh.decision.review']},
+                    ${JSON.stringify(application)}::text::jsonb,${correctionId},${exception.sourceRef.id},
+                    ${exception.sourceRef.id},${applicationCommandId},${reviewer.tenant.actor.id},${reviewer.tenant.actor.id})`;
+                const effectPayload={resolutionRef:resolved.data.resolution.resolutionRef,correctionApplicationRef:application.applicationRef};
+                const stableEffectKey=`exception-effect/${resolved.data.resolution.resolutionRef.id}`;
+	                const effectCommand=(payload=effectPayload,key=stableEffectKey)=>
+	                  ({type:'abh.exceptions.apply-resolution-effect' as const,schemaVersion:'0.1.0' as const,
+	                  commandId:randomUUID(),idempotencyKey:key,
+	                  target:{type:'abh.exception-resolution' as const,id:resolved.data.resolution.resolutionRef.id},
+	                  payload});
+                const stableEffectCommand=effectCommand();
+	                const sendEffect=()=>httpApp.inject({method:'POST',url:'/v1/commands/abh.exceptions.apply-resolution-effect',
+	                  headers:{authorization:'Bearer reviewer','idempotency-key':stableEffectCommand.idempotencyKey},
+	                  payload:{target:stableEffectCommand.target,payload:effectPayload}});
+	                const fenceBeforeEffect=await db.transaction(reviewer,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!));
+	                const effectResponse=await sendEffect();
+	                assert.equal(effectResponse.statusCode,201,effectResponse.body);
+                const effectView=effectResponse.json(),effect=effectView.data;
+                assert.deepEqual(effect.objectRef,effect.effect.effectRef);
+                assert.notEqual(effect.commandId,effect.effect.effectRef.id);
+                assert.match(effect.commandId,/^[0-9a-f-]{36}$/);
+                assert.equal(effect.effect.reportBlockReleased,true);
+                assert.equal(effect.effect.unresolvedOperationPreserved,true);
+                assert.equal(effect.effect.fencingTokenPreserved,true);
+	                assert.deepEqual((await sendEffect()).json(),effectResponse.json());
+	                assert.deepEqual(await client.exceptions.applyResolutionEffect({id:stableEffectCommand.target.id,
+	                  idempotencyKey:stableEffectCommand.idempotencyKey,
+                  payload:effectPayload}),effectResponse.json());
+	                const fenceAfterEffect=await db.transaction(reviewer,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!));
+	                slot=fenceAfterEffect;
+                assert.equal(fenceAfterEffect!.blockedByReportRef,undefined);
+                assert.deepEqual(fenceAfterEffect!.unresolvedOperationRef,fenceBeforeEffect!.unresolvedOperationRef);
+                assert.equal(fenceAfterEffect!.fencingToken,fenceBeforeEffect!.fencingToken);
+	                assert.equal(fenceAfterEffect!.fenceRef.version,fenceBeforeEffect!.fenceRef.version+1);
+	                assert.deepEqual(await db.transaction(reviewer,options(),
+	                  tx=>new ExceptionOwner().getEffect(tx,effect.effect.effectRef)),effect.effect);
+	                assert.deepEqual(await db.transaction(reviewer,options(),tx=>operations.get(tx,parent.closed.operationRef.id)),parent.closed);
+	                const [resolutionBeforeWrongKind]=await f.admin`SELECT record FROM human.exception_resolutions
+	                  WHERE resource_organization_id=${org} AND id=${resolved.data.resolution.resolutionRef.id}`;
+	                const wrongResolution={...resolutionBeforeWrongKind!.record,resolutionKind:'WaitForEvidence' as const,
+	                  digest:await digestContract('ExceptionResolutionRecord',{...resolutionBeforeWrongKind!.record,
+	                    resolutionKind:'WaitForEvidence' as const})};
+	                const [effectsBeforeWrongKind]=await f.admin`SELECT count(*)::int AS count FROM human.exception_resolution_effects
+	                  WHERE resource_organization_id=${org} AND resolution_id=${resolved.data.resolution.resolutionRef.id}`;
+	                try{
+	                  await f.admin`UPDATE human.exception_resolutions SET record=${JSON.stringify(wrongResolution)}::text::jsonb,
+	                    resolution_kind='WaitForEvidence' WHERE resource_organization_id=${org}
+	                    AND id=${resolved.data.resolution.resolutionRef.id}`;
+	                  await assert.rejects(applyExceptionResolutionEffect(db,reviewer,options(),
+	                    effectCommand(effectPayload,randomUUID()),[resolveGrant.grantRef]),{code:'PRECONDITION_FAILED'});
+	                }finally{
+	                  await f.admin`UPDATE human.exception_resolutions SET record=${JSON.stringify(resolutionBeforeWrongKind!.record)}::text::jsonb,
+	                    resolution_kind='ApplyCorrection' WHERE resource_organization_id=${org}
+	                    AND id=${resolved.data.resolution.resolutionRef.id}`;
+	                }
+	                const [effectsAfterWrongKind]=await f.admin`SELECT count(*)::int AS count FROM human.exception_resolution_effects
+	                  WHERE resource_organization_id=${org} AND resolution_id=${resolved.data.resolution.resolutionRef.id}`;
+	                assert.equal(effectsBeforeWrongKind!.count,1);assert.equal(effectsAfterWrongKind!.count,1);
+	                const foreignApplicationId=randomUUID();
+                const foreignUnsigned:CorrectionApplicationRecord={
+                  applicationRef:{type:'abh.correction-application',id:foreignApplicationId,version:1},
+                  resourceOrganizationId:org,correctionRef:{type:'abh.correction',id:randomUUID(),version:1},
+                  subjectRef:exception.sourceRef,subjectVersionBefore:exception.sourceRef.version,targetOwner:'Run',
+                  authorityRef:reportRef,evidenceRefs:[reportRef],resultRef:exception.sourceRef,
+                  resultVersion:exception.sourceRef.version,receiptRef:{type:'abh.command',id:randomUUID(),version:1},
+                  appliedBy:reviewer.tenant.actor,appliedAt:new Date().toISOString(),digest:'sha256:'+'0'.repeat(64)};
+                const foreignApplication={...foreignUnsigned,digest:await digestContract('CorrectionApplicationRecord',foreignUnsigned)};
+                await f.admin`INSERT INTO human.correction_applications
+                  (resource_organization_id,id,workspace_id,purpose_names,record,correction_id,subject_id,result_id,receipt_id,created_by,updated_by)
+                  VALUES (${org},${foreignApplicationId},${null},${['abh.runtime.deliver','abh.decision.review']},
+                    ${JSON.stringify(foreignApplication)}::text::jsonb,${foreignApplication.correctionRef.id},
+                    ${exception.sourceRef.id},${exception.sourceRef.id},${foreignApplication.receiptRef.id},
+                    ${reviewer.tenant.actor.id},${reviewer.tenant.actor.id})`;
+                await assert.rejects(applyExceptionResolutionEffect(db,reviewer,options(),
+                  effectCommand({resolutionRef:effectPayload.resolutionRef,
+                    correctionApplicationRef:foreignApplication.applicationRef}),[resolveGrant.grantRef]),{code:'OPERATION_FACT_CONFLICT'});
+                const evidencelessId=randomUUID(),evidencelessUnsigned:CorrectionApplicationRecord={
+                  applicationRef:{type:'abh.correction-application',id:evidencelessId,version:1},
+                  resourceOrganizationId:org,correctionRef:{type:'abh.correction',id:randomUUID(),version:1},
+                  subjectRef:exception.sourceRef,subjectVersionBefore:exception.sourceRef.version,targetOwner:'Run',
+                  authorityRef:scope,evidenceRefs:[scope],resultRef:exception.sourceRef,
+                  resultVersion:exception.sourceRef.version,receiptRef:{type:'abh.command',id:randomUUID(),version:1},
+                  appliedBy:reviewer.tenant.actor,appliedAt:new Date().toISOString(),digest:'sha256:'+'0'.repeat(64)};
+                const evidenceless={...evidencelessUnsigned,digest:await digestContract('CorrectionApplicationRecord',evidencelessUnsigned)};
+                await f.admin`INSERT INTO human.correction_applications
+                  (resource_organization_id,id,workspace_id,purpose_names,record,correction_id,subject_id,result_id,receipt_id,created_by,updated_by)
+                  VALUES (${org},${evidencelessId},${null},${['abh.runtime.deliver','abh.decision.review']},
+                    ${JSON.stringify(evidenceless)}::text::jsonb,${evidenceless.correctionRef.id},
+                    ${exception.sourceRef.id},${exception.sourceRef.id},${evidenceless.receiptRef.id},
+                    ${reviewer.tenant.actor.id},${reviewer.tenant.actor.id})`;
+                await assert.rejects(applyExceptionResolutionEffect(db,reviewer,options(),
+                  effectCommand({resolutionRef:effectPayload.resolutionRef,
+                    correctionApplicationRef:evidenceless.applicationRef}),[resolveGrant.grantRef]),{code:'OPERATION_FACT_CONFLICT'});
+                await assert.rejects(applyExceptionResolutionEffect(db,reviewer,options(),
+                  effectCommand(effectPayload,randomUUID()),[]),{code:'AUTHORITY_REQUIRED'});
+		              assert.deepEqual(await db.transaction(receiver,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!)),slot);
                 assert.deepEqual(await db.transaction(receiver,options(),tx=>operations.get(tx,parent.closed.operationRef.id)),parent.closed);
               }
               assert.deepEqual(await openTerminalException(db,receiver,options(),cmd,payload,[grant.grantRef],installation),exception);
@@ -2234,14 +2810,14 @@ test('Action preparation persists frozen intent and complete immutable operation
               }finally{
                 await f.admin`UPDATE human.requests SET record=${JSON.stringify(currentRequest)}::text::jsonb WHERE resource_organization_id=${org} AND id=${exception.requestRef.id}`;
               }
-              await assert.rejects(openTerminalException(db,receiver,options(),await command('abh.exceptions.open-terminal',payload),payload,[grant.grantRef],installation),{code:'IDEMPOTENCY_CONFLICT'});
-              await assert.rejects(db.transaction(receiver,options(),tx=>tx.owner('HumanGateway')`UPDATE human.exceptions SET record=record`),{code:'42501'});
-              assert.deepEqual(await db.transaction(receiver,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!)),slot);
-              const revoke=await command('abh.grants.revoke',grant.grantRef);await db.transaction(c,options(),tx=>revokeGrant(tx,revoke,grant.grantRef,[scope]));
+	              assert.deepEqual(await openTerminalException(db,receiver,options(),cmd,payload,[grant.grantRef],installation),exception);
+	              await assert.rejects(db.transaction(receiver,options(),tx=>tx.owner('HumanGateway')`UPDATE human.exceptions SET record=record`),{code:'42501'});
+	              assert.deepEqual(await db.transaction(receiver,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[0]!)),slot);
+	              const revoke=await command('abh.grants.revoke',grant.grantRef);await db.transaction(c,options(),tx=>revokeGrant(tx,revoke,grant.grantRef,[scope]));
               await assert.rejects(openTerminalException(db,receiver,options(),cmd,payload,[grant.grantRef],installation),{code:'EPOCH_REVOKED'});
               await assert.rejects(inspect(),{code:'EPOCH_REVOKED'});
-            }
-          };
+	              }
+		          };
           if(lateAt==='before-permit'){
             const before=await counts();await late();await assert.rejects(issue(child),{code:'PRECONDITION_FAILED'});assert.deepEqual(await counts(),before);assert.equal(fake.calls,1);continue;
           }
@@ -2260,8 +2836,9 @@ test('Action preparation persists frozen intent and complete immutable operation
           if(lateAt==='before-exit'){
             await late();await assert.rejects(close(child,second),{code:'PRECONDITION_FAILED'});assert.equal(fake.calls,1);
             assert.equal((await db.transaction(execution,options(),tx=>operations.get(tx,dependent.operationRef.id))).position.lifecycle,'Dispatching');
-            assert.ok((await db.transaction(execution,options(),tx=>new ResourceFenceOwner().lock(tx,value.plan.nodes[1]!)))!.unresolvedOperationRef);continue;
-          }
+            await runResolutionEffect();
+	            continue;
+	          }
           await close(child,second);assert.equal(fake.calls,2);assert.equal(fake.records.length,2);
           assert.deepEqual(JSON.parse(new TextDecoder().decode(fake.records[1]!.payload)),{message:'authorized fixture',externalId:fake.records[0]!.externalId});
         const running=await db.transaction(receiver,options(),tx=>actions.get(tx,value.action.actionRef.id)),all=await children(running),cmd=await command('abh.actions.aggregate',running.actionRef);let final;

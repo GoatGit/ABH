@@ -5,7 +5,7 @@ export const dynamic='force-dynamic';
 export const runtime='nodejs';
 
 const uuidPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const subjects=new Set(['abh.mission','abh.decision']);
+const subjects=new Set(['abh.mission','abh.decision','abh.action','abh.run','abh.organization']);
 
 export async function GET(request:Request,{params}:{params:Promise<{type:string;id:string}>}){
   const {type,id}=await params,session=await currentSession();

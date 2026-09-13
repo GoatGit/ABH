@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-12",
+  "subject": "Bounded unsigned Pack manifest build CLI",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate --check",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm --filter @abh/cli build",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm typecheck",
+    "corepack pnpm build",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "git diff --check"
+  ],
+  "results": {
+    "contractsArtifacts": 51,
+    "contractsTests": "312 passed, 0 failed",
+    "coreTests": "581 passed, 6 skipped, 0 failed",
+    "cliTests": "13 passed, 0 failed",
+    "rootTypecheckAndBuild": "passed",
+    "apiReports": "Contracts 9 entry points; Core 6 entry points",
+    "documentationLinks": "777 checked",
+    "deterministicManifest": true,
+    "exactByteDigestAndSize": true,
+    "undeclaredLinksAndBoundsRejected": true,
+    "existingOutputRejected": true,
+    "contractValidCliEnvelope": true,
+    "commandRefAndEvidenceRefsRemainNull": true
+  },
+  "evidence": [
+    "The Core fixture rebuilt the same canonical manifest after replacing its payload root and matched exact SHA-256 bytes",
+    "The CLI fixture wrote one contract-valid manifest with 0600 permissions, rejected an existing output, and rejected an undeclared sibling file",
+    "The Core scanner rejected draft integrity injection, undeclared files, undeclared proof directories, oversized payloads and symlinks"
+  ],
+  "limits": [
+    "Build creates no signature, provenance or CTK proof files and grants no runtime authority",
+    "Build does not admit a deployment policy, install a Pack, execute migration, or establish production supply-chain trust"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-13",
+  "scope": "Authorized Run status SSE and Workbench strong-read polling",
+  "summary": "Added abh.run to the projection read registration and authorized Core SSE router. The subscriber anchors to the same Run Outbox subject, rechecks the Run, active human membership, current projections grant and UUID cursor, emits only immutable subject/version/watermark hints and resets unknown cursors. The Workbench exposes a same-origin Run BFF, authorized query cache, polling fallback and live status consumer.",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-name-pattern 'Run lifecycle validates state' test/run-commands.test.ts",
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm check",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench build",
+    "corepack pnpm --filter @abh/workbench test:e2e"
+  ],
+  "results": {
+    "contractsArtifactsMatched": 51,
+    "coreTypecheckPassed": true,
+    "workbenchTypecheckPassed": true,
+    "runLifecycleTestsPassed": 1,
+    "runLifecycleTestsFailed": 0,
+    "workbenchTestsPassed": 29,
+    "workbenchTestsFailed": 0,
+    "docsLinksChecked": 802,
+    "contractsApiEntryPointsMatched": 9,
+    "coreApiEntryPointsMatched": 6,
+    "coreTestsPassed": 620,
+    "fullCheckPassed": true,
+    "runSseEffectRebuildFixed": true,
+    "startEventAnchorAccepted": true,
+    "completeEventEmitted": true,
+    "runVersionHintMatched": true,
+    "unknownCursorReset": true,
+    "runQueryAuthorizationPartitioned": true,
+    "pollingFallbackAvailable": true,
+    "browserRunSseJourneyPassed": true
+  },
+  "boundaries": [
+    "Production identity adapter, process hosting and tenant lifecycle governance remain externally bounded"
+  ]
+}

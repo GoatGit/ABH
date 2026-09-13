@@ -1,0 +1,52 @@
+{
+  "date": "2026-09-12",
+  "subject": "Queued evaluation recovery and explicit timeout orchestration",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate --check",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/learning-build-case.test.ts test/learning-doctor.test.ts",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm api:check",
+    "corepack pnpm --filter @abh/contracts test",
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm build",
+    "corepack pnpm check",
+    "git diff --check"
+  ],
+  "results": {
+    "completionEstimate": "99.9%",
+    "contractsArtifacts": 51,
+    "contractOpenApiPaths": 49,
+    "contractsTests": {"pass": 312, "fail": 0},
+    "coreFullTests": {"pass": 556, "skipped": 6, "fail": 0, "total": 562},
+    "workbenchTests": {"pass": 23, "fail": 0},
+    "cliTests": {"pass": 5, "fail": 0},
+    "apiReports": {"contracts": 9, "core": 4},
+    "authorizedDispatchRequired": true,
+    "acceptedDispatchReleasesLease": true,
+    "releasedRunCanBeRetaken": true,
+    "unknownDispatchKeepsLease": true,
+    "activeLeasePreventsDuplicateDispatch": true,
+    "maxAttemptsExpiresQueuedRunInconclusive": true,
+    "clockExpiryExpiresQueuedRunInconclusive": true,
+    "withdrawalBlocksRecovery": true,
+    "activeRunAcceptsRealEvaluatorResult": true,
+    "expiredRunRejectsLateResult": true,
+    "expiryEventsAndReceiptsAudited": true,
+    "noEvaluatorEvidenceFabricated": true
+  },
+  "evidence": [
+    "Real PostgreSQL recovery covered authorization, lease release and takeover, Unknown uncertainty, max attempts, database-clock expiry, withdrawal and audit counts",
+    "The formal abh.learning.expire-evaluation command produced immutable run v2, Inconclusive status, expiry event and command receipt",
+    "A real evaluator result remained accepted for an actively dispatched run, while a late result to an expired run was rejected",
+    "Contracts remained at 51 generated artifacts and 49 OpenAPI paths, confirming the new command stayed internal"
+  ],
+  "limits": [
+    "The host dispatcher interface is an engineering boundary, not a production external evaluation service",
+    "Production scheduling, multi-tenant worker governance, real evaluator identity infrastructure and independent security review remain outside this batch"
+  ]
+}

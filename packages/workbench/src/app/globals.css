@@ -5,10 +5,11 @@ nav{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem;margin-bottom
 .organization-switcher{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin-left:auto}
 .organization-context code{font-size:.875rem;word-break:break-all}
 .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(20rem,1fr))}
-.card{border:1px solid #74747488;border-radius:.75rem;padding:1rem}
+.card{border:1px solid #74747488;border-radius:.75rem;padding:1rem;min-width:0;overflow:auto}
 .message.error{color:#b3261e}.message.empty,.message.stale{color:#555}
 dl{display:grid;grid-template-columns:max-content 1fr;gap:.25rem .75rem}
 dt{font-weight:600}dd{margin:0}
+.card a,.card dd{overflow-wrap:anywhere}
 .action-form{display:grid;gap:.5rem;margin-top:1rem}
 .action-form textarea{font-family:ui-monospace,SFMono-Regular,monospace}
 .projection-figure{margin:0}

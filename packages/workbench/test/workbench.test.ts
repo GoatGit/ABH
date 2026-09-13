@@ -6,7 +6,8 @@ import {errorText} from '../src/lib/errors.ts';
 import {denyAllIdentityAdapter} from '../src/lib/identity.ts';
 import {isOrganizationChoice,parseOrganizationSelection} from '../src/lib/organization.ts';
 import {validateCompensationInput,validateCompensationTemplate} from '../src/lib/compensation-validation.ts';
-import {compensationIdempotencyKey} from '../src/lib/keys.ts';
+import {compensationIdempotencyKey,pauseAssignmentIdempotencyKey,releaseLearningCandidateIdempotencyKey,rollbackAssignmentIdempotencyKey,requestEvaluationIdempotencyKey,
+  retryEvaluationIdempotencyKey} from '../src/lib/keys.ts';
 import {contractDecisionFormsAdapter} from '../src/lib/decision-forms.ts';
 import {
   validateDecisionFormInput,validateDecisionFormTemplate,
@@ -17,6 +18,7 @@ import {
   overviewMissionsQueryKey,projectionEventPath,projectionEventPathWithCursor,projectionQueryKey,
   actionQueryKey,
   actionListQueryKey,
+  runQueryKey,
 } from '../src/lib/query-keys.ts';
 
 test('decision mutations derive stable idempotency keys from protected intent',()=>{
@@ -48,6 +50,66 @@ test('action cancellation binds version and normalized protected reason',()=>{
   assert.notEqual(key,cancelActionIdempotencyKey({actionId,version:5,reason}));
   assert.notEqual(key,cancelActionIdempotencyKey({actionId,version:4,reason:'changed'}));
   assert.match(key,/^wb\/[0-9a-f-]{36}\/4\/cancel\/[0-9a-f]{64}$/);
+});
+
+test('evaluation requests derive stable keys from candidate and baseline versions',()=>{
+  const input={candidateId:'00000000-0000-4000-8000-000000000031',candidateVersion:2,
+    baselineArtifactId:'00000000-0000-4000-8000-000000000037',baselineVersion:5};
+  const key=requestEvaluationIdempotencyKey(input);
+  assert.equal(key,requestEvaluationIdempotencyKey(input));
+  assert.notEqual(key,requestEvaluationIdempotencyKey({...input,candidateVersion:3}));
+  assert.notEqual(key,requestEvaluationIdempotencyKey({...input,baselineVersion:6}));
+  assert.match(key,/^wb\/[0-9a-f-]{36}\/2\/evaluation\/[0-9a-f]{64}$/);
+});
+
+test('evaluation retries bind the exact predecessor run version',()=>{
+  const runId='00000000-0000-4000-8000-000000000032';
+  const key=retryEvaluationIdempotencyKey({runId,version:2});
+  assert.equal(key,retryEvaluationIdempotencyKey({runId,version:2}));
+  assert.notEqual(key,retryEvaluationIdempotencyKey({runId,version:3}));
+  assert.equal(key,`wb/${runId}/2/retry`);
+});
+
+test('learning release keys bind evidence and frozen capability intent',()=>{
+  const input={candidateId:'00000000-0000-4000-8000-000000000031',candidateVersion:1,
+    gateId:'00000000-0000-4000-8000-00000000003b',gateVersion:1,behaviorSlot:'learning.policy',
+    capabilityId:'learning.passed-candidate',capabilityVersion:'0.1.0',
+    capabilityDigest:`sha256:${'c'.repeat(64)}`,
+    compatibilityArtifactId:'00000000-0000-4000-8000-000000000037',
+    compatibilityArtifactVersion:1};
+  const key=releaseLearningCandidateIdempotencyKey(input);
+  assert.equal(key,releaseLearningCandidateIdempotencyKey(input));
+  assert.notEqual(key,releaseLearningCandidateIdempotencyKey({...input,capabilityDigest:`sha256:${'d'.repeat(64)}`}));
+  assert.match(key,/^wb\/[0-9a-f-]{36}\/1\/release\/[0-9a-f]{64}$/);
+});
+
+test('assignment pause keys bind reason and server-selected evidence',()=>{
+  const input={assignmentId:'00000000-0000-4000-8000-000000000041',version:1,
+    reason:'operations review',evidenceRef:{type:'abh.learning-gate',
+      id:'00000000-0000-4000-8000-00000000003b',version:1}};
+  const key=pauseAssignmentIdempotencyKey(input);
+  assert.equal(key,pauseAssignmentIdempotencyKey(input));
+  assert.notEqual(key,pauseAssignmentIdempotencyKey({...input,reason:'changed'}));
+  assert.notEqual(key,pauseAssignmentIdempotencyKey({...input,evidenceRef:{
+    ...input.evidenceRef,version:2}}));
+  assert.match(key,/^wb\/[0-9a-f-]{36}\/1\/pause\/[0-9a-f]{64}$/);
+});
+
+test('assignment rollback keys bind predecessor and server-derived evidence',()=>{
+  const input={assignmentId:'00000000-0000-4000-8000-000000000041',version:2,
+    reason:'canary regression',previousReleaseRef:{type:'abh.release',
+      id:'00000000-0000-4000-8000-000000000042',version:2},
+    gateRefs:[{type:'abh.learning-gate',id:'00000000-0000-4000-8000-00000000003b',version:1}],
+    compatibilityRef:{type:'abh.artifact',id:'00000000-0000-4000-8000-000000000037',version:1}};
+  const key=rollbackAssignmentIdempotencyKey(input);
+  assert.equal(key,rollbackAssignmentIdempotencyKey(input));
+  assert.equal(key,rollbackAssignmentIdempotencyKey({...input,gateRefs:[input.gateRefs[0]]}));
+  assert.notEqual(key,rollbackAssignmentIdempotencyKey({...input,reason:'changed'}));
+  assert.notEqual(key,rollbackAssignmentIdempotencyKey({
+    ...input,previousReleaseRef:{...input.previousReleaseRef,version:3}}));
+  assert.notEqual(key,rollbackAssignmentIdempotencyKey({
+    ...input,compatibilityRef:{...input.compatibilityRef,version:2}}));
+  assert.match(key,/^wb\/[0-9a-f-]{36}\/2\/rollback\/[0-9a-f]{64}$/);
 });
 
 test('workbench maps bounded ABH errors and denies identity by default',async()=>{
@@ -133,6 +195,17 @@ test('action list caches isolate identity and every paging filter',()=>{
   assert.notDeepEqual(key,actionListQueryKey(identity,{...filters,lifecycle:'Closed'}));
   assert.notDeepEqual(key,actionListQueryKey(identity,{...filters,outcome:'Succeeded'}));
   assert.notDeepEqual(key,actionListQueryKey(identity,{...filters,missionId:'mission-2'}));
+});
+
+test('run state caches isolate authorization context and subscribe with a bounded subject',()=>{
+  const identity={actorId:'actor-1',actingOrganizationId:'org-1',resourceOrganizationId:'org-1',
+    workspaceId:'workspace-1',purposeOfUse:'abh.mission.manage',authorizationDigest:'auth-1'};
+  const key=runQueryKey(identity,'run-1');
+  assert.deepEqual(key,runQueryKey({...identity},'run-1'));
+  assert.notDeepEqual(key,runQueryKey({...identity,authorizationDigest:'auth-2'},'run-1'));
+  assert.notDeepEqual(key,runQueryKey({...identity,actorId:'actor-2'},'run-1'));
+  assert.equal(projectionEventPath('abh.run','00000000-0000-4000-8000-000000000001'),
+    '/api/events/abh.run/00000000-0000-4000-8000-000000000001');
 });
 
 test('organization cookies are parsed as untrusted selection hints only',()=>{

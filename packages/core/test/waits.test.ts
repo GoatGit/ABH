@@ -10,7 +10,7 @@ import {executeCommand,inputDigest,type CommandIdentity} from '../src/data/journ
 import {deriveVerifiedContext} from '../src/internal/context.ts';
 import {assertCurrentGrants} from '../src/control/grants.ts';
 import {CoreError} from '../src/internal/errors.ts';
-import {context,createDatabaseFixture,options} from './database-fixture.ts';
+import {context,createDatabaseFixture,options,seedLedgerCatalog} from './database-fixture.ts';
 const ref=<T extends string>(type:T,id:string=randomUUID())=>({type,id,version:1 as const});
 const command=async(type:string,value:unknown):Promise<CommandIdentity>=>({type,commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(value)});
 
@@ -26,7 +26,8 @@ test('durable waits reread actual source facts and resolve once across signals, 
     await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status) VALUES (${org},${grant.grantRef.id},${principal.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
     for(const subject of [scope,principal,grant.grantRef])await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch) VALUES (${org},${randomUUID()},${subject.type},${subject.id},1)`;
   });
-  const config=()=>({id:randomUUID(),scopeRef:scope,resourceType:'hello.wait-source',meteringMode:'cumulative' as const,unit:'hello.credit',periodRef:ref('abh.period'),limit:'10'});
+  const catalog=await seedLedgerCatalog(db,worker,'hello.credit');
+  const config=()=>({id:randomUUID(),scopeRef:scope,resourceType:'hello.wait-source',meteringMode:'cumulative' as const,unit:'hello.credit',periodRef:catalog.periodRef,limit:'10'});
   const source=async()=>{const value=config(),cmd=await command('abh.ledgers.configure',value);let result!:EntityRef;
     await db.transaction(worker,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>result=(await ledger.configure(tx,cmd,value)).ledgerRef));return result;};
   let entered=0;

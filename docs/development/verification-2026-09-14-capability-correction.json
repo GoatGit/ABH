@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-14",
+  "scope": "Capability correction to governed draft Learning Candidate",
+  "summary": "Added Capability as a governed Correction target. Proposals still store an immutable before/after candidate with Human Correction responsibility; Apply does not mutate production capability. Instead it validates the linked Learning Case, baseline and proposed artifact, then invokes the existing Learning Candidate creation path inside the apply transaction. The result is a fresh Draft candidate owned by the Learning plane, with durable application evidence and replay-safe response.",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/corrections.test.ts",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "contractArtifactsMatched": 51,
+    "correctionsTestsPassed": 4,
+    "capabilityCorrectionTestPassed": true,
+    "productionCapabilityNotMutated": true,
+    "learningCaseRevalidated": true,
+    "baselineArtifactRevalidated": true,
+    "candidateArtifactLockedAndValidated": true,
+    "candidateStatusDraft": true,
+    "applicationReplaySafe": true,
+    "contractsApiEntryPointsMatched": 9,
+    "coreApiEntryPointsMatched": 6,
+    "coreTestsPassed": 623,
+    "docsLinksChecked": 806,
+    "fullCheckPassed": true
+  },
+  "boundaries": [
+    "Production capability governance, reviewer qualification and release promotion remain externally bounded",
+    "Broader exception successor orchestration remains open"
+  ]
+}

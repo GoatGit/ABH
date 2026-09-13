@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-12",
+  "subject": "fixed Run no-progress budget, atomic stall stop, authorized stall worker and checkpoint deadline refresh",
+  "commands": [
+    "corepack pnpm --filter @abh/core exec tsc --noEmit -p tsconfig.typecheck.json",
+    "corepack pnpm --filter @abh/core exec node --test test/run-stall.test.ts",
+    "corepack pnpm --filter @abh/core exec node --test test/run-commands.test.ts test/run-execution.test.ts test/run-graph.test.ts test/run-recovery.test.ts test/run-wake.test.ts test/run-stall.test.ts",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "completionEstimate": "99.2%",
+    "contractsArtifacts": 51,
+    "apiEntryPoints": 13,
+    "coreTests": 557,
+    "corePassed": 551,
+    "coreSkipped": 6,
+    "coreFailed": 0,
+    "workspaceTests": 921,
+    "workspacePassed": 915,
+    "workspaceSkipped": 6,
+    "workspaceFailed": 0,
+    "documentLinksChecked": 771,
+    "stallFocusedTestPassed": true,
+    "activeDeadlineNotStoppedVerified": true,
+    "expiredRunsDiscoveredVerified": true,
+    "staleVersionRejectedVerified": true,
+    "runFailedNoProgressVerified": true,
+    "invocationsClosedDeadlineVerified": true,
+    "nonterminalTasksCancelledVerified": true,
+    "missionActiveRunClearedVerified": true,
+    "missionStopEpochAdvancedVerified": true,
+    "auditAndOutboxExactVerified": true,
+    "stopCommandIdempotencyVerified": true,
+    "checkpointDeadlineRefreshVerified": true,
+    "workerLostRaceSkippedVerified": true
+  },
+  "evidence": [
+    "Run creation and migration persist a bounded progress budget and database deadline",
+    "stopStalledRun requires Service runtime purpose, current grants, exact target and version",
+    "Deadline revalidation occurs under the Run lock after checkpoint races",
+    "Run, invocations, tasks, Mission, Audit and Outbox commit atomically as Failed/NoProgress",
+    "runRunStallWorker performs tenant-local bounded paging and safely skips lost races",
+    "Run execution regression verifies JSON and PostgreSQL deadline advance after a checkpoint",
+    "Contract artifacts remain generated and API reports were regenerated successfully"
+  ],
+  "limits": [
+    "production multi-tenant worker hosting is not implemented",
+    "real Pi Provider and production business assembly are not exercised",
+    "global release scan and independent security review remain open"
+  ]
+}

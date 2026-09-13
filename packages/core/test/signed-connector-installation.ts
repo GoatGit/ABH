@@ -9,7 +9,8 @@ import {createTenantRuntimeLoops} from '../src/durable/runtime-host.ts';
 import {runSuspensionRecoveryWorker} from '../src/execution/suspension-recovery-worker.ts';
 import {queryStoredSuspensionPages} from '../src/extensions/query-stored-suspension-pages.ts';
 import {deliverActionSuspensionPage,type SuspensionTargetDelivery} from '../src/execution/deliver-suspension-page.ts';
-import {actionPackSuspensionConsumer} from '../src/execution/pack-suspension-consumer.ts';
+import {actionPackSuspensionConsumer,runPackSuspensionConsumer} from '../src/execution/pack-suspension-consumer.ts';
+import {SuspensionSweepOwner} from '../src/extensions/suspension-sweeps.ts';
 import {consumeOutboxDelivery} from '../src/durable/delivery-worker.ts';
 import {actionPackSuspensionRouter} from '../src/execution/pack-suspension-router.ts';
 import {publishCommittedEvent,type OutboxPublisher} from '../src/durable/publisher.ts';
@@ -36,6 +37,7 @@ import {ActionOwner} from '../src/execution/actions.ts';
 import {pinAction} from '../src/execution/pin-action.ts';
 import {validateAction} from '../src/execution/validate-action.ts';
 import {StaticReleaseOwner} from '../src/release/static.ts';
+import {RunOwner} from '../src/mission/runs.ts';
 import {queryPackCapabilities} from '../src/extensions/query-pack-capabilities.ts';
 import {resolvePackCapability} from '../src/extensions/resolve-pack-capability.ts';
 import {recoverLocalPackSnapshot} from '../src/extensions/local-pack-staging.ts';
@@ -346,6 +348,9 @@ export async function checkSignedConnectorInstallation(fixture:Awaited<ReturnTyp
    scopes:[{id:'org.example.business-primary',publicKind:exact.kind,processing},{id:'org.example.business-overlap',publicKind:exact.kind,processing}],targetPageSize:1,intervalMs:1,
    onPage:async stats=>{assert.deepEqual(stats,{events:1,scopeSweeps:2,blockedScopes:0,targetPages:4,targets:4,eventSweepComplete:true});if(++dispatchedSweeps===2)dispatchStop.abort();}});
   assert.equal(dispatchedSweeps,2);
+  const [sweepStats]=await f.admin`SELECT count(*)::int AS count,count(*) FILTER (WHERE complete)::int AS complete,count(DISTINCT generation)::int AS generations,
+   count(*) FILTER (WHERE cursor_id IS NOT NULL)::int AS cursors FROM runtime.suspension_sweeps WHERE event_id=${eventRef.id}`;
+  assert.deepEqual(sweepStats,{count:4,complete:4,generations:2,cursors:4});
   const [dispatchedInboxCount]=await f.admin`SELECT count(*) FROM runtime.inbox WHERE event_id=${eventRef.id}`;assert.equal(dispatchedInboxCount!.count,'2','overlapping subscriptions and resweeps share original-event Inbox');
   await assert.rejects(runSuspensionDispatchWorker(f.database,{signal:options().signal,managementContext:async()=>c,managementGrants:[suspendGrant.grantRef],discovery:suspensionDiscovery,
    scopes:[{id:'org.example.unmapped',publicKind:exact.kind,processing:{...processing,delivery:{...processing.delivery,registeredKind:'abh.tool'}}}]}),{code:'PRECONDITION_FAILED'});
@@ -464,6 +469,75 @@ export async function checkSignedConnectorInstallation(fixture:Awaited<ReturnTyp
   referencesVisible=false;
   const hidden=await queryCapabilityReferences(f.database,business,options(),{capability:exact,limit:1},referenceAdmission);assert.deepEqual(hidden.references,[]);assert.equal(hidden.complete,false);assert.ok(hidden.nextAfterId);referencesVisible=true;
   assert.equal((await queryCapabilityReferences(f.database,business,options(),{capability:{...exact,version:'9.9.9'}},referenceAdmission)).references.length,0);
+
+  const runRef=ref('abh.run');
+  const beforeRunPin=await f.database.transaction(business,options(),async tx=>(await tx.owner('CapabilityRelease')`SELECT statement_timestamp() AS now`)[0]!.now.toISOString());
+  const runPinCommand=await identity('abh.releases.resolve-and-pin',`run:${runRef.id}`);
+  const runPin=await f.database.transaction(business,options(),async tx=>releases.resolveAndPin(tx,runPinCommand,{
+   subjectRef:runRef,subjectInputDigest:await digestBytes(new TextEncoder().encode(`run:${runRef.id}`)),
+   requiredBehaviorSlots:[slot],verifiedScope:[scope],
+   requestContextRef:{type:'abh.request-context',id:business.request.requestId,version:1},
+   preparationAuthorityRefs:[readGrant.grantRef]}));
+  const now=new Date().toISOString(),runRecord=contract('RunRecord',{runRef,resourceOrganizationId:org,missionRef:ref('abh.mission'),
+   triggerKey:'org.example.signed-run',goalRevision:1,stopEpoch:0,progressBudgetSeconds:3600,progressDeadline:now,
+   workflowRef:exact,assignmentSnapshotRef:runPin.pinSetRef,executionMode:'Production',status:'Running',
+   createdBy:business.request.actor,createdAt:now,updatedAt:now});
+  const taskRef=ref('abh.task'),taskRecord=contract('TaskRecord',{taskRef,resourceOrganizationId:org,runRef,nodeKey:'org.example.signed-node',
+   kind:'Agent',inputRefs:[],status:'Ready',required:true,attemptOrdinal:1,createdAt:now,updatedAt:now});
+  await f.database.transaction(business,options(),async tx=>{
+   await tx.owner('MissionController')`INSERT INTO core.runs(resource_organization_id,id,workspace_id,purpose_names,record,mission_id,trigger_key,status,goal_revision,stop_epoch,
+    progress_budget_seconds,progress_deadline) VALUES (${org},${runRef.id},${business.request.workspaceId??null},ARRAY['abh.mission.manage','abh.runtime.deliver'],
+    ${JSON.stringify(runRecord)}::text::jsonb,${runRecord.missionRef.id},${runRecord.triggerKey},${runRecord.status},${runRecord.goalRevision},${runRecord.stopEpoch},
+    ${runRecord.progressBudgetSeconds},${runRecord.progressDeadline})`;
+   await tx.owner('MissionController')`INSERT INTO core.tasks(resource_organization_id,id,workspace_id,purpose_names,record,run_id,node_key,status,created_by,updated_by)
+    VALUES (${org},${taskRef.id},${business.request.workspaceId??null},ARRAY['abh.mission.manage','abh.runtime.deliver'],
+    ${JSON.stringify(taskRecord)}::text::jsonb,${runRef.id},${taskRecord.nodeKey},${taskRecord.status},${business.request.actor.id},${business.request.actor.id})`;
+  });
+  const [persistedRun]=await f.admin`SELECT id,workspace_id,purpose_names,status FROM core.runs WHERE id=${runRef.id}`;
+  assert.ok(persistedRun);assert.deepEqual(persistedRun!.purpose_names,['abh.mission.manage','abh.runtime.deliver']);
+  assert.deepEqual(await f.database.transaction(delivery,options(),tx=>new RunOwner().get(tx,runRef.id)),runRecord);
+  const runReferences=await queryCapabilityReferences(f.database,business,options(),{capability:exact,limit:10},referenceAdmission);
+  assert.equal(runReferences.complete,true);assert.equal(runReferences.references.length,3);
+  assert.deepEqual(runReferences.references.find(item=>item.subjectRef.type==='abh.run'),{pinSetRef:runPin.pinSetRef,subjectRef:runRef,pinSetDigest:runPin.digest,behaviorSlots:[slot]});
+  await f.admin`UPDATE control.grants SET status='Active' WHERE id=${notificationGrant.grantRef.id}`;
+  const runAdmission={fenceRefs:async()=>[],source:async(_tx:Parameters<typeof resolvePackCapability>[0],event:import('@abh/contracts').EventEnvelope,
+   capability:import('@abh/contracts').CapabilityRef,subject:import('@abh/contracts').EntityRef)=>{
+   assert.equal(event.eventId,eventRef.id);assert.deepEqual(subject,runRef);assert.deepEqual(capability,exact);
+  },artifact:async()=>{},storage:{dataClass:'abh.data.internal',purposeNames:['abh.runtime.deliver'],region:'local',retentionPolicyRef:scope}};
+  const runPageDiscovery={source:sourceChecks,references:referenceAdmission};
+  const runPage=await queryPackSuspensionTargets(f.database,c,business,options(),{eventRef,capability:exact,registeredKind:'abh.connector',limit:10},[suspendGrant.grantRef],runPageDiscovery);
+  assert.equal(runPage.complete,true);assert.equal(runPage.targets.length,3);assert.equal(runPage.targets.find(target=>target.subjectRef.type==='abh.run')?.subjectRef.type,'abh.run');
+  const beforeRunPage=await queryPackSuspensionTargets(f.database,c,business,options(),{eventRef,capability:exact,registeredKind:'abh.connector',limit:10,beforeAt:beforeRunPin},[suspendGrant.grantRef],runPageDiscovery);
+  assert.equal(beforeRunPage.complete,true);assert.equal(beforeRunPage.targets.length,2);assert.ok(beforeRunPage.targets.every(target=>target.subjectRef.type==='abh.action'));
+  const runOnlyPage={...structuredClone(runPage),targets:runPage.targets.filter(target=>target.subjectRef.type==='abh.run')};
+  const storeRunPage=()=>storeSuspensionPage(f.database,business,options(),{eventRef,capability:exact,page:runOnlyPage},pageRetention,[readGrant.grantRef],storageChecks);
+  const runDelivery=await deliverActionSuspensionPage(f.database,business,options(),{...await storeRunPage(),eventRef,capability:exact},
+   {context:async()=>delivery,registeredKind:'abh.connector',grantRefs:[notificationGrant.grantRef],
+    page:{fenceRefs:async()=>[readGrant.grantRef],artifact:async()=>{}},action:{...runAdmission},run:runAdmission});
+  assert.equal(runDelivery.deliveries.length,1);
+  const runObservation=await f.database.transaction(delivery,options(),tx=>new InlineArtifactOwner().read(tx,runDelivery.deliveries[0]!.resultRef,async()=>{}));
+  const runNotice=JSON.parse(new TextDecoder().decode(runObservation.bytes));
+  assert.equal(runNotice.kind,'RunPackSuspensionObservation');assert.deepEqual(runNotice.runRef,runRef);
+  assert.deepEqual(runNotice.tasks,[{taskRef,nodeKey:taskRecord.nodeKey,status:'Ready',attemptOrdinal:1}]);
+  assert.deepEqual(await runPackSuspensionConsumer({runRef,pinSetRef:runPin.pinSetRef,capability:exact,registeredKind:'abh.connector',grantRefs:[notificationGrant.grantRef]},runAdmission).id,
+   `abh.pack-suspension.run-${runRef.id}.digest-${exact.digest.slice(7)}`);
+  const sweepKey={eventRef,capability:exact,scopeId:'org.example.signed-sweep-owner'};
+  const sweepOwner=new SuspensionSweepOwner();
+  const opened=await f.database.transaction(c,options(),tx=>sweepOwner.open(tx,sweepKey));
+  const [rawLowId,rawHighId]=[randomUUID(),randomUUID()].sort(),lowId=rawLowId as string,highId=rawHighId as string;
+  const firstCursor={bindingDigest:'sha256:'+'1'.repeat(64),afterId:lowId};
+  await f.database.transaction(c,options(),tx=>sweepOwner.advance(tx,sweepKey,firstCursor,false));
+  await f.database.transaction(c,options(),tx=>sweepOwner.advance(tx,sweepKey,firstCursor,false));
+  const afterStale=await f.database.transaction(c,options(),tx=>sweepOwner.get(tx,sweepKey));
+  assert.equal(afterStale!.cursor?.afterId,firstCursor.afterId);assert.equal(afterStale!.complete,false);
+  const secondSweep=await f.database.transaction(c,options(),tx=>sweepOwner.advance(tx,sweepKey,{...firstCursor,afterId:highId},true));
+  assert.equal(secondSweep.cursor?.afterId,highId);assert.equal(secondSweep.complete,true);
+  const reopened=await f.database.transaction(c,options(),tx=>sweepOwner.open(tx,sweepKey));
+  assert.equal(reopened.generation,opened.generation+1);assert.equal(reopened.complete,false);assert.ok(reopened.highWaterAt>=opened.highWaterAt);
+  await assert.rejects(deliverActionSuspensionPage(f.database,business,options(),{...await storeRunPage(),eventRef,capability:exact},
+   {context:async()=>delivery,registeredKind:'abh.connector',grantRefs:[notificationGrant.grantRef],
+    page:{fenceRefs:async()=>[readGrant.grantRef],artifact:async()=>{}},action:{...runAdmission}}),{code:'PRECONDITION_FAILED'});
+
   await assert.rejects(resolve(),{code:'PRECONDITION_FAILED'});
   await assert.rejects(pinAction(f.database,business,options(),pinCommand,validated.actionRef,pinPayload,pinChecks),{code:'PRECONDITION_FAILED'});
   const freshCommand=await identity('abh.actions.propose',actionInput);

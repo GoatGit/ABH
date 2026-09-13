@@ -21,6 +21,26 @@ export class OperationOwner {
       AND (${afterId??null}::uuid IS NULL OR id>${afterId??null}::uuid) ORDER BY id LIMIT ${limit}`;
     return rows.map(row=>contract('OperationRef',{type:'abh.operation',id:row.id,version:Number(row.version)}));
   }
+  /** Independent query discovery only. An active worker lease, capture receipt or
+   * current-version reconciliation excludes the operation from this sweep. */
+  async pendingObservingQuery(tx:TenantTransaction,limit=100,afterId?:string):Promise<EntityRef[]>{
+    if(!Number.isSafeInteger(limit)||limit<1||limit>100)throw new CoreError('INVALID_ARGUMENT');
+    if(afterId!==undefined)contract('UUID',afterId);const c=tx.context.tenant;
+    if(c.actor.type!=='Service'||c.purposeOfUse!=='abh.operation.reconcile')throw new CoreError('FORBIDDEN');
+    const rows=await tx.owner('OperationController')`SELECT o.id,o.version FROM execution.operations o
+      WHERE o.resource_organization_id=${c.resourceOrganizationId} AND o.deleted_at IS NULL AND o.lifecycle='Observing'
+      AND (o.record->>'attemptCount')::bigint>0 AND ${c.purposeOfUse}=ANY(o.purpose_names)
+      AND (o.workspace_id IS NULL OR o.workspace_id=${c.workspaceId??null}::uuid)
+      AND (${afterId??null}::uuid IS NULL OR o.id>${afterId??null}::uuid)
+      AND NOT EXISTS(SELECT 1 FROM runtime.work_leases l WHERE l.resource_organization_id=o.resource_organization_id
+        AND l.target_type='abh.operation' AND l.target_id=o.id AND l.deleted_at IS NULL AND l.lease_until>clock_timestamp())
+      AND NOT EXISTS(SELECT 1 FROM execution.query_captures q WHERE q.resource_organization_id=o.resource_organization_id
+        AND q.operation_id=o.id AND q.deleted_at IS NULL AND q.record->'receiptRef' IS NOT NULL)
+      AND NOT EXISTS(SELECT 1 FROM execution.reconciliations r WHERE r.resource_organization_id=o.resource_organization_id
+        AND r.operation_id=o.id AND r.deleted_at IS NULL AND r.record->'operationRef'->>'version'=o.version::text)
+      ORDER BY o.id LIMIT ${limit}`;
+    return rows.map(row=>contract('OperationRef',{type:'abh.operation',id:row.id,version:Number(row.version)}));
+  }
   async get(tx:TenantTransaction,id:string):Promise<OperationRecord>{
     contract('UUID',id);const c=tx.context.tenant;
     const rows=await tx.owner('OperationController')`SELECT action_id FROM execution.operations WHERE resource_organization_id=${c.resourceOrganizationId}

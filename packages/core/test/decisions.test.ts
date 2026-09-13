@@ -12,6 +12,8 @@ import {DecisionInboxOwner,type DecisionInboxAdmission} from '../src/human/inbox
 import {assertCurrentGrants} from '../src/control/grants.ts';
 import {runResponsibilityRoutingWorker} from '../src/human/routing-worker.ts';
 import {reviseResponsibilityRoute,type RouteRevisionInstallation} from '../src/human/revise-route.ts';
+import {delegateResponsibilitySlot} from '../src/human/delegate-slot.ts';
+import {escalateResponsibilitySlot} from '../src/human/escalate-slot.ts';
 import type {ReviseResponsibilityRoutePayload} from '@abh/contracts';
 import {withdrawDecision,withdrawPendingDecision,type DecisionWithdrawalChecks} from '../src/human/withdraw-decision.ts';
 import {revokeResponsibility,revokeResponsibilityAssignment,type ResponsibilityRevocationChecks} from '../src/human/revoke-responsibility.ts';
@@ -739,6 +741,110 @@ test('human decisions require all frozen seats before completion evidence',{time
     const fresh=await db.transaction(scoped,options(),tx=>owner.getDecision(tx,opened.decisionRefs[0]!.id));assert.equal(fresh.package.routeRevision,2);assert.ok((await submit(scoped,fresh)).completion);
     const [row]=await f.admin`SELECT workspace_id FROM human.route_revisions WHERE request_id=${request.requestRef.id}`;assert.equal(row!.workspace_id,scoped.tenant.workspaceId);
   });
+  await t.test('dedicated delegate slot replaces one seat through governed revision',async()=>{
+    const c=context(org),request=await open(),first=await load(request.decisionRefs[0]!.id),pending=await load(request.decisionRefs[1]!.id);
+    await db.transaction(c,options(),async tx=>{
+      await tx.owner('Identity')`INSERT INTO identity.principals(resource_organization_id,id,display_name,identity_kind,credential_epoch,status) VALUES (${org},${c.tenant.actor.id},'delegated reviewer','Human',1,'Active')`;
+      await tx.owner('Identity')`INSERT INTO identity.memberships(resource_organization_id,id,principal_id,membership_epoch,status) VALUES (${org},${randomUUID()},${c.tenant.actor.id},1,'Active')`;
+    });
+    const delegateAssignment:ResponsibilityAssignmentRecord={...assignments[0]!,responsibilityRef:ref('abh.responsibility-assignment'),
+      principalRef:ref('abh.principal',c.tenant.actor.id),validFrom:new Date(Date.now()-1000).toISOString(),validUntil:request.expiresAt};
+    const assign=await command('abh.responsibilities.assign',delegateAssignment);
+    await db.transaction(c,options(),tx=>assignResponsibility(tx,assign,delegateAssignment));
+    await submit(a,first);
+    const old=await db.transaction(a,options(),tx=>owner.getRequest(tx,request.requestRef.id));
+    const next={...old,requestRef:{...old.requestRef,version:old.requestRef.version+1},routeRevision:old.routeRevision+1,decisionRefs:[],status:'Unresolved' as const,
+      requiredSlots:old.requiredSlots.map(slot=>({...slot,seats:slot.seats.map(seat=>seat.seatId==='seat-0'
+        ?{...seat,responsibilityRefs:[delegateAssignment.responsibilityRef]}:seat)}))};
+    const pkgUnsigned={...first.package,requestRef:next.requestRef,routeRevision:next.routeRevision};
+    const pkg={...pkgUnsigned,packageDigest:await digestContract('DecisionPackage',pkgUnsigned)};
+    const input:ReviseResponsibilityRoutePayload={expectedRequestRef:old.requestRef,proposal:{request:next,packages:[pkg]},
+      frozenPolicyRefs:[ref('abh.policy-version')],directoryRef:ref('abh.artifact'),evidenceRefs:[delegateAssignment.responsibilityRef],
+      reason:'Delegate approval seat',delegation:{slotId:'approve',seatId:'seat-0',responsibilityRef:delegateAssignment.responsibilityRef}};
+    const grant:GrantRecord={grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:ref('abh.principal',a.tenant.actor.id),scopeRefs:[ref('abh.organization',org)],
+      actionTypes:['abh.responsibility-requests.delegate-slot'],purposeNames:['abh.action.prepare'],validFrom:delegateAssignment.validFrom,
+      validUntil:delegateAssignment.validUntil,issuanceEvidenceRef:input.evidenceRefs[0]!,status:'Active'};
+    await db.transaction(a,options(),async tx=>{
+      await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch) VALUES (${org},${randomUUID()},'abh.grant',${grant.grantRef.id},1)`;
+      await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status) VALUES (${org},${grant.grantRef.id},${a.tenant.actor.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
+    });
+    const installation:RouteRevisionInstallation={eligibility:eligible,fenceRefs:async()=>[],admit:async()=>{},govern:async()=>{}};
+    const cmd=await command('abh.responsibility-requests.delegate-slot',input);
+    const delegate=()=>delegateResponsibilitySlot(db,a,options(),cmd,input,[grant.grantRef],installation);
+    const {delegation:_omitted,...withoutDelegation}=input;
+    await assert.rejects(delegateResponsibilitySlot(db,a,options(),cmd,withoutDelegation,[grant.grantRef],installation),{code:'DELEGATION_EXCEEDS_AUTHORITY'});
+    const delegation=input.delegation;
+    if(!delegation)throw new Error('fixture delegation missing');
+    const {delegation:_,...tamperedBase}=input;
+    const tampered:ReviseResponsibilityRoutePayload={...tamperedBase,
+      proposal:{...input.proposal,request:{...next,requiredSlots:next.requiredSlots.map(slot=>slot.slotId==='approve'
+        ?{...slot,seats:slot.seats.map(seat=>seat.seatId==='seat-0'
+          ?{...seat,responsibilityRefs:[assignments[1]!.responsibilityRef]}:seat)}:{...slot})}},delegation};
+    await assert.rejects(delegateResponsibilitySlot(db,a,options(),await command('abh.responsibility-requests.delegate-slot',tampered),tampered,[grant.grantRef],installation),{code:'DELEGATION_EXCEEDS_AUTHORITY'});
+    const result=await delegate();assert.equal(result.replayed,false);
+    const routed=await db.transaction(a,options(),tx=>owner.getRequest(tx,request.requestRef.id));
+    assert.equal(routed.status,'Open');assert.equal(routed.routeRevision,2);assert.equal(routed.requestRef.version,old.requestRef.version+2);
+    assert.equal((await load(first.decisionRef.id)).status,'Approved');assert.equal((await load(pending.decisionRef.id)).status,'Superseded');
+    const fresh=await Promise.all(routed.decisionRefs.map(ref=>load(ref.id)));
+    assert.deepEqual(fresh.map(d=>d.candidateResponsibilityRefs[0]!.id).sort(),[delegateAssignment.responsibilityRef.id,assignments[1]!.responsibilityRef.id].sort());
+    const delegated=fresh.find(d=>d.candidateResponsibilityRefs[0]!.id===delegateAssignment.responsibilityRef.id)!;
+    const original=fresh.find(d=>d.candidateResponsibilityRefs[0]!.id===assignments[1]!.responsibilityRef.id)!;
+    const firstResponse=await submit(c,delegated),secondResponse=await submit(b,original);
+    assert.equal(firstResponse.completion,undefined);assert.ok(secondResponse.completion);
+    const [revision]=await db.transaction(a,options(),tx=>tx.owner('HumanGateway')`SELECT record FROM human.route_revisions WHERE request_id=${request.requestRef.id} AND route_revision=2`);
+    assert.equal((revision!.record as {change:ReviseResponsibilityRoutePayload}).change.delegation?.responsibilityRef.id,delegateAssignment.responsibilityRef.id);
+  });
+  await t.test('dedicated escalate slot replaces an unresolved seat and enforces route depth',async()=>{
+    const c=context(org),request=await open('ALL',{...eligible,candidate:async()=>false});
+    assert.equal(request.status,'Unresolved');assert.equal(request.decisionRefs.length,0);
+    await db.transaction(c,options(),async tx=>{
+      await tx.owner('Identity')`INSERT INTO identity.principals(resource_organization_id,id,display_name,identity_kind,credential_epoch,status) VALUES (${org},${c.tenant.actor.id},'escalation reviewer','Human',1,'Active')`;
+      await tx.owner('Identity')`INSERT INTO identity.memberships(resource_organization_id,id,principal_id,membership_epoch,status) VALUES (${org},${randomUUID()},${c.tenant.actor.id},1,'Active')`;
+    });
+    const escalationAssignment:ResponsibilityAssignmentRecord={...assignments[0]!,responsibilityRef:ref('abh.responsibility-assignment'),
+      principalRef:ref('abh.principal',c.tenant.actor.id),validFrom:new Date(Date.now()-1000).toISOString(),validUntil:request.expiresAt};
+    const assign=await command('abh.responsibilities.assign',escalationAssignment);
+    await db.transaction(c,options(),tx=>assignResponsibility(tx,assign,escalationAssignment));
+    const frozen=proposals.get(request.requestRef.id)!,next={...request,requestRef:{...request.requestRef,version:request.requestRef.version+1},
+      routeRevision:request.routeRevision+1,escalationDepth:1,decisionRefs:[],status:'Unresolved' as const,
+      requiredSlots:request.requiredSlots.map(slot=>({...slot,seats:slot.seats.map(seat=>seat.seatId==='seat-0'
+        ?{...seat,responsibilityRefs:[escalationAssignment.responsibilityRef]}:seat)}))};
+    const pkgUnsigned={...frozen.packages[0]!,requestRef:next.requestRef,routeRevision:next.routeRevision};
+    const pkg={...pkgUnsigned,packageDigest:await digestContract('DecisionPackage',pkgUnsigned)};
+    const input:ReviseResponsibilityRoutePayload={expectedRequestRef:request.requestRef,proposal:{request:next,packages:[pkg]},
+      frozenPolicyRefs:[ref('abh.policy-version')],directoryRef:ref('abh.artifact'),evidenceRefs:[escalationAssignment.responsibilityRef],
+      reason:'Escalate unresolved approval seat',escalation:{slotId:'approve',seatId:'seat-0',responsibilityRef:escalationAssignment.responsibilityRef}};
+    const grant:GrantRecord={grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:ref('abh.principal',a.tenant.actor.id),scopeRefs:[ref('abh.organization',org)],
+      actionTypes:['abh.responsibility-requests.escalate-slot'],purposeNames:['abh.action.prepare'],validFrom:escalationAssignment.validFrom,
+      validUntil:escalationAssignment.validUntil,issuanceEvidenceRef:input.evidenceRefs[0]!,status:'Active'};
+    await db.transaction(a,options(),async tx=>{
+      await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch) VALUES (${org},${randomUUID()},'abh.grant',${grant.grantRef.id},1)`;
+      await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status) VALUES (${org},${grant.grantRef.id},${a.tenant.actor.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
+    });
+    const installation:RouteRevisionInstallation={eligibility:eligible,fenceRefs:async()=>[],admit:async()=>{},govern:async()=>{}};
+    const commandFor=(value:ReviseResponsibilityRoutePayload)=>command('abh.responsibility-requests.escalate-slot',value);
+    const result=await escalateResponsibilitySlot(db,a,options(),await commandFor(input),input,[grant.grantRef],installation);
+    assert.equal(result.replayed,false);
+    const routed=await db.transaction(a,options(),tx=>owner.getRequest(tx,request.requestRef.id));
+    assert.equal(routed.status,'Open');assert.equal(routed.routeRevision,2);assert.equal(routed.escalationDepth,1);
+    const fresh=await Promise.all(routed.decisionRefs.map(ref=>load(ref.id)));
+    assert.equal(fresh.find(d=>d.seatId==='seat-0')!.candidateResponsibilityRefs[0]!.id,escalationAssignment.responsibilityRef.id);
+    const tooDeep={...input,expectedRequestRef:routed.requestRef,proposal:{...input.proposal,request:{...routed,
+      requestRef:{...routed.requestRef,version:routed.requestRef.version+1},routeRevision:routed.routeRevision+1,escalationDepth:5}}};
+    await assert.rejects(escalateResponsibilitySlot(db,a,options(),await commandFor(tooDeep),tooDeep,[grant.grantRef],installation),{code:'INVALID_ARGUMENT'});
+    const saturated={...routed,status:'Unresolved' as const,decisionRefs:[],escalationDepth:4,
+      requestRef:{...routed.requestRef,version:routed.requestRef.version+1},routeRevision:routed.routeRevision+1};
+    await f.admin`UPDATE human.requests SET record=${JSON.stringify(saturated)}::text::jsonb,route_revision=${saturated.routeRevision},version=${saturated.requestRef.version},status='Unresolved' WHERE resource_organization_id=${org} AND id=${routed.requestRef.id}`;
+    const saturatedInput={...input,expectedRequestRef:saturated.requestRef,proposal:{...input.proposal,request:{...saturated,
+      requiredSlots:saturated.requiredSlots.map(slot=>slot.slotId==='approve'
+        ?{...slot,seats:slot.seats.map(seat=>seat.seatId==='seat-1'
+          ?{...seat,responsibilityRefs:[escalationAssignment.responsibilityRef]}:seat)}:{...slot})}},
+      escalation:{slotId:'approve',seatId:'seat-1',responsibilityRef:escalationAssignment.responsibilityRef}};
+    await assert.rejects(escalateResponsibilitySlot(db,a,options(),await commandFor(saturatedInput),saturatedInput,[grant.grantRef],installation),{code:'ROUTE_DEPTH_EXCEEDED'});
+    const revision=await db.transaction(a,options(),tx=>tx.owner('HumanGateway')`SELECT record FROM human.route_revisions WHERE request_id=${request.requestRef.id} AND route_revision=2`);
+    assert.equal((revision[0]!.record as {change:ReviseResponsibilityRoutePayload}).change.escalation?.responsibilityRef.id,escalationAssignment.responsibilityRef.id);
+  });
+
   await t.test('routing worker retries an unchanged unresolved route after eligibility recovery and stops noncooperating proposal loading',async()=>{
     const workspaceId=randomUUID(),opening=deriveVerifiedContext({...a.request,workspaceId,purposeOfUse:'abh.operation.reconcile'}),service=ref('abh.principal'),worker=deriveVerifiedContext({...opening.request,actor:{type:'Service',id:service.id}});
     const grant:GrantRecord={grantRef:ref('abh.grant'),resourceOrganizationId:org,principalRef:service,scopeRefs:[ref('abh.organization',org)],actionTypes:['abh.responsibility-requests.retry-route'],purposeNames:['abh.operation.reconcile'],validFrom:new Date(Date.now()-1000).toISOString(),validUntil:new Date(Date.now()+60000).toISOString(),issuanceEvidenceRef:ref('abh.decision'),status:'Active'};

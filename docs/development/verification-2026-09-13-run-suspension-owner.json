@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-13",
+  "scope": "Pack Suspension Run notification consumer and page delivery dispatch",
+  "summary": "Added a stable Run suspension consumer with current grant, registry, source admission, Run lock, PinSet identity and exact capability checks. Delivery now dispatches Action and Run targets while rejecting unknown subjects or a missing Run admission. The durable effect is a RunPackSuspensionObservation with current Run and task snapshots, deduplicated by the original event and stable consumer id.",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "ABH_TEST_COSIGN=/tmp/abh-cosign-bin/cosign corepack pnpm --filter @abh/core exec node --test test/signed-connector.test.ts"
+  ],
+  "results": {
+    "typecheckPassed": true,
+    "realPostgresPassed": true,
+    "realCosignSignaturePassed": true,
+    "testsPassed": 2,
+    "testsFailed": 0,
+    "runPinSetDiscoveredByCapabilityReferences": true,
+    "runAndTaskRowsReadUnderRuntimePurpose": true,
+    "runObservationKind": "RunPackSuspensionObservation",
+    "runStatusAndTaskSnapshotPersisted": true,
+    "stableRunConsumerIdVerified": true,
+    "missingRunAdmissionRejected": true,
+    "existingActionDeliveryRegressionPassed": true
+  },
+  "finalCheck": {
+    "command": "corepack pnpm check",
+    "passed": true,
+    "results": {
+      "contractArtifacts": 51,
+      "coreTestsTotal": 613,
+      "coreTestsPassed": 606,
+      "coreTestsSkipped": 7,
+      "coreTestsFailed": 0,
+      "cliTestsPassed": 22,
+      "workbenchTestsPassed": 28,
+      "publicApiReportsMatch": true,
+      "docsLinksChecked": 788
+    },
+    "note": "The 7 default skips are the pre-existing Cosign-gated cases; the focused Run suspension regression was executed separately with real Cosign and passed."
+  },
+  "boundaries": [
+    "Suspension observation does not cancel, pause or compensate a Run",
+    "No cross-scope production scheduler, subscription backfill watermark or managed worker host",
+    "No retirement reference-watermark governance, production Provider or independent security review"
+  ]
+}

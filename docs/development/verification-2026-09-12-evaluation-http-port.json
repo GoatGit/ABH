@@ -1,0 +1,39 @@
+{
+  "date": "2026-09-12",
+  "subject": "Bounded HTTP evaluation host dispatcher",
+  "commands": [
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/evaluation-dispatcher.test.ts",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm api:check",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "dispatcherFocusedTests": "6 passed, 0 failed",
+    "coreFullChecks": "568 tests: 562 passed, 6 skipped, 0 failed",
+    "publicApiEntryPoints": 5
+  },
+  "fullWorkspace": {
+    "status": "passed",
+    "contractsTests": "312 passed, 0 failed",
+    "coreTests": "562 passed, 6 skipped, 0 failed",
+    "workbenchUnitTests": "24 passed, 0 failed",
+    "cliTests": "5 passed, 0 failed",
+    "documentationLinks": 771,
+    "contractsArtifacts": 51,
+    "publicApiEntryPoints": "Contracts 9; Core 5"
+  },
+  "evidence": [
+    "Canonical HTTP dispatch bound the exact Evaluation Run record, Work Lease reference/fencing token and attempt ordinal",
+    "Only HTTP 202 with the closed JSON shape {outcome:'Accepted'} was treated as Accepted",
+    "Unexpected status, invalid JSON, unexpected outcome, timeout, cancellation and oversized/protocol drift remained Unknown",
+    "Credential and upstream callbacks inherited bounded cancellation without exposing host errors or secrets",
+    "Endpoint parsing rejected credentials/query fragments and validated 100-30000ms timeout plus 1-262144 byte response bounds"
+  ],
+  "limits": [
+    "The port dispatches work; it does not implement promptfoo or execute models",
+    "No real production evaluation host, billing evidence, credential store or independent security review is claimed",
+    "Evaluation retry remains conservative: Unknown retains the lease until the existing recovery/expiry owner adjudicates"
+  ]
+}

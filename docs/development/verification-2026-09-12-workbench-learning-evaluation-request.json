@@ -1,0 +1,39 @@
+{
+  "date": "2026-09-12",
+  "subject": "Workbench governed Learning evaluation request and gate evidence",
+  "commands": [
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench test:e2e",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "completionEstimate": "99.9%",
+    "contractsArtifacts": 51,
+    "contractOpenApiPaths": 51,
+    "contractsTests": "312 passed, 0 failed, 0 skipped",
+    "workbenchUnitTests": "24 passed, 0 failed",
+    "workbenchProductionE2e": "2 passed, 0 failed",
+    "cliTests": "5 passed, 0 failed",
+    "coreFullChecks": "562 tests: 556 passed, 6 skipped, 0 failed",
+    "coreSkips": "Cosign-dependent tests only",
+    "apiReports": "Contracts 9 entry points matched; Core 4 entry points matched",
+    "documentationLinks": "771 local links checked",
+    "fullWorkspaceCheck": "passed"
+  },
+  "evidence": [
+    "The server action validated exact UUID/version inputs and strong-read the Draft Candidate under the current organization, workspace and purpose",
+    "The command bound the returned Candidate and Baseline references; browser input did not inject profile, baseline, organization or expected outcome",
+    "The stable idempotency key was derived from organization, workspace, candidate reference and normalized request purpose",
+    "The production browser journey submitted the request, showed accepted status and exposed the resulting Evaluation Run",
+    "The production browser journey rendered the immutable Pass Gate verdict, Wilson interval, limitations, evidence count and signing time",
+    "Gate display consumed the existing governed abh.learning-gates.list query and did not offer manual adjudication",
+    "Fake API honored the public command contract with HTTP 201 and maintained Organization B isolation"
+  ],
+  "limits": [
+    "No real external evaluation host is connected",
+    "The Workbench still has no Evaluation retry, Release operation, batch operations or diff review",
+    "Continuous projections and the full governed CLI operational surface remain open",
+    "Production governance, hosting, IdP/Provider, independent security review and domain acceptance remain outside local engineering completion"
+  ]
+}

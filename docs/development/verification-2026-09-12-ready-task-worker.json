@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-12",
+  "subject": "tenant-local Ready Task worker with pluggable execution and uncertainty preservation",
+  "commands": [
+    "corepack pnpm --filter @abh/core exec node --test test/run-execution.test.ts",
+    "corepack pnpm --filter @abh/core exec tsc --noEmit -p tsconfig.typecheck.json",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "completionEstimate": "97%",
+    "workspaceTests": 920,
+    "workspacePassed": 914,
+    "workspaceSkipped": 6,
+    "workspaceFailed": 0,
+    "coreTests": 556,
+    "corePassed": 550,
+    "coreSkipped": 6,
+    "coreFailed": 0,
+    "readyTaskDiscoveryAndClaimVerified": true,
+    "frozenTaskSpecAndContractDigestVerified": true,
+    "executorInvokedOnlyAfterRunningVerified": true,
+    "currentLeaseFencingRequired": true,
+    "completedResultAndUsageBound": true,
+    "taskAdvancedToVerifying": true,
+    "unknownOutcomePreservedRunning": true,
+    "authorizationAndIdentityBindingVerified": true
+  },
+  "evidence": [
+    "The worker claimed a downstream Ready task and moved its Invocation Created→Running→Succeeded",
+    "Plan manifest and bindings were finalized under a computed contract digest before executor entry",
+    "Completed executor output and usage references advanced the Task to Verifying",
+    "An Unknown executor result left Invocation and Task Running without fabricated success or failure evidence",
+    "All durable transitions used current grants and the active work-lease fencing token"
+  ],
+  "limits": [
+    "global multi-tenant hosting, expired Running-lease recovery and retry policy remain open",
+    "Pi production assembly, real external providers and late-evidence reconciliation remain open",
+    "real IdP, production governance, global release scan and independent security review remain outside this estimate"
+  ]
+}

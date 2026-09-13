@@ -1,0 +1,59 @@
+{
+  "date": "2026-09-12",
+  "subject": "bounded internal Task Graph revision command with PostgreSQL owner validation, authorization, idempotency and ledger evidence",
+  "commands": [
+    "corepack pnpm check",
+    "corepack pnpm --filter @abh/core exec node --test test/run-graph.test.ts",
+    "corepack pnpm --filter @abh/core exec node --test test/run-commands.test.ts",
+    "corepack pnpm --filter @abh/contracts api:check"
+  ],
+  "results": {
+    "completionEstimate": "93%",
+    "workspaceTests": 918,
+    "workspacePassed": 912,
+    "workspaceSkipped": 6,
+    "workspaceFailed": 0,
+    "coreTests": 554,
+    "corePassed": 548,
+    "coreSkipped": 6,
+    "coreFailed": 0,
+    "contractsArtifacts": 51,
+    "databaseManifestVersion": 64,
+    "openApiPaths": 37,
+    "apiEntryPoints": 13,
+    "documentLinksChecked": 769,
+    "runLifecycleFocusedTest": "passed",
+    "graphPatchFocusedTest": "passed",
+    "contractGenerationCheck": "passed",
+    "workspaceTypecheck": "passed",
+    "workspaceBuild": "passed",
+    "publicApiReportCheck": "passed",
+    "graphRevisionPersistenceVerified": true,
+    "baseRevisionOnRunStartVerified": true,
+    "staleBaseRejected": true,
+    "cycleRejected": true,
+    "selfEdgeAndDanglingEdgeRejected": true,
+    "maxDepth20Verified": true,
+    "activeNodeLimit100Verified": true,
+    "edgeLimit300Verified": true,
+    "pendingOnlySupersedeVerified": true,
+    "grantAndFenceAuthorizationVerified": true,
+    "idempotentReplayReturnsSameRevision": true,
+    "auditAndOutboxAtomic": true,
+    "duplicateCommandExecutionFixed": true
+  },
+  "evidence": [
+    "Contracts expose an internal ProposeGraphPatch command, explicit revision event and graph-revision catalog object",
+    "core.graph_revisions is tenant scoped with revision uniqueness and manifest version 64",
+    "PostgreSQL regression rejects stale base and cyclic patches before creating revision 1",
+    "Successful patch stores two active nodes, one dependency edge, revision digest, audit and outbox in one transaction",
+    "Same-command replay returns the original GraphRevisionRecord without creating another revision, audit or event",
+    "Superseding a Running node is rejected while only Pending nodes remain eligible",
+    "Owner aggregation no longer nests executeCommand; the command wrapper remains the sole idempotency boundary"
+  ],
+  "limits": [
+    "command is intentionally internal and has no public HTTP route in this slice",
+    "Task execution, Invocation, Checkpoint resume, wake scheduling and production orchestration hosting remain open",
+    "real IdP, external providers, global release scan and independent security review remain outside this estimate"
+  ]
+}

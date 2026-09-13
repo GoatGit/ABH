@@ -6,7 +6,7 @@ import { Database, type TenantTransaction } from '../src/data/uow.ts';
 import { CoreError } from '../src/internal/errors.ts';
 import { LedgerOwner } from '../src/resources/ledger.ts';
 import { executeCommand, inputDigest, type CommandIdentity } from '../src/data/journal.ts';
-import { createDatabaseFixture, context, options } from './database-fixture.ts';
+import { createDatabaseFixture, context, options, seedLedgerCatalog } from './database-fixture.ts';
 
 const ref=<T extends string='abh.action'>(type: T='abh.action' as T,id: string=randomUUID(),version=1): EntityRef & {type:T}=>({type,id,version});
 const command=async(type: string,input: unknown,key=randomUUID()): Promise<CommandIdentity>=>({commandId:randomUUID(),type,idempotencyKey:key,digest:await inputDigest(input)});
@@ -15,11 +15,12 @@ test('Ledger and journal use real PostgreSQL atomicity and exact decimal admissi
   const f=await createDatabaseFixture(); t.after(()=>f.close());
   const db=await Database.connect(f.runtimeUrl,{max:8}); t.after(()=>db.close());
   const c=context(),other=context(),ledger=new LedgerOwner();
+  const catalog=await seedLedgerCatalog(db,c,'abh.unit.credit');
   // This fixture exercises internal owners. Public Identity/Control ingress is not bypassed by a public export.
   const authorized=async()=>{};
   const configure=async(limit='10',mode:LedgerRecord['meteringMode']='cumulative',id=randomUUID())=> {
     const input={id,scopeRef:ref('abh.organization',c.tenant.resourceOrganizationId),resourceType:'abh.resource.cost',meteringMode:mode,
-      unit:'abh.unit.credit',periodRef:ref('abh.period'),limit};
+      unit:'abh.unit.credit',periodRef:catalog.periodRef,limit,purposeNames:['abh.action.prepare','abh.resource.read']};
     const cmd=await command('abh.ledgers.configure',input);
     let record:LedgerRecord;
     await db.transaction(c,options(),tx=>executeCommand(tx,cmd,authorized,async()=>{record=await ledger.configure(tx,cmd,input);return record.ledgerRef;}));
@@ -34,7 +35,7 @@ test('Ledger and journal use real PostgreSQL atomicity and exact decimal admissi
   const get=(id:string)=>db.transaction(c,{...options(),readOnly:true},tx=>ledger.get(tx,id));
 
   await t.test('identical command retries return original receipt; changed input conflicts and revoked replay is denied',async()=> {
-    const input={id:randomUUID(),scopeRef:ref('abh.organization',c.tenant.resourceOrganizationId),resourceType:'abh.resource.cost',meteringMode:'cumulative' as const,unit:'abh.unit.credit',periodRef:ref('abh.period'),limit:'10'};
+    const input={id:randomUUID(),scopeRef:ref('abh.organization',c.tenant.resourceOrganizationId),resourceType:'abh.resource.cost',meteringMode:'cumulative' as const,unit:'abh.unit.credit',periodRef:catalog.periodRef,limit:'10'};
     const cmd=await command('abh.ledgers.configure',input);
     let calls=0;
     const execute=(tx:TenantTransaction)=>executeCommand(tx,cmd,authorized,async()=>{calls++;return (await ledger.configure(tx,cmd,input)).ledgerRef;});

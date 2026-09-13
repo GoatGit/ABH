@@ -5,11 +5,14 @@ import {useQuery} from '@tanstack/react-query';
 import type {DecisionInboxResponse,MissionListResult} from '@abh/contracts';
 import {overviewInboxQueryKey,overviewMissionsQueryKey,type QueryIdentity} from '@/lib/query-keys';
 import {formatDateTime,formatImpact} from '@/lib/format';
+import {useOrganizationLiveInvalidation} from './useOrganizationLiveInvalidation';
 
 export function LiveOverview({identity,initialMissions,initialInbox,staleSeconds}:{
   identity:QueryIdentity;initialMissions:MissionListResult;
   initialInbox:DecisionInboxResponse;staleSeconds:number;
 }){
+  const streamState=useOrganizationLiveInvalidation(identity,[
+    overviewMissionsQueryKey(identity),overviewInboxQueryKey(identity)]);
   const missionsQuery=useQuery({
     queryKey:overviewMissionsQueryKey(identity),initialData:initialMissions,
     staleTime:staleSeconds*1000,refetchInterval:staleSeconds*1000,
@@ -49,7 +52,7 @@ export function LiveOverview({identity,initialMissions,initialInbox,staleSeconds
       </div>)}
     {!error&&inbox.data[0]?<section className="card"><h2>最高优先影响</h2>
       <p>{formatImpact(inbox.data[0].package.impactUpperBound)}</p></section>:null}
-    <p className="message stale" role="status">刷新状态：授权轮询；时点 {formatDateTime(missions.asOf)}</p>
+    <p className="message stale" role="status">刷新状态：{streamState==='live'?'实时':'授权轮询'}；时点 {formatDateTime(missions.asOf)}</p>
   </main>;
 }
 

@@ -1,12 +1,16 @@
-import type {EntityRef} from '@abh/contracts';
+import type {EntityRef,EvaluationGateArtifactRecord,EvaluationRunListResult,LearningCandidateListResult,
+  LearningCaseListResult,LearningGateListResult,LearningSignalListResult,ListEvaluationRunsQuery,
+  ListLearningCandidatesQuery,ListLearningCasesQuery,ListLearningGatesQuery,
+  ListLearningSignalsQuery} from '@abh/contracts';
 import type {Database,TransactionOptions} from '../data/uow.ts';
+import type {ListAssignmentsQuery} from '@abh/contracts';
 import type {VerifiedContext} from '../internal/context.ts';
 import type {ActivateMissionAdmission} from '../mission/activate-mission.ts';
 import type {MissionDefinitionChecks} from '../mission/missions.ts';
 import {activateMission} from '../mission/activate-mission.ts';
 import {submitTrigger} from '../mission/submit-trigger.ts';
 import {pauseMission,cancelMission,resumeMission,blockMission,closeMission} from '../mission/lifecycle.ts';
-import {startRun,completeRun} from '../mission/run-commands.ts';
+import {startRun,completeRun,cancelRun} from '../mission/run-commands.ts';
 import {invokeTool,type InvokeToolPorts} from '../mission/tool-commands.ts';
 import {createMission} from '../mission/create-mission.ts';
 import {MissionOwner} from '../mission/missions.ts';
@@ -19,6 +23,7 @@ import {digestCommandIntent} from '@abh/contracts/digest';
 import {CoreError} from '../internal/errors.ts';
 import {ContextOwner} from '../mission/context.ts';
 import {ToolGatewayOwner} from '../mission/gateway.ts';
+import {LearningOwner} from '../mission/learning.ts';
 import {lockFences} from '../control/fences.ts';
 import {assertCurrentGrants} from '../control/grants.ts';
 import {ProjectionOwner,redactMissionSummaryData,requestMissionSummaryRefresh} from '../workbench/projections.ts';
@@ -26,6 +31,13 @@ import type {ProjectionMetrics} from '../workbench/projection-metrics.ts';
 import type {ProjectionCursorCodec} from './projection-cursor.ts';
 import {MissionCursorCodec,type MissionListFilter} from './mission-cursor.ts';
 import {RunCursorCodec,type RunListFilter} from './run-cursor.ts';
+import type {LearningCursorCodec} from './learning-cursor.ts';
+import {StaticReleaseOwner} from '../release/static.ts';
+
+type LearningRouteAuthority={
+  cursor:LearningCursorCodec;
+  grants(context:VerifiedContext,filter:Record<string,unknown>,options:TransactionOptions):Promise<readonly EntityRef[]>;
+};
 
 export interface MissionHttpInstallation {
   /** Trusted grant resolution per command; the Owner revalidates in every transaction. */
@@ -46,6 +58,17 @@ export interface MissionHttpInstallation {
     cursor:RunCursorCodec;
     grants(context:VerifiedContext,filter:RunListFilter,options:TransactionOptions):Promise<readonly EntityRef[]>;
   };
+  learningLists?:{
+    signals?:LearningRouteAuthority;
+    cases?:LearningRouteAuthority;
+    candidates?:LearningRouteAuthority;
+    evaluationRuns?:LearningRouteAuthority;
+    gates?:LearningRouteAuthority;
+  };
+  assignmentGet?:{
+    grants(context:VerifiedContext,id:string,options:TransactionOptions):Promise<readonly EntityRef[]>;
+  }|undefined;
+  assignmentList?:LearningRouteAuthority|undefined;
   contextGet?:{
     grants(context:VerifiedContext,id:string,options:TransactionOptions):Promise<readonly EntityRef[]>;
   };
@@ -128,9 +151,13 @@ export function createMissionHandlers(database:Database,install:MissionHttpInsta
    const refs=await grants(context,{type:'abh.runs.start',target:(command as {payload:{missionRef:EntityRef}}).payload.missionRef},options);
    return startRun(database,context,options,command as Parameters<typeof startRun>[3],refs);
   },
-  'abh.runs.complete':async(context:VerifiedContext,options:TransactionOptions,command:unknown)=>{
+ 'abh.runs.complete':async(context:VerifiedContext,options:TransactionOptions,command:unknown)=>{
    const refs=await grants(context,{type:'abh.runs.complete',target:(command as {payload:{runRef:EntityRef}}).payload.runRef},options);
    return completeRun(database,context,options,command as Parameters<typeof completeRun>[3],refs);
+  },
+ 'abh.runs.cancel':async(context:VerifiedContext,options:TransactionOptions,command:unknown)=>{
+   const refs=await grants(context,{type:'abh.runs.cancel',target:(command as {payload:{runRef:EntityRef}}).payload.runRef},options);
+   return cancelRun(database,context,options,command as Parameters<typeof cancelRun>[3],refs);
   },
  'abh.learning.capture-signal':async(context:VerifiedContext,options:TransactionOptions,command:unknown)=>{
    const refs=await grants(context,{type:'abh.learning.capture-signal',target:{type:'abh.organization',id:context.tenant.resourceOrganizationId,version:1}},options);
@@ -175,7 +202,33 @@ export function createMissionHandlers(database:Database,install:MissionHttpInsta
 export function createMissionQueryHandlers(database:Database,install:MissionHttpInstallation){
  const projectionMetrics=install.projectionMetrics;
  return {
-  'abh.missions.get':async(context:VerifiedContext,options:TransactionOptions,id:string)=>{
+ 'abh.assignments.get':async(context:VerifiedContext,options:TransactionOptions,id:string)=>{
+  const authority=install.assignmentGet;if(!authority)throw new CoreError('AUTHORITY_REQUIRED');
+  contract('UUID',id);
+  const refs=structuredClone(await authority.grants(context,id,options));
+  return database.transaction(context,options,async tx=>{
+   const c=tx.context.tenant,organization={type:'abh.organization' as const,id:c.resourceOrganizationId,version:1};
+   await assertCurrentGrants(tx,{objectRef:{type:'abh.assignment',id,version:1},scopeRefs:[organization],
+     action:'abh.release.manage'},refs);
+   return await new StaticReleaseOwner().getAssignment(tx,{type:'abh.assignment',id,version:1});
+  });
+ },
+ 'abh.assignments.list':async(context:VerifiedContext,options:TransactionOptions,supplied:unknown={})=>{
+  const authority=install.assignmentList;if(!authority)throw new CoreError('AUTHORITY_REQUIRED');
+  const {cursor,limit=25,...filterInput}=contract('ListAssignmentsQuery',supplied);
+  const filter:Omit<ListAssignmentsQuery,'cursor'|'limit'>=structuredClone(filterInput);
+  const after=cursor?authority.cursor.decode(cursor,context.request,filter):undefined;
+  const refs=structuredClone(await authority.grants(context,filter,options));
+  return database.transaction(context,options,async tx=>{
+   const c=tx.context.tenant,organization={type:'abh.organization' as const,id:c.resourceOrganizationId,version:1};
+   await assertCurrentGrants(tx,{objectRef:organization,scopeRefs:[organization],action:'abh.release.manage'},refs);
+   const page=await new StaticReleaseOwner().listAssignments(tx,{...filter,limit,...(after?{after}:{})});
+   return contract('StaticAssignmentListResult',{assignments:page.records,counts:page.counts,
+     ...(page.next?{cursor:authority.cursor.encode(page.next,context.request,filter)}:{}),
+     asOf:new Date().toISOString()});
+  });
+ },
+ 'abh.missions.get':async(context:VerifiedContext,options:TransactionOptions,id:string)=>{
    const owner=new MissionOwner();
    return database.transaction(context,options,async tx=>{
     const record=await owner.get(tx,id);
@@ -294,7 +347,7 @@ export function createMissionQueryHandlers(database:Database,install:MissionHttp
     return {projection:envelope,asOf:new Date().toISOString()};
    });
   },
-  'abh.projections.list':async(context:VerifiedContext,options:TransactionOptions,query:unknown)=>{
+ 'abh.projections.list':async(context:VerifiedContext,options:TransactionOptions,query:unknown)=>{
    const projectionList=install.projectionList;
    if(!projectionList)throw new CoreError('AUTHORITY_REQUIRED');
    const {cursor,limit=25,...filterInput}=contract('ListProjectionQuery',query);
@@ -309,6 +362,105 @@ export function createMissionQueryHandlers(database:Database,install:MissionHttp
       ...(result.next?{cursor:projectionList.cursor.encode(result.next,context.request,filter)}:{}),
       asOf:result.asOf});
    });
+  },
+ 'abh.evaluation-runs.get':async(context:VerifiedContext,options:TransactionOptions,id:string)=>{
+   return database.transaction(context,options,async tx=>{
+    const [row]=await tx.owner('LearningController')`SELECT version FROM core.evaluation_runs
+      WHERE resource_organization_id=${tx.context.tenant.resourceOrganizationId} AND id=${id}
+        AND deleted_at IS NULL AND ${tx.context.tenant.purposeOfUse}=ANY(purpose_names)
+        AND (workspace_id IS NULL OR workspace_id=${tx.context.tenant.workspaceId??null}::uuid)`;
+    if(!row)throw new CoreError('RESOURCE_NOT_FOUND');
+    return await new LearningOwner().getEvaluationRun(tx,
+      {type:'abh.evaluation-run',id,version:Number(row.version)});
+   });
+ },
+ 'abh.learning-signals.list':async(context:VerifiedContext,options:TransactionOptions,supplied:unknown={})=>{
+  const authority=install.learningLists?.signals;
+  if(!authority)throw new CoreError('AUTHORITY_REQUIRED');
+  const {cursor,limit=25,...filterInput}=contract('ListLearningSignalsQuery',supplied);
+  const filter:Omit<ListLearningSignalsQuery,'cursor'|'limit'>=structuredClone(filterInput);
+  const after=cursor?authority.cursor.decode(cursor,context.request,filter):undefined;
+  const refs=structuredClone(await authority.grants(context,filter,options));
+  return database.transaction(context,options,async tx=>{
+   const c=tx.context.tenant,organization={type:'abh.organization' as const,id:c.resourceOrganizationId,version:1};
+   await assertCurrentGrants(tx,{objectRef:organization,scopeRefs:[organization],action:'abh.learning.read'},refs);
+   const page=await new LearningOwner().listSignals(tx,{...filter,limit,...(after?{after}:{})});
+   return contract('LearningSignalListResult',{signals:page.records,counts:page.counts,
+     ...(page.next?{cursor:authority.cursor.encode(page.next,context.request,filter)}:{}),
+     asOf:new Date().toISOString()});
+  });
+},
+ 'abh.learning-cases.list':async(context:VerifiedContext,options:TransactionOptions,supplied:unknown={})=>{
+  const authority=install.learningLists?.cases;
+  if(!authority)throw new CoreError('AUTHORITY_REQUIRED');
+  const {cursor,limit=25,...filterInput}=contract('ListLearningCasesQuery',supplied);
+  const filter:Omit<ListLearningCasesQuery,'cursor'|'limit'>=structuredClone(filterInput);
+  const after=cursor?authority.cursor.decode(cursor,context.request,filter):undefined;
+  const refs=structuredClone(await authority.grants(context,filter,options));
+  return database.transaction(context,options,async tx=>{
+   const c=tx.context.tenant,organization={type:'abh.organization' as const,id:c.resourceOrganizationId,version:1};
+   await assertCurrentGrants(tx,{objectRef:organization,scopeRefs:[organization],action:'abh.learning.read'},refs);
+   const page=await new LearningOwner().listCases(tx,{...filter,limit,...(after?{after}:{})});
+   return contract('LearningCaseListResult',{cases:page.records,counts:page.counts,
+     ...(page.next?{cursor:authority.cursor.encode(page.next,context.request,filter)}:{}),
+     asOf:new Date().toISOString()});
+  });
+ },
+ 'abh.learning-candidates.list':async(context:VerifiedContext,options:TransactionOptions,supplied:unknown={})=>{
+  const authority=install.learningLists?.candidates;
+  if(!authority)throw new CoreError('AUTHORITY_REQUIRED');
+  const {cursor,limit=25,...filterInput}=contract('ListLearningCandidatesQuery',supplied);
+  const filter:Omit<ListLearningCandidatesQuery,'cursor'|'limit'>=structuredClone(filterInput);
+  const after=cursor?authority.cursor.decode(cursor,context.request,filter):undefined;
+  const refs=structuredClone(await authority.grants(context,filter,options));
+  return database.transaction(context,options,async tx=>{
+   const c=tx.context.tenant,organization={type:'abh.organization' as const,id:c.resourceOrganizationId,version:1};
+   await assertCurrentGrants(tx,{objectRef:organization,scopeRefs:[organization],action:'abh.learning.read'},refs);
+   const page=await new LearningOwner().listCandidates(tx,{...filter,limit,...(after?{after}:{})});
+   return contract('LearningCandidateListResult',{candidates:page.records,counts:page.counts,
+     ...(page.next?{cursor:authority.cursor.encode(page.next,context.request,filter)}:{}),
+     asOf:new Date().toISOString()});
+  });
+ },
+ 'abh.evaluation-results.get':async(context:VerifiedContext,options:TransactionOptions,id:string)=>{
+   return database.transaction(context,options,async tx=>
+     await new LearningOwner().getEvaluationResult(tx,{type:'abh.evaluation-result',id,version:1}));
+ },
+ 'abh.evaluation-runs.list':async(context:VerifiedContext,options:TransactionOptions,supplied:unknown={})=>{
+  const authority=install.learningLists?.evaluationRuns;
+  if(!authority)throw new CoreError('AUTHORITY_REQUIRED');
+  const {cursor,limit=25,...filterInput}=contract('ListEvaluationRunsQuery',supplied);
+  const filter:Omit<ListEvaluationRunsQuery,'cursor'|'limit'>=structuredClone(filterInput);
+  const after=cursor?authority.cursor.decode(cursor,context.request,filter):undefined;
+  const refs=structuredClone(await authority.grants(context,filter,options));
+  return database.transaction(context,options,async tx=>{
+   const c=tx.context.tenant,organization={type:'abh.organization' as const,id:c.resourceOrganizationId,version:1};
+   await assertCurrentGrants(tx,{objectRef:organization,scopeRefs:[organization],action:'abh.learning.read'},refs);
+   const page=await new LearningOwner().listEvaluationRuns(tx,{...filter,limit,...(after?{after}:{})});
+   return contract('EvaluationRunListResult',{runs:page.records,counts:page.counts,
+     ...(page.next?{cursor:authority.cursor.encode(page.next,context.request,filter)}:{}),
+     asOf:new Date().toISOString()});
+  });
+ },
+ 'abh.learning-gates.list':async(context:VerifiedContext,options:TransactionOptions,supplied:unknown={})=>{
+  const authority=install.learningLists?.gates;
+  if(!authority)throw new CoreError('AUTHORITY_REQUIRED');
+  const {cursor,limit=25,...filterInput}=contract('ListLearningGatesQuery',supplied);
+  const filter:Omit<ListLearningGatesQuery,'cursor'|'limit'>=structuredClone(filterInput);
+  const after=cursor?authority.cursor.decode(cursor,context.request,filter):undefined;
+  const refs=structuredClone(await authority.grants(context,filter,options));
+  return database.transaction(context,options,async tx=>{
+   const c=tx.context.tenant,organization={type:'abh.organization' as const,id:c.resourceOrganizationId,version:1};
+   await assertCurrentGrants(tx,{objectRef:organization,scopeRefs:[organization],action:'abh.learning.read'},refs);
+   const page=await new LearningOwner().listGates(tx,{...filter,limit,...(after?{after}:{})});
+   return contract('LearningGateListResult',{gates:page.records,counts:page.counts,
+     ...(page.next?{cursor:authority.cursor.encode(page.next,context.request,filter)}:{}),
+     asOf:new Date().toISOString()});
+  });
+ },
+  'abh.learning-gates.get':async(context:VerifiedContext,options:TransactionOptions,id:string)=>{
+   return database.transaction(context,options,async tx=>
+     await new LearningOwner().getEvaluationGate(tx,{type:'abh.learning-gate',id,version:1}));
   },
  } as const;
 }

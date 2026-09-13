@@ -15,7 +15,7 @@ export interface SuspensionTargetCursor {
  * supplies the explicit registered-kind/public-kind mapping. No inferred mapping,
  * cross-tenant authority transfer, notification effect or global completion claim. */
 export async function queryPackSuspensionTargets(database:Database,management:VerifiedContext,business:VerifiedContext,options:TransactionOptions,
- input:{eventRef:EntityRef;capability:CapabilityRef;registeredKind:string;limit?:number;cursor?:SuspensionTargetCursor},
+ input:{eventRef:EntityRef;capability:CapabilityRef;registeredKind:string;limit?:number;cursor?:SuspensionTargetCursor;beforeAt?:string},
  grants:readonly EntityRef[],admission:{source:PackSuspensionReadAdmission;references:CapabilityReferenceAdmission}){
  requireVerifiedContext(management);requireVerifiedContext(business);
  const value=structuredClone(input),authority=structuredClone(grants),limits={...options};
@@ -27,9 +27,10 @@ export async function queryPackSuspensionTargets(database:Database,management:Ve
  const matches=source.capabilities.filter(entry=>entry.capability.kind===value.registeredKind&&entry.capability.id===value.capability.id&&entry.capability.version===value.capability.version&&entry.registrationDigest===value.capability.digest);
  if(matches.length!==1)throw new CoreError('PIN_INPUT_CONFLICT');
  const c=business.tenant,bindingDigest=await inputDigest({eventRef:source.eventRef,capabilitySetDigest:source.capabilitySetDigest,capability:value.capability,registeredKind:value.registeredKind,
-  organizationId:c.resourceOrganizationId,workspaceId:c.workspaceId??null,purpose:c.purposeOfUse,actor:c.actor});
+  organizationId:c.resourceOrganizationId,workspaceId:c.workspaceId??null,purpose:c.purposeOfUse,actor:c.actor,beforeAt:value.beforeAt??null});
  if(value.cursor&&(value.cursor.bindingDigest!==bindingDigest||typeof value.cursor.afterId!=='string'))throw new CoreError('INVALID_ARGUMENT');
- const page=await queryCapabilityReferences(database,business,limits,{capability:value.capability,limit:value.limit??100,...(value.cursor?{afterId:value.cursor.afterId}:{})},referenceChecks);
+ const page=await queryCapabilityReferences(database,business,limits,{capability:value.capability,limit:value.limit??100,
+  ...(value.cursor?{afterId:value.cursor.afterId}:{}),...(value.beforeAt?{beforeAt:value.beforeAt}:{})},referenceChecks);
  // Recheck source management authority after business discovery. No output is
  // released if management permission changed while that independent read ran.
  const final=await readPackSuspension(database,management,limits,value.eventRef,authority,sourceChecks);

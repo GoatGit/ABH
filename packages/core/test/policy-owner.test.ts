@@ -67,6 +67,7 @@ test('persisted Policy versions select current Mandatory and exact pinned Behavi
   });
   await t.test('current Mandatory tightening applies immediately while the Behavior pin remains fixed',async()=>{
     const tightened=await configure(await build('Mandatory','abh_fixture/decision')),next=await activate(tightened,firstBinding.bindingRef.version);
+    await assets.evaluate(tightened,input,new AbortController().signal).catch(()=>{});
     const result=await evaluate();assert.equal(result.decision.allow,false);assert.deepEqual(result.records[1]!.policyVersionRefs,[behavior.policyVersionRef]);assert.deepEqual(result.bindingRef,next.bindingRef);
     await assert.rejects(activate(mandatory,firstBinding.bindingRef.version),{code:'VERSION_CONFLICT'});
     await activate(mandatory,next.bindingRef.version);assert.equal((await evaluate()).decision.allow,true);

@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-13",
+  "scope": "Authorized Action detail SSE invalidation",
+  "summary": "Added an Action subject to the projection event route. The Core subscriber validates the Action tenant/workspace/purpose binding, active human membership, current projection grant, UUID cursor and same-Action Outbox anchor before emitting subject/version hints. The Workbench BFF permits abh.action and the Action detail page invalidates its authorization-partitioned query while retaining polling fallback.",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench test",
+    "node scripts/check-doc-links.mjs",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/actions.test.ts"
+  ],
+  "results": {
+    "coreTypecheckPassed": true,
+    "workbenchTypecheckPassed": true,
+    "workbenchTestsPassed": 28,
+    "workbenchTestsFailed": 0,
+    "actionsTestsPassed": 72,
+    "actionsTestsFailed": 0,
+    "documentationLinksChecked": 800,
+    "sensitiveActionPayloadInSseFrame": false,
+    "unknownCursorFailsClosed": true,
+    "pollingFallbackAvailable": true
+  },
+  "boundaries": [
+    "A dedicated real-browser Action SSE journey was not accepted in this batch",
+    "Overview, Inbox, Run and list-page SSE remain open",
+    "Production identity adapter, managed hosting and continuous readiness remain external"
+  ]
+}

@@ -1,4 +1,4 @@
-export type ProjectionSubjectType='abh.mission'|'abh.decision';
+export type ProjectionSubjectType='abh.mission'|'abh.decision'|'abh.action'|'abh.run'|'abh.organization';
 export interface QueryIdentity{
   actorId:string;actingOrganizationId:string;resourceOrganizationId:string;
   workspaceId?:string;purposeOfUse:string;authorizationDigest:string;
@@ -32,6 +32,12 @@ export function decisionQueryKey(identity:QueryIdentity,decisionId:string):reado
 
 export function actionQueryKey(identity:QueryIdentity,actionId:string):readonly unknown[]{
   return ['workbench','action',actionId,identity.actingOrganizationId,
+    identity.resourceOrganizationId,identity.workspaceId??null,
+    identity.purposeOfUse,identity.authorizationDigest,identity.actorId];
+}
+
+export function runQueryKey(identity:QueryIdentity,runId:string):readonly unknown[]{
+  return ['workbench','run',runId,identity.actingOrganizationId,
     identity.resourceOrganizationId,identity.workspaceId??null,
     identity.purposeOfUse,identity.authorizationDigest,identity.actorId];
 }

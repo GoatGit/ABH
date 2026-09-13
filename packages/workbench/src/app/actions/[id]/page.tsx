@@ -29,7 +29,7 @@ export default async function ActionPage({params}:{params:Promise<{id:string}>})
     return <main><h1>{item.actionType}</h1>
       {unknown?<Message kind="stale">外部结果待确认；不能据此创建新的普通写入意图。</Message>:null}
       <Message kind="stale">数据时点 {formatDateTime(action.meta.asOf)}；状态 {actionPositionLabel(item.position)}。</Message>
-      <LiveActionStatus identity={{
+      <LiveActionStatus sseEnabled={workbenchConfig.sseEnabled} identity={{
         actorId:session.actorId,actingOrganizationId:session.actingOrganizationId,
         resourceOrganizationId:session.resourceOrganizationId,workspaceId:session.workspaceId,
         purposeOfUse:session.purposeOfUse,authorizationDigest:session.authorizationDigest,

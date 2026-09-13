@@ -4,10 +4,11 @@ dist/
 coverage/
 .turbo/
 artifacts/
-.next/
+.next*/
 test-results/
 .playwright-mcp/
 .env
 .env.*
 !.env.example
 .DS_Store
+report.*.json

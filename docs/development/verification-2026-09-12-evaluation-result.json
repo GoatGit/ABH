@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-12",
+  "subject": "Immutable evaluation result and evaluation run CAS",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/learning-build-case.test.ts",
+    "corepack pnpm check",
+    "git diff --check"
+  ],
+  "results": {
+    "completionEstimate": "99.5%",
+    "contractsArtifacts": 51,
+    "contractOpenApiPaths": 43,
+    "evaluationRunRequiredStatus": "Queued",
+    "evaluationRunSourceVersion": 1,
+    "evaluationRunResultVersion": 2,
+    "inconclusiveRule": "completedSamples<minimumSamples",
+    "completedRule": "completedSamples>=minimumSamples && failedSamples==0",
+    "inconclusiveSubmissionVerified": true,
+    "completedSubmissionVerified": true,
+    "wrongEvaluatorRejectedVerified": true,
+    "terminalRunReuseRejectedVerified": true,
+    "commandReplayStableVerified": true,
+    "immutableResultRecordVerified": true,
+    "resultEventAndReceiptAtomicVerified": true,
+    "evaluationExecutionGateAndReleaseBlockedByDesignVerified": true
+  },
+  "evidence": [
+    "Real PostgreSQL SubmitEvaluationResult wrote one immutable EvaluationResultRecord and advanced the exact source run from v1 to v2 in one transaction",
+    "The run CAS persisted status, resultRef and executionRefs with a recomputed content digest; events, audit and receipt were written atomically",
+    "Missing submit authorization, a producer acting as evaluator, a wrong evaluator principal, a stale source version and reuse of a terminal run failed closed",
+    "29 completed samples stayed Inconclusive; 30 completed samples with zero failures became Completed",
+    "Replaying the accepted command returned the same result without creating another result, event or receipt",
+    "Focused persistence counts included three runs, two results and matching run/result events and receipts"
+  ],
+  "limits": [
+    "External evaluation execution, uncertainty calculation and late or conflicting evaluator evidence remain open",
+    "Evaluation result queries, Gate artifact creation and Release orchestration remain open",
+    "Purpose-withdrawal propagation to queued runs and results remains open",
+    "production IdP, hosted evaluation systems, production governance and independent security review remain outside this local engineering closure"
+  ]
+}

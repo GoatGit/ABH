@@ -374,6 +374,109 @@
       "additionalProperties": false,
       "title": "LedgerRecord"
     },
+    "LedgerUnitRecord": {
+      "title": "LedgerUnitRecord",
+      "type": "object",
+      "properties": {
+        "unitRef": {
+          "allOf":[{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+            {"type":"object","properties":{"type":{"const":"abh.unit"}},"required":["type"]}]
+        },
+        "resourceOrganizationId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+        "name": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "kind": { "enum":["monetary","quantity"] },
+        "currency": { "type":"string","pattern":"^[A-Z]{3}$" },
+        "precision": { "type":"integer","minimum":0,"maximum":12 },
+        "recordedAt": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" }
+      },
+      "required":["unitRef","resourceOrganizationId","name","kind","precision","recordedAt"],
+      "additionalProperties": false
+    },
+    "LedgerPeriodRecord": {
+      "title": "LedgerPeriodRecord",
+      "type": "object",
+      "properties": {
+        "periodRef": {
+          "allOf":[{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+            {"type":"object","properties":{"type":{"const":"abh.period"}},"required":["type"]}]
+        },
+        "resourceOrganizationId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+        "startsAt": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" },
+        "endsAt": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" },
+        "recordedAt": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" }
+      },
+      "required":["periodRef","resourceOrganizationId","startsAt","endsAt","recordedAt"],
+      "additionalProperties": false
+    },
+    "RegisterLedgerUnitPayload": {
+      "title":"RegisterLedgerUnitPayload",
+      "type":"object",
+      "properties":{
+        "name":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"},
+        "kind":{"enum":["monetary","quantity"]},
+        "currency":{"type":"string","pattern":"^[A-Z]{3}$"},
+        "precision":{"type":"integer","minimum":0,"maximum":12},
+        "purposeNames":{"$ref":"#/$defs/LifecyclePurposeNames"}
+      },
+      "required":["name","kind","precision"],"additionalProperties":false,
+      "allOf":[{"if":{"properties":{"kind":{"const":"monetary"}},"required":["kind"]},
+        "then":{"properties":{"currency":{"type":"string","pattern":"^[A-Z]{3}$"}},"required":["currency"]}},
+        {"if":{"properties":{"kind":{"const":"quantity"}},"required":["kind"]},
+        "then":{"properties":{"currency":{"type":"null"}}}}]
+    },
+    "RegisterLedgerPeriodPayload": {
+      "title":"RegisterLedgerPeriodPayload",
+      "type":"object",
+      "properties":{
+        "startsAt":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"},
+        "endsAt":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"},
+        "purposeNames":{"$ref":"#/$defs/LifecyclePurposeNames"}
+      },
+      "required":["startsAt","endsAt"],"additionalProperties":false
+    },
+    "LedgerCorrectionRecord": {
+      "title":"LedgerCorrectionRecord",
+      "type":"object",
+      "properties":{
+        "correctionRef":{
+          "allOf":[{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+            {"type":"object","properties":{"type":{"const":"abh.ledger-correction"}},"required":["type"]}]
+        },
+        "resourceOrganizationId":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "ledgerRef":{
+          "allOf":[{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+            {"type":"object","properties":{"type":{"const":"abh.ledger"}},"required":["type"]}]
+        },
+        "sourceRef":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "kind":{"enum":["Refund","FxRevaluation"]},
+        "usageDelta":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Decimal"},
+        "conversionRef":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "inputDigest":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Digest"},
+        "recordedAt":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"}
+      },
+      "required":["correctionRef","resourceOrganizationId","ledgerRef","sourceRef","kind","usageDelta","inputDigest","recordedAt"],
+      "additionalProperties":false
+    },
+    "ApplyLedgerCorrectionPayload": {
+      "title":"ApplyLedgerCorrectionPayload",
+      "type":"object",
+      "properties":{
+        "ledgerRef":{
+          "allOf":[{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+            {"type":"object","properties":{"type":{"const":"abh.ledger"}},"required":["type"]}]
+        },
+        "sourceRef":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "kind":{"enum":["Refund","FxRevaluation"]},
+        "usageDelta":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Decimal"},
+        "conversionRef":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "evidenceRefs":{"type":"array","minItems":1,"maxItems":100,
+          "items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"}}
+      },
+      "required":["ledgerRef","sourceRef","kind","usageDelta","evidenceRefs"],"additionalProperties":false,
+      "allOf":[{"if":{"properties":{"kind":{"const":"FxRevaluation"}},"required":["kind"]},
+        "then":{"properties":{"conversionRef":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"}},
+          "required":["conversionRef"]}}]
+    },
     "ReservationRecord": {
       "type": "object",
       "properties": {
@@ -800,6 +903,111 @@
         "recordedAt"
       ],
       "additionalProperties": false
+    },
+    "LedgerBalanceDiagnostic": {
+      "title": "LedgerBalanceDiagnostic",
+      "type": "object",
+      "properties": {
+        "limit": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NonnegativeDecimal" },
+        "confirmedUsage": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NonnegativeDecimal" },
+        "heldReservation": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NonnegativeDecimal" },
+        "openCommitment": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NonnegativeDecimal" }
+      },
+      "required":["limit","confirmedUsage","heldReservation","openCommitment"],
+      "additionalProperties": false
+    },
+    "LedgerDiagnostic": {
+      "title": "LedgerDiagnostic",
+      "type": "object",
+      "properties": {
+        "ledgerRef": {
+          "allOf": [
+            { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+            {
+              "type":"object",
+              "properties": { "type": { "const": "abh.ledger" } }
+            }
+          ]
+        },
+        "resourceType": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "meteringMode": { "enum":["cumulative","capacity"] },
+        "unit": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "status": { "$ref": "urn:abh:contracts:0.1.0:states#/$defs/LedgerState" },
+        "periodRef": {
+          "allOf": [
+            { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+            {
+              "type":"object",
+              "properties": { "type": { "const": "abh.period" } }
+            }
+          ]
+        },
+        "entryCount": { "type":"integer","minimum":0,"maximum":10001 },
+        "lastEntryRef": {
+          "oneOf": [
+            { "type":"null" },
+            {
+              "allOf": [
+                { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+                {
+                  "type":"object",
+                  "properties": { "type": { "const": "abh.ledger-entry" } }
+                }
+              ]
+            }
+          ]
+        },
+        "current": { "$ref": "#/$defs/LedgerBalanceDiagnostic" },
+        "recomputed": { "$ref": "#/$defs/LedgerBalanceDiagnostic" },
+        "heldReservationCount": { "type":"integer","minimum":0,"maximum":1001 },
+        "expiredHeldCount": { "type":"integer","minimum":0,"maximum":1001 },
+        "openCommitmentCount": { "type":"integer","minimum":0,"maximum":1001 },
+        "openCommitmentRemaining": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NonnegativeDecimal" },
+        "stopReasons": {
+          "type":"array","minItems":0,"maxItems":6,"uniqueItems":true,
+          "items": {
+            "enum": ["LEDGER_RECORD_DRIFT","ENTRY_RECORD_INVALID","ENTRY_LIMIT_EXCEEDED",
+              "BALANCE_DRIFT","OBLIGATION_DRIFT","EXPIRED_HOLD"]
+          }
+        }
+      },
+      "required":["ledgerRef","resourceType","meteringMode","unit","status","periodRef",
+        "entryCount","lastEntryRef","current","recomputed","heldReservationCount",
+        "expiredHeldCount","openCommitmentCount","openCommitmentRemaining","stopReasons"],
+      "additionalProperties": false
+    },
+    "CliDoctorLedgerResult": {
+      "title": "CliDoctorLedgerResult",
+      "type": "object",
+      "properties": {
+        "checkId": { "const": "ledger.balance-audit" },
+        "organizationId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+        "status": { "enum": ["Passed","Failed"] },
+        "errorCode": {
+          "enum":[null,"INVALID_ARGUMENT","FORBIDDEN","PRECONDITION_FAILED","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]
+        },
+        "violationCount": { "type":"integer","minimum":0,"maximum":9007199254740991 },
+        "ledgers": {
+          "type":"array","minItems":0,"maxItems":1,
+          "items": { "$ref": "#/$defs/LedgerDiagnostic" }
+        },
+        "commandRef": { "type":"null" },
+        "evidenceRefs": { "type":"array","maxItems":0,"items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"} },
+        "remediation": { "oneOf":[{"type":"null"},{"type":"string","minLength":1,"maxLength":1000}] }
+      },
+      "required":["checkId","organizationId","status","errorCode","violationCount","ledgers",
+        "commandRef","evidenceRefs","remediation"],
+      "additionalProperties": false,
+      "allOf":[
+        {"if":{"properties":{"status":{"const":"Passed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"null"},"violationCount":{"const":0},"remediation":{"type":"null"},
+           "ledgers":{"type":"array","minItems":1,"maxItems":1}}}},
+        {"if":{"properties":{"errorCode":{"const":"PRECONDITION_FAILED"}},"required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"type":"integer","minimum":1}}}},
+        {"if":{"properties":{"errorCode":{"enum":["INVALID_ARGUMENT","FORBIDDEN","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]}},
+          "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":0}}}}
+      ]
     },
     "ConfigureLedgerPayload": {
       "title": "ConfigureLedgerPayload",
@@ -1286,6 +1494,18 @@
           "items": {
             "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
           }
+        },
+        "stopReason": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/Reason"
+        },
+        "stopEvidenceRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "rollbackOfAssignmentRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "rollbackFromReleaseRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
         }
       },
       "required": [
@@ -1299,6 +1519,25 @@
         "executionAllowed",
         "evidenceRefs"
       ],
+      "additionalProperties": false
+    },
+    "StaticAssignmentListResult": {
+      "title": "StaticAssignmentListResult",
+      "type": "object",
+      "properties": {
+        "assignments": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/StaticAssignmentRecord" },
+          "maxItems": 100
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "cursor": { "type": "string", "maxLength": 2048 },
+        "asOf": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" }
+      },
+      "required": ["assignments", "counts", "asOf"],
       "additionalProperties": false
     },
     "ConfigureStaticReleasePayload": {
@@ -1338,6 +1577,38 @@
       },
       "required": [
         "evidenceRef",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "RollbackStaticAssignmentPayload": {
+      "title": "RollbackStaticAssignmentPayload",
+      "type": "object",
+      "properties": {
+        "previousReleaseRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "gateRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "compatibilityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "reason": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/Reason"
+        }
+      },
+      "required": [
+        "previousReleaseRef",
+        "gateRefs",
+        "compatibilityRef",
         "reason"
       ],
       "additionalProperties": false
@@ -1841,6 +2112,318 @@
       ],
       "additionalProperties": false
     },
+    "CorrectionRecord": {
+      "title": "CorrectionRecord",
+      "type": "object",
+      "properties": {
+        "correctionRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.correction"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "subjectRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "subjectVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "beforeRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "proposedAfterRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "targetOwner": {
+          "enum": ["Domain", "Memory", "Run", "Capability"]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "responsibilityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "purpose": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "receiptRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/CommandRef"
+        },
+        "proposedBy": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+        },
+        "proposedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "correctionRef",
+        "resourceOrganizationId",
+        "subjectRef",
+        "subjectVersion",
+        "beforeRef",
+        "proposedAfterRef",
+        "targetOwner",
+        "reason",
+        "evidenceRefs",
+        "responsibilityRef",
+        "purpose",
+        "receiptRef",
+        "proposedBy",
+        "proposedAt",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "correctionRef",
+        "resourceOrganizationId",
+        "subjectRef",
+        "subjectVersion",
+        "beforeRef",
+        "proposedAfterRef",
+        "targetOwner",
+        "reason",
+        "evidenceRefs",
+        "responsibilityRef",
+        "purpose",
+        "receiptRef",
+        "proposedBy",
+        "proposedAt"
+      ]
+    },
+    "CorrectionApplicationRecord": {
+      "title": "CorrectionApplicationRecord",
+      "type": "object",
+      "properties": {
+        "applicationRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.correction-application" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "correctionRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.correction" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "subjectRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "subjectVersionBefore": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "targetOwner": {
+          "enum": ["Domain", "Memory", "Run", "Capability"]
+        },
+        "authorityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "resultRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "resultVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "receiptRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/CommandRef"
+        },
+        "appliedBy": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+        },
+        "appliedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "applicationRef",
+        "resourceOrganizationId",
+        "correctionRef",
+        "subjectRef",
+        "subjectVersionBefore",
+        "targetOwner",
+        "authorityRef",
+        "evidenceRefs",
+        "resultRef",
+        "resultVersion",
+        "receiptRef",
+        "appliedBy",
+        "appliedAt",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "applicationRef",
+        "resourceOrganizationId",
+        "correctionRef",
+        "subjectRef",
+        "subjectVersionBefore",
+        "targetOwner",
+        "authorityRef",
+        "evidenceRefs",
+        "resultRef",
+        "resultVersion",
+        "receiptRef",
+        "appliedBy",
+        "appliedAt"
+      ]
+    },
+    "ApplyCorrectionPayload": {
+      "title": "ApplyCorrectionPayload",
+      "type": "object",
+      "properties": {
+        "subjectRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "authorityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "candidate": {
+          "$ref": "#/$defs/CorrectionCapabilityCandidate"
+        }
+      },
+      "required": ["subjectRef", "authorityRef", "evidenceRefs"],
+      "additionalProperties": false
+    },
+    "CorrectionCapabilityCandidate": {
+      "title": "CorrectionCapabilityCandidate",
+      "type": "object",
+      "properties": {
+        "caseRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "baseVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "assetKind": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "scopeRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "risk": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        }
+      },
+      "required": ["caseRef", "assetKind", "scopeRef", "risk"],
+      "additionalProperties": false
+    },
+    "ProposeCorrectionPayload": {
+      "title": "ProposeCorrectionPayload",
+      "type": "object",
+      "properties": {
+        "subjectRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "expectedVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "beforeRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "newArtifactRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "targetOwner": {
+          "enum": ["Domain", "Memory", "Run", "Capability"]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "responsibilityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "purpose": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        }
+      },
+      "required": [
+        "subjectRef",
+        "expectedVersion",
+        "beforeRef",
+        "newArtifactRef",
+        "targetOwner",
+        "reason",
+        "evidenceRefs",
+        "responsibilityRef",
+        "purpose"
+      ],
+      "additionalProperties": false
+    },
     "ResponsibilitySeat": {
       "title": "ResponsibilitySeat",
       "type": "object",
@@ -2003,6 +2586,11 @@
         },
         "status": {
           "$ref": "urn:abh:contracts:0.1.0:states#/$defs/ResponsibilityRequestState"
+        },
+        "escalationDepth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
         }
       },
       "required": [
@@ -2587,6 +3175,9 @@
         },
         "purposeNames": {
           "$ref": "#/$defs/LifecyclePurposeNames"
+        },
+        "safetyStop": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -2615,7 +3206,8 @@
         "requiredBehaviorSlots",
         "maxOperations",
         "expiresAt",
-        "purposeNames"
+        "purposeNames",
+        "safetyStop"
       ]
     },
     "PolicyDecision": {
@@ -4086,6 +4678,9 @@
             "version"
           ],
           "additionalProperties": false
+        },
+        "safetyStopOperationRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/OperationRef"
         }
       },
       "required": [
@@ -4096,6 +4691,44 @@
         "resourceKey",
         "fencingToken"
       ],
+      "additionalProperties": false
+    },
+    "SafetyStopCandidate": {
+      "title": "SafetyStopCandidate",
+      "type": "object",
+      "properties": {
+        "fenceRef": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+        "connectionRef": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+        "accountRef": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+        "resourceKey": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "fencingToken": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" },
+        "unresolvedOperationRef": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/OperationRef" },
+        "safetyStopOperationRef": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/OperationRef" },
+        "blockedByReportRef": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" }
+      },
+      "required": [
+        "fenceRef",
+        "connectionRef",
+        "accountRef",
+        "resourceKey",
+        "fencingToken",
+        "unresolvedOperationRef"
+      ],
+      "additionalProperties": false
+    },
+    "SafetyStopListResult": {
+      "title": "SafetyStopListResult",
+      "type": "object",
+      "properties": {
+        "candidates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SafetyStopCandidate" },
+          "maxItems": 100
+        },
+        "complete": { "type": "boolean" },
+        "asOf": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" }
+      },
+      "required": ["candidates", "complete", "asOf"],
       "additionalProperties": false
     },
     "DispatchPermitRecord": {
@@ -4554,6 +5187,26 @@
         "leaseRef",
         "leaseFencingToken"
       ],
+      "additionalProperties": false
+    },
+    "SafeRetryOperationPayload": {
+      "title": "SafeRetryOperationPayload",
+      "type": "object",
+      "properties": {
+        "operationRef": {
+          "type": "object",
+          "properties": {
+            "type": {"const": "abh.operation"},
+            "id": {"$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+            "version": {"$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"}
+          },
+          "required": ["type","id","version"],
+          "additionalProperties": false
+        },
+        "expectedPermitRef": {"$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "permit": {"$ref": "#/$defs/IssueDispatchPermitPayload"}
+      },
+      "required": ["operationRef","expectedPermitRef","permit"],
       "additionalProperties": false
     },
     "DispatchExitRecord": {
@@ -5032,6 +5685,321 @@
         "leaseRef",
         "leaseFencingToken"
       ],
+      "additionalProperties": false
+    },
+    "WakeRunPayload": {
+      "title": "WakeRunPayload",
+      "type": "object",
+      "properties": {
+        "runRef": {
+          "type":"object",
+          "properties":{
+            "type":{"const":"abh.run"},
+            "id":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+            "version":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"}
+          },
+          "required":["type","id","version"],
+          "additionalProperties": false
+        },
+        "causeRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "waitRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"}
+      },
+      "required":["runRef","causeRef","waitRef"],
+      "additionalProperties": false
+    },
+    "GraphPatchNode": {
+      "title": "GraphPatchNode",
+      "type": "object",
+      "properties": {
+        "nodeKey": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"},
+        "kind": {"enum":["Agent","Compute","StructuredModelJob","Wait","DomainCommand"]},
+        "inputRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100},
+        "outputSchemaRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "deadlineSeconds": {"type":"integer","minimum":1,"maximum":86400},
+        "required": {"type":"boolean"}
+      },
+      "required":["nodeKey","kind","inputRefs","required"],
+      "additionalProperties": false
+    },
+    "GraphPatchEdge": {
+      "title": "GraphPatchEdge",
+      "type": "object",
+      "properties": {
+        "from": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"},
+        "to": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"}
+      },
+      "required":["from","to"],
+      "additionalProperties": false
+    },
+    "ProposeGraphPatchPayload": {
+      "title": "ProposeGraphPatchPayload",
+      "type": "object",
+      "properties": {
+        "runRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "baseRevision": {"type":"integer","minimum":0,"maximum":999},
+        "addNodes": {"type":"array","items":{"$ref":"#/$defs/GraphPatchNode"},"maxItems":50},
+        "addEdges": {"type":"array","items":{"$ref":"#/$defs/GraphPatchEdge"},"maxItems":100},
+        "supersedePendingNodes": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"},"maxItems":50},
+        "rationaleRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"}
+      },
+      "required":["runRef","baseRevision","addNodes","addEdges","supersedePendingNodes","rationaleRef"],
+      "additionalProperties": false
+    },
+    "GraphRevisionRecord": {
+      "title": "GraphRevisionRecord",
+      "type": "object",
+      "properties": {
+        "revisionRef": {
+          "type":"object",
+          "properties":{
+            "type":{"const":"abh.graph-revision"},
+            "id":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+            "version":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"}
+          },
+          "required":["type","id","version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "runRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "baseRevision": {"type":"integer","minimum":0,"maximum":999},
+        "revision": {"type":"integer","minimum":1,"maximum":1000},
+        "patchDigest": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Digest"},
+        "proposerRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "nodes": {"type":"array","items":{"$ref":"#/$defs/GraphPatchNode"},"maxItems":100},
+        "edges": {"type":"array","items":{"$ref":"#/$defs/GraphPatchEdge"},"maxItems":300},
+        "supersededNodeKeys": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"},"maxItems":50},
+        "rationaleRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "createdBy": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Actor"},
+        "createdAt": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"},
+        "updatedAt": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"}
+      },
+      "required":["revisionRef","resourceOrganizationId","runRef","baseRevision","revision","patchDigest","proposerRef","nodes","edges","supersededNodeKeys","rationaleRef","createdBy","createdAt","updatedAt"],
+      "additionalProperties": false
+    },
+    "TaskSpec": {
+      "title": "TaskSpec",
+      "type": "object",
+      "properties": {
+        "goal": {"type":"string","minLength":1,"maxLength":2000},
+        "inputRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100},
+        "outputSchemaRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "deadlineSeconds": {"type":"integer","minimum":1,"maximum":86400},
+        "acceptanceRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "resourceLimits": {"type":"object","additionalProperties":{"type":"string","pattern":"^[0-9]+(?:\\.[0-9]+)?$"},"maxProperties":20}
+      },
+      "additionalProperties": false
+    },
+    "ClaimTaskPayload": {
+      "title": "ClaimTaskPayload",
+      "type": "object",
+      "properties": {
+        "taskRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "workerId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "leaseSeconds": {"type":"integer","minimum":1,"maximum":30}
+      },
+      "required":["taskRef","workerId","leaseSeconds"],
+      "additionalProperties": false
+    },
+    "PrepareInvocationPayload": {
+      "title": "PrepareInvocationPayload",
+      "type": "object",
+      "properties": {
+        "taskRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "leaseRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "workerId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "leaseFencingToken": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"},
+        "taskSpec": {"$ref":"#/$defs/TaskSpec"},
+        "identityBasisRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100}
+      },
+      "required":["taskRef","leaseRef","workerId","leaseFencingToken","taskSpec","identityBasisRefs"],
+      "additionalProperties": false
+    },
+    "FinalizeInvocationPayload": {
+      "title": "FinalizeInvocationPayload",
+      "type": "object",
+      "properties": {
+        "invocationRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "leaseRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "workerId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "leaseFencingToken": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"},
+        "manifestRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "bindingRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100},
+        "contractDigest": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Digest"}
+      },
+      "required":["invocationRef","leaseRef","workerId","leaseFencingToken","manifestRef","bindingRefs","contractDigest"],
+      "additionalProperties": false
+    },
+    "CompleteInvocationPayload": {
+      "title": "CompleteInvocationPayload",
+      "type": "object",
+      "properties": {
+        "invocationRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "leaseRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "workerId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "leaseFencingToken": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"},
+        "stopReason": {"enum":["Completed","Failed","Cancelled","Deadline","BudgetExceeded","InvalidOutput","Unknown"]},
+        "resultArtifactRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "usageRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"}
+      },
+      "required":["invocationRef","leaseRef","workerId","leaseFencingToken","stopReason"],
+      "additionalProperties": false
+    },
+    "ObserveLateInvocationPayload": {
+      "title": "ObserveLateInvocationPayload",
+      "type": "object",
+      "properties": {
+        "invocationRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "leaseRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "workerId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "leaseFencingToken": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"},
+        "stopReason": {"enum":["Completed","Failed","Cancelled","Deadline","BudgetExceeded","InvalidOutput","Unknown"]},
+        "resultArtifactRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "usageRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"}
+      },
+      "required":["invocationRef","leaseRef","workerId","leaseFencingToken","stopReason"],
+      "additionalProperties": false
+    },
+    "LateInvocationObservationRecord": {
+      "title": "LateInvocationObservationRecord",
+      "type": "object",
+      "properties": {
+        "observationRef": {
+          "type":"object",
+          "properties":{
+            "type":{"const":"abh.invocation-observation"},
+            "id":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+            "version":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"}
+          },
+          "required":["type","id","version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "runRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "taskRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "invocationRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "leaseRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "workerId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "leaseFencingToken": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"},
+        "status": {"const":"Observed"},
+        "stopReason": {"enum":["Completed","Failed","Cancelled","Deadline","BudgetExceeded","InvalidOutput"]},
+        "resultArtifactRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "usageRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "observedAt": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"},
+        "createdBy": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Actor"}
+      },
+      "required":["observationRef","resourceOrganizationId","runRef","taskRef","invocationRef","leaseRef",
+        "workerId","leaseFencingToken","status","stopReason","observedAt","createdBy"],
+      "additionalProperties": false
+    },
+    "LateInvocationAdjudicationRecord": {
+      "title": "LateInvocationAdjudicationRecord",
+      "type": "object",
+      "properties": {
+        "adjudicationRef": {
+          "type":"object",
+          "properties":{
+            "type":{"const":"abh.invocation-adjudication"},
+            "id":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+            "version":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"}
+          },
+          "required":["type","id","version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "runRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "taskRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "invocationRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "observationRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "decision": {"enum":["Adopted","Rejected"]},
+        "reason": {"enum":["CompletedEvidence","NotCompletedEvidence","TaskAlreadyAdvanced"]},
+        "observedLeaseRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "observedWorkerId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "observedFencingToken": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"},
+        "ownerLeaseRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "ownerFencingToken": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"},
+        "createdBy": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Actor"},
+        "createdAt": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"}
+      },
+      "required":["adjudicationRef","resourceOrganizationId","runRef","taskRef","invocationRef","observationRef",
+        "decision","reason","observedLeaseRef","observedWorkerId","observedFencingToken","ownerLeaseRef",
+        "ownerFencingToken","createdBy","createdAt"],
+      "additionalProperties": false
+    },
+    "CommitVerifiedTaskPayload": {
+      "title": "CommitVerifiedTaskPayload",
+      "type": "object",
+      "properties": {
+        "taskRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "invocationRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "verificationRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "domainCommandReceiptRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100}
+      },
+      "required":["taskRef","invocationRef","verificationRef","domainCommandReceiptRefs"],
+      "additionalProperties": false
+    },
+    "InvocationRecord": {
+      "title": "InvocationRecord",
+      "type": "object",
+      "properties": {
+        "invocationRef": {
+          "type":"object",
+          "properties":{
+            "type":{"const":"abh.invocation"},
+            "id":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+            "version":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"}
+          },
+          "required":["type","id","version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "runRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "taskRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "attemptOrdinal": {"type":"integer","minimum":1,"maximum":1000},
+        "taskSpecDigest": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Digest"},
+        "taskSpec": {"$ref":"#/$defs/TaskSpec"},
+        "principalRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "status": {"enum":["Created","Running","Succeeded","Failed","Cancelled"]},
+        "manifestRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "bindingRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100},
+        "contractDigest": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Digest"},
+        "resultArtifactRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "usageRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "stopReason": {"enum":["Completed","Failed","Cancelled","Deadline","BudgetExceeded","InvalidOutput"]},
+        "createdBy": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Actor"},
+        "createdAt": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"},
+        "updatedAt": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"}
+      },
+      "required":["invocationRef","resourceOrganizationId","runRef","taskRef","attemptOrdinal","taskSpecDigest","taskSpec","principalRef","status","createdBy","createdAt","updatedAt"],
+      "additionalProperties": false
+    },
+    "CheckpointRecord": {
+      "title": "CheckpointRecord",
+      "type": "object",
+      "properties": {
+        "checkpointRef": {
+          "type":"object",
+          "properties":{
+            "type":{"const":"abh.checkpoint"},
+            "id":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+            "version":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"}
+          },
+          "required":["type","id","version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+        "runRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "taskRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "graphRevisionRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "sequence": {"type":"integer","minimum":1,"maximum":100000},
+        "completedTaskRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100},
+        "verifiedOutputRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100},
+        "waitRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100},
+        "resourceUsageRef": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},
+        "domainCommandReceiptRefs": {"type":"array","items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"},"maxItems":100},
+        "watermark": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Digest"},
+        "createdAt": {"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"}
+      },
+      "required":["checkpointRef","resourceOrganizationId","runRef","taskRef","graphRevisionRef","sequence","completedTaskRefs","verifiedOutputRefs","waitRefs","domainCommandReceiptRefs","watermark","createdAt"],
       "additionalProperties": false
     },
     "ActionResultRecord": {
@@ -6316,6 +7284,9 @@
           "additionalProperties": false
         },
         "createdAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "expiresAt": {
           "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
         },
         "digest": {
@@ -8105,6 +9076,150 @@
         "recordedAt"
       ]
     },
+    "ExceptionResolutionRecord": {
+      "title": "ExceptionResolutionRecord",
+      "type": "object",
+      "properties": {
+        "resolutionRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.exception-resolution"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "exceptionRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.exception"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "sourceRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/OperationRef"
+        },
+        "reportRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.reconciliation"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "requestRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/RequestRef"
+        },
+        "decisionRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/DecisionRef"
+        },
+        "resolutionKind": {
+          "enum": [
+            "WaitForEvidence",
+            "RejectAndStop",
+            "ApplyCorrection",
+            "RequestCompensation",
+            "AuthorizedContinue"
+          ]
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "technicalUnknownPreserved": {
+          "const": true
+        },
+        "resourceFreezePreserved": {
+          "const": true
+        },
+        "resolvedBy": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+        },
+        "resolvedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "resolutionRef",
+        "resourceOrganizationId",
+        "exceptionRef",
+        "sourceRef",
+        "reportRef",
+        "requestRef",
+        "decisionRef",
+        "resolutionKind",
+        "evidenceRefs",
+        "technicalUnknownPreserved",
+        "resourceFreezePreserved",
+        "resolvedBy",
+        "resolvedAt",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "resolutionRef",
+        "resourceOrganizationId",
+        "exceptionRef",
+        "sourceRef",
+        "reportRef",
+        "requestRef",
+        "decisionRef",
+        "resolutionKind",
+        "evidenceRefs",
+        "technicalUnknownPreserved",
+        "resourceFreezePreserved",
+        "resolvedBy",
+        "resolvedAt"
+      ]
+    },
     "OpenTerminalExceptionPayload": {
       "title": "OpenTerminalExceptionPayload",
       "type": "object",
@@ -8138,6 +9253,242 @@
         "responsibility"
       ],
       "additionalProperties": false
+    },
+    "ApplyExceptionResolutionEffectPayload": {
+      "title": "ApplyExceptionResolutionEffectPayload",
+      "type": "object",
+      "properties": {
+        "resolutionRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.exception-resolution" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "correctionApplicationRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.correction-application" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["resolutionRef", "correctionApplicationRef"],
+      "additionalProperties": false
+    },
+    "ExceptionResolutionEffectRecord": {
+      "title": "ExceptionResolutionEffectRecord",
+      "type": "object",
+      "properties": {
+        "effectRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.exception-resolution-effect" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+        "resolutionRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.exception-resolution" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "exceptionRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.exception" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "sourceRef": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+        "reportRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.reconciliation" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "correctionApplicationRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.correction-application" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "fenceRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.resource-fence" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "fencingToken": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" },
+        "reportBlockReleased": { "const": true },
+        "unresolvedOperationPreserved": { "const": true },
+        "fencingTokenPreserved": { "const": true },
+        "appliedBy": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor" },
+        "appliedAt": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" },
+        "digest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" }
+      },
+      "required": ["effectRef","resourceOrganizationId","resolutionRef","exceptionRef","sourceRef","reportRef","correctionApplicationRef","fenceRef","fencingToken","reportBlockReleased","unresolvedOperationPreserved","fencingTokenPreserved","appliedBy","appliedAt","digest"],
+      "additionalProperties": false,
+      "x-abh-digest-fields": ["effectRef","resourceOrganizationId","resolutionRef","exceptionRef","sourceRef","reportRef","correctionApplicationRef","fenceRef","fencingToken","reportBlockReleased","unresolvedOperationPreserved","fencingTokenPreserved","appliedBy","appliedAt"]
+    },
+    "ResolveExceptionPayload": {
+      "title": "ResolveExceptionPayload",
+      "type": "object",
+      "properties": {
+        "exceptionRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.exception"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "resolutionKind": {
+          "enum": [
+            "WaitForEvidence",
+            "RejectAndStop",
+            "ApplyCorrection",
+            "RequestCompensation",
+            "AuthorizedContinue"
+          ]
+        },
+        "decisionRef": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "abh.decision"
+            },
+            "id": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "version": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        }
+      },
+      "required": [
+        "exceptionRef",
+        "resolutionKind",
+        "decisionRef",
+        "evidenceRefs"
+      ],
+      "additionalProperties": false
+    },
+    "ExceptionSuccessorDispatchRecord": {
+      "title": "ExceptionSuccessorDispatchRecord",
+      "type": "object",
+      "properties": {
+        "dispatchRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.exception-successor-dispatch" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+        "resolutionRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.exception-resolution" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "exceptionRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.exception" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "sourceRef": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+        "reportRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.reconciliation" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resolutionKind": {
+          "enum": ["WaitForEvidence", "RejectAndStop", "ApplyCorrection", "RequestCompensation", "AuthorizedContinue"]
+        },
+        "successorRef": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+        "dispatchedBy": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor" },
+        "dispatchedAt": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" },
+        "digest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" }
+      },
+      "required": ["dispatchRef","resourceOrganizationId","resolutionRef","exceptionRef","sourceRef","reportRef","resolutionKind","successorRef","dispatchedBy","dispatchedAt","digest"],
+      "additionalProperties": false,
+      "x-abh-digest-fields": ["resourceOrganizationId","resolutionRef","exceptionRef","sourceRef","reportRef","resolutionKind","successorRef","dispatchedBy","dispatchedAt"]
     },
     "RevokeResponsibilityPayload": {
       "title": "RevokeResponsibilityPayload",
@@ -8277,6 +9628,12 @@
         },
         "reason": {
           "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/Reason"
+        },
+        "delegation": {
+          "$ref": "#/$defs/ResponsibilityDelegation"
+        },
+        "escalation": {
+          "$ref": "#/$defs/ResponsibilityEscalation"
         }
       },
       "required": [
@@ -8286,6 +9643,48 @@
         "directoryRef",
         "evidenceRefs",
         "reason"
+      ],
+      "additionalProperties": false
+    },
+    "ResponsibilityDelegation": {
+      "title": "ResponsibilityDelegation",
+      "type": "object",
+      "properties": {
+        "slotId": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NodeKey"
+        },
+        "seatId": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NodeKey"
+        },
+        "responsibilityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": [
+        "slotId",
+        "seatId",
+        "responsibilityRef"
+      ],
+      "additionalProperties": false
+    },
+    "ResponsibilityEscalation": {
+      "title": "ResponsibilityEscalation",
+      "type": "object",
+      "properties": {
+        "slotId": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NodeKey"
+        },
+        "seatId": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NodeKey"
+        },
+        "responsibilityRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": [
+        "slotId",
+        "seatId",
+        "responsibilityRef"
       ],
       "additionalProperties": false
     },
@@ -10315,6 +11714,585 @@
         }
       ]
     },
+    "LearningCandidateDiagnostic": {
+      "title": "LearningCandidateDiagnostic",
+      "type": "object",
+      "properties": {
+        "candidateRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "status": { "const": "Draft" },
+        "assetKind": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "risk": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "requiredPurposes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" }
+        },
+        "withdrawnPurposes": {
+          "type": "array",
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" }
+        },
+        "profileRef": {
+          "oneOf": [
+            { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+            { "type": "null" }
+          ]
+        },
+        "profileCount": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "evaluationRunRefs": {
+          "type": "array",
+          "maxItems": 50,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" }
+        },
+        "settledEvaluationCount": { "type": "integer", "minimum": 0, "maximum": 50 },
+        "gateRef": {
+          "oneOf": [
+            { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+            { "type": "null" }
+          ]
+        },
+        "releaseRefs": {
+          "type": "array",
+          "maxItems": 100,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" }
+        },
+        "stopReasons": {
+          "type": "array",
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["PURPOSE_WITHDRAWN","PROFILE_MISSING","PROFILE_AMBIGUOUS","EVALUATION_MISSING","EVALUATION_UNSETTLED","GATE_MISSING","RELEASE_NOT_LINKED"]
+          }
+        }
+      },
+      "required": ["candidateRef","status","assetKind","risk","requiredPurposes","withdrawnPurposes",
+        "profileRef","profileCount","evaluationRunRefs","settledEvaluationCount","gateRef","releaseRefs","stopReasons"],
+      "additionalProperties": false
+    },
+    "CliDoctorLearningResult": {
+      "title": "CliDoctorLearningResult",
+      "type": "object",
+      "properties": {
+        "checkId": { "const": "learning.candidate-readiness" },
+        "organizationId": { "type": "string", "format": "uuid" },
+        "status": { "enum": ["Passed", "Failed"] },
+        "errorCode": {
+          "enum": [null, "INVALID_ARGUMENT", "FORBIDDEN", "PRECONDITION_FAILED",
+            "DEPENDENCY_TIMEOUT", "DEPENDENCY_UNAVAILABLE"]
+        },
+        "violationCount": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "truncated": { "type": "boolean" },
+        "candidates": {
+          "type": "array",
+          "maxItems": 100,
+          "items": { "$ref": "#/$defs/LearningCandidateDiagnostic" }
+        },
+        "commandRef": { "type": "null" },
+        "evidenceRefs": {
+          "type": "array",
+          "maxItems": 0,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" }
+        },
+        "remediation": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "minLength": 1, "maxLength": 1000 }]
+        }
+      },
+      "required": ["checkId","organizationId","status","errorCode","violationCount","truncated",
+        "candidates","commandRef","evidenceRefs","remediation"],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "Passed" } }, "required": ["status"] },
+          "then": {
+            "properties": {
+              "errorCode": { "type": "null" },
+              "violationCount": { "const": 0 },
+              "remediation": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "errorCode": { "const": "PRECONDITION_FAILED" } },
+            "required": ["errorCode"]
+          },
+          "then": { "properties": { "violationCount": { "type": "integer", "minimum": 1 } } },
+          "else": { "properties": { "violationCount": { "const": 0 } } }
+        }
+      ]
+    },
+    "ReleaseDiagnostic": {
+      "title": "ReleaseDiagnostic",
+      "type": "object",
+      "properties": {
+        "releaseRef": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+        "status": { "enum": ["Draft", "Ready", "Retired", "Revoked"] },
+        "purposeNames": {
+          "type": "array", "minItems": 1, "maxItems": 32,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" }
+        },
+        "assetCount": { "type": "integer", "minimum": 1, "maximum": 32 },
+        "installedCapabilityCount": { "type": "integer", "minimum": 0, "maximum": 3200 },
+        "assignmentCount": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "activeAssignmentCount": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "executionAllowedAssignmentCount": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "pinSetCount": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "gateRefs": {
+          "type": "array", "minItems": 1, "maxItems": 100,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" }
+        },
+        "invalidGateRefs": {
+          "type": "array", "maxItems": 100,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" }
+        },
+        "compatibilityRef": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+        "compatibilityReady": { "type": "boolean" },
+        "rollbackCandidateRefs": {
+          "type": "array", "maxItems": 100,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" }
+        },
+        "stopReasons": {
+          "type": "array", "maxItems": 8, "uniqueItems": true,
+          "items": {
+            "enum": ["GATE_EVIDENCE_INVALID","COMPATIBILITY_INVALID","CAPABILITY_NOT_INSTALLED",
+              "ASSIGNMENT_MISSING","EXECUTION_NOT_ALLOWED","PIN_UNAVAILABLE","ROLLBACK_CANDIDATE_MISSING"]
+          }
+        }
+      },
+      "required": ["releaseRef","status","purposeNames","assetCount","installedCapabilityCount",
+        "assignmentCount","activeAssignmentCount","executionAllowedAssignmentCount","pinSetCount",
+        "gateRefs","invalidGateRefs","compatibilityRef","compatibilityReady","rollbackCandidateRefs","stopReasons"],
+      "additionalProperties": false
+    },
+    "CliDoctorReleaseResult": {
+      "title": "CliDoctorReleaseResult",
+      "type": "object",
+      "properties": {
+        "checkId": { "const": "release.readiness" },
+        "organizationId": { "type": "string", "format": "uuid" },
+        "status": { "enum": ["Passed", "Failed"] },
+        "errorCode": {
+          "enum": [null, "INVALID_ARGUMENT", "FORBIDDEN", "PRECONDITION_FAILED",
+            "DEPENDENCY_TIMEOUT", "DEPENDENCY_UNAVAILABLE"]
+        },
+        "violationCount": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+        "truncated": { "type": "boolean" },
+        "releases": {
+          "type": "array", "minItems": 0, "maxItems": 1,
+          "items": { "$ref": "#/$defs/ReleaseDiagnostic" }
+        },
+        "commandRef": { "type": "null" },
+        "evidenceRefs": {
+          "type": "array", "maxItems": 0,
+          "items": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" }
+        },
+        "remediation": {
+          "oneOf": [{ "type": "null" }, { "type": "string", "minLength": 1, "maxLength": 1000 }]
+        }
+      },
+      "required": ["checkId","organizationId","status","errorCode","violationCount","truncated",
+        "releases","commandRef","evidenceRefs","remediation"],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "Passed" } }, "required": ["status"] },
+          "then": {
+            "properties": {
+              "errorCode": { "type": "null" }, "violationCount": { "const": 0 },
+              "remediation": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "Passed" } }, "required": ["status"] },
+          "then": { "properties": { "releases": { "type": "array", "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "errorCode": { "const": "PRECONDITION_FAILED" } }, "required": ["errorCode"] },
+          "then": { "properties": { "violationCount": { "type": "integer", "minimum": 1 } } },
+          "else": { "properties": { "violationCount": { "const": 0 } } }
+        }
+      ]
+    },
+    "OperationDiagnostic": {
+      "title": "OperationDiagnostic",
+      "type": "object",
+      "properties": {
+        "operationRef": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/OperationRef" },
+        "actionRef": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/ActionRef" },
+        "planRef": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/PlanRef" },
+        "nodeKey": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/NodeKey" },
+        "position": { "$ref": "urn:abh:contracts:0.1.0:states#/$defs/OperationPosition" },
+        "attemptCount": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "providerIdempotencyKey": { "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/IdempotencyKey" },
+        "payloadDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "permitRef": {
+          "oneOf": [{"type":"null"},{
+            "type":"object","properties":{
+              "type":{"const":"abh.dispatch-permit"},"id":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/UUID"},
+              "version":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Version"}},
+              "required":["type","id","version"],"additionalProperties":false}]
+        },
+        "permitExpiresAt": { "oneOf": [{"type":"null"},{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"}] },
+        "permitExpired": { "type": "boolean" },
+        "receiptCount": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "lastReceiptAt": { "oneOf": [{"type":"null"},{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/Time"}] },
+        "reconciliationRef": { "oneOf": [{"type":"null"},{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"}] },
+        "reconciliationVerdict": {
+          "oneOf": [{"type":"null"},{"enum":["ConfirmedSuccess","ConfirmedNoEffect","Pending","Ambiguous","Conflicting"]}]
+        },
+        "resourceFenceRef": { "oneOf": [{"type":"null"},{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"}] },
+        "remainingResponsibility": { "type": "boolean" },
+        "safeRetry": { "type": "boolean" },
+        "stopReasons": {
+          "type":"array","minItems":0,"maxItems":8,"uniqueItems":true,
+          "items":{"enum":["PERMIT_MISSING","PERMIT_EXPIRED","RECEIPT_MISSING","RECONCILIATION_MISSING",
+            "UNKNOWN_OUTCOME_RETAINED","UNKNOWN_OUTCOME_UNPROTECTED","CLOSED_WITHOUT_RECONCILIATION"]}
+        }
+      },
+      "required":["operationRef","actionRef","planRef","nodeKey","position","attemptCount",
+        "providerIdempotencyKey","payloadDigest","permitRef","permitExpiresAt","permitExpired",
+        "receiptCount","lastReceiptAt","reconciliationRef","reconciliationVerdict","resourceFenceRef",
+        "remainingResponsibility","safeRetry","stopReasons"],
+      "additionalProperties": false
+    },
+    "CliDoctorOperationResult": {
+      "title": "CliDoctorOperationResult",
+      "type": "object",
+      "properties": {
+        "checkId": { "const": "operation.readiness" },
+        "organizationId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+        "status": { "enum": ["Passed","Failed"] },
+        "errorCode": {
+          "enum":[null,"INVALID_ARGUMENT","FORBIDDEN","PRECONDITION_FAILED","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]
+        },
+        "violationCount": { "type":"integer","minimum":0,"maximum":9007199254740991 },
+        "truncated": { "type":"boolean" },
+        "operations": {
+          "type":"array","minItems":0,"maxItems":1,
+          "items":{"$ref":"#/$defs/OperationDiagnostic"}
+        },
+        "commandRef": { "type":"null" },
+        "evidenceRefs": { "type":"array","maxItems":0,"items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"} },
+        "remediation": { "oneOf":[{"type":"null"},{"type":"string","minLength":1,"maxLength":1000}] }
+      },
+      "required":["checkId","organizationId","status","errorCode","violationCount","truncated",
+        "operations","commandRef","evidenceRefs","remediation"],
+      "additionalProperties": false,
+      "allOf":[
+        {"if":{"properties":{"status":{"const":"Passed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"null"},"violationCount":{"const":0},"remediation":{"type":"null"},
+           "operations":{"type":"array","minItems":1,"maxItems":1}}}},
+        {"if":{"properties":{"errorCode":{"const":"PRECONDITION_FAILED"}},"required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"type":"integer","minimum":1}}}},
+        {"if":{"properties":{"errorCode":{"enum":["INVALID_ARGUMENT","FORBIDDEN","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]}},
+          "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":0}}}}
+      ]
+    },
+    "PackInstallDiagnostic": {
+      "title": "PackInstallDiagnostic",
+      "type": "object",
+      "properties": {
+        "packRef": {
+          "allOf": [
+            { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+            {
+              "type":"object",
+              "properties": { "type": { "const": "abh.installed-pack" } }
+            }
+          ]
+        },
+        "packId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "packVersion": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion" },
+        "status": { "enum": ["Staged","Enabled","Suspended","Retired"] },
+        "deploymentVersion": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" },
+        "packageDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "validationEvidenceBound": { "type": "boolean" },
+        "governanceEvidenceBound": { "type": "boolean" },
+        "capabilitySetRef": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "allOf": [
+                { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+                {
+                  "type":"object",
+                  "properties": { "type": { "const": "abh.pack-capability-set" } }
+                }
+              ]
+            }
+          ]
+        },
+        "expectedCapabilityCount": { "type":"integer","minimum":0,"maximum":1000 },
+        "registeredCapabilityCount": { "type":"integer","minimum":0,"maximum":1001 },
+        "deploymentRevisionRef": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "allOf": [
+                { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef" },
+                {
+                  "type":"object",
+                  "properties": { "type": { "const": "abh.pack-deployment-revision" } }
+                }
+              ]
+            }
+          ]
+        },
+        "manifestMigrationCount": { "type":"integer","minimum":0,"maximum":1000 },
+        "stopReasons": {
+          "type":"array","minItems":0,"maxItems":9,"uniqueItems":true,
+          "items": {
+            "enum": ["RECORD_DRIFT","VALIDATION_EVIDENCE_MISSING","GOVERNANCE_EVIDENCE_MISSING",
+              "CAPABILITY_REGISTRATION_INVALID","DEPLOYMENT_REVISION_MISSING","ENABLEMENT_MISSING",
+              "SUSPENSION_MISSING","RETIREMENT_MISSING"]
+          }
+        }
+      },
+      "required":["packRef","packId","packVersion","status","deploymentVersion","packageDigest",
+        "validationEvidenceBound","governanceEvidenceBound","capabilitySetRef",
+        "expectedCapabilityCount","registeredCapabilityCount","deploymentRevisionRef",
+        "manifestMigrationCount","stopReasons"],
+      "additionalProperties": false
+    },
+    "CliDoctorPackResult": {
+      "title": "CliDoctorPackResult",
+      "type": "object",
+      "properties": {
+        "checkId": { "const": "pack.install-readiness" },
+        "organizationId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+        "status": { "enum": ["Passed","Failed"] },
+        "errorCode": {
+          "enum":[null,"INVALID_ARGUMENT","FORBIDDEN","PRECONDITION_FAILED","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]
+        },
+        "violationCount": { "type":"integer","minimum":0,"maximum":9007199254740991 },
+        "packs": {
+          "type":"array","minItems":0,"maxItems":1,
+          "items": { "$ref": "#/$defs/PackInstallDiagnostic" }
+        },
+        "commandRef": { "type":"null" },
+        "evidenceRefs": { "type":"array","maxItems":0,"items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"} },
+        "remediation": { "oneOf":[{"type":"null"},{"type":"string","minLength":1,"maxLength":1000}] }
+      },
+      "required":["checkId","organizationId","status","errorCode","violationCount","packs",
+        "commandRef","evidenceRefs","remediation"],
+      "additionalProperties": false,
+      "allOf":[
+        {"if":{"properties":{"status":{"const":"Passed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"null"},"violationCount":{"const":0},"remediation":{"type":"null"},
+           "packs":{"type":"array","minItems":1,"maxItems":1}}}},
+        {"if":{"properties":{"errorCode":{"const":"PRECONDITION_FAILED"}},"required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"type":"integer","minimum":1}}}},
+        {"if":{"properties":{"errorCode":{"enum":["INVALID_ARGUMENT","FORBIDDEN","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]}},
+          "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":0}}}}
+      ]
+    },
+    "PackContentDiagnostic": {
+      "title": "PackContentDiagnostic",
+      "type": "object",
+      "properties": {
+        "packId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "packVersion": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion" },
+        "kind": { "enum": ["DomainPack","ConnectorPack","RuntimeAdapter","WorkbenchExtension"] },
+        "trustMode": { "enum": ["Declarative","TrustedCode","Isolated"] },
+        "license": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "artifactCount": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "migrationCount": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "manifestDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "artifactSetDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "packageDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" }
+      },
+      "required":["packId","packVersion","kind","trustMode","license","artifactCount","migrationCount",
+        "manifestDigest","artifactSetDigest","packageDigest"],
+      "additionalProperties": false
+    },
+    "CliPackValidateResult": {
+      "title": "CliPackValidateResult",
+      "type": "object",
+      "properties": {
+        "checkId": { "const": "pack.content-validation" },
+        "status": { "enum": ["Passed","Failed"] },
+        "errorCode": {
+          "enum":[null,"INVALID_ARGUMENT","FORBIDDEN","LIMIT_EXCEEDED","PRECONDITION_FAILED","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]
+        },
+        "violationCount": { "type":"integer","minimum":0,"maximum":1 },
+        "diagnostic": { "oneOf":[{"type":"null"},{"$ref":"#/$defs/PackContentDiagnostic"}] },
+        "commandRef": { "type":"null" },
+        "evidenceRefs": { "type":"array","maxItems":0,"items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"} },
+        "remediation": { "oneOf":[{"type":"null"},{"type":"string","minLength":1,"maxLength":1000}] }
+      },
+      "required":["checkId","status","errorCode","violationCount","diagnostic","commandRef","evidenceRefs","remediation"],
+      "additionalProperties": false,
+      "allOf":[
+        {"if":{"properties":{"status":{"const":"Passed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"null"},"violationCount":{"const":0},"remediation":{"type":"null"},
+           "diagnostic":{"type":"object"}}}},
+        {"if":{"properties":{"status":{"const":"Failed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"string"},"diagnostic":{"type":"null"},"remediation":{"type":"string"}}}},
+        {"if":{"properties":{"errorCode":{"enum":["INVALID_ARGUMENT","FORBIDDEN","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]}},
+           "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":0}}}},
+        {"if":{"properties":{"errorCode":{"enum":["LIMIT_EXCEEDED","PRECONDITION_FAILED"]}},
+           "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":1}}}}
+      ]
+    },
+    "PackBuildDiagnostic": {
+      "title": "PackBuildDiagnostic",
+      "type": "object",
+      "properties": {
+        "packId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "packVersion": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion" },
+        "kind": { "enum": ["DomainPack","ConnectorPack","RuntimeAdapter","WorkbenchExtension"] },
+        "trustMode": { "enum": ["Declarative","TrustedCode","Isolated"] },
+        "license": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "artifactCount": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "migrationCount": { "type": "integer", "minimum": 0, "maximum": 10000 },
+        "manifestDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "artifactSetDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "packageDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "outputBytes": { "type": "integer", "minimum": 1, "maximum": 1048576 }
+      },
+      "required":["packId","packVersion","kind","trustMode","license","artifactCount","migrationCount",
+        "manifestDigest","artifactSetDigest","packageDigest","outputBytes"],
+      "additionalProperties": false
+    },
+    "CliPackBuildResult": {
+      "title": "CliPackBuildResult",
+      "type": "object",
+      "properties": {
+        "checkId": { "const": "pack.manifest-build" },
+        "status": { "enum": ["Passed","Failed"] },
+        "errorCode": {
+          "enum":[null,"INVALID_ARGUMENT","LIMIT_EXCEEDED","PRECONDITION_FAILED","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]
+        },
+        "violationCount": { "type":"integer","minimum":0,"maximum":1 },
+        "diagnostic": { "oneOf":[{"type":"null"},{"$ref":"#/$defs/PackBuildDiagnostic"}] },
+        "commandRef": { "type":"null" },
+        "evidenceRefs": { "type":"array","maxItems":0,"items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"} },
+        "remediation": { "oneOf":[{"type":"null"},{"type":"string","minLength":1,"maxLength":1000}] }
+      },
+      "required":["checkId","status","errorCode","violationCount","diagnostic","commandRef","evidenceRefs","remediation"],
+      "additionalProperties": false,
+      "allOf":[
+        {"if":{"properties":{"status":{"const":"Passed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"null"},"violationCount":{"const":0},"remediation":{"type":"null"},
+           "diagnostic":{"type":"object"}}}},
+        {"if":{"properties":{"status":{"const":"Failed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"string"},"diagnostic":{"type":"null"},"remediation":{"type":"string"}}}},
+        {"if":{"properties":{"errorCode":{"enum":["INVALID_ARGUMENT","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]}},
+           "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":0}}}},
+        {"if":{"properties":{"errorCode":{"enum":["LIMIT_EXCEEDED","PRECONDITION_FAILED"]}},
+           "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":1}}}}
+      ]
+    },
+    "PackSignatureDiagnostic": {
+      "title": "PackSignatureDiagnostic",
+      "type": "object",
+      "properties": {
+        "packId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "packVersion": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion" },
+        "packageDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "bundleDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "bundleBytes": { "type": "integer", "minimum": 1, "maximum": 4194304 }
+      },
+      "required":["packId","packVersion","packageDigest","bundleDigest","bundleBytes"],
+      "additionalProperties": false
+    },
+    "CliPackSignResult": {
+      "title": "CliPackSignResult",
+      "type": "object",
+      "properties": {
+        "checkId": { "const": "pack.signature" },
+        "status": { "enum": ["Passed","Failed"] },
+        "errorCode": {
+          "enum":[null,"INVALID_ARGUMENT","FORBIDDEN","LIMIT_EXCEEDED","PRECONDITION_FAILED","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]
+        },
+        "violationCount": { "type":"integer","minimum":0,"maximum":1 },
+        "diagnostic": { "oneOf":[{"type":"null"},{"$ref":"#/$defs/PackSignatureDiagnostic"}] },
+        "commandRef": { "type":"null" },
+        "evidenceRefs": { "type":"array","maxItems":0,"items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"} },
+        "remediation": { "oneOf":[{"type":"null"},{"type":"string","minLength":1,"maxLength":1000}] }
+      },
+      "required":["checkId","status","errorCode","violationCount","diagnostic","commandRef","evidenceRefs","remediation"],
+      "additionalProperties": false,
+      "allOf":[
+        {"if":{"properties":{"status":{"const":"Passed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"null"},"violationCount":{"const":0},"remediation":{"type":"null"},
+           "diagnostic":{"type":"object"}}}},
+        {"if":{"properties":{"status":{"const":"Failed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"string"},"diagnostic":{"type":"null"},"remediation":{"type":"string"}}}},
+        {"if":{"properties":{"errorCode":{"enum":["INVALID_ARGUMENT","FORBIDDEN","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]}},
+           "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":0}}}},
+        {"if":{"properties":{"errorCode":{"enum":["LIMIT_EXCEEDED","PRECONDITION_FAILED"]}},
+           "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":1}}}}
+      ]
+    },
+    "PackVerificationDiagnostic": {
+      "title": "PackVerificationDiagnostic",
+      "type": "object",
+      "properties": {
+        "packId": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName" },
+        "packVersion": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/ExactVersion" },
+        "subjectDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "manifestDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "artifactSetDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "deploymentPolicyDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "signatureBundleDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "provenanceBundleDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "conformanceBundleDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "conformanceReportDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" },
+        "validatedAt": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" },
+        "validUntil": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" },
+        "reportDigest": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest" }
+      },
+      "required":["packId","packVersion","subjectDigest","manifestDigest","artifactSetDigest","deploymentPolicyDigest",
+        "signatureBundleDigest","provenanceBundleDigest","conformanceBundleDigest","conformanceReportDigest",
+        "validatedAt","validUntil","reportDigest"],
+      "additionalProperties": false
+    },
+    "CliPackVerifyResult": {
+      "title": "CliPackVerifyResult",
+      "type": "object",
+      "properties": {
+        "checkId": { "const": "pack.supply-chain-validation" },
+        "status": { "enum": ["Passed","Failed"] },
+        "errorCode": {
+          "enum":[null,"INVALID_ARGUMENT","FORBIDDEN","LIMIT_EXCEEDED","PRECONDITION_FAILED","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]
+        },
+        "violationCount": { "type":"integer","minimum":0,"maximum":1 },
+        "diagnostic": { "oneOf":[{"type":"null"},{"$ref":"#/$defs/PackVerificationDiagnostic"}] },
+        "commandRef": { "type":"null" },
+        "evidenceRefs": { "type":"array","maxItems":0,"items":{"$ref":"urn:abh:contracts:0.1.0:public#/$defs/EntityRef"} },
+        "remediation": { "oneOf":[{"type":"null"},{"type":"string","minLength":1,"maxLength":1000}] }
+      },
+      "required":["checkId","status","errorCode","violationCount","diagnostic","commandRef","evidenceRefs","remediation"],
+      "additionalProperties": false,
+      "allOf":[
+        {"if":{"properties":{"status":{"const":"Passed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"null"},"violationCount":{"const":0},"remediation":{"type":"null"},
+           "diagnostic":{"type":"object"}}}},
+        {"if":{"properties":{"status":{"const":"Failed"}},"required":["status"]},
+         "then":{"properties":{"errorCode":{"type":"string"},"diagnostic":{"type":"null"},"remediation":{"type":"string"}}}},
+        {"if":{"properties":{"errorCode":{"enum":["INVALID_ARGUMENT","FORBIDDEN","DEPENDENCY_TIMEOUT","DEPENDENCY_UNAVAILABLE"]}},
+           "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":0}}}},
+        {"if":{"properties":{"errorCode":{"enum":["LIMIT_EXCEEDED","PRECONDITION_FAILED"]}},
+           "required":["errorCode"]},
+         "then":{"properties":{"violationCount":{"const":1}}}}
+      ]
+    },
     "CliDoctorDataResult": {
       "title": "CliDoctorDataResult",
       "type": "object",
@@ -11532,6 +13510,9 @@
         "healthRef": {
           "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
         },
+        "safetyStop": {
+          "type": "boolean"
+        },
         "permissionEnvelope": {
           "type": "object",
           "properties": {
@@ -11621,6 +13602,9 @@
         },
         "healthRef": {
           "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "safetyStop": {
+          "type": "boolean"
         },
         "permissionEnvelope": {
           "type": "object",
@@ -11728,6 +13712,7 @@
         "schemaPath",
         "implementationRef",
         "healthRef",
+        "safetyStop",
         "permissionEnvelope",
         "packRef",
         "subjectDigest",
@@ -11875,6 +13860,9 @@
         "schemaDigest": {
           "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
         },
+        "safetyStop": {
+          "type": "boolean"
+        },
         "compatible": {
           "type": "boolean"
         },
@@ -11887,6 +13875,7 @@
         "packRef",
         "registrationDigest",
         "schemaDigest",
+        "safetyStop",
         "compatible",
         "healthy"
       ],
@@ -13447,6 +15436,17 @@
           "minimum": 0,
           "maximum": 9007199254740991
         },
+        "progressBudgetSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 31536000
+        },
+        "progressDeadline": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "stopReason": {
+          "enum": ["NoProgress"]
+        },
         "workflowRef": {
           "allOf": [
             {
@@ -13492,6 +15492,8 @@
         "triggerKey",
         "goalRevision",
         "stopEpoch",
+        "progressBudgetSeconds",
+        "progressDeadline",
         "workflowRef",
         "assignmentSnapshotRef",
         "executionMode",
@@ -13563,6 +15565,12 @@
             "IsolatedEvaluation"
           ]
         }
+        ,
+        "progressBudgetSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 31536000
+        }
       },
       "required": [
         "missionRef",
@@ -13571,6 +15579,20 @@
         "authorityRef",
         "executionMode"
       ],
+      "additionalProperties": false
+    },
+    "StopStalledRunPayload": {
+      "title": "StopStalledRunPayload",
+      "type": "object",
+      "properties": {
+        "runRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "causeRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": ["runRef","causeRef"],
       "additionalProperties": false
     },
     "CompleteRunPayload": {
@@ -14082,6 +16104,9 @@
         "resultDigest": {
           "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
         },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
         "verdict": {
           "enum": [
             "Pass",
@@ -14111,6 +16136,7 @@
         "invocationRef",
         "resultArtifactRef",
         "resultDigest",
+        "digest",
         "verdict",
         "verifiedAt"
       ],
@@ -15093,6 +17119,1129 @@
         "scopeRef",
         "purposeOfUse"
       ]
+    },
+    "BuildCasePayload": {
+      "title": "BuildCasePayload",
+      "type": "object",
+      "properties": {
+        "signalRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "rootCauseCode": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "counterEvidenceRefs": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "domainOwnerRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": ["signalRefs", "rootCauseCode", "evidenceRefs", "counterEvidenceRefs", "domainOwnerRef"],
+      "additionalProperties": false
+    },
+    "LearningCaseRecord": {
+      "title": "LearningCaseRecord",
+      "type": "object",
+      "properties": {
+        "caseRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.learning-case" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "signalRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "rootCauseCode": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "counterEvidenceRefs": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "domainOwnerRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "receiptRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/CommandRef"
+        },
+        "builtBy": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+        },
+        "builtAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "caseRef",
+        "resourceOrganizationId",
+        "signalRefs",
+        "rootCauseCode",
+        "evidenceRefs",
+        "counterEvidenceRefs",
+        "domainOwnerRef",
+        "receiptRef",
+        "builtBy",
+        "builtAt",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "caseRef",
+        "resourceOrganizationId",
+        "signalRefs",
+        "rootCauseCode",
+        "evidenceRefs",
+        "counterEvidenceRefs",
+        "domainOwnerRef",
+        "receiptRef",
+        "builtBy",
+        "builtAt"
+      ]
+    },
+    "CreateCandidatePayload": {
+      "title": "CreateCandidatePayload",
+      "type": "object",
+      "properties": {
+        "caseRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "assetKind": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "baseVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "candidateArtifactRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "scopeRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "risk": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        }
+      },
+      "required": ["caseRef", "assetKind", "baseVersion", "candidateArtifactRef", "scopeRef", "risk"],
+      "additionalProperties": false
+    },
+    "LearningCandidateRecord": {
+      "title": "LearningCandidateRecord",
+      "type": "object",
+      "properties": {
+        "candidateRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.learning-candidate" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "caseRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "assetKind": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "baseVersion": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "candidateArtifactRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "scopeRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "risk": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "status": {
+          "const": "Draft"
+        },
+        "producer": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+        },
+        "receiptRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/CommandRef"
+        },
+        "createdAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "candidateRef",
+        "resourceOrganizationId",
+        "caseRef",
+        "assetKind",
+        "baseVersion",
+        "candidateArtifactRef",
+        "scopeRef",
+        "risk",
+        "status",
+        "producer",
+        "receiptRef",
+        "createdAt",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "candidateRef",
+        "resourceOrganizationId",
+        "caseRef",
+        "assetKind",
+        "baseVersion",
+        "candidateArtifactRef",
+        "scopeRef",
+        "risk",
+        "status",
+        "producer",
+        "receiptRef",
+        "createdAt"
+      ]
+    },
+    "ExpireEvaluationPayload": {
+      "title": "ExpireEvaluationPayload",
+      "type": "object",
+      "properties": {
+        "runRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": ["runRef"],
+      "additionalProperties": false
+    },
+    "LearningSignalListResult": {
+      "title": "LearningSignalListResult",
+      "type": "object",
+      "properties": {
+        "signals": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/LearningSignalRecord" },
+          "maxItems": 100
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "cursor": { "type": "string", "maxLength": 2048 },
+        "asOf": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" }
+      },
+      "required": ["signals", "counts", "asOf"],
+      "additionalProperties": false
+    },
+    "LearningCaseListResult": {
+      "title": "LearningCaseListResult",
+      "type": "object",
+      "properties": {
+        "cases": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/LearningCaseRecord" },
+          "maxItems": 100
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "cursor": { "type": "string", "maxLength": 2048 },
+        "asOf": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" }
+      },
+      "required": ["cases", "counts", "asOf"],
+      "additionalProperties": false
+    },
+    "LearningCandidateListResult": {
+      "title": "LearningCandidateListResult",
+      "type": "object",
+      "properties": {
+        "candidates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/LearningCandidateRecord" },
+          "maxItems": 100
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "cursor": { "type": "string", "maxLength": 2048 },
+        "asOf": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" }
+      },
+      "required": ["candidates", "counts", "asOf"],
+      "additionalProperties": false
+    },
+    "EvaluationRunListResult": {
+      "title": "EvaluationRunListResult",
+      "type": "object",
+      "properties": {
+        "runs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/EvaluationRunRecord" },
+          "maxItems": 100
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "cursor": { "type": "string", "maxLength": 2048 },
+        "asOf": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" }
+      },
+      "required": ["runs", "counts", "asOf"],
+      "additionalProperties": false
+    },
+    "EvaluationProfileRecord": {
+      "title": "EvaluationProfileRecord",
+      "type": "object",
+      "properties": {
+        "profileRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.evaluation-profile" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "assetKind": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "risk": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "suiteRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "datasetSnapshotRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "evaluatorRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "metricThresholdRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "metricThresholds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/EvaluationMetricThreshold"
+          }
+        },
+        "stoppingRuleRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "assignmentUnit": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "minimumSamples": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "confidenceLevel": {
+          "enum": [0.8, 0.9, 0.95, 0.99]
+        },
+        "minimumRelativeLift": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "approvedBy": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+        },
+        "approvedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "profileRef",
+        "resourceOrganizationId",
+        "assetKind",
+        "risk",
+        "suiteRef",
+        "datasetSnapshotRef",
+        "evaluatorRef",
+        "metricThresholdRef",
+        "metricThresholds",
+        "stoppingRuleRef",
+        "assignmentUnit",
+        "minimumSamples",
+        "confidenceLevel",
+        "minimumRelativeLift",
+        "approvedBy",
+        "approvedAt",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "profileRef",
+        "resourceOrganizationId",
+        "assetKind",
+        "risk",
+        "suiteRef",
+        "datasetSnapshotRef",
+        "evaluatorRef",
+        "metricThresholdRef",
+        "metricThresholds",
+        "stoppingRuleRef",
+        "assignmentUnit",
+        "minimumSamples",
+        "confidenceLevel",
+        "minimumRelativeLift",
+        "approvedBy",
+        "approvedAt"
+      ]
+    },
+    "RequestEvaluationPayload": {
+      "title": "RequestEvaluationPayload",
+      "type": "object",
+      "properties": {
+        "candidateRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "baselineRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": ["candidateRef", "baselineRef"],
+      "additionalProperties": false
+    },
+    "RetryEvaluationPayload": {
+      "title": "RetryEvaluationPayload",
+      "type": "object",
+      "properties": {
+        "runRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": ["runRef"],
+      "additionalProperties": false
+    },
+    "EvaluationRunRecord": {
+      "title": "EvaluationRunRecord",
+      "type": "object",
+      "properties": {
+        "runRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.evaluation-run" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "candidateRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "profileRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "baselineRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "retryOfRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "assignmentUnit": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "executionRefs": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "status": {
+          "enum": ["Queued", "Completed", "Inconclusive"]
+        },
+        "requestedBy": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+        },
+        "resultRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "receiptRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/CommandRef"
+        },
+        "createdAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "expiresAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "runRef",
+        "resourceOrganizationId",
+        "candidateRef",
+        "profileRef",
+        "baselineRef",
+        "assignmentUnit",
+        "seed",
+        "executionRefs",
+        "status",
+        "requestedBy",
+        "receiptRef",
+        "createdAt",
+        "expiresAt",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "runRef",
+        "resourceOrganizationId",
+        "candidateRef",
+        "profileRef",
+        "baselineRef",
+        "retryOfRef",
+        "assignmentUnit",
+        "seed",
+        "executionRefs",
+        "status",
+        "requestedBy",
+        "receiptRef",
+        "createdAt",
+        "expiresAt"
+      ]
+    },
+    "EvaluationMetricValue": {
+      "title": "EvaluationMetricValue",
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": ["name", "value"],
+      "additionalProperties": false
+    },
+    "EvaluationMetricThreshold": {
+      "title": "EvaluationMetricThreshold",
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "minimum": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": ["name", "minimum"],
+      "additionalProperties": false
+    },
+    "SubmitEvaluationResultPayload": {
+      "title": "SubmitEvaluationResultPayload",
+      "type": "object",
+      "properties": {
+        "runRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "artifactRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "executionRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "metricValues": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationMetricValue"
+          }
+        },
+        "completedSamples": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "failedSamples": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "baselineMetricValues": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/EvaluationMetricValue"
+          }
+        },
+        "baselineCompletedSamples": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "baselineFailedSamples": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "dataDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "baselineMetricValues": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/EvaluationMetricValue"
+          }
+        },
+        "baselineCompletedSamples": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "baselineFailedSamples": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "evaluatorPrincipal": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        }
+      },
+      "required": ["runRef", "artifactRefs", "executionRefs", "metricValues", "completedSamples", "failedSamples", "dataDigest", "evaluatorPrincipal"],
+      "additionalProperties": false
+    },
+    "EvaluationResultRecord": {
+      "title": "EvaluationResultRecord",
+      "type": "object",
+      "properties": {
+        "resultRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.evaluation-result" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "runRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "candidateRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "profileRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "status": {
+          "enum": ["Completed", "Inconclusive"]
+        },
+        "artifactRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "executionRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "metricValues": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationMetricValue"
+          }
+        },
+        "completedSamples": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "failedSamples": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "baselineMetricValues": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/EvaluationMetricValue"
+          }
+        },
+        "baselineCompletedSamples": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "baselineFailedSamples": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "dataDigest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        },
+        "evaluatorPrincipal": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "receiptRef": {
+          "$ref": "urn:abh:contracts:0.1.0:workflow#/$defs/CommandRef"
+        },
+        "submittedAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "resultRef",
+        "resourceOrganizationId",
+        "runRef",
+        "candidateRef",
+        "profileRef",
+        "status",
+        "artifactRefs",
+        "executionRefs",
+        "metricValues",
+        "completedSamples",
+        "failedSamples",
+        "dataDigest",
+        "evaluatorPrincipal",
+        "receiptRef",
+        "submittedAt",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "resultRef",
+        "resourceOrganizationId",
+        "runRef",
+        "candidateRef",
+        "profileRef",
+        "status",
+        "artifactRefs",
+        "executionRefs",
+        "metricValues",
+        "completedSamples",
+        "failedSamples",
+        "dataDigest",
+        "baselineMetricValues",
+        "baselineCompletedSamples",
+        "baselineFailedSamples",
+        "evaluatorPrincipal",
+        "receiptRef",
+        "submittedAt"
+      ]
+    },
+    "EvaluationGateFinding": {
+      "title": "EvaluationGateFinding",
+      "type": "object",
+      "properties": {
+        "metric": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "actual": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "minimum": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "outcome": {
+          "enum": ["Pass", "Fail", "Missing"]
+        },
+        "lowerBound": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "baseline": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "baselineLowerBound": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "relativeLift": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1
+        },
+        "lowerRelativeLift": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1
+        }
+      },
+      "required": ["metric", "minimum", "outcome"],
+      "additionalProperties": false
+    },
+    "EvaluationUncertainty": {
+      "title": "EvaluationUncertainty",
+      "type": "object",
+      "properties": {
+        "metric": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "method": {
+          "const": "WilsonScore"
+        },
+        "confidenceLevel": {
+          "enum": [0.8, 0.9, 0.95, 0.99]
+        },
+        "estimate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "lowerBound": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "upperBound": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "sampleCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        }
+      },
+      "required": ["metric", "method", "confidenceLevel", "estimate", "lowerBound", "upperBound", "sampleCount"],
+      "additionalProperties": false
+    },
+    "EvaluationGateLimitation": {
+      "title": "EvaluationGateLimitation",
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/RegisteredName"
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        }
+      },
+      "required": ["code", "detail"],
+      "additionalProperties": false
+    },
+    "BuildGatePayload": {
+      "title": "BuildGatePayload",
+      "type": "object",
+      "properties": {
+        "candidateRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "evaluationRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        }
+      },
+      "required": ["candidateRef", "evaluationRefs"],
+      "additionalProperties": false
+    },
+    "EvaluationGateArtifactRecord": {
+      "title": "EvaluationGateArtifactRecord",
+      "type": "object",
+      "properties": {
+        "gateRef": {
+          "type": "object",
+          "properties": {
+            "type": { "const": "abh.learning-gate" },
+            "id": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID" },
+            "version": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version" }
+          },
+          "required": ["type", "id", "version"],
+          "additionalProperties": false
+        },
+        "resourceOrganizationId": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+        },
+        "candidateRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "profileRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "evaluationRefs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "x-abh-set": true,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+          }
+        },
+        "metricThresholds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/EvaluationMetricThreshold"
+          }
+        },
+        "metricValues": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationMetricValue"
+          }
+        },
+        "baselineMetricValues": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationMetricValue"
+          }
+        },
+        "uncertainty": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/EvaluationUncertainty"
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/EvaluationGateLimitation"
+          }
+        },
+        "findings": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/$defs/EvaluationGateFinding"
+          }
+        },
+        "verdict": {
+          "enum": ["Pass", "Fail", "Inconclusive"]
+        },
+        "signedBy": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Actor"
+        },
+        "createdAt": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time"
+        },
+        "digest": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Digest"
+        }
+      },
+      "required": [
+        "gateRef",
+        "resourceOrganizationId",
+        "candidateRef",
+        "profileRef",
+        "evaluationRefs",
+        "metricThresholds",
+        "metricValues",
+        "baselineMetricValues",
+        "uncertainty",
+        "limitations",
+        "findings",
+        "verdict",
+        "signedBy",
+        "createdAt",
+        "digest"
+      ],
+      "additionalProperties": false,
+      "x-abh-digest-fields": [
+        "gateRef",
+        "resourceOrganizationId",
+        "candidateRef",
+        "profileRef",
+        "evaluationRefs",
+        "metricThresholds",
+        "metricValues",
+        "baselineMetricValues",
+        "uncertainty",
+        "limitations",
+        "findings",
+        "verdict",
+        "signedBy",
+        "createdAt"
+      ]
+    },
+    "LearningGateListResult": {
+      "title": "LearningGateListResult",
+      "type": "object",
+      "properties": {
+        "gates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/EvaluationGateArtifactRecord" },
+          "maxItems": 100
+        },
+        "counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "cursor": { "type": "string", "maxLength": 2048 },
+        "asOf": { "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Time" }
+      },
+      "required": ["gates", "counts", "asOf"],
+      "additionalProperties": false
+    },
+    "ConfigureLearningReleasePayload": {
+      "title": "ConfigureLearningReleasePayload",
+      "type": "object",
+      "properties": {
+        "candidateRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "gateRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "release": {
+          "$ref": "#/$defs/ReleaseRecord"
+        },
+        "assignment": {
+          "$ref": "#/$defs/StaticAssignmentRecord"
+        },
+        "purposeNames": {
+          "$ref": "#/$defs/LifecyclePurposeNames"
+        }
+      },
+      "required": ["candidateRef", "gateRef", "release", "assignment"],
+      "additionalProperties": false
     },
     "AgentTaskContract": {
       "title": "AgentTaskContract",

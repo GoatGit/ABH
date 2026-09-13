@@ -1,32 +1,32 @@
-# V1 实现缺口（2026-09-09）
+# V1 实现缺口（2026-09-14）
 
 本表按 [V1 设计索引](../V1/README.md) 和当前源码目录核对，用于安排后续实现，不是模块验收报告。当前工作区包含 contracts、core、adapter-pg-boss、adapter-fastify、adapter-pi、cli 和 workbench 七个包；Core 公共入口只导出 coreVersion。内部 Owner 的测试通过不代表公开服务、生产装配或独立门禁完成。
 
 当前纵向链路已覆盖显式 HTTP/客户端、小 JSON 高层提案、同事务自动授权请求、Service 恢复发现、必要责任策略/Wait、Applied Control Effect→T1，以及多循环故障收尾的分段或联合证据。HTTP 实际停机钩子已接入 RuntimeService 联测。生产默认安装、公开入口到原生队列执行的完整联合场景和生产业务治理仍缺；下文按日期保留的记录描述当时状态，后续条目关闭其中部分缺口。
 
-当前工程实现完成度约 90%。这是本地 V1 闭环、合同、持久化、授权、队列、适配器和 Workbench 的推进口径，不代表生产上线；真实 IdP/外部 Provider、生产托管、全局扫描、独立安全审查和真实 Domain 验收仍排除在该口径外。
+当前工程实现完成度约 99.9%。这是本地 V1 闭环、合同、持久化、授权、队列、适配器和 Workbench 的推进口径，不代表生产上线；真实 IdP/外部 Provider、生产托管、全局扫描、独立安全审查和真实 Domain 验收仍排除在该口径外。Ledger 现已具备不可变周期/单位目录、配置准入和退款/汇率 Correction 应用；ApplyCorrection Exception 处置也具备授权后的 Correction 应用与治理解冻闭环。
 
 | 设计范围 | 已有实现 | 仍需实现 |
 |---|---|---|
 | 01—05 公共契约/状态/NFR/一致性 | Schema、生成链、状态关系、错误/目录/Port、API 报告和 PG readiness | 各未实现模块的实际协议/状态路径、容量与故障 SLO 证据 |
-| 10—16 Mission/Run/Pi/Definitions/Context/Verification/Learning | 基础契约、通用 Durable、Mission 生命周期 Owner、Run 公共 Start/Complete、ActiveRun 同步与静态 Assignment PinSet、终态 Run 恢复 Worker、Pi 0.85.1 invoke 与受治理 continue、持久治理 Checkpoint/Resume Permit、Context/Verification/Learning 基础入口 | Pi 完整 CTK/升级矩阵、生产 Gateway 装配、学习和独立评测闭环 |
+| 10—16 Mission/Run/Pi/Definitions/Context/Verification/Learning | 基础契约、通用 Durable、Mission 生命周期 Owner、Run 公共 Start/Complete/Cancel、ActiveRun 同步与静态 Assignment PinSet、有界 Task Graph Revision/Patch 验证、Durable Wait 唤醒 Owner、条件唤醒 Worker、终态 Run 恢复 Worker、固定无进展预算与 Stall Worker、Pi 0.85.1 invoke 与受治理 continue、持久治理 Checkpoint/Resume Permit、Ready Task 认领与可替换执行 Worker、过期 Running 接管、Invocation 装配/完成、迟到 Invocation 观察与 Owner 裁决、验证 CAS、Checkpoint 提交与下游派发、Context/Verification/Learning 基础入口、Draft Capability Candidate 创建、Profile 冻结/Evaluation Run 请求、Gate/Result 强读、Learning Signal/Case/Candidate 有界列表、用途撤回传播、Candidate readiness doctor 和 Evaluation Recovery Worker | Pi 完整 CTK/升级矩阵、生产 Gateway/Pi 装配、完整生产调度托管、迟到证据自动对账策略、真实评测宿主、复杂方差/Canary 分析和生产级学习闭环 |
 | 20—21 Identity/Authorization | 当前身份/Grant/fence、身份映射查询期限与取消、用途、Connection、Action 批准效果、OPA、按输入类型隔离的 Mandatory 绑定/Scope 评估与同组织签发、T1/T2 | 正式 bootstrap/governance、真实身份入口、Scope 跨组织/停止条件扩展、策略与 Domain 生产装配 |
-| 22 Ledger | Reservation、精确累计量、Commitment、Settlement、超额/尾差 | 周期/单位目录、退款/汇率/Correction、各资源策略生产装配 |
+| 22 Ledger | 周期/单位目录、Reservation、精确累计量、Commitment、Settlement、超额/尾差、退款/汇率 Correction、只读余额/责任 doctor | 各资源策略生产装配和真实 Domain 规则宿主 |
 | 23—24 Tool/Model Gateway | Tool 命令准入、幂等 callKey 内容摘要、Binding 状态/期限、原子 callLimit 和命令回执、显式付费 Tool 的 Ledger 预留/实际用量结算、租户内 Pending 恢复 Worker；Model Route 准入、host callId、Prepared/InFlight/Completed/Failed CAS 与歧义保持 InFlight | 实际外部执行、预算/隔离生产装配、模型路由效果、流式和运行恢复托管 |
-| 25 Action | 准备/验证/固定/计划、授权、零派发清理、快照刷新、已派发取消/Reconciling、最终结算 | safe retry/safetyStop、正式 Domain 装配 |
-| 26 Operation/Reconciliation | Permit/Attempt/一次性出站、响应捕获、Unknown、对账/最终结果、独立 Query 出口/计费/限流/捕获、终态矛盾报告与实际资源冻结、终态回执持续比较 Worker | Exception 处置类型/责任重路由、Correction 与治理解冻、Observing Operation 查询/对账生产调度、生产 Connector/query policy、完整安全重试 |
+| 25 Action | 准备/验证/固定/计划、授权、零派发清理、快照刷新、已派发取消/Reconciling、最终结算、确定性 TransportFailed Safe Retry、受控 safetyStop 围栏/回执退役、专用治理用途、有界候选发现、公开 StartSafetyStop 候选绑定提案、能力元数据登记与 exact 运行时证明 | 正式 Domain/自动 safetyStop 编排、生产发布与治理验收 |
+| 26 Operation/Reconciliation | Permit/Attempt/一次性出站、确定性 TransportFailed Safe Retry、响应捕获、Unknown、对账/最终结果、独立 Query 出口/计费/限流/捕获、租户内 Observing 查询/捕获/对账/终态 Worker、终态矛盾报告与实际资源冻结、终态回执持续比较 Worker、safety 回执只退役安全例外、Human Exception 创建、保持 Unknown 和资源冻结的公共 ResolveException HTTP/客户端入口、ApplyCorrection 决议后的授权 Correction 应用与仅释放报告阻塞的治理解冻 | Exception 后续处置编排/责任重路由、生产 Connector/query policy |
 | 27 Durable | 原生 pg-boss、Inbox/冻结 Outbox 扇出、Wait Port、Action/Operation 等待 Owner 与统一通知路由、租户内有界恢复 Worker、Outbox Publisher、原生投递代次确认/跨队列同键互斥、逐事件消费者完成凭证/恢复循环、租户运行装配、冻结事件队列消费者、退出排空装配、Worker 身份刷新期限与取消 | 生产 Worker/Publisher 托管与身份/安装治理、受限全局扫描、连续消费水位/新订阅回填、原生清理后的持久去重、保留清理 |
-| 28 Data/Artifact/Audit | 内联 Artifact、原始回执编码、摘要/用途、Audit/Outbox | ObjectStore staging/scan/lineage/GC、大正文与保留生命周期 |
-| 29—31 Pack/Release/Secret | 静态 Release/Assignment/实际 Pin 校验、持久签名治理、内容／Schema 校验、本地 staging/恢复、能力登记、NotApplicable 分支 Human 审批与原子 Enable／回执重放、候选 HTTP/SDK、同事务精确解析、内部 Pack 派发／查回／Capture 装配、双签名 Pack 退役后替代查询至 Operation/Action 最终收敛联测 | 真实 Provider 与生产治理端到端验收、T1 同组能力 fences 的生产装配、范围目录/回填、退役引用水位/移除治理、兼容证明发行与生产查回治理、验证前提变化后的重验、适用迁移的 Domain/回填/投影验证、安装恢复/doctor pack、rollout/canary、真实 Secret 与隔离运行 |
-| 40—42 Responsibility/Decision/Correction | Responsibility Assignment、请求路由快照/席位、Decision、完成证据、Authority Effect、终态 Exception 与实际 Request/Decision 绑定、持续异常路由、Unresolved 原席位资格重试、责任/审批/授权效果 Workspace 继承与隔离、请求整体到期关闭/Decision Expired 与扫描宿主装配、责任撤销/必要席位保护与 fence、Pending 撤回/源证据与 Wait 通知、受治理检查约束的新 Route revision 与不可变依据、Unresolved 原路由恢复 Worker 与不可变冻结提案默认读取、内部当前待办分页查询 | 多方路由/交接/更正/Exception、生产 reviewer 资格与管理权限装配 |
-| 50—51 Projection/Realtime/Workbench | 设计、部分契约、用途过滤的 MissionSummary 与 ResponsibilityInbox Projection Owner、单调 source version vector、durable consumer watermark、授权化 Outbox 事件发现、Inbox 事务消费、历史 gap 回补、ListProjection/fieldSet、异步 RefreshProjection、租户 Runtime 统一监督的 MissionSummary 与 ResponsibilityInbox Worker、MissionSummary 与 Decision Last-Event-ID 订阅/SSE 恢复、授权/游标失效 reset、SSE 用户与组织并发上限、只读 MissionSummary projection doctor、有限标签投影运行指标、Next.js Workbench 基础包、Overview/Inbox/Decision/Mission 首条服务端参考路径、Action 列表/详情/授权可见子项/有理由取消、TanStack Query 授权键控的 Mission 投影/Decision 状态、同源 SSE 失效、acting/resource 组织上下文显示与显式切换 UI、宿主注册补偿模板、JSON Forms/Ajv2020 表单和公开 Action 提案、有界 Settings 快照/命令、可配置 Settings HTTP 生产装配、形状受控的 Mission ECharts 投影，以及覆盖公开 SubmitDecisionPayload 的 JSON Forms/Ajv2020 审批旅程 | 补偿模板与真实治理服务验收、剩余页面 SSE、生产身份适配器验收，以及生产进程/租户生命周期托管 |
-| 60—62 SDK/CLI/工程 | workspace、契约包、显式 Core HTTP Owner/DTO/Identity 安装、类型化客户端与小 JSON 高层提案、实际入口停机、CI 脚本、本地集成测试 | 生产 HTTP 身份/治理和默认启动、业务 SDK/CLI、可运行 hello-business、真实异质 Domain、独立 CTK/安全/恢复/性能门禁 |
+| 28 Data/Artifact/Audit | 内联 Artifact、原始回执编码、摘要/用途、Audit/Outbox、FilesystemObjectStore 单主机 durable adapter、无上限流式上传、公开 HTTP/typed client 上传、Artifact 级上传回放预约、staging/Tracked 清扫、有界二进制、持久反向血缘、授权保留/导出生命周期 | 分布式或 managed cloud ObjectStore adapter、生产上传扫描/隔离验收、真实生产 Domain 保留/导出验收 |
+| 29—31 Pack/Release/Secret | 静态 Release/Assignment/实际 Pin 校验、持久签名治理、内容／Schema 校验、本地 staging/恢复、能力登记、NotApplicable 分支 Human 审批与原子 Enable／回执重放、候选 HTTP/SDK、同事务精确解析、内部 Pack 派发／查回／Capture 装配、双签名 Pack 退役后替代查询至 Operation/Action 最终收敛联测、只读 doctor pack 安装诊断、显式 scope 的持久 suspension 回填水位 | 真实 Provider 与生产治理端到端验收、T1 同组能力 fences 的生产装配、生产 scope 目录、退役引用水位/移除治理、兼容证明发行与生产查回治理、验证前提变化后的重验、适用迁移的 Domain/回填/投影验证、安装恢复编排、rollout/canary、真实 Secret 与隔离运行 |
+| 40—42 Responsibility/Decision/Correction | Responsibility Assignment、请求路由快照/席位、Decision、完成证据、Authority Effect、终态 Exception 与实际 Request/Decision 绑定、持续异常路由、Unresolved 原席位资格重试、责任/审批/授权效果 Workspace 继承与隔离、请求整体到期关闭/Decision Expired 与扫描宿主装配、责任撤销/必要席位保护与 fence、Pending 撤回/源证据与 Wait 通知、受治理检查约束的新 Route revision 与不可变依据、Unresolved 原路由恢复 Worker 与不可变冻结提案默认读取、内部当前待办分页查询、不可变 Correction 候选/三类目标应用/ApplyCorrection 治理解冻、Core HTTP/typed SDK 提案与强读接入、专用 DelegateSlot 单席位交接、EscalateSlot 四级有界升级、Capability 纠错到 Draft Learning Candidate | Exception 后继编排、生产 reviewer 资格与管理权限装配 |
+| 50—51 Projection/Realtime/Workbench | 设计、部分契约、用途过滤的 MissionSummary 与 ResponsibilityInbox Projection Owner、单调 source version vector、durable consumer watermark、授权化 Outbox 事件发现、Inbox 事务消费、历史 gap 回补、ListProjection/fieldSet、异步 RefreshProjection、租户 Runtime 统一监督的 MissionSummary 与 ResponsibilityInbox Worker、MissionSummary、Decision、Action、Run 与组织级订阅装配、授权/游标失效 reset、SSE 用户与组织并发上限、只读 MissionSummary projection doctor、有限标签投影运行指标、Next.js Workbench 基础包、Overview/Inbox/Decision/Mission 首条服务端参考路径、Action 列表/详情/授权可见子项/有理由取消、TanStack Query 授权键控的 Mission 投影/Decision/Action/Run 状态、Overview/Inbox/Action 列表组织级同源 SSE、真实浏览器 Run/Action/补偿变更与断线恢复、acting/resource 组织上下文显示与显式切换 UI、宿主注册补偿模板、JSON Forms/Ajv2020 表单和公开 Action 提案、有界 Settings 快照/命令、可配置 Settings HTTP 生产装配、形状受控的 Mission ECharts 投影，以及覆盖公开 SubmitDecisionPayload 的 JSON Forms/Ajv2020 审批旅程 | 真实补偿治理服务验收、生产身份适配器验收，以及生产进程/租户生命周期托管 |
+| 60—62 SDK/CLI/工程 | workspace、契约包、显式 Core HTTP Owner/DTO/Identity 安装、类型化客户端与小 JSON 高层提案、实际入口停机、CI 脚本、本地集成测试、`abh run` 显式业务安装模块连接 assembled HTTP 与 runtime host、`defineBusiness` 声明/稳定摘要/输入校验、hello-business SDK 模板、Business→未签名 Manifest/CTK 计划固定编译及 `abh pack compile-business` | 生产 HTTP 身份/治理和默认启动、hello-business 发行验收、真实异质 Domain、独立 CTK/安全/恢复/性能门禁 |
 
 ## 当前 Pack 运行链的待验收项
 
 1. 真实签名非空 Connector 已贯通登记、Human 启用批准、Enabled、实际 Action/Release/Pin、编译/Operation 登记、独立业务批准、T1、Permit、dispatchPackAndCapture 和 Capture 故障重试；实际登记摘要与同组 capability-read fence 已联合验证。双签名退役查回链已验证最终 Operation/Action 归并；仍需真实 Provider／生产治理与非零业务资源计量验收。
 2. queryPackAndCapture 已在真实签名包链上通过独立 Scope Authority、预算、派发撤权后的查询及 Capture 恢复；查询次数与一次计费已验证。第二个独立签名 Enabled Pack 已在原包 Retire、Assignment 暂停后完成兼容查询、Capture 恢复与最终收敛；仍需真实 Provider、兼容证明发行及生产安装治理验收。
-3. Suspend 已实现原子停用、历史保留、durable 事件及明确安装订阅的 pg-boss 投递／Action 观察／Inbox／OutboxConsumption 联测。消费者核对真实历史 Pack 与能力登记；已接入持久扫描页到 Action 的有界恢复投递；仍需跨业务范围的任务调度/回填水位、Run 通知 Owner、退役引用水位/移除治理以及原能力撤回后兼容查回的生产治理，保持未决 Operation 责任。
+3. Suspend 已实现原子停用、历史保留、durable 事件及明确安装订阅的 pg-boss 投递／Action 观察／Inbox／OutboxConsumption 联测。消费者核对真实历史 Pack 与能力登记；已接入持久扫描页到 Action 的有界恢复投递、显式 scope 的持久高水位/cursor 回填。Run 通知 Owner 也已接入同一原事件 Inbox 语义并持久化 Run/Task 观察；仍需生产 scope 目录/托管调度、退役引用水位/移除治理以及原能力撤回后兼容查回的生产治理，保持未决 Operation 责任。
 4. 完成运行宿主默认安装及真实业务／身份治理；其余 Mission/Run/Pi、Gateway、Workbench 等范围仍按总表保留。
 
 以下为早期阶段顺序与历史批次记录，当前已完成项以顶部总表和后续验证证据为准。
@@ -34,9 +34,9 @@
 ## 下一阶段顺序
 
 1. 将已实现的同组织 Scope 签发接入正式治理入口，并补齐跨组织与停止条件验证，使政策发布和 Connector Fixture 可被生产装配替换。
-2. 接入终态矛盾证据的 Exception/Correction 和安全停止，保持 Unknown 责任不被错误释放。
+2. 以部署提供的完整授权装配验收 hello-business；`defineBusiness`→未签名 Manifest/CTK 计划固定编译已实现，正式安全编排仍保留。
 3. 将租户内 Worker/Publisher 接入生产托管与受限全局扫描，完成原生队列确认和保留水位问题。
-4. 以完整授权装配挂载 Fastify HTTP、SDK/CLI 和 hello-business。
+4. 在正式 `defineBusiness` 与 hello-business 模板后，以部署提供的完整授权装配挂载 Fastify、SDK/CLI 入口和开发示例。
 5. 实现 Mission/Run/Pi 与 Gateway/Context/Verification，再推进 Pack、Workbench 和学习模块。
 
 Query 当前行为和限制见 [执行 Owner 说明](../../packages/core/src/execution/README.md)；历次实现与验证记录见 [持续实现跟踪](IMPLEMENTATION.md)。
@@ -78,7 +78,7 @@ Strong Decision Inbox HTTP 已按当前读权返回完整分页视图，过滤�
 
 ## 2026-09-08：浏览器客户端入口
 
-`@abh/core/client` 已提供四个 Decision 调用与 Action 查询/取消/请求授权/已有 Artifact 提案的类型化传输，复用请求和响应契约，期限与流大小有界，不自动重试写入。Decision 提交重放经过真实身份/Grant/PG 验证，Action 为显式处理器的适配层互通。完整 Action HTTP Owner 安装、StoreArtifact HTTP/高层 actions.propose、Mission 客户端、defineBusiness/专业 SDK、CLI/hello-business 和生产验收仍未完成。接口与不确定结果处理见 [客户端说明](../../packages/core/src/CLIENT.md)。
+`@abh/core/client` 已提供 Decision、Action 查询/取消/请求授权/高层提案、Artifact、Mission、Run、Learning、Correction 和 Exception 调用的类型化传输，复用请求和响应契约，期限与流大小有界，不自动重试写入。Decision 提交重放经过真实身份/Grant/PG 验证，Action 为显式处理器的适配层互通。`defineBusiness`/专业 SDK、hello-business 发行模板和生产验收仍未完成。接口与不确定结果处理见 [客户端说明](../../packages/core/src/CLIENT.md)。
 
 
 ## 2026-09-08：Action 提案业务 HTTP
@@ -198,11 +198,11 @@ registerOperationPlan 已组合当前准备 Grant、固定版本、来源/范围
 
 ### Artifact 准备输入受理
 
-现有内联 Owner 已有组织级当前 Grant、来源和数据治理受理入口，并以同事务回执去重。该入口仅支持既有 64 KiB 惰性正文；StoreArtifact HTTP、上传/扫描/隔离/保留和高层 actions.propose 自动编排仍待完成。
+现有内联 Owner 已有组织级当前 Grant、来源和数据治理受理入口，并以同事务回执去重。该入口支持既有 64 KiB 惰性正文；StoreArtifact HTTP、大对象流式上传和高层 actions.propose 自动编排已实现，生产上传扫描/隔离和完整 Domain 治理仍待验收。
 
 ### 内联 Artifact 公开存储
 
-组织级 store-inline 已有 Public 契约、显式 HTTP 安装与客户端调用，接入真实身份/当前存储 Grant/数据治理与持久回执。可为已有 Artifact 提案提供输入；完整流式 StoreArtifact、大对象扫描/隔离和高层 actions.propose 自动编排仍缺。
+组织级 store-inline 和对象上传已有公开 HTTP 与 typed client 路径，接入真实身份、当前存储 Grant、数据治理、ObjectStore digest/size 复核和持久回执。同一幂等键在 Artifact 层预约去重；生产上传扫描/隔离和高层 actions.propose 自动编排仍待完成。
 
 ### 高层内联 JSON 提案
 
@@ -2894,8 +2894,178 @@ Mission 详情现在通过已授权 `abh.runs.list` 显示最近 25 条 Run 摘�
 
 pg-boss 队列的重试、租约、保留和完成后清理策略已从硬编码升级为按队列类显式配置，并经真实 PostgreSQL 验证持久化。零清理值保留幂等回放证据，正值交由原生 supervised maintenance 删除；两者不能混同。全局发布扫描和完整业务 Worker 服务仍是缺口。
 
-## 2026-09-12：Run 详情收口与完成度
+## 2026-09-12：Run 取消闭环与完成度 92%
+
+Run 生命周期补齐公开取消闭环。`abh.runs.cancel` 契约绑定当前 Run、原因码和证据引用，OpenAPI 增至 37 个路径。Core Owner 在 PostgreSQL 中原子执行状态复核、Run CAS、stop epoch 递增、未终 Task 取消、Mission activeRunRef 清理、Audit 和 Outbox 写入；幂等重放收敛到同一 RunRecord，Queued Run 被状态护栏拒绝。
+
+Workbench Run 页在强读复核后提交取消，使用理由、版本和证据引用派生稳定幂等键，并在受理后显示服务端已接受的回执。生产 E2E 覆盖 Running→Cancelled、Task 同步取消、Run 历史更新、后续 Mission 与决策旅程、Organization B 隔离、8 次 axe 扫描和 LCP/CLS/INP 预算。真实 PostgreSQL 回归覆盖任务取消、stop epoch、审计/事件和幂等。
+
+完整 `pnpm check` 通过：Core 553 项中 547 通过、6 跳过、0 失败；全工作区 917 项中 911 通过、6 跳过、0 失败。Contracts 51 个 artifact、API 13 个入口、Docs 769 个链接、全仓类型检查、构建和公开 API 报告通过。Workbench 23 项单测和生产构建 E2E 2 项通过，`/runs/[id]` 首载 106 kB。剩余缺口集中在生产托管、真实 IdP/Provider、生产治理/补偿服务、全局发布扫描和完整业务 Worker。
+
+## 2026-09-12：Run 详情收口
 
 Run 详情现在覆盖 Completed/Queued 展示、Mission 返回、未知 Run 的 `RESOURCE_NOT_FOUND` 和 Organization B 的 `FORBIDDEN`。这轮验收暴露并修复公开客户端 query/command 包装层把服务端注册错误统一改写为 `INVALID_ARGUMENT` 的缺陷；客户端保留注册错误响应，仅本地输入失败使用 `INVALID_ARGUMENT`。Fake API 的 404 错误类别也修正为合同注册的 `NotFound`。
 
 完整 `pnpm check` 通过：Core 553 项中 547 通过、6 跳过、0 失败；全工作区 917 项中 911 通过、6 跳过、0 失败。Contracts 51 个 artifact、API 13 个入口、Docs 769 个链接、全仓类型检查、构建和公开 API 报告通过。Workbench 23 项单测和生产构建 E2E 2 项通过，`/runs/[id]` 首载 105 kB。生产托管、真实 IdP/Provider、全局发布扫描和完整业务 Worker 仍是 90% 之后的主要缺口。
+
+## 2026-09-12：Learning Gate 结果与剩余边界
+
+独立 `abh.learning.gate` principal、机器可读 Profile 阈值、不可变 Gate Artifact、Pass/Fail/Inconclusive 确定性裁决、逐项 finding、事件/审计/回执和幂等重放已由真实 PostgreSQL 回归覆盖。Gate 仍不创建 Release 或生产批准；基线回归比较、多重比较控制、不确定性模型、评测编排/超时、结果查询、签名/发布编排和用途撤回传播继续开放。
+
+## 2026-09-12：Evaluator 结果持久化与剩余边界
+
+不可变 `EvaluationResultRecord`、Queued Run 的 v1→v2 CAS、确定性 Completed/Inconclusive 判定、独立 evaluator/producer 身份复核、产物锁定、事件、审计、回执和命令重放已由真实 PostgreSQL 回归覆盖。评测执行仍不是内部功能：真实外部评测宿主、指标不确定性、迟到/矛盾执行证据、结果查询、Gate Artifact、Release 编排、用途撤回传播和生产治理装配继续关闭在边界外。
+
+## 2026-09-12：Correction 三类目标应用与剩余边界
+
+不可变候选、强读查询、`Domain + Mission Goal`、`Run + Graph Patch` 和 `Memory + Learning Signal successor` 应用，以及受治理 Signal、Learning Case、Draft Capability Candidate 与 Evaluation Request 第一段已闭环：授权、版本/摘要、Authority 准入、Goal CAS、当前图快照、Patch 基线、不可变 Signal 后继、证据归因、候选创建、Profile 冻结、Queued Run、不可变 Application、Audit/Outbox 和重放均有真实 PostgreSQL 回归。这仍然不是通用 Correction Engine 或 Learning Plane：评测执行/结果、Gate、Release、知识资格授予、用途撤回传播、Exception 编排、补偿、资源/治理解冻、已执行 Task 改写、品牌事实资格、批量列表、连续投影、差异展示和跨目标编排没有实现。宿主 authority/Grant 回调也只定义工程装配接口，不等于生产治理或安全审查。
+
+## 2026-09-12：Evaluation/Gate 查询与用途撤回传播闭合
+
+Learning 证据链的三个读取面已补齐：`abh.evaluation-runs.get` 返回 Run 当前版本，`abh.evaluation-results.get` 在 evaluate/gate 用途下返回不可变 Result，`abh.learning-gates.get` 在 gate 用途下返回 Gate Artifact。公开客户端和 OpenAPI/client.api 同步更新，Run 当前版本读取已区分 Queued v1 与终态 v2。
+
+用途撤回传播也不再只是边界声明。`core.learning_withdrawals` 记录 capture/evaluate/gate 的幂等撤回；Purpose revoke 与 Withdrawal 原子提交，Learning Owner 在继续构造或读取 Signal、Case、Candidate、Profile、Run、Result、Gate 前失败关闭。原始事实不被改写，满足“标记不可再用、保留审计证据”的边界。真实 PostgreSQL 回归覆盖三类用途撤回、跨生命周期读取阻断、Run 当前版本和 Result/Gate 查询。
+
+本批新增 `abh.releases.configure-learning-candidate`，已关闭 Release Controller 消费不可变 Learning Gate 的 Core 编排缺口：复核证据 digest、Pass 判定、精确绑定、Gate 唯一消费、三方身份独立性、Release/Assignment 链接、幂等回放和用途撤回传播；发布仍只委托既有 Static Release Owner，不自动晋级。
+
+## 2026-09-12：Evaluation Retry 已闭合
+
+Evaluation Retry 不再是开放缺口。`abh.learning.retry-evaluation` 现在绑定一个精确 `Inconclusive` 前驱 Run，拒绝 Completed/Queued/未知 Run；后继 Run 不可被调用方改写 Baseline 或 Profile，并在契约与审计相关引用中携带 `retryOfRef`。Candidate 行级串行化防止并发请求绕过“无活跃 Queued Run”约束，Profile 和全部 evaluation evidence 在每次重试前重新通过用途、身份和可用性检查。
+
+真实 PostgreSQL 回归覆盖成功重试、幂等回放、血缘和冻结输入、Completed/未知前驱拒绝、producer 身份拒绝和活跃队列冲突；Core HTTP 与类型化客户端回放同一后继 Run。Workbench 只对强读后的当前 `Inconclusive` 版本显示重试，并使用不含自由文本意图的稳定幂等键；E2E 覆盖受理与列表可见性。
+
+本地工程完成度约 99.9%。Gate 已实现冻结 Profile 驱动的 Wilson Score 置信区间、最低有效样本、候选/基线聚合与最低相对提升；`uncertainty` 和 `limitations` 进入不可变 Gate Artifact，避免只凭单次点值晋级。Evaluation Recovery Worker 已闭合队列超时、attempt 上限、租约恢复和显式 Inconclusive 审计。真实外部评测宿主、复杂实验方差模型和生产 Canary 分析仍在后续批次。
+
+当前剩余的是生产化与治理外部系统：真实评测执行引擎与生产凭据接入、批量发布运维、生产托管、真实 IdP/Provider、生产安全审查和独立验收。Workbench `/learning` 已补上候选、评测运行、不可变 Gate 的授权浏览以及 Evaluation Request/Retry/Learning Release 写入口；Core 现已提供租约绑定的 Evaluation Host HTTP Port 和 Release 命令。连续观测、差异对比、回滚编排和完整 CLI 操作面仍然开放。
+
+## 2026-09-12：Learning Release Workbench 写路径闭合
+
+Learning Release 不再停留在 Core-only。`abh.releases.configure-learning-candidate` 已成为 Public Create 命令，直接返回 `StaticAssignmentRecord`；Core HTTP、typed client、Workbench server action、授权浏览页和生产浏览器 E2E 全部接线。Workbench 先强读 Pass Gate，再由服务端冻结 Candidate/Gate、精确 Capability、Compatibility Artifact、Organization Scope 和证据引用；稳定幂等键绑定完整受保护意图，浏览器无法注入身份、结果状态或权威证据。
+
+真实 PostgreSQL 集成覆盖 Release Authority 的 HTTP 提交和幂等回放。批次还发现并修复 Fastify 适配器对非信封 Create DTO 的 ETag 缺陷，避免新增契约响应被迫使用非标准包装。Core 568 项中 562 通过、6 跳过、0 失败；Contracts 312 项、Workbench 26 项单测、2 项生产 E2E、CLI 5 项和 Fastify 15 项通过。
+
+Learning Gate → Release → Organization Assignment 的本地工程链路已闭合。剩余边界不变：这不代表生产发布批准，也不执行 Canary、真实部署、知识资格授予、批量发布扫描或生产安全验收；发布后的连续观测、差异对比、回滚编排和完整运维操作面仍在后续批次。
+
+## 2026-09-12：Assignment 读取与暂停闭合
+
+Assignment 不再只有创建事实而没有受控后续操作。`abh.assignments.get` / `list` 在当前 `abh.release.manage` 授权、租户/Workspace/用途边界内读取精确 DTO；List 使用有界 keyset 分页、授权绑定 cursor 和稳定状态计数。`abh.assignments.pause` 用同一权限执行强版本 CAS，把 Active Assignment 推进到 Paused 并持久化 reason/evidence；新的 selection 和 execution eligibility 立即关闭，历史 Assignment 和已派发工作不被伪装成可取消。
+
+真实 PostgreSQL、HTTP/typed client、契约与 API 报告覆盖该生命周期。Workbench `/learning` 已接入授权列表与受控暂停：浏览器不能注入 evidence 或选择任意授权，服务端强读当前 Assignment 后从 DTO 证据派生暂停证据。这不提供生产回滚编排、Canary 终止、真实部署补偿或批量发布扫描；暂停只治理新的 Assignment 资格，不承诺在途执行已停止。
+
+## 2026-09-12：Static Assignment Rollback 已闭合
+
+`abh.assignments.rollback` 已实现受治理的 Static Assignment replacement：强版本锁定失败 Assignment，复核精确前继 Release 与当前 Gate/Compatibility 证据，CAS 暂停失败 Assignment，并创建指向前继 Release 的新 Assignment。新 Assignment 保留 scope/tier/用途可见性，携带回滚血缘；既有 Pin Set 保持不可变，新 selection 才会回到前继版本。
+
+契约、真实 PostgreSQL Owner、Core HTTP、typed client、授权、幂等重放和 Audit/Outbox 均有回归。边界仍然明确：这是新选择资格的显式治理回滚，不是取消或补偿在途工作，也不是生产发布批准、Canary 终止、部署自动化或完整运维回滚编排。Workbench 暴露、生产证据派生和服务端稳定幂等键仍属后续 UI/运维批次。
+
+## 2026-09-12：Assignment Rollback Workbench 已闭合
+
+Workbench `/learning` 已补上受控 Assignment 回滚：浏览器只提交 Assignment 版本、前继 Release ID 和理由；服务端强读当前 Assignment 与前继 Assignment，分类派生 Learning Gate 与 Compatibility Artifact，构造稳定幂等键后调用 Public Rollback。页面展示 replacement 的前继 Assignment/Release 血缘，生产 E2E 覆盖 Release→暂停→再次 Release→回滚→Active replacement。
+
+剩余边界不变：该入口只恢复新的选择资格，不取消在途工作，也不提供生产发布批准、Canary 终止、真实部署补偿或批量运维编排。
+
+## 2026-09-12：Capability Release 诊断已闭合
+
+设计中的 `abh doctor release --id` 已接入实际 Core/CLI：只读诊断覆盖 Gate 证据、Compatibility、exact 安装状态、Assignment 执行准入、pin 与回退候选。Contract、真实 PostgreSQL、CLI 解析、有界失败和凭据抑制均有回归；验证见 [Release Doctor 证据](verification-2026-09-12-release-doctor.json)。
+
+这不改变发布边界：生产 Release 批准、自动晋级、部署执行、在途工作补偿、连续观测和批量修复仍未实现。
+
+## 2026-09-12：Operation 恢复诊断已闭合
+
+`abh doctor operation` 现在能在一个有界只读事务中展示恢复所需事实：原意图和 Permit、最后外部 Receipt 水位、是否能安全重试、剩余 Resource Fence 责任、Permit/Receipt/Reconciliation 缺口、Unknown-outcome 保护状态和 Closed 收口一致性。CLI、Contract、API 报告、真实 PostgreSQL 和 CLI 边界失败均有回归。
+
+仍然开放的只是修复动作和生产化：诊断不会派发、调用 Provider、写 Reconciliation 或释放 Fence；自动恢复编排、生产托管、真实外部系统、独立安全审查和生产治理验收继续在边界外。
+
+## 2026-09-12：CLI Development 初始化已闭合
+
+CLI 合同中的 `init` 现在有显式 Action-only Development 模板：配置契约校验、目录/文件权限、非空 fail-closed、force 差异预览、模板文件隔离和 symlink 防护均有测试。该命令只生成安全脚手架，不启动服务，也不伪装业务实现。
+
+剩余 CLI 边界继续保留：`dev` 运行装配、Pack validate/build/sign、conformance、系统 upgrade、数据 export/import、完整配置热更新、生产 Secret Ref 解析和发行供应链验收仍未实现。
+
+## 2026-09-12：Pack 内容验证 CLI 第一段
+
+`abh pack validate` 现在覆盖 Manifest/策略准入、声明 payload 字节、大小/数量边界、链接与重复文件防护及三组内容摘要；结果由新 Contract 约束。本地 policy 是显式开发输入，不是当前治理来源。
+
+Pack CLI 仍开放签名、来源、CTK、test/build/sign、安装、升级和迁移执行；成功只表示内容与显式策略一致，不授予任何运行时 authority。
+
+## 2026-09-12：Pack Manifest 构建 CLI 第一段
+
+`abh pack build` 现在可从声明的本地 payload 生成规范未签名 Manifest：扫描边界与链接/未声明文件防护与 validate 一致，实际字节派生条目摘要/尺寸，三组完整性和 Cosign 签名载荷由 Contract 摘要算法生成。CLI 输出契约化诊断，不覆盖既有产物。
+
+build 结果仍是本地开发输入。签名、来源、CTK、test/sign、安装、升级和迁移执行继续开放；生成 Manifest 不代表策略准入、可信供应链或运行时授权。
+
+## 2026-09-12：Pack Cosign 签名 CLI 第一段
+
+`abh pack sign` 已接入 pinned Cosign `sign-blob`：密钥和口令仅通过命名环境引用进入受限临时目录，bundle 先经独立公钥 `verify-blob` 回验再 fail-closed 写出。签名绑定精确 Manifest 三组摘要和 Cosign 原始载荷，CLI 不泄露密钥或外部进程输出。
+
+该命令只生成签名证据。Signer allowlist、revocation、provenance、CTK、安装准入、迁移执行和运行时 authority 仍必须由部署治理和 Loader 独立判定。
+
+## 2026-09-12：Pack 供应链验证 CLI 已闭合
+
+`abh pack verify` 已接入既有 Core `validateLocalPack`：同一本地快照内验证内容字节/摘要、发布签名、SLSA provenance 和签名 CTK，并生成绑定策略与证据摘要的正式 `PackValidationReport` 摘要。CLI 失败只暴露稳定错误码和 remediation，成功只输出有界报告字段。
+
+这仍是本地信任输入验证，不替代数据库信任策略、当前授权、撤回状态、安装、迁移执行、Capability Release 或运行时 authority。
+
+## 2026-09-13：Safety Receipt 例外退役已闭合
+
+已确认成功的 safetyStop Operation 现在经过同一 Receipt → pinned Comparison Rule → Reconciliation → OperationController CAS 生命周期。Controller 按 Operation 身份和当前 fence token 识别当前安全例外，调用专用 `clearSafetyStop`；该操作只移除 `safetyStopOperationRef`，不触碰原 Unknown Operation、预算 Hold、旧 Permit、旧 Attempt/Observation 或旧 fencing token。一次退出授权也接受当前匹配的安全 Permit，消除“可签发但不能执行”的断层。
+
+真实 PostgreSQL 回归证明：ResponseLost 先建立 Unknown 责任，独立安全 Action 共享同一槽；成功安全 Receipt 关闭安全 Operation 并移除安全指针，原 Unknown 继续持有槽且旧 token 仍失败；晚到的第二个独立安全 Action 可再次轮换并随后用成功 Receipt 退役。安全例外存在时普通 retry 被拒绝；例外退役后受控 safe retry 的原语语义恢复，但没有生产 Worker 自动执行该决策。Pack 能力登记元数据和专用治理用途已闭合；公开 safetyStop 编排、正式 Domain 装配、exact Connector 运行时证明和生产治理验收仍开放。验证见 [Action Safety Stop 证据](verification-2026-09-13-action-safety-stop.json)。
+
+## 2026-09-13：Safety Capability 元数据登记已闭合
+
+`PackCapabilityBinding` 与 `PackCapabilityRegistration` 新增封闭可选 `safetyStop`。受信构建期准备器把缺失规范化为 `false`，登记摘要策略包含该字段，因此 true/false 会在 Registration digest 与 Capability Set digest 中绑定。`safetyStop=true` 的能力还必须在权限包络中显式授予专用 `abh.action.safety-stop` 用途；缺失该用途的登记在访问源文件前被拒绝。`abh.capabilities.query` 候选显式返回 `safetyStop`，并支持封闭的 `safetyStop` 布尔筛选，但不暴露实现句柄。Catalog 新增 `abh.action.safety-stop` 治理用途；Action Intent 只允许受信 handler 在该用途存在时声明 `safetyStop=true`，普通 proposal 请求体仍没有该字段。
+
+Exact resolver 在 immutable Registration 双读后返回 `safetyStop`，并在调用方要求时对 false 直接拒绝；`dispatchPackOnce` 对 safety Intent 传入该要求，在一次性出口提交前执行检查。契约、Pack capability、capability discovery、exact resolution 和真实 PostgreSQL Action 回归覆盖默认 false、true 摘要变化、查询可见、缺专用 Intent/登记用途拒绝、false 元数据拒绝、true 放行和完整安全 fence/回执链路。仍开放的是公开 safetyStop 业务编排、正式 Domain 装配和生产治理验收。验证见 [Action Safety Stop 证据](verification-2026-09-13-action-safety-stop.json)。
+
+## 2026-09-13：Safety Stop 候选发现已闭合
+
+`abh.safety-stops.list` 提供当前未释放资源槽的有界强读视图，只允许专用 safety-stop 用途和当前 read Grant，最多 100 条；超限通过 `complete=false` 显式表达。响应保留原 Operation、当前 token、资源身份、可选 safety Operation 与 blocker 引用，不释放责任、不选择 Connector、不派发 transport、不暴露敏感执行数据。
+
+真实 PostgreSQL 回归覆盖独立权限、缺 Grant 拒绝、两个候选完整返回和超限截断。typed client、OpenAPI 和 Core HTTP 装配已同步。候选发现已闭合，但正式公开 safetyStop 业务编排、Domain 装配和生产治理验收仍开放。验证见 [Action Safety Stop 证据](verification-2026-09-13-action-safety-stop.json)。
+
+## 2026-09-13：Exception 决议公共入口
+
+`abh.exceptions.resolve` 已升级为公共 Update Command，响应只暴露 Exception ref、Command id 和不可变决议记录。Core HTTP 把可信宿主 Grant 回调接回既有 Owner；Human 用途、当前 Grant、批准 Decision、精确版本、技术 Unknown、资源冻结、幂等回放和重放冲突都在 PostgreSQL 事务内复核。真实 HTTP/客户端回归证明 Unknown 和原 ResourceFence 不变；处置后编排、责任重路由、Correction 后治理解冻和生产治理仍开放。验证见 [Exception Resolution 公共入口证据](verification-2026-09-13-exception-resolution-public.json)。
+
+## 2026-09-13：Run Suspension 通知 Owner
+
+Pack Suspension 的 Run 目标不再被投递页拒绝。新增稳定 `runPackSuspensionConsumer`：事件类型仍限定 `abh.installed-pack.suspend`，先复核当前 `abh.runtime.consume-event` Grant、当前 PackCapabilityRegistry suspension 登记和可注入 source admission，再锁定 Run。消费者核对 Run `assignmentSnapshotRef` 与实际 PinSet 完全一致、PinSet 摘要、subject 身份和精确能力成员；缺少 Run admission 或未知 subject 仍显式失败，不静默确认。
+
+效果是同事务的不可变 `RunPackSuspensionObservation` Artifact，记录原事件、Pack、能力、PinSet、当前 Run 状态和全部 Task ref/node/status/attempt 快照；sourceRefs 绑定事件、Pack、PinSet 和 Task。真实 Inbox 仍按原事件加稳定 Run consumer id 去重，恢复扫描、分页和重放共享同一回执。既有 Action consumer、权限隔离和 Outbox 语义不变。
+
+真实 Cosign/PostgreSQL 联测覆盖能力引用发现 Run PinSet、Run/Task 持久夹具、Run 观察内容、稳定 consumer id、缺 Run admission 拒绝和完整签名安装链。这不取消/暂停 Run，也不改变 workflow 执行派发；生产跨范围调度宿主、退役治理与真实 Provider 验收仍开放。验证见 [Run Suspension Owner 证据](verification-2026-09-13-run-suspension-owner.json)。
+
+## 2026-09-13：Suspension 持久回填水位
+
+`runtime.suspension_sweeps` 现在为每个已提交暂停事件、精确能力和显式业务 scope 保存不可变化的 generation、数据库时钟高水位、页 cursor 和完成状态。每次 cycle 以打开事务时的 `clock_timestamp()` 为边界，只扫描此前已提交的 PinSet；并发插入进入后续 cycle，不会被旧水位错误确认。成功页面才推进 cursor，且 cursor 只能前进；失败、撤权或存储拒绝不推进。已完成 generation 保留为审计事实，下一次显式 scope sweep 打开新一代。
+
+dispatch worker 在每个 scope/capability 效果前打开状态，每个成功 page 后推进状态。真实 Cosign/PostgreSQL 联测覆盖 RLS/manifest readiness、worker 两代完整状态、statement timestamp 之前/之后的 PinSet 边界、cursor 回退拒绝、完成重放后新一代打开和既有 Inbox 去重。仍不自动枚举业务 scope，也不把完整 generation 当作退役删除或全局通知证明。验证见 [Suspension Watermark 证据](verification-2026-09-13-suspension-watermark.json)。
+
+## 2026-09-13：Safety Stop 公共提案
+
+新增公开命令 `abh.actions.start-safety-stop`、HTTP 路径和 typed client `safetyStops.start`。请求必须携带候选 fence 引用、fencing token 和未决 Operation；Owner 在同一提案事务内重新锁定候选，核验真实 Identity、token、未决 Operation、无已登记 safety Action、无阻塞报告，并要求 proposal 目标同时绑定 fence 与未决 Operation。受信 definition 必须显式声明 `safetyStop=true` 和 `abh.action.safety-stop`。命令只创建 Proposed safety intent，不创建授权、Permit、传输调用或状态改变。
+
+契约新增 `ProposeSafetyStopPayload`，OpenAPI 达到 61 条路径，51 个 artifact 和 API 报告保持一致。真实 Identity/Core HTTP/typed client Action 回归覆盖成功 intent、stale token、重复 safety 候选拒绝和非安全 definition 拒绝；既有公开 proposal 回归保持不变。自动编排、正式 Domain 装配和生产治理验收仍开放。验证见 [Safety Stop Public Proposal 证据](verification-2026-09-13-safety-stop-public-proposal.json)。
+
+## 2026-09-13：Artifact 反向血缘
+
+第 72 批迁移新增租户隔离的 `data.artifact_dependencies`。内联 Artifact 和 ObjectStore Artifact 都在同一 Available T2 中发布不可变血缘边；每条边保留目标 Artifact 版本、精确 source Ref、purpose/workspace 绑定和观察时间。重复发布幂等去重，墓碑不改写历史。反向查询按 source 类型和 UUID 稳定键序分页，并要求当前 purpose 与租户绑定；runtime 角色只有 INSERT/SELECT，admin 也受表 CHECK 限制不能改写 source 版本。
+
+真实 PostgreSQL 回归覆盖两条 Artifact 派生边、去重重放、稳定分页、跨租户空结果、权限拒绝和结构不可变；既有内联、二进制、Tracked staging、清扫和数据库 readiness 回归保持通过。生产 ObjectStore Adapter、无上限大正文流式上传和保留/导出生命周期仍开放。验证见 [Artifact Lineage 证据](verification-2026-09-13-artifact-lineage.json)。
+
+## 2026-09-13：Artifact 保留生命周期
+
+新增 `data.artifact_retention_jobs` 和授权 `runArtifactRetentionWorker`。到期发现先复核 tombstone Grant，再为 inline 或 ObjectStore Artifact 建立租约化保留 Job；ObjectStore 删除必须获得外部 Completed 收据后才递增 Artifact 版本并写入 Tombstoned。JSON 引用使用显式 `text::jsonb` cast，终态/进行中 Job 不重复入队，删除收据与 policy evidence 均持久保留。
+
+真实 PostgreSQL 回归覆盖未到期保留、到期对象先删后墓碑、Artifact 2→3、Job Completed/attempt=1、外部删除幂等键、墓碑后读取拒绝和保留 Artifact 不受影响；Artifact/database 聚焦测试 25/25 通过。验证见 [Artifact Retention 证据](verification-2026-09-13-artifact-retention.json)。
+
+## 2026-09-13：Artifact 持久对象流式上传与开放导出
+
+`FilesystemObjectStore` 现在提供 single-host durable production-profile ObjectStore Adapter：流式写入先落在随机 staging 文件，边写边计算 SHA-256 与 size，显式 `sync` 后再原子发布到 `objects/{prefix}/{id}-v{version}`；metadata sidecar、range read、put/delete receipt 幂等由同一根目录协议承载。该适配器满足 Core `ObjectStorePort`，但不声称跨主机共享文件系统或托管云对象存储的生产验收。
+
+Object Artifact 增加无上限 `stageStream()` 和 `storeObjectArtifactStream()`。调用方可声明 expected digest、size 和 media type；Core 先创建 T1 staging Artifact，经 ObjectStore put、digest/size 校验后进入 T2 Available 发布。`readStream()` 用授权代理逐段读取已发布对象，避免把大正文载入内存。迁移清单版本升至 75。
+
+`ArtifactExportOwner` 增加 Pending/Running/Completed/Failed/Expired 导出生命周期和 `data.artifact_exports` 持久作业。create 与 run 都要求显式当前授权回调；run 通过租约 claim 后用 PostgreSQL `READ ONLY REPEATABLE READ` snapshot 取得 watermark，导出 `manifest.json`、records JSONL、Available Artifact 内容和 artifact 引用。每个文件记录 SHA-256 与 size，完成时把带哈希 manifest 写成不可变 Inline Artifact，并持久化 manifest digest、watermark、文件数、输出大小和完成状态；失败清除输出并把 Job 标记 Failed。
+
+真实 PostgreSQL 聚焦回归覆盖 300,000 字节分块流式上传、T2 metadata binding、range read、put/delete 幂等、300KB Artifact 导出、manifest hash、JSONL records 和数据库 Completed 状态。公开大正文 HTTP/client 上传和导出目录过期清扫已由后续条目关闭；真实分布式云 ObjectStore Adapter、托管生产部署和外部云验收仍开放。验证见 [ObjectStore 流式与导出证据](verification-2026-09-13-objectstore-stream-export.json)。

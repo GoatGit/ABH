@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-12",
+  "scope": "static-assignment-rollback",
+  "contractArtifacts": 51,
+  "openApiPaths": 57,
+  "checks": [
+    "contracts generate --check",
+    "contracts 312 tests",
+    "contracts build and api reports",
+    "core typecheck, build and api reports",
+    "assignment-rollback real-postgresql owner, authority, HTTP and client regression",
+    "core full run: 574 tests, 568 passed, 6 skipped, 0 failed",
+    "adapter-fastify 15 tests",
+    "cli 5 tests",
+    "docs 774 links",
+    "workspace typecheck and build",
+    "workspace api reports",
+    "git diff --check"
+  ],
+  "covered": [
+    "strong-version rollback command",
+    "exact previous release and evidence-set binding",
+    "current Available artifact and Pass gate evidence",
+    "atomic pause of failed assignment",
+    "new replacement assignment pointing to previous release",
+    "rollbackOfAssignmentRef and rollbackFromReleaseRef lineage",
+    "immutable existing pin sets",
+    "new selection resolves to previous capability version",
+    "authorization-required failure without replacement",
+    "release-authority success and command receipt replay",
+    "HTTP If-Match governance and 403 denial",
+    "typed client rollback and replay",
+    "audit and rollback/assignment-created outbox events"
+  ],
+  "remaining": [
+    "workbench rollback surface with server-derived evidence and stable idempotency",
+    "production release approval governance",
+    "canary termination and full operational rollback orchestration",
+    "real deployment compensation and batch release operations"
+  ],
+  "status": "passed"
+}

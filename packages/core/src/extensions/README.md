@@ -1530,7 +1530,7 @@ actionPackSuspensionConsumer 提供每个 Action/精确能力的固定消费者�
 
 ## 2026-09-09：扫描页到 Action 的恢复投递
 
-新增内部 deliverActionSuspensionPage：从持久 Artifact 回读并核验完整扫描页，为每个 Action 刷新独立 Service 身份，在相同组织/Workspace 中调用实际暂停消费者。页面读取权限与业务通知权限分别检查；消费者额外核对页内 pinSetDigest 与实际 Pin。Run 等未安装 Owner 类型整页拒绝，不能静默跳过。
+新增内部 deliverActionSuspensionPage：从持久 Artifact 回读并核验完整扫描页，为每个 Action 或 Run 刷新独立 Service 身份，在相同组织/Workspace 中调用对应实际暂停消费者。页面读取权限与业务通知权限分别检查；消费者额外核对页内 pinSetDigest 与实际 Pin。未知 Owner 类型或缺 Run admission 整页失败，不能静默跳过。
 
 每个效果以原暂停事件和原 Action 消费者为 Inbox 去重依据，分页边界、重新扫描与既有队列投递共享相同回执。当前目标失败只回滚它自己的事务；已完成目标仍可在新数据库连接中回放。可选 onHandled 在效果提交后有界执行，确认丢失不会重复写入观察。输入、回调及策略配置在等待前固定，整页共用调用方截止时间和取消信号。
 

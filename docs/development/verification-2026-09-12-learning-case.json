@@ -1,0 +1,60 @@
+{
+  "date": "2026-09-12",
+  "subject": "governed Learning Case evidence attribution first slice",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts generate",
+    "corepack pnpm --filter @abh/contracts build",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm --filter @abh/contracts api:check",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/learning-build-case.test.ts",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "completionEstimate": "99.5%",
+    "contractsArtifacts": 51,
+    "contractOpenApiPaths": 41,
+    "contractsApiEntryPoints": 9,
+    "coreApiEntryPoints": 4,
+    "documentLinksChecked": 771,
+    "workspaceTests": 925,
+    "workspacePassed": 919,
+    "workspaceSkipped": 6,
+    "workspaceFailed": 0,
+    "fullWorkspaceCheckPassed": true,
+    "buildCaseContractVerified": true,
+    "learningCaptureGrantRequired": true,
+    "signalCountBoundedTo100Verified": true,
+    "exactSignalVersionAndTenantRequired": true,
+    "commonScopeAndPurposeRequired": true,
+    "withdrawnPurposeRejectedVerified": true,
+    "crossTenantRejectedVerified": true,
+    "currentEvidenceArtifactsRequired": true,
+    "counterEvidenceAllowedVerified": true,
+    "immutableLearningCaseCreatedVerified": true,
+    "learningCaseDigestVerified": true,
+    "learningCaseCreatedEventVerified": true,
+    "auditOutboxAndReceiptAtomicVerified": true,
+    "httpAndSdkReplayStableVerified": true,
+    "knowledgeQualificationBlockedByDesignVerified": true
+  },
+  "evidence": [
+    "Real PostgreSQL BuildCase created one immutable LearningCaseRecord with verified content digest and receipt reference",
+    "The command wrote one learning-case.created event, audit record and command receipt in one transaction",
+    "Missing grants, missing evidence, mixed scopes, withdrawn signal purposes and foreign tenants failed closed",
+    "HTTP returned 201 and replay returned the same response; the typed SDK replayed without creating another case",
+    "Exact persistence counts were learning_cases=2, events=2 and BuildCase receipts=2 for the direct and HTTP fixtures",
+    "Contract generation, 41 OpenAPI paths, API reports, Core typecheck and the focused real-PostgreSQL regression passed"
+  ],
+  "limits": [
+    "Learning Case is evidence attribution only and does not confer brand-fact or domain-knowledge qualification",
+    "Capability Candidate creation, Evaluation Profile/Run/Gate, independent evaluator identity and release orchestration remain open",
+    "Purpose-withdrawal propagation into existing Cases, evaluation queues and release assignments remains open",
+    "Candidate/status/scope queries, batch listing and projections remain open",
+    "production IdP, external systems, hosted scheduling and independent security review remain outside this local engineering closure"
+  ]
+}

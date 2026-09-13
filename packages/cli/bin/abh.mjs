@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import {runDoctor} from '../src/doctor.mjs';
+import {runInit} from '../src/init.mjs';
+import {runPack} from '../src/pack.mjs';
 import {runMission} from '../src/mission.mjs';
 import {runServer} from '../src/run.mjs';
 const stop=new AbortController();
@@ -7,7 +9,9 @@ const cancel=()=>stop.abort();
 process.once('SIGINT',cancel);process.once('SIGTERM',cancel);
 const args=process.argv.slice(2);
 try{
- if(args[0]==='mission'){process.exitCode=await runMission(args.slice(1),{env:process.env,stdout:process.stdout,stderr:process.stderr});}
+ if(args[0]==='init'){process.exitCode=await runInit(args.slice(1),{stdout:process.stdout,stderr:process.stderr});}
+ else if(args[0]==='pack'){process.exitCode=await runPack(args.slice(1),{env:process.env,stdout:process.stdout,stderr:process.stderr,signal:stop.signal});}
+ else if(args[0]==='mission'){process.exitCode=await runMission(args.slice(1),{env:process.env,stdout:process.stdout,stderr:process.stderr});}
  else if(args[0]==='run'){process.exitCode=await runServer(args.slice(1),{env:process.env,stdout:process.stdout,stderr:process.stderr,signal:stop.signal});}
  else{process.exitCode=await runDoctor(args,{env:process.env,stdout:process.stdout,stderr:process.stderr,signal:stop.signal});}
 }

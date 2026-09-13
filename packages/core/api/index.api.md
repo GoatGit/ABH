@@ -4,8 +4,99 @@
 
 ```ts
 
+import type { EntityRef } from '@abh/contracts';
+
+// @public (undocumented)
+export interface BusinessAction {
+    // (undocumented)
+    actionType: string;
+    // (undocumented)
+    completionPolicyRef: EntityRef;
+    // (undocumented)
+    description: string;
+    // (undocumented)
+    executionPrincipalRef: EntityRef;
+    // (undocumented)
+    inputSchema: BusinessInputSchema;
+    // (undocumented)
+    intentExpirySeconds: number;
+    // (undocumented)
+    maxOperations: number;
+    // (undocumented)
+    purposeNames: readonly string[];
+    // (undocumented)
+    requiredBehaviorSlots: readonly string[];
+    // (undocumented)
+    riskClass: string;
+    // (undocumented)
+    title: string;
+}
+
+// @public (undocumented)
+export interface BusinessDefinition extends BusinessDefinitionInput {
+    // (undocumented)
+    digest: string;
+    // (undocumented)
+    kind: 'abh.business-definition';
+    // (undocumented)
+    schemaVersion: '0.1.0';
+}
+
+// @public (undocumented)
+export interface BusinessDefinitionInput {
+    // (undocumented)
+    actions: readonly BusinessAction[];
+    // (undocumented)
+    mode: 'ActionOnly';
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    version: string;
+}
+
+// @public (undocumented)
+export interface BusinessInputSchema {
+    // (undocumented)
+    additionalProperties: false;
+    // (undocumented)
+    properties: Record<string, BusinessInputSchemaNode>;
+    // (undocumented)
+    required?: readonly string[];
+    // (undocumented)
+    type: 'object';
+}
+
+// @public (undocumented)
+export type BusinessInputSchemaNode = {
+    type: 'string';
+    minLength?: number;
+    maxLength?: number;
+    enum?: readonly string[];
+} | {
+    type: 'number';
+    minimum?: number;
+    maximum?: number;
+} | {
+    type: 'integer';
+    minimum?: number;
+    maximum?: number;
+} | {
+    type: 'boolean';
+} | {
+    type: 'array';
+    items: BusinessInputSchemaNode;
+    minItems?: number;
+    maxItems?: number;
+} | BusinessInputSchema;
+
 // @public
 export const coreVersion: "0.1.0";
+
+// @public (undocumented)
+export function defineBusiness(input: BusinessDefinitionInput): Promise<BusinessDefinition>;
+
+// @public (undocumented)
+export function validateBusinessInput(definition: BusinessDefinition, actionType: string, input: unknown): unknown;
 
 // (No @packageDocumentation comment for this package)
 

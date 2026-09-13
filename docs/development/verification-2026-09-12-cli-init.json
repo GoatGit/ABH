@@ -1,0 +1,33 @@
+{
+  "date": "2026-09-12",
+  "subject": "Strict development project initialization",
+  "commands": [
+    "corepack pnpm --filter @abh/cli build",
+    "corepack pnpm --filter @abh/cli test",
+    "corepack pnpm typecheck",
+    "corepack pnpm build",
+    "corepack pnpm api:check",
+    "corepack pnpm docs:check",
+    "git diff --check"
+  ],
+  "results": {
+    "cliRegressions": "11 passed, 0 failed",
+    "developmentConfigResolvedThroughContracts": true,
+    "emptyAndNewDirectoryCreated": true,
+    "nonEmptyDirectoryRejectedWithoutMutation": true,
+    "forceShowsTemplateDiffAndPreservesForeignFiles": true,
+    "nonRegularTargetsFailClosed": true,
+    "jsonMachineOutputRemainsValidWithForce": true,
+    "credentialValuesRemainAbsentAndJsonHasNoEvidenceRef": true
+  },
+  "evidence": [
+    "The CLI generated an Action-only project whose abh.config.json passes resolveDevelopmentConfig",
+    "Only protected environment reference names were emitted for the two distinct restricted database roles",
+    "Force replacement displayed a unified diff for README.md while preserving user.json",
+    "A symlinked README target was rejected without following or modifying the destination"
+  ],
+  "limits": [
+    "init scaffolds an explicit Development project; it does not start a server, provide production identity or secret resolution, or claim Action implementation",
+    "dev, pack, upgrade, export and import commands remain outside this batch"
+  ]
+}

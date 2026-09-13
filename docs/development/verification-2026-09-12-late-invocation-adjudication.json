@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-12",
+  "subject": "Run Owner adjudication of late invocation evidence during lease takeover",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm --filter @abh/core exec node --test test/run-execution.test.ts",
+    "corepack pnpm --filter @abh/core test",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "completionEstimate": "99%",
+    "workspaceTests": 920,
+    "workspacePassed": 914,
+    "workspaceSkipped": 6,
+    "workspaceFailed": 0,
+    "coreTests": 556,
+    "corePassed": 550,
+    "coreSkipped": 6,
+    "coreFailed": 0,
+    "activeLeaseObservationRejected": true,
+    "expiredCompleteRejected": true,
+    "postTakeoverLateEvidenceRejected": true,
+    "completedLateEvidenceAdopted": true,
+    "taskEnteredVerifyingWithoutNewAttempt": true,
+    "ownerFencingTokenAdvanced": true,
+    "adjudicationImmutableAndAudited": true
+  },
+  "limits": [
+    "general automatic reconciliation policy and production scheduling remain open",
+    "real Pi and external providers remain open",
+    "production hosting, real IdP, global release scan and independent security review remain outside this estimate"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "date": "2026-09-13",
+  "scope": "Immutable artifact dependency lineage and reverse lookup",
+  "summary": "Added tenant-isolated data.artifact_dependencies, shared inline/ObjectStore publication edges, idempotent replay, and bounded reverse lineage pagination. Deletion history remains immutable; runtime roles can only insert or select lineage facts.",
+  "commands": [
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/artifacts.test.ts test/database.test.ts",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "artifactTestsPassed": 12,
+    "artifactTestsFailed": 0,
+    "databaseReadinessTestsPassed": 12,
+    "databaseReadinessTestsFailed": 0,
+    "databaseManifestVersion": 72,
+    "inlinePublicationEdgesRecorded": true,
+    "objectPublicationEdgesRecorded": true,
+    "duplicateEdgesDeduped": true,
+    "reversePaginationStable": true,
+    "crossTenantResultEmpty": true,
+    "runtimeMutationDenied": true,
+    "adminSourceMutationBlockedByCheck": true
+  },
+  "finalCheck": {
+    "command": "corepack pnpm check",
+    "passed": true,
+    "docsLinksChecked": 794,
+    "contractArtifactsMatched": 51,
+    "publicApiEntryPoints": {
+      "contracts": 9,
+      "core": 6
+    },
+    "testsTotal": 1003,
+    "testsPassed": 996,
+    "testsFailed": 0,
+    "testsSkipped": 7,
+    "packages": {
+      "contracts": { "passed": 313, "failed": 0, "skipped": 0 },
+      "adapterPi": { "passed": 10, "failed": 0, "skipped": 0 },
+      "adapterFastify": { "passed": 15, "failed": 0, "skipped": 0 },
+      "core": { "passed": 608, "failed": 0, "skipped": 7 },
+      "workbench": { "passed": 28, "failed": 0, "skipped": 0 },
+      "cli": { "passed": 22, "failed": 0, "skipped": 0 }
+    }
+  },
+  "boundaries": [
+    "Production ObjectStore adapter remains open",
+    "Unbounded large-body streaming upload remains open",
+    "Retention and export lifecycle remain open"
+  ]
+}

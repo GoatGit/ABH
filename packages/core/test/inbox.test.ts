@@ -24,7 +24,7 @@ import {CoreError} from '../src/internal/errors.ts';
 import {assertCurrentGrants} from '../src/control/grants.ts';
 import {revokeGrant} from '../src/control/revoke.ts';
 import {LedgerOwner} from '../src/resources/ledger.ts';
-import {context,createDatabaseFixture,options} from './database-fixture.ts';
+import {context,createDatabaseFixture,options,seedLedgerCatalog} from './database-fixture.ts';
 
 const ref=<T extends string>(type:T,id:string=randomUUID())=>({type,id,version:1 as const});
 const command=async(type:string,value:unknown):Promise<CommandIdentity>=>({type,commandId:randomUUID(),idempotencyKey:randomUUID(),digest:await inputDigest(value)});
@@ -41,7 +41,8 @@ test('Inbox commits the actual Owner effect once across at-least-once deliveries
     await tx.owner('Control')`INSERT INTO control.grants(resource_organization_id,id,principal_id,record,valid_from,valid_until,status) VALUES (${org},${grant.grantRef.id},${principal.id},${JSON.stringify(grant)}::text::jsonb,${grant.validFrom},${grant.validUntil},'Active')`;
     for(const subject of [scope,principal,grant.grantRef,ref('abh.principal',c.tenant.actor.id)])await tx.owner('Control')`INSERT INTO control.fences(resource_organization_id,id,scope_type,scope_id,epoch) VALUES (${org},${randomUUID()},${subject.type},${subject.id},1)`;
   });
-  const input=()=>({id:randomUUID(),scopeRef:scope,resourceType:'hello.inbox-resource',meteringMode:'cumulative' as const,unit:'hello.credit',periodRef:ref('abh.period'),limit:'10'});
+  const catalog=await seedLedgerCatalog(db,worker,'hello.credit');
+  const input=()=>({id:randomUUID(),scopeRef:scope,resourceType:'hello.inbox-resource',meteringMode:'cumulative' as const,unit:'hello.credit',periodRef:catalog.periodRef,limit:'10'});
   const source=async()=>{
     const value=input(),cmd=await command('abh.ledgers.configure',value);let record:LedgerRecord;
     await db.transaction(c,options(),tx=>executeCommand(tx,cmd,async()=>{},async()=>{record=await ledger.configure(tx,cmd,value);return record.ledgerRef;}));

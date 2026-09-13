@@ -3,6 +3,11 @@ import type {WorkbenchSession} from './identity';
 import {workbenchConfig} from './config';
 export {cancelActionIdempotencyKey,decisionIdempotencyKey,missionIdempotencyKey} from './keys';
 export {errorText} from './errors';
+export {
+  pauseAssignmentIdempotencyKey,releaseLearningCandidateIdempotencyKey,
+  rollbackAssignmentIdempotencyKey,
+  requestEvaluationIdempotencyKey,retryEvaluationIdempotencyKey,
+} from './keys';
 
 export function createWorkbenchClient(session:WorkbenchSession):AbhClient{
   if(!workbenchConfig.apiUrl)throw new Error('ABH_API_URL is required');

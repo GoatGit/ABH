@@ -1,0 +1,41 @@
+{
+  "date": "2026-09-12",
+  "subject": "Governed evaluation retry from an exact inconclusive predecessor",
+  "commands": [
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/core exec node --test --test-concurrency=1 test/learning-build-case.test.ts",
+    "corepack pnpm --filter @abh/core build",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core api:check",
+    "corepack pnpm --filter @abh/workbench typecheck",
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm --filter @abh/workbench test:e2e",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "learningFocusedTests": "1 passed, 0 failed",
+    "coreFullChecks": "568 tests: 562 passed, 6 skipped, 0 failed",
+    "workbenchUnitTests": "25 passed, 0 failed",
+    "workbenchBrowserTests": "2 passed, 0 failed",
+    "cliTests": "5 passed, 0 failed",
+    "publicApiEntryPoints": "Contracts 9; Core 5",
+    "contractsArtifacts": 51,
+    "openApiPaths": 52,
+    "documentationLinks": 771
+  },
+  "evidence": [
+    "Retry required an exact tenant-visible predecessor Run under strong read and required terminal Inconclusive state",
+    "The successor froze the predecessor Candidate, Profile, Baseline and assignment unit and carried the exact retryOfRef lineage",
+    "A new seed and expiry were generated while caller injection of a replacement Baseline or Profile was structurally impossible",
+    "Draft Candidate state, absence of another queued Run, current Profile matching, evaluator/producer independence and evidence availability were revalidated",
+    "Capture/evaluate purpose withdrawal, authorization, tenant/workspace and evaluator identity rules failed closed",
+    "The retry caller was required to be both the Profile evaluator and the predecessor Run requester",
+    "Core PostgreSQL tests covered success, frozen lineage, idempotent replay, Completed/unknown rejection, identity rejection and active queued-run conflict",
+    "HTTP and typed-client replay returned the same successor; Workbench retry performed a current strong read and used a stable exact-version idempotency key"
+  ],
+  "limits": [
+    "No external evaluation host is invoked by the retry command itself; dispatch remains the existing governed recovery boundary",
+    "No real evaluation engine, production credential store, billing evidence or independent security review is claimed",
+    "Workbench remains a bounded operator entry point, not batch operations or a complete production governance console"
+  ]
+}

@@ -366,6 +366,31 @@
       "additionalProperties": false,
       "title": "ProposeActionPayload"
     },
+    "ProposeSafetyStopPayload": {
+      "type": "object",
+      "properties": {
+        "proposal": {
+          "$ref": "#/$defs/ProposeActionPayload"
+        },
+        "fenceRef": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/EntityRef"
+        },
+        "fencingToken": {
+          "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+        },
+        "unresolvedOperationRef": {
+          "$ref": "#/$defs/OperationRef"
+        }
+      },
+      "required": [
+        "proposal",
+        "fenceRef",
+        "fencingToken",
+        "unresolvedOperationRef"
+      ],
+      "additionalProperties": false,
+      "title": "ProposeSafetyStopPayload"
+    },
     "ActionProposal": {
       "type": "object",
       "properties": {
@@ -1558,6 +1583,363 @@
       ],
       "additionalProperties": false,
       "title": "ActionAcceptedResponse"
+    },
+    "LearningCaseCreatedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.learning-case"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "learningCase": {
+              "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/LearningCaseRecord"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "learningCase"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "LearningCaseCreatedResponse"
+    },
+    "LearningCandidateCreatedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.learning-candidate"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "learningCandidate": {
+              "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/LearningCandidateRecord"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "learningCandidate"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "LearningCandidateCreatedResponse"
+    },
+    "EvaluationRunCreatedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.evaluation-run"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "evaluationRun": {
+              "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/EvaluationRunRecord"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "evaluationRun"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "EvaluationRunCreatedResponse"
+    },
+    "CorrectionProposedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.correction"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "correction": {
+              "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/CorrectionRecord"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "correction"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "CorrectionProposedResponse"
+    },
+    "CorrectionAppliedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.correction"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "application": {
+              "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/CorrectionApplicationRecord"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "application"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "CorrectionAppliedResponse"
+    },
+    "ExceptionResolvedResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.exception"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "resolution": {
+              "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/ExceptionResolutionRecord"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "resolution"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "ExceptionResolvedResponse"
+    },
+    "ExceptionResolutionEffectResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "const": true
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "objectRef": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "abh.exception-resolution-effect"
+                },
+                "id": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+                },
+                "version": {
+                  "$ref": "urn:abh:contracts:0.1.0:public#/$defs/Version"
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "version"
+              ],
+              "additionalProperties": false
+            },
+            "commandId": {
+              "$ref": "urn:abh:contracts:0.1.0:public#/$defs/UUID"
+            },
+            "effect": {
+              "$ref": "urn:abh:contracts:0.1.0:facts#/$defs/ExceptionResolutionEffectRecord"
+            }
+          },
+          "required": [
+            "objectRef",
+            "commandId",
+            "effect"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "success",
+        "data"
+      ],
+      "additionalProperties": false,
+      "title": "ExceptionResolutionEffectResponse"
     },
     "DecisionSubmittedResponse": {
       "type": "object",

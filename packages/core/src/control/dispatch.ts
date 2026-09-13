@@ -35,8 +35,9 @@ interface CurrentDispatch {
   exitPermit?:DispatchPermitRecord;
 }
 const issued=new WeakMap<IssuedDispatchAuthorization,CurrentDispatch>();
-export function consumeDispatchAuthorization(tx:TenantTransaction,operationRef:EntityRef,token:IssuedDispatchAuthorization):CurrentDispatch{
-  const value=issued.get(token);if(!value||value.exitPermit||value.tx!==tx||!sameRef(value.operation.operationRef,operationRef))throw new CoreError('AUTHORITY_REQUIRED');
+export function consumeDispatchAuthorization(tx:TenantTransaction,operationRef:EntityRef,token:IssuedDispatchAuthorization,
+  options:{allowExit?:boolean}={}):CurrentDispatch{
+  const value=issued.get(token);if(!value||(!options.allowExit&&value.exitPermit)||value.tx!==tx||!sameRef(value.operation.operationRef,operationRef))throw new CoreError('AUTHORITY_REQUIRED');
   tx.assertActive();issued.delete(token);return value;
 }
 export function consumeExitAuthorization(tx:TenantTransaction,permitRef:EntityRef,token:IssuedDispatchAuthorization):CurrentDispatch & {exitPermit:DispatchPermitRecord}{
@@ -100,10 +101,14 @@ export class DispatchAuthorizationResolver {
     const slot=await new ResourceFenceOwner().lock(tx,node);
     if(slot?.blockedByReportRef)throw new CoreError('PRECONDITION_FAILED');
     if(exitPermit){
-      if(!slot?.unresolvedOperationRef||slot.unresolvedOperationRef.id!==operationRef.id||slot.fencingToken!==exitPermit.resourceFencingToken||slot.fenceRef.id!==exitPermit.resourceFenceRef.id
+      const owner=slot?.unresolvedOperationRef?.id===operationRef.id?slot.unresolvedOperationRef:slot?.safetyStopOperationRef?.id===operationRef.id?slot.safetyStopOperationRef:undefined;
+      if(!owner||slot!.fencingToken!==exitPermit.resourceFencingToken||slot!.fenceRef.id!==exitPermit.resourceFenceRef.id
         ||canonicalJson(exitPermit.connectorRef)!==canonicalJson(node.connectorRef)
         ||exitPermit.providerIdempotencyKey!==operation.providerIdempotencyKey)throw new CoreError('PRECONDITION_FAILED');
-    }else if(slot?.unresolvedOperationRef)throw new CoreError('PRECONDITION_FAILED');
+    }else if(intent.safetyStop===true){
+      if(!slot?.unresolvedOperationRef||slot.unresolvedOperationRef.id===operationRef.id
+      )throw new CoreError('PRECONDITION_FAILED');
+    }else if(slot?.unresolvedOperationRef||slot?.safetyStopOperationRef)throw new CoreError('PRECONDITION_FAILED');
     const budget=await resources.resolve(tx,envelope,plan.impactUpperBound);const reservations:ReservationRecord[]=[];
     for(const ref of snapshot.reservationRefs){
       const current=await ledger.getReservation(tx,ref.id);

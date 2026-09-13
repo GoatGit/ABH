@@ -23,16 +23,17 @@ export class DispatchOwner {
       if(record.resourceOrganizationId!==c.resourceOrganizationId||record.attemptRef.id!==attempt.attemptRef.id||record.observationRef.version!==Number(row.version)||record.status!==row.status||record.sequence!==Number(row.sequence))throw new CoreError('INTERNAL_ERROR');return record;});
   }
   async issue(tx:TenantTransaction,command:CommandIdentity,operationRef:EntityRef,input:IssueDispatchPermitPayload,
-    resolve:(tx:TenantTransaction)=>Promise<IssuedDispatchAuthorization>):Promise<DispatchPermitRecord>{
+    resolve:(tx:TenantTransaction)=>Promise<IssuedDispatchAuthorization>,options:{retry?:boolean}={}):Promise<DispatchPermitRecord>{
     contract('OperationRef',operationRef);contract('IssueDispatchPermitPayload',input);const complete=tx.requireCompletion();
-    const auth=consumeDispatchAuthorization(tx,operationRef,await resolve(tx)),c=tx.context.tenant;
+    const auth=consumeDispatchAuthorization(tx,operationRef,await resolve(tx),{allowExit:options.retry===true}),c=tx.context.tenant;
     if(canonicalJson(input.snapshotRef)!==canonicalJson(auth.snapshot.snapshotRef))throw new CoreError('AUTHORITY_REQUIRED');
     // Control has acquired all stage 1/2/3 locks and the parent Action aggregate.
     const lease=await new WorkLeaseOwner().requireCurrent(tx,input.leaseRef,input.workerId,input.leaseFencingToken,operationRef);
     const key=`${c.resourceOrganizationId}/OperationController/abh.operation/${operationRef.id}`;
     await tx.lock(4,key,()=>tx.owner('OperationController')`SELECT pg_advisory_xact_lock(hashtextextended(${key},0))`);
     if(canonicalJson(await new OperationOwner().get(tx,operationRef.id))!==canonicalJson(auth.operation))throw new CoreError('VERSION_CONFLICT');
-    const slot=await new ResourceFenceOwner().occupy(tx,command,auth.node,operationRef,auth.intent.purposeNames);
+    const slot=await new ResourceFenceOwner().occupy(tx,command,auth.node,operationRef,auth.intent.purposeNames,
+      {...(options.retry?{retry:true}:{}),...(auth.intent.safetyStop===true?{safetyStop:true}:{})});
     const [clock]=await tx.owner('OperationController')`SELECT clock_timestamp() AS now`;
     const expiresAt=new Date(Math.min(clock!.now.getTime()+5000,Date.parse(auth.validUntil),Date.parse(lease.leaseUntil))).toISOString();
     if(Date.parse(expiresAt)<=clock!.now.getTime())throw new CoreError('AUTHORITY_REQUIRED');

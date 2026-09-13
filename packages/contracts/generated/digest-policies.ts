@@ -107,6 +107,37 @@ export const digestPolicies = {
     "result",
     "observedAt"
   ],
+  "CorrectionRecord": [
+    "correctionRef",
+    "resourceOrganizationId",
+    "subjectRef",
+    "subjectVersion",
+    "beforeRef",
+    "proposedAfterRef",
+    "targetOwner",
+    "reason",
+    "evidenceRefs",
+    "responsibilityRef",
+    "purpose",
+    "receiptRef",
+    "proposedBy",
+    "proposedAt"
+  ],
+  "CorrectionApplicationRecord": [
+    "applicationRef",
+    "resourceOrganizationId",
+    "correctionRef",
+    "subjectRef",
+    "subjectVersionBefore",
+    "targetOwner",
+    "authorityRef",
+    "evidenceRefs",
+    "resultRef",
+    "resultVersion",
+    "receiptRef",
+    "appliedBy",
+    "appliedAt"
+  ],
   "OperationReconciliationRecord": [
     "resourceOrganizationId",
     "operationRef",
@@ -132,7 +163,8 @@ export const digestPolicies = {
     "requiredBehaviorSlots",
     "maxOperations",
     "expiresAt",
-    "purposeNames"
+    "purposeNames",
+    "safetyStop"
   ],
   "PolicyVersionRecord": [
     "resourceOrganizationId",
@@ -386,6 +418,48 @@ export const digestPolicies = {
     "proposalDigest",
     "recordedAt"
   ],
+  "ExceptionResolutionRecord": [
+    "resolutionRef",
+    "resourceOrganizationId",
+    "exceptionRef",
+    "sourceRef",
+    "reportRef",
+    "requestRef",
+    "decisionRef",
+    "resolutionKind",
+    "evidenceRefs",
+    "technicalUnknownPreserved",
+    "resourceFreezePreserved",
+    "resolvedBy",
+    "resolvedAt"
+  ],
+  "ExceptionResolutionEffectRecord": [
+    "effectRef",
+    "resourceOrganizationId",
+    "resolutionRef",
+    "exceptionRef",
+    "sourceRef",
+    "reportRef",
+    "correctionApplicationRef",
+    "fenceRef",
+    "fencingToken",
+    "reportBlockReleased",
+    "unresolvedOperationPreserved",
+    "fencingTokenPreserved",
+    "appliedBy",
+    "appliedAt"
+  ],
+  "ExceptionSuccessorDispatchRecord": [
+    "resourceOrganizationId",
+    "resolutionRef",
+    "exceptionRef",
+    "sourceRef",
+    "reportRef",
+    "resolutionKind",
+    "successorRef",
+    "dispatchedBy",
+    "dispatchedAt"
+  ],
   "ActionAuthorizationRequestRecord": [
     "requestRef",
     "resourceOrganizationId",
@@ -429,6 +503,7 @@ export const digestPolicies = {
     "schemaPath",
     "implementationRef",
     "healthRef",
+    "safetyStop",
     "permissionEnvelope",
     "packRef",
     "subjectDigest",
@@ -492,6 +567,102 @@ export const digestPolicies = {
     "signalType",
     "scopeRef",
     "purposeOfUse"
+  ],
+  "LearningCaseRecord": [
+    "caseRef",
+    "resourceOrganizationId",
+    "signalRefs",
+    "rootCauseCode",
+    "evidenceRefs",
+    "counterEvidenceRefs",
+    "domainOwnerRef",
+    "receiptRef",
+    "builtBy",
+    "builtAt"
+  ],
+  "LearningCandidateRecord": [
+    "candidateRef",
+    "resourceOrganizationId",
+    "caseRef",
+    "assetKind",
+    "baseVersion",
+    "candidateArtifactRef",
+    "scopeRef",
+    "risk",
+    "status",
+    "producer",
+    "receiptRef",
+    "createdAt"
+  ],
+  "EvaluationProfileRecord": [
+    "profileRef",
+    "resourceOrganizationId",
+    "assetKind",
+    "risk",
+    "suiteRef",
+    "datasetSnapshotRef",
+    "evaluatorRef",
+    "metricThresholdRef",
+    "metricThresholds",
+    "stoppingRuleRef",
+    "assignmentUnit",
+    "minimumSamples",
+    "confidenceLevel",
+    "minimumRelativeLift",
+    "approvedBy",
+    "approvedAt"
+  ],
+  "EvaluationRunRecord": [
+    "runRef",
+    "resourceOrganizationId",
+    "candidateRef",
+    "profileRef",
+    "baselineRef",
+    "retryOfRef",
+    "assignmentUnit",
+    "seed",
+    "executionRefs",
+    "status",
+    "requestedBy",
+    "receiptRef",
+    "createdAt",
+    "expiresAt"
+  ],
+  "EvaluationResultRecord": [
+    "resultRef",
+    "resourceOrganizationId",
+    "runRef",
+    "candidateRef",
+    "profileRef",
+    "status",
+    "artifactRefs",
+    "executionRefs",
+    "metricValues",
+    "completedSamples",
+    "failedSamples",
+    "dataDigest",
+    "baselineMetricValues",
+    "baselineCompletedSamples",
+    "baselineFailedSamples",
+    "evaluatorPrincipal",
+    "receiptRef",
+    "submittedAt"
+  ],
+  "EvaluationGateArtifactRecord": [
+    "gateRef",
+    "resourceOrganizationId",
+    "candidateRef",
+    "profileRef",
+    "evaluationRefs",
+    "metricThresholds",
+    "metricValues",
+    "baselineMetricValues",
+    "uncertainty",
+    "limitations",
+    "findings",
+    "verdict",
+    "signedBy",
+    "createdAt"
   ],
   "CreateMissionCommand": [
     "type",
@@ -664,6 +835,18 @@ export const digestPolicies = {
     "payload",
     "expectedVersion"
   ],
+  "DelegateResponsibilitySlotCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "EscalateResponsibilitySlotCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
   "RevokeResponsibilityCommand": [
     "type",
     "target",
@@ -686,6 +869,28 @@ export const digestPolicies = {
     "type",
     "target",
     "payload"
+  ],
+  "ResolveExceptionCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "ApplyExceptionResolutionEffectCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "ProposeCorrectionCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "ApplyCorrectionCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
   ],
   "CreateScopeAuthorityCommand": [
     "type",
@@ -841,7 +1046,18 @@ export const digestPolicies = {
     "payload",
     "expectedVersion"
   ],
+  "SafeRetryOperationCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
   "ProposeActionCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "StartSafetyStopCommand": [
     "type",
     "target",
     "payload"
@@ -887,6 +1103,21 @@ export const digestPolicies = {
     "target",
     "payload"
   ],
+  "RegisterLedgerUnitCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "RegisterLedgerPeriodCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "ApplyLedgerCorrectionCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
   "ReserveAllCommand": [
     "type",
     "target",
@@ -921,6 +1152,12 @@ export const digestPolicies = {
     "payload"
   ],
   "StopStaticAssignmentCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "RollbackStaticAssignmentCommand": [
     "type",
     "target",
     "payload",
@@ -1070,6 +1307,59 @@ export const digestPolicies = {
     "payload",
     "expectedVersion"
   ],
+  "StopStalledRunCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "WakeRunCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "ProposeGraphPatchCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "ClaimTaskCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "PrepareInvocationCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "FinalizeInvocationCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "CompleteInvocationCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "ObserveLateInvocationCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "CommitVerifiedTaskCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
   "SubmitVerificationCommand": [
     "type",
     "target",
@@ -1081,6 +1371,49 @@ export const digestPolicies = {
     "payload"
   ],
   "CaptureSignalCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "BuildCaseCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "CreateCandidateCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "RequestEvaluationCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "RetryEvaluationCommand": [
+    "type",
+    "target",
+    "payload"
+  ],
+  "SubmitEvaluationResultCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "ExpireEvaluationRunCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "BuildGateCommand": [
+    "type",
+    "target",
+    "payload",
+    "expectedVersion"
+  ],
+  "ConfigureLearningCandidateReleaseCommand": [
     "type",
     "target",
     "payload"

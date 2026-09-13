@@ -1,5 +1,5 @@
 import {execFile} from 'node:child_process';
-import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,writeFile,readFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {isAbsolute,join} from 'node:path';
 import type {TransactionOptions} from '../data/uow.ts';
@@ -13,9 +13,51 @@ export interface OfflineCosignKey {
   publicKeyPem:string;
 }
 
+export interface OfflineCosignSigningKey {
+  /** Deployment-controlled, pinned Cosign executable; never supplied by the Pack. */
+  executable:string;
+  /** Reference-resolved private key; callers must remove the source reference after use. */
+  privateKeyPem:string;
+  /** Optional key decryption secret supplied only through the process environment. */
+  password?:string;
+}
+
 /** Verify exact original bytes using Cosign, with no shell, remote key lookup or package-provided trust root. */
 export async function verifyCosignBlob(payload:Uint8Array,bundle:Uint8Array,key:OfflineCosignKey,options:TransactionOptions):Promise<void>{
   return verifyCosign(payload,bundle,key,options);
+}
+
+/** Sign exact bytes with a pinned local Cosign executable. The caller owns key-reference lifetime and trust policy. */
+export async function signCosignBlob(payload:Uint8Array,key:OfflineCosignSigningKey,
+  options:TransactionOptions):Promise<Uint8Array>{
+  const config={...key},current={...options,deadline:Math.min(options.deadline,Date.now()+30000)};
+  if(!isAbsolute(config.executable)||config.privateKeyPem.length>16384||
+    !/^-----BEGIN [A-Z ]*PRIVATE KEY-----\r?\n[\s\S]+\r?\n-----END [A-Z ]*PRIVATE KEY-----\s*$/.test(config.privateKeyPem)||
+    (config.password!==undefined&&(typeof config.password!=='string'||config.password.length>4096)))throw new CoreError('INVALID_ARGUMENT');
+  if(!(payload instanceof Uint8Array)||payload.byteLength>1048576)throw new CoreError('LIMIT_EXCEEDED');
+  const check=()=>{if(!Number.isFinite(current.deadline)||current.deadline<=Date.now()||current.signal.aborted)throw new CoreError('DEPENDENCY_TIMEOUT');};
+  check();
+  const root=await mkdtemp(join(tmpdir(),'abh-cosign-sign-'));
+  try{
+    await writeFile(join(root,'payload'),Buffer.from(payload),{mode:0o600});
+    await writeFile(join(root,'key.pem'),config.privateKeyPem,{mode:0o600});
+    check();
+    await new Promise<void>((resolve,reject)=>{
+      const child=execFile(config.executable,['sign-blob','--key',join(root,'key.pem'),'--tlog-upload=false',
+        '--new-bundle-format','--bundle',join(root,'bundle.json'),join(root,'payload')],{
+        cwd:root,env:{HOME:root,PATH:'/usr/bin:/bin',LANG:'C',...(config.password===undefined?{}:{COSIGN_PASSWORD:config.password})},
+        timeout:Math.max(1,current.deadline-Date.now()),killSignal:'SIGKILL',maxBuffer:65536,
+      },error=>{
+        current.signal.removeEventListener('abort',cancel);
+        try{check();}catch(timeout){reject(timeout);return;}
+        if(error)reject(new CoreError('PRECONDITION_FAILED'));else resolve();
+      });
+      const cancel=()=>{child.kill('SIGKILL');};
+      current.signal.addEventListener('abort',cancel,{once:true});
+      if(current.signal.aborted)cancel();
+    });
+    return new Uint8Array(await readFile(join(root,'bundle.json')));
+  }finally{await rm(root,{recursive:true,force:true});}
 }
 
 /** Cosign verifies DSSE signatures and binds in-toto subject claims to the supplied artifact bytes. */

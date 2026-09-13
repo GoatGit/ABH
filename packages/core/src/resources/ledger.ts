@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import type { EntityRef, LedgerRecord, ReservationRecord, LedgerEntryRecord, CommitmentRecord, SettlementRecord, OpenCommitmentPayload } from '@abh/contracts';
+import type { EntityRef, LedgerRecord, ReservationRecord, LedgerEntryRecord, CommitmentRecord, SettlementRecord, OpenCommitmentPayload,
+  LedgerUnitRecord, LedgerPeriodRecord, LedgerCorrectionRecord } from '@abh/contracts';
 import type { TenantTransaction } from '../data/uow.ts';
 import { appendChange, contract, inputDigest, type CommandIdentity } from '../data/journal.ts';
 import { CoreError } from '../internal/errors.ts';
@@ -12,7 +13,7 @@ function amount(value: string, positive=false): string {
   if (positive && /^0(?:\.0+)?$/.test(value)) throw new CoreError('INVALID_ARGUMENT');
   return value;
 }
-function ledgerRecord(row: Record<string,unknown>): LedgerRecord {
+export function ledgerRecord(row: Record<string,unknown>): LedgerRecord {
   return contract('LedgerRecord',{
     ledgerRef:ref('abh.ledger',row.id as string,Number(row.version)),resourceOrganizationId:row.resource_organization_id,
     scopeRef:row.scope_ref,resourceType:row.resource_type,meteringMode:row.metering_mode,unit:row.unit,
@@ -26,6 +27,78 @@ function reservationRecord(row: Record<string,unknown>): ReservationRecord {
     requestRef:row.request_ref,ledgerRef:ref('abh.ledger',row.ledger_id as string,Number(row.ledger_version)),
     amount:row.amount,expiresAt:(row.expires_at as Date).toISOString(),bindingRef:row.binding_ref,status:row.status,
   });
+}
+
+function ledgerUnitRecord(row:Record<string,unknown>):LedgerUnitRecord{
+  return contract('LedgerUnitRecord',{unitRef:ref('abh.unit',row.id as string,Number(row.version)),
+    resourceOrganizationId:row.resource_organization_id,name:row.name,kind:row.kind,
+    ...(row.currency?{currency:row.currency}:{}),precision:Number(row.precision),recordedAt:(row.created_at as Date).toISOString()});
+}
+
+function ledgerPeriodRecord(row:Record<string,unknown>):LedgerPeriodRecord{
+  return contract('LedgerPeriodRecord',{periodRef:ref('abh.period',row.id as string,Number(row.version)),
+    resourceOrganizationId:row.resource_organization_id,startsAt:(row.starts_at as Date).toISOString(),
+    endsAt:(row.ends_at as Date).toISOString(),recordedAt:(row.created_at as Date).toISOString()});
+}
+
+function ledgerCorrectionRecord(row:Record<string,unknown>):LedgerCorrectionRecord{return contract('LedgerCorrectionRecord',row.record);}
+
+function decimalScale(value:string):number{
+  if(!/^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/.test(value))contract('Decimal',value);
+  return (value.split('.')[1]??'').length;
+}
+
+/** Immutable resource vocabulary. Configuration must resolve both entries before a Ledger can admit usage. */
+export class LedgerCatalogOwner {
+  async registerUnit(tx:TenantTransaction,command:CommandIdentity,input:{id:string;name:string;kind:'monetary'|'quantity';
+    currency?:string;precision:number;purposeNames?:string[]}):Promise<LedgerUnitRecord>{
+    contract('UUID',input.id);const {id:_id,...payload}=input;contract('RegisterLedgerUnitPayload',payload);
+    if(input.kind==='monetary'&&!input.currency)throw new CoreError('INVALID_ARGUMENT');
+    const c=tx.context.tenant,purposeNames=lifecyclePurposes(input.purposeNames??[c.purposeOfUse],c.purposeOfUse);
+    const record=contract('LedgerUnitRecord',{unitRef:ref('abh.unit',input.id,1),resourceOrganizationId:c.resourceOrganizationId,
+      name:input.name,kind:input.kind,...(input.currency?{currency:input.currency}:{}),precision:input.precision,
+      recordedAt:new Date().toISOString()});
+    await tx.owner('ResourceLedger')`INSERT INTO resource.units
+      (resource_organization_id,id,workspace_id,purpose_names,record,name,kind,precision)
+      VALUES (${c.resourceOrganizationId},${input.id},${c.workspaceId??null},${purposeNames},${JSON.stringify(record)}::text::jsonb,
+        ${input.name},${input.kind},${input.precision})`;
+    await appendChange(tx,{command,target:record.unitRef,eventType:'abh.ledger-unit.registered',changedFields:['name','kind']});
+    return record;
+  }
+
+  async registerPeriod(tx:TenantTransaction,command:CommandIdentity,input:{id:string;startsAt:string;endsAt:string;
+    purposeNames?:string[]}):Promise<LedgerPeriodRecord>{
+    contract('UUID',input.id);const {id:_id,...payload}=input;contract('RegisterLedgerPeriodPayload',payload);
+    if(Date.parse(input.endsAt)<=Date.parse(input.startsAt))throw new CoreError('INVALID_ARGUMENT');
+    const c=tx.context.tenant,purposeNames=lifecyclePurposes(input.purposeNames??[c.purposeOfUse],c.purposeOfUse);
+    const record=contract('LedgerPeriodRecord',{periodRef:ref('abh.period',input.id,1),resourceOrganizationId:c.resourceOrganizationId,
+      startsAt:input.startsAt,endsAt:input.endsAt,recordedAt:new Date().toISOString()});
+    await tx.owner('ResourceLedger')`INSERT INTO resource.periods
+      (resource_organization_id,id,workspace_id,purpose_names,record,starts_at,ends_at)
+      VALUES (${c.resourceOrganizationId},${input.id},${c.workspaceId??null},${purposeNames},${JSON.stringify(record)}::text::jsonb,
+        ${input.startsAt},${input.endsAt})`;
+    await appendChange(tx,{command,target:record.periodRef,eventType:'abh.ledger-period.registered',changedFields:['startsAt','endsAt']});
+    return record;
+  }
+
+  async getUnitByName(tx:TenantTransaction,name:string):Promise<LedgerUnitRecord>{
+    contract('RegisteredName',name);const c=tx.context.tenant;
+    const rows=await tx.owner('ResourceLedger')`SELECT * FROM resource.units WHERE resource_organization_id=${c.resourceOrganizationId}
+      AND name=${name} AND deleted_at IS NULL`;
+    if(!rows[0])throw new CoreError('RESOURCE_NOT_FOUND');
+    return ledgerUnitRecord(rows[0]);
+  }
+
+  async getPeriod(tx:TenantTransaction,periodRef:EntityRef):Promise<LedgerPeriodRecord>{
+    contract('EntityRef',periodRef);if(periodRef.type!=='abh.period')throw new CoreError('INVALID_ARGUMENT');
+    const c=tx.context.tenant;
+    const rows=await tx.owner('ResourceLedger')`SELECT * FROM resource.periods WHERE resource_organization_id=${c.resourceOrganizationId}
+      AND id=${periodRef.id} AND deleted_at IS NULL`;
+    const row=rows[0];if(!row)throw new CoreError('RESOURCE_NOT_FOUND');
+    const record=ledgerPeriodRecord(row);
+    if(record.periodRef.version!==periodRef.version)throw new CoreError('VERSION_CONFLICT');
+    return record;
+  }
 }
 
 /** Internal Owner; Control admission and command dedupe run first in the same UoW. */
@@ -75,6 +148,10 @@ export class LedgerOwner {
   }
   async configure(tx: TenantTransaction, command: CommandIdentity, input: Pick<LedgerRecord,'scopeRef'|'resourceType'|'meteringMode'|'unit'|'currency'|'periodRef'|'limit'> & {id: string;purposeNames?:string[]}): Promise<LedgerRecord> {
     const c=tx.context.tenant;
+    const unit=await new LedgerCatalogOwner().getUnitByName(tx,input.unit);
+    const period=await new LedgerCatalogOwner().getPeriod(tx,input.periodRef);
+    if(unit.kind==='monetary'?input.currency!==unit.currency:Boolean(input.currency))throw new CoreError('INVALID_ARGUMENT');
+    if(decimalScale(input.limit)>unit.precision)throw new CoreError('INVALID_ARGUMENT');
     const purposeNames=lifecyclePurposes(input.purposeNames??[c.purposeOfUse],c.purposeOfUse);
     const record=contract('LedgerRecord',{
       ledgerRef:ref('abh.ledger',input.id,1),resourceOrganizationId:c.resourceOrganizationId,
@@ -262,6 +339,57 @@ export class LedgerOwner {
     await appendChange(tx,{command,target:next.commitmentRef,eventType:'abh.commitment.balance-changed',changedFields:['remaining'],relatedRefs:[record.settlementRef]});
     await appendChange(tx,{command,target:record.settlementRef,eventType:'abh.settlement.created',changedFields:['usageAmount','commitmentDelta'],relatedRefs:[next.commitmentRef]});
     await appendChange(tx,{command,target:updated.ledgerRef,eventType:ledger.status!=='Frozen'&&updated.status==='Frozen'?'abh.ledger.freeze':'abh.ledger.balance-changed',changedFields:['confirmedUsage','openCommitment','status'],relatedRefs:[record.settlementRef]});
+    return record;
+  }
+
+  /** Signed usage corrections append history; the frozen Domain callback owns refund recovery and FX direction. */
+  async applyCorrection(tx:TenantTransaction,command:CommandIdentity,
+    input:{ledgerRef:EntityRef;sourceRef:EntityRef;kind:'Refund'|'FxRevaluation';usageDelta:string;
+      conversionRef?:EntityRef;evidenceRefs:EntityRef[]},
+    verifyDomainRule:(ledger:LedgerRecord,input:{kind:'Refund'|'FxRevaluation';usageDelta:string;conversionRef?:EntityRef;
+      evidenceRefs:EntityRef[]})=>Promise<void>):Promise<LedgerCorrectionRecord>{
+    contract('ApplyLedgerCorrectionPayload',input);contract('UUID',input.ledgerRef.id);
+    contract('Decimal',input.usageDelta);contract('EntityRef',input.sourceRef);
+    if(input.usageDelta==='0'||/^-(?:0(?:\.0+)?)$/.test(input.usageDelta))throw new CoreError('INVALID_ARGUMENT');
+    if(input.kind==='FxRevaluation'?!input.conversionRef:Boolean(input.conversionRef))throw new CoreError('INVALID_ARGUMENT');
+    for(const evidenceRef of input.evidenceRefs)contract('EntityRef',evidenceRef);
+    const initial=await this.get(tx,input.ledgerRef.id);
+    await this.#lock(tx,[initial.ledgerRef.id]);
+    const ledger=await this.get(tx,input.ledgerRef.id),c=tx.context.tenant,sql=tx.owner('ResourceLedger');
+    if(ledger.meteringMode!=='cumulative'||ledger.status==='Closed')throw new CoreError('OBLIGATION_CONFLICT');
+    await verifyDomainRule(ledger,input);
+    const digest=await inputDigest({ledgerId:ledger.ledgerRef.id,sourceRef:input.sourceRef,kind:input.kind,
+      usageDelta:input.usageDelta,...(input.conversionRef?{conversionRef:input.conversionRef}:{}),
+      evidenceRefs:input.evidenceRefs});
+    const existing=await sql`SELECT record FROM resource.corrections WHERE resource_organization_id=${c.resourceOrganizationId}
+      AND ledger_id=${ledger.ledgerRef.id} AND source_type=${input.sourceRef.type} AND source_id=${input.sourceRef.id}
+      AND source_version=${input.sourceRef.version}`;
+    if(existing[0]){
+      const replay=ledgerCorrectionRecord(existing[0]);
+      if(replay.inputDigest!==digest)throw new CoreError('IDEMPOTENCY_CONFLICT');
+      return replay;
+    }
+    if(initial.ledgerRef.version!==input.ledgerRef.version)throw new CoreError('VERSION_CONFLICT');
+    const balances=await sql`UPDATE resource.ledgers SET confirmed_usage=confirmed_usage+${input.usageDelta}::numeric,
+      version=version+1,updated_at=clock_timestamp(),updated_by=${c.actor.id},status=CASE
+        WHEN confirmed_usage+${input.usageDelta}::numeric+held_reservation+open_commitment>limit_amount THEN 'Frozen' ELSE status END
+      WHERE resource_organization_id=${c.resourceOrganizationId} AND id=${ledger.ledgerRef.id} AND version=${ledger.ledgerRef.version}
+        AND confirmed_usage+${input.usageDelta}::numeric>=0 RETURNING *`;
+    if(!balances[0])throw new CoreError('RESOURCE_EXHAUSTED');
+    const updated=ledgerRecord(balances[0]);
+    const unsigned={correctionRef:ref('abh.ledger-correction',randomUUID(),1),resourceOrganizationId:c.resourceOrganizationId,
+      ledgerRef:updated.ledgerRef,sourceRef:input.sourceRef,kind:input.kind,usageDelta:input.usageDelta,
+      ...(input.conversionRef?{conversionRef:input.conversionRef}:{}),inputDigest:digest,recordedAt:new Date().toISOString()};
+    const record=contract('LedgerCorrectionRecord',unsigned);
+    await sql`INSERT INTO resource.corrections
+      (resource_organization_id,id,workspace_id,purpose_names,record,ledger_id,source_type,source_id,source_version)
+      VALUES (${c.resourceOrganizationId},${record.correctionRef.id},${c.workspaceId??null},ARRAY[${c.purposeOfUse}],
+        ${JSON.stringify(record)}::text::jsonb,${updated.ledgerRef.id},${input.sourceRef.type},${input.sourceRef.id},${input.sourceRef.version})`;
+    await this.#entry(tx,command,updated.ledgerRef,'Correct',record.correctionRef,{usageDelta:input.usageDelta},input.evidenceRefs);
+    await appendChange(tx,{command,target:record.correctionRef,eventType:'abh.ledger-correction.applied',
+      changedFields:['usageDelta'],relatedRefs:[input.sourceRef,...input.evidenceRefs]});
+    await appendChange(tx,{command,target:updated.ledgerRef,eventType:'abh.ledger.balance-changed',
+      changedFields:['confirmedUsage','status'],relatedRefs:[record.correctionRef]});
     return record;
   }
 

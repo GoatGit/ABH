@@ -1,0 +1,50 @@
+{
+  "date": "2026-09-12",
+  "subject": "authorized ResolveException disposition with preserved technical Unknown and immutable audit trail",
+  "commands": [
+    "corepack pnpm --filter @abh/core exec tsc --noEmit -p tsconfig.typecheck.json",
+    "corepack pnpm --filter @abh/core exec node --test test/actions.test.ts",
+    "corepack pnpm --filter @abh/contracts check",
+    "corepack pnpm --filter @abh/contracts api:update",
+    "corepack pnpm --filter @abh/core typecheck",
+    "corepack pnpm --filter @abh/core api:update",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "completionEstimate": "99.4%",
+    "contractsArtifacts": 51,
+    "apiEntryPoints": 13,
+    "focusedActionTests": 66,
+    "focusedActionPassed": 66,
+    "focusedActionFailed": 0,
+    "workspaceTests": 921,
+    "workspacePassed": 915,
+    "workspaceSkipped": 6,
+    "workspaceFailed": 0,
+    "documentLinksChecked": 771,
+    "resolveContractVerified": true,
+    "humanDecisionReviewPurposeRequired": true,
+    "staleVersionRejectedVerified": true,
+    "closedResponsibilityProofRequired": true,
+    "technicalUnknownPreservedVerified": true,
+    "resourceFreezePreservedVerified": true,
+    "operationOutcomeUnchangedVerified": true,
+    "immutableResolutionRowVerified": true,
+    "commandIdempotencyVerified": true,
+    "changedIdempotencyKeyConflictVerified": true,
+    "auditAndOutboxAtomicVerified": true
+  },
+  "evidence": [
+    "Real PostgreSQL terminal contradiction was resolved with AuthorizedContinue after a closed Exception responsibility request",
+    "Resolution schema allows the five registered V1 disposition kinds and records the approved decision evidence",
+    "Resource fence and Operation readback remained byte-for-byte unchanged after resolution",
+    "The immutable resolution row explicitly preserves technical Unknown and resource freeze facts",
+    "Same command replay returned the same disposition; a changed key for the same exception conflicted",
+    "Contract generation, API reports and Core typecheck passed"
+  ],
+  "limits": [
+    "ResolveException is an internal command, not a public HTTP handler",
+    "automatic correction application, compensation and governance unfreezing remain open",
+    "production exception routing and eligibility governance remain host responsibilities"
+  ]
+}

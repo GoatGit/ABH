@@ -19,6 +19,7 @@ export async function Navigation(){
   return <nav aria-label="主导航">
     <div className="nav-links">
       <Link href="/">总览</Link><Link href="/inbox">待办与审批</Link><Link href="/actions">执行</Link>
+      <Link href="/learning">Learning</Link>
       <Link href="/settings">设置</Link>
     </div>
     {session?<form action={switchOrganizationAction} className="organization-switcher">

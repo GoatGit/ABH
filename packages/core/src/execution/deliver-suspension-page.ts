@@ -7,7 +7,7 @@ import {requireVerifiedContext,type VerifiedContext} from '../internal/context.t
 import {requestVerifiedContext} from '../identity/context-source.ts';
 import {consumeCommittedEvent,readCommittedEvent} from '../durable/inbox.ts';
 import {readSuspensionPage,type SuspensionPageReadAdmission} from '../extensions/read-suspension-page.ts';
-import {actionPackSuspensionConsumer,type ActionSuspensionAdmission} from './pack-suspension-consumer.ts';
+import {actionPackSuspensionConsumer,runPackSuspensionConsumer,type ActionSuspensionAdmission,type RunSuspensionAdmission} from './pack-suspension-consumer.ts';
 
 type PageInput=Parameters<typeof readSuspensionPage>[3];
 type Target=Awaited<ReturnType<typeof readSuspensionPage>>['page']['targets'][number];
@@ -23,6 +23,7 @@ export interface SuspensionPageDeliveryInstallation {
  grantRefs:readonly EntityRef[];
  page:SuspensionPageReadAdmission;
  action:ActionSuspensionAdmission;
+ run?:RunSuspensionAdmission;
  /** Optional durable progress acknowledgement. Losing it replays the same Inbox. */
  onHandled?(delivery:SuspensionTargetDelivery,options:TransactionOptions):Promise<void>;
 }
@@ -43,15 +44,23 @@ export async function deliverActionSuspensionPage(database:Database,pageContext:
  const read=()=>readSuspensionPage(database,pageContext,limits,value,pageAdmission);
  const recovered=await read();
  // Other subject Owners need their own consumer; never silently acknowledge them.
- if(recovered.page.targets.some(target=>target.subjectRef.type!=='abh.action'))throw new CoreError('PRECONDITION_FAILED');
  const deliveries:SuspensionTargetDelivery[]=[];
  for(const target of recovered.page.targets){
   await read(); // Current page permission is independent of business notification permission.
   const current=await requestVerifiedContext(opts=>context(structuredClone(target),opts),limits),c=current.tenant,source=pageContext.tenant;
   if(c.actor.type!=='Service'||c.purposeOfUse!=='abh.runtime.deliver'||c.resourceOrganizationId!==source.resourceOrganizationId
    ||c.actingOrganizationId!==source.actingOrganizationId||c.workspaceId!==source.workspaceId)throw new CoreError('FORBIDDEN');
-  const consumer=actionPackSuspensionConsumer({actionRef:target.subjectRef,pinSetRef:target.pinSetRef,pinSetDigest:target.pinSetDigest,
-   capability:value.capability,registeredKind,grantRefs:grants},actionAdmission);
+  let consumer;
+  if(target.subjectRef.type==='abh.action'){
+   consumer=actionPackSuspensionConsumer({actionRef:target.subjectRef,pinSetRef:target.pinSetRef,pinSetDigest:target.pinSetDigest,
+    capability:value.capability,registeredKind,grantRefs:grants},actionAdmission);
+  }else if(target.subjectRef.type==='abh.run'){
+   if(!installation.run)throw new CoreError('PRECONDITION_FAILED');
+   const runAdmission={fenceRefs:installation.run.fenceRefs.bind(installation.run),source:installation.run.source.bind(installation.run),
+    artifact:installation.run.artifact.bind(installation.run),storage:structuredClone(installation.run.storage)};
+   consumer=runPackSuspensionConsumer({runRef:target.subjectRef,pinSetRef:target.pinSetRef,pinSetDigest:target.pinSetDigest,
+    capability:value.capability,registeredKind,grantRefs:grants},runAdmission);
+  }else throw new CoreError('PRECONDITION_FAILED');
   const event=await database.transaction(current,limits,tx=>readCommittedEvent(tx,value.eventRef));
   const payload=contract('ConsumeEventPayload',{eventRef:value.eventRef,eventDigest:await inputDigest(event),consumerId:consumer.id});
   const inbox=await consumeCommittedEvent(database,current,limits,payload,consumer);

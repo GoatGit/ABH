@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-12",
+  "scope": "learning-release-workbench-write-path",
+  "contractArtifacts": 51,
+  "openApiPaths": 53,
+  "checks": [
+    "contracts generate --check",
+    "contracts 312 tests",
+    "contracts build and api reports",
+    "core build and api reports",
+    "learning-build-case real-postgresql regression with core HTTP and typed client replay",
+    "core full run: 568 tests, 562 passed, 6 skipped, 0 failed",
+    "adapter-fastify 15 tests",
+    "cli 5 tests",
+    "workbench typecheck",
+    "workbench 26 unit tests",
+    "workbench production chromium e2e: 2 passed"
+  ],
+  "covered": [
+    "public release command with static assignment response",
+    "typed client releases.configureLearningCandidate",
+    "release authority HTTP installation and idempotent replay",
+    "fastify strong ETag for direct aggregate DTO and envelope DTO",
+    "workbench strong-read pass gate",
+    "server-constructed organization assignment and immutable evidence",
+    "stable protected intent idempotency key",
+    "browser release submission and organization isolation"
+  ],
+  "remaining": [
+    "production release approval governance",
+    "real deployment and canary execution",
+    "post-release observation and rollback orchestration",
+    "batch release scanning and full operations console"
+  ],
+  "status": "passed"
+}
