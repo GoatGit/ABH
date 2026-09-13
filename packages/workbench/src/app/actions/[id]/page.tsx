@@ -3,7 +3,8 @@ import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {ActionForm} from '@/components/ActionForm';
 import {CompensationSection} from '@/components/CompensationSection';
-import {Card,Message,SessionRequired} from '@/components/ui';
+import {SessionRequired} from '@/components/ui';
+import {Badge, Card, Message, PageHeader} from '@/components/primitives';
 import {actionPositionLabel,canCancelAction} from '@/lib/action-view';
 import {cancelActionAction} from '@/lib/actions';
 import {formatDateTime} from '@/lib/format';
@@ -26,9 +27,11 @@ export default async function ActionPage({params}:{params:Promise<{id:string}>})
       &&['Failed','PartiallySucceeded'].includes(item.position.outcome);
     const compensation=compensationAvailable
       ?await currentCompensationAdapter().resolve(session,{action:item}):null;
-    return <main><h1>{item.actionType}</h1>
+    return <main>
+      <PageHeader eyebrow="执行" title={item.actionType}
+        description={<>数据时点 {formatDateTime(action.meta.asOf)}；状态 {actionPositionLabel(item.position)}。</>}
+        aside={<Badge status={item.position.lifecycle}>{item.position.lifecycle}</Badge>}/>
       {unknown?<Message kind="stale">外部结果待确认；不能据此创建新的普通写入意图。</Message>:null}
-      <Message kind="stale">数据时点 {formatDateTime(action.meta.asOf)}；状态 {actionPositionLabel(item.position)}。</Message>
       <LiveActionStatus sseEnabled={workbenchConfig.sseEnabled} identity={{
         actorId:session.actorId,actingOrganizationId:session.actingOrganizationId,
         resourceOrganizationId:session.resourceOrganizationId,workspaceId:session.workspaceId,

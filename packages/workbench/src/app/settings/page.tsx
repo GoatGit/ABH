@@ -1,7 +1,8 @@
 import {currentSession} from '@/lib/session';
 import {currentSettingsAdapter} from '@/lib/settings-install';
 import {validateSettingsView} from '@/lib/settings-validation';
-import {Card,Message,SessionRequired} from '@/components/ui';
+import {SessionRequired} from '@/components/ui';
+import {Card, Message, PageHeader} from '@/components/primitives';
 import {errorText} from '@/lib/errors';
 import {SettingsCommandSection} from '@/components/SettingsCommandSection';
 import {formatDateTime} from '@/lib/format';
@@ -20,8 +21,8 @@ export default async function SettingsPage(){
     const view=await currentSettingsAdapter().resolve({session});
     if(!view||!validateSettingsView(view))
       return <main><h1>组织设置</h1><Message kind="empty">当前会话未开放治理快照。</Message></main>;
-    return <main><h1>组织设置</h1>
-      <Message kind="stale">数据时点：{formatDateTime(view.asOf)}；来源：{view.source}。</Message>
+    return <main>
+      <PageHeader eyebrow="治理" title="组织设置" description={<>数据时点：{formatDateTime(view.asOf)}；来源：{view.source}。</>}/>
       <div className="grid">
         <Card title="协作边界">
           <dl><dt>组织</dt><dd><code>{view.organization.organizationId}</code></dd>

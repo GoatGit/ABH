@@ -1,6 +1,7 @@
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
-import {Card,Message,SessionRequired} from '@/components/ui';
+import {SessionRequired} from '@/components/ui';
+import {Badge, Card, Message, PageHeader} from '@/components/primitives';
 import {DecisionFormsSection} from '@/components/DecisionFormsSection';
 import {currentDecisionFormsAdapter} from '@/lib/decision-forms';
 import {validateDecisionFormTemplate} from '@/lib/decision-forms-validation';
@@ -29,8 +30,10 @@ export default async function DecisionPage({params}:{params:Promise<{id:string}>
       resourceOrganizationId:session.resourceOrganizationId,workspaceId:session.workspaceId,
       purposeOfUse:session.purposeOfUse,authorizationDigest:session.authorizationDigest,
     };
-    return <main><h1>{item.package.question}</h1>
-      <Message kind="stale">数据时点 {formatDateTime(decision.meta.asOf)}；当前状态 {item.status}。</Message>
+    return <main>
+      <PageHeader eyebrow="责任决定" title={item.package.question}
+        description={<>数据时点 {formatDateTime(decision.meta.asOf)}；当前状态 {item.status}。</>}
+        aside={<Badge status={item.status}>{item.status}</Badge>}/>
       <LiveDecisionStatus identity={identity} decisionId={id} initial={decision}
         staleSeconds={workbenchConfig.queryStaleSeconds} sseEnabled={workbenchConfig.sseEnabled}/>
       <div className="grid">

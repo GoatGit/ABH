@@ -1,7 +1,8 @@
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {formatDateTime} from '@/lib/format';
-import {Message,SessionRequired} from '@/components/ui';
+import {SessionRequired} from '@/components/ui';
+import {Message, PageHeader} from '@/components/primitives';
 import {ActionForm} from '@/components/ActionForm';
 import {pauseAssignmentAction,releaseLearningCandidateAction,rollbackAssignmentAction,requestEvaluationAction,retryEvaluationAction} from '@/lib/actions';
 
@@ -51,7 +52,8 @@ export default async function LearningPage({searchParams}:{searchParams:Promise<
     if(runStatus)nextQuery.set('runStatus',runStatus);
     if(runs.cursor)nextQuery.set('cursor',runs.cursor);
     return <main>
-      <h1>Learning 治理</h1>
+      <PageHeader eyebrow="Learning" title="Learning 治理"
+        description={<>数据时点 {formatDateTime(candidates.asOf)}；候选 {candidates.candidates.length} 条，评测 {runs.runs.length} 条，Gate {visibleGates.length} 条。Assignment {assignments.assignments.length} 条。恢复由受授权的宿主 Worker 执行。</>}/>
       <p className="message stale" role="status">
         数据时点 {formatDateTime(candidates.asOf)}；候选 {candidates.candidates.length} 条，
         评测 {runs.runs.length} 条，Gate {visibleGates.length} 条。

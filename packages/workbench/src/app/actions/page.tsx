@@ -1,7 +1,8 @@
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {LiveActionList} from '@/components/LiveActionList';
-import {Message,SessionRequired} from '@/components/ui';
+import {SessionRequired} from '@/components/ui';
+import {Message, PageHeader} from '@/components/primitives';
 import {lifecycleLabels} from '@/lib/action-view';
 import {workbenchConfig} from '@/lib/config';
 
@@ -38,20 +39,23 @@ export default async function ActionsPage({searchParams}:{searchParams:Promise<S
       resourceOrganizationId:session.resourceOrganizationId,workspaceId:session.workspaceId,
       purposeOfUse:session.purposeOfUse,authorizationDigest:session.authorizationDigest,
     };
-    return <main><h1>执行结果</h1>
-      <form className="action-form" method="get">
-        <label htmlFor="missionId">Mission ID（可选）</label>
-        <input id="missionId" name="missionId" type="text" defaultValue={missionId??''} inputMode="numeric"/>
-        <label htmlFor="lifecycle">阶段</label>
-        <select id="lifecycle" name="lifecycle" defaultValue={lifecycle??''}>
-          <option value="">全部</option>
-          {lifecycles.map(item=><option key={item} value={item}>{lifecycleLabels[item]}</option>)}
-        </select>
-        <label htmlFor="outcome">结果</label>
-        <select id="outcome" name="outcome" defaultValue={outcome??''}>
-          <option value="">全部</option>
-          {outcomes.map(item=><option key={item} value={item}>{item}</option>)}
-        </select>
+    return <main><PageHeader eyebrow="执行" title="执行结果" description="按目标、阶段与结果筛选授权执行记录。"/>
+      <form className="toolbar" method="get">
+        <label htmlFor="missionId">Mission ID（可选）
+          <input id="missionId" name="missionId" type="text" defaultValue={missionId??''} inputMode="numeric"/>
+        </label>
+        <label htmlFor="lifecycle">阶段
+          <select id="lifecycle" name="lifecycle" defaultValue={lifecycle??''}>
+            <option value="">全部</option>
+            {lifecycles.map(item=><option key={item} value={item}>{lifecycleLabels[item]}</option>)}
+          </select>
+        </label>
+        <label htmlFor="outcome">结果
+          <select id="outcome" name="outcome" defaultValue={outcome??''}>
+            <option value="">全部</option>
+            {outcomes.map(item=><option key={item} value={item}>{item}</option>)}
+          </select>
+        </label>
         <button type="submit">筛选</button>
       </form>
       <LiveActionList identity={identity} initial={actions}

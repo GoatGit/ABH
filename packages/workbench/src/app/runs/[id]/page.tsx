@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
-import {Card,Message,SessionRequired} from '@/components/ui';
+import {SessionRequired} from '@/components/ui';
+import {Badge, Card, Message, PageHeader} from '@/components/primitives';
 import {ActionForm} from '@/components/ActionForm';
 import {LiveRunStatus} from '@/components/LiveRunStatus';
 import {cancelRunAction} from '@/lib/actions';
@@ -18,8 +19,10 @@ export default async function RunPage({params}:{params:Promise<{id:string}>}){
   if(!uuidPattern.test(id))return <main><h1>Run 详情</h1><Message kind="error">INVALID_ARGUMENT</Message></main>;
   try{
     const view=await createWorkbenchClient(session).runs.get(id),run=view.run;
-    return <main><h1>{run.triggerKey}</h1>
-      <Message kind="stale">当前强读 Run v{run.runRef.version}；时点 {formatDateTime(view.asOf)}。</Message>
+    return <main>
+      <PageHeader eyebrow="Run" title={run.triggerKey}
+        description={<>当前强读 Run v{run.runRef.version}；时点 {formatDateTime(view.asOf)}。</>}
+        aside={<Badge status={run.status}>{run.status}</Badge>}/>
       <LiveRunStatus sseEnabled={workbenchConfig.sseEnabled!==false} identity={{
         actorId:session.actorId,actingOrganizationId:session.actingOrganizationId,
         resourceOrganizationId:session.resourceOrganizationId,workspaceId:session.workspaceId,
@@ -27,7 +30,7 @@ export default async function RunPage({params}:{params:Promise<{id:string}>}){
       }} runId={run.runRef.id} initial={view} staleSeconds={workbenchConfig.queryStaleSeconds}/>
       <div className="grid">
         <Card title="执行状态"><dl>
-          <dt>状态</dt><dd>{run.status}</dd>
+          <dt>状态</dt><dd><Badge status={run.status}>{run.status}</Badge></dd>
           <dt>执行模式</dt><dd>{run.executionMode}</dd>
           <dt>目标修订</dt><dd>{run.goalRevision}</dd>
           <dt>停止代次</dt><dd>{run.stopEpoch}</dd>
@@ -44,7 +47,7 @@ export default async function RunPage({params}:{params:Promise<{id:string}>}){
         {view.tasks.length===0?<Message kind="empty">当前强读没有可见任务。</Message>:(
           <ol aria-label="Run 任务列表">{view.tasks.map(task=>(
             <li key={task.taskRef.id}>
-              <strong>{task.nodeKey}</strong> · {task.kind} · {task.status}
+              <strong>{task.nodeKey}</strong> · {task.kind} · <Badge>{task.status}</Badge>
               <span> v{task.taskRef.version} · 第 {task.attemptOrdinal} 次 · {task.required?'必需':'可选'} · {formatDateTime(task.updatedAt)}</span>
             </li>
           ))}</ol>

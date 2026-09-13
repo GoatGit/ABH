@@ -5,7 +5,11 @@
 ## 启用前提
 
 1. 设置 `ABH_API_URL` 为 ABH HTTP 服务地址。
-2. 替换 `src/lib/identity.ts` 的 `denyAllIdentityAdapter`：必须从真实 IdP/session 解析当前 Human 身份，在 `apiHeaders` 中为每个 API 请求注入宿主凭据，并区分 `actingOrganizationId` 与 `resourceOrganizationId`。
+2. 身份装配在 `src/lib/identity-install.ts`。默认按环境选择：
+   - 设置 `ABH_IDENTITY_ISSUER`、`ABH_IDENTITY_AUDIENCE` 与 `ABH_IDENTITY_JWKS_URL`（RS256/ES256，生产必须 https）或 `ABH_IDENTITY_SHARED_SECRET`（HS256，自托管部署）即启用内置生产适配器（`src/lib/identity-production.ts`）。它校验 Bearer JWT 签名、`exp`/`nbf`/`iss`/`aud`，从 `sub`/`name`/`abh_organizations`/`abh_purpose` 声明解析会话，把验证过的 token 服务端转发给 ABH API；组织 Cookie 只是选择意图，成员资格一律以 token 声明复核。
+   - 生产构建（`NODE_ENV=production`）未配置身份时 fail closed，所有会话拒绝。
+   - 开发环境未配置时使用浏览器 e2e fixture，仅限本地演示，不得部署。
+3. 需要自定义会话语义时，实现 `src/lib/identity.ts` 的 `WorkbenchIdentityAdapter`：必须从真实 IdP/session 解析当前 Human 身份，在 `apiHeaders` 中为每个 API 请求注入宿主凭据，并区分 `actingOrganizationId` 与 `resourceOrganizationId`。
 3. 组织选择 Cookie 只是用户意图；适配器必须在每次请求重新验证成员资格、Workspace、acting/resource 组织和用途。
 4. 提供稳定且非保密的 `authorizationDigest`，用于隔离客户端缓存；它不能替代服务端授权。
 5. 需要补偿时，替换 `src/lib/compensation.ts` 的 `denyAllCompensationAdapter`，返回已注册 Action 定义的补偿模板；适配器必须核对 Action 可见性、状态、定义归属和授权。
@@ -13,7 +17,7 @@
 7. 需要 Settings 治理时，设置 `WORKBENCH_SETTINGS_URL` 启用显式生产 HTTP 装配。服务必须返回有界非保密快照和已注册命令；`execute` 会在每次调用中重新授权、绑定请求 ID 保证幂等。也可以继续替换 `src/lib/settings.ts` 的 `denyAllSettingsAdapter`，由宿主完成业务审计与 Core/治理系统集成。
 8. 不要在浏览器返回、日志或 Next 缓存中保存 API 凭据。页面和 BFF 均禁用共享缓存。
 
-未替换适配器时，应用只显示未登录，不会发送 ABH 请求。
+生产构建未配置身份适配器时，应用只显示未登录，不会发送 ABH 请求。
 
 ## 当前边界
 

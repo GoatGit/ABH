@@ -6,6 +6,7 @@ import type {DecisionInboxResponse} from '@abh/contracts';
 import {overviewInboxQueryKey,type QueryIdentity} from '@/lib/query-keys';
 import {formatDateTime,formatImpact} from '@/lib/format';
 import {useOrganizationLiveInvalidation} from './useOrganizationLiveInvalidation';
+import {PageHeader} from './primitives';
 
 export function LiveInbox({identity,initial,staleSeconds}:{
   identity:QueryIdentity;initial:DecisionInboxResponse;staleSeconds:number;
@@ -19,11 +20,11 @@ export function LiveInbox({identity,initial,staleSeconds}:{
       await readInbox('/api/overview/inbox',signal),
   });
   const inbox=query.data;
-  if(query.isError)return <main><h1>待办与审批</h1>
+  if(query.isError)return <main><PageHeader title="待办与审批"/>
     <p className="message error" role="alert">待办不可用：{(query.error as Error).message}</p></main>;
-  if(query.isPending||!inbox)return <main><h1>待办与审批</h1>
+  if(query.isPending||!inbox)return <main><PageHeader title="待办与审批"/>
     <p className="message stale">正在同步授权待办…</p></main>;
-  return <main><h1>待办与审批</h1>
+  return <main><PageHeader title="待办与审批" description="需要人类决策的责任事项；提交后不会立即显示“已生效”。"/>
     <p className="message stale" role="status">刷新状态：{streamState==='live'?'实时':'授权轮询'}；时点 {formatDateTime(inbox.meta.asOf)}</p>
     {inbox.data.length===0?<p className="message empty" role="status">无待办；可创建目标或等待新责任。</p>:(
       <div className="grid">{inbox.data.map(item=>(
@@ -32,7 +33,7 @@ export function LiveInbox({identity,initial,staleSeconds}:{
           <dl><dt>类型</dt><dd>{item.package.slotId}</dd>
             <dt>影响</dt><dd>{formatImpact(item.package.impactUpperBound)}</dd>
             <dt>截止</dt><dd>{formatDateTime(item.package.validUntil)}</dd></dl>
-          <p>提交后不会立即显示“已生效”；生效必须等待服务端确认。</p>
+          <p className="meta">提交后不会立即显示“已生效”；生效必须等待服务端确认。</p>
           <Link href={`/decisions/${item.decisionRef.id}`}>查看并审批</Link>
         </section>))}</div>)}
   </main>;

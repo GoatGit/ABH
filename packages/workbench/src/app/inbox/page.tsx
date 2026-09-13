@@ -1,7 +1,8 @@
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {LiveInbox} from '@/components/LiveInbox';
-import {Message,SessionRequired} from '@/components/ui';
+import {SessionRequired} from '@/components/ui';
+import {Message} from '@/components/primitives';
 import {workbenchConfig} from '@/lib/config';
 
 export const dynamic='force-dynamic';

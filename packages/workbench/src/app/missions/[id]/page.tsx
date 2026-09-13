@@ -1,7 +1,8 @@
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import Link from 'next/link';
-import {Card,Message,SessionRequired} from '@/components/ui';
+import {SessionRequired} from '@/components/ui';
+import {Card, Message, PageHeader, Badge} from '@/components/primitives';
 import {ActionForm} from '@/components/ActionForm';
 import {cancelMissionAction,pauseMissionAction,resumeMissionAction} from '@/lib/actions';
 import {LiveMissionProjection} from '@/components/LiveMissionProjection';
@@ -23,8 +24,10 @@ export default async function MissionPage({params}:{params:Promise<{id:string}>}
       client.runs.list({missionId:id,limit:25}),
     ]);
     const mission=view.mission;
-    return <main><h1>{mission.domainType}</h1>
-      <Message kind="stale">强读版本 {mission.missionRef.version}；投影版本 {projection.projection.subjectRef.version}，时点 {formatDateTime(view.asOf)}。</Message>
+    return <main>
+      <PageHeader eyebrow="项目" title={mission.domainType}
+        description={<>强读版本 {mission.missionRef.version}；投影版本 {projection.projection.subjectRef.version}，时点 {formatDateTime(view.asOf)}。</>}
+        aside={<Badge status={mission.status}>{mission.status}</Badge>}/>
       <div className="grid">
         <Card title="状态"><dl><dt>生命周期</dt><dd>{mission.status}</dd>
           <dt>目标修订</dt><dd>{mission.goalRevision}</dd><dt>停止代次</dt><dd>{mission.stopEpoch}</dd>
