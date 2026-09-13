@@ -311,6 +311,7 @@ export const schemaIds: {
     readonly ApplyExceptionResolutionEffectPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ApplyExceptionResolutionEffectPayload";
     readonly ExceptionResolutionEffectRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ExceptionResolutionEffectRecord";
     readonly ResolveExceptionPayload: "urn:abh:contracts:0.1.0:facts#/$defs/ResolveExceptionPayload";
+    readonly ExceptionSuccessorDispatchRecord: "urn:abh:contracts:0.1.0:facts#/$defs/ExceptionSuccessorDispatchRecord";
     readonly RevokeResponsibilityPayload: "urn:abh:contracts:0.1.0:facts#/$defs/RevokeResponsibilityPayload";
     readonly DecisionWithdrawalRecord: "urn:abh:contracts:0.1.0:facts#/$defs/DecisionWithdrawalRecord";
     readonly ReviseResponsibilityRoutePayload: "urn:abh:contracts:0.1.0:facts#/$defs/ReviseResponsibilityRoutePayload";
@@ -1195,6 +1196,8 @@ export interface SchemaTypes {
     ExceptionResolutionRecord: Types.ExceptionResolutionRecord;
     // (undocumented)
     ExceptionResolvedResponse: Types.ExceptionResolvedResponse;
+    // (undocumented)
+    ExceptionSuccessorDispatchRecord: Types.ExceptionSuccessorDispatchRecord;
     // (undocumented)
     ExecuteWaitPortCommand: Types.ExecuteWaitPortCommand;
     // (undocumented)

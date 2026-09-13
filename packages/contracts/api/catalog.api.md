@@ -168,6 +168,11 @@ export const coreCatalog: {
         readonly scopeKind: "None";
         readonly description: "Immutable governance effect that releases only the reviewed report hold.";
     }, {
+        readonly name: "abh.exception-successor-dispatch";
+        readonly owner: "HumanGateway";
+        readonly scopeKind: "None";
+        readonly description: "Immutable proof that one resolved exception was handed to its governed successor handler.";
+    }, {
         readonly name: "abh.correction-application";
         readonly owner: "HumanGateway";
         readonly scopeKind: "None";

@@ -1673,6 +1673,10 @@ export const protocolRegistry: {
         readonly errors: readonly [];
     }];
     readonly events: readonly [{
+        readonly type: "abh.exception-successor-dispatch.created";
+        readonly aggregateType: "abh.exception-successor-dispatch";
+        readonly owner: "HumanGateway";
+    }, {
         readonly type: "abh.ledger-unit.registered";
         readonly aggregateType: "abh.unit";
         readonly owner: "ResourceLedger";
