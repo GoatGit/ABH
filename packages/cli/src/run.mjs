@@ -87,6 +87,9 @@ export async function runServer(args, { env, stdout, stderr, signal }, imports =
   try {
     const server = imports.server ? await imports.server() : await import('@abh/core/server');
     const database = await server.Database.connect(databaseUrl);
+    // Installations resolve Grants and other tenant facts through the same restricted
+    // connection; the database lifetime stays owned by the service.
+    if (typeof installation.attach === 'function') await installation.attach({ database });
     const ingress = new server.IdentityIngress(database, identity.provider, {
       issuer: identity.issuer, audience: identity.audience,
     });
@@ -98,6 +101,7 @@ export async function runServer(args, { env, stdout, stderr, signal }, imports =
       app: service.app,
       database,
       listen,
+      signal,
       loops: runtime.loops ?? [],
       queue: runtime.queue,
       drainRequest: runtime.drainRequest,
@@ -105,11 +109,16 @@ export async function runServer(args, { env, stdout, stderr, signal }, imports =
       recordDrain: runtime.recordDrain,
       ...(runtime.tenant ? { tenant: { database, options: runtime.tenant } } : {}),
       ...(installation.startup ? { startup: installation.startup } : {}),
-    }, { signal: signal ?? process, ...imports.signals });
+    }, imports.signals);
     return 0;
   } catch (error) {
     const code = error?.code === 'DEPENDENCY_UNAVAILABLE' || error?.code === 'DEPENDENCY_TIMEOUT'
       ? error.code : 'DEPENDENCY_UNAVAILABLE';
+    // Registered codes are never secret; the opt-in detail line can contain dependency text.
+    if (env.ABH_RUN_DEBUG === '1') {
+      const cause = error?.cause ? `; cause: ${error.cause.message ?? String(error.cause)}` : '';
+      stderr.write(`abh run: ${code}; ${error?.message ?? 'unknown error'}${cause}\n`);
+    }
     return fail(stderr, code);
   }
 }

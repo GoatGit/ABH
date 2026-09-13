@@ -1,0 +1,26 @@
+{
+  "comment": "Deployment-owned definition registry. CreateMission is only accepted when the workflow reference, every condition reference and the responsibility scope are registered here; the workflow digest must equal the goal artifact digest so the definition binds to the exact accepted goal bytes. MissionAuthority ids are provisioned by the deployment in this registry; ActivateMission resolves them here.",
+  "workflows": [
+    {
+      "id": "hello.workflow",
+      "versions": [
+        "1.0.0"
+      ]
+    }
+  ],
+  "predicates": [
+    "hello.predicate"
+  ],
+  "triggerPolicies": [
+    "hello.trigger"
+  ],
+  "resourceEnvelopes": [
+    "abh.resource-envelope"
+  ],
+  "responsibilityScopeTypes": [
+    "abh.organization"
+  ],
+  "missionAuthorities": [
+    "c9e73ffd-5f09-4fc8-8c5b-05b07c9cf89d"
+  ]
+}

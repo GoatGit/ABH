@@ -26,6 +26,7 @@ import { DurableExecutionPort } from '@abh/contracts/ports';
 import type { DurableWaitSource } from '@abh/contracts';
 import type { EnqueueJobRequest } from '@abh/contracts';
 import type { EntityRef } from '@abh/contracts';
+import type { ErrorCode } from '@abh/contracts/errors';
 import type { EventEnvelope } from '@abh/contracts';
 import type { ExecutionAuthority } from '@abh/contracts';
 import type { FenceRecord } from '@abh/contracts';
@@ -101,6 +102,15 @@ export interface AbhServiceConfig {
 }
 
 // @public
+export class ActionCursorCodec {
+    constructor(key: Uint8Array, ttlMs?: number);
+    // (undocumented)
+    decode(token: string, context: Readonly<RequestContext>, filter: ActionListFilter): ActionListPosition;
+    // (undocumented)
+    encode(after: ActionListPosition, context: Readonly<RequestContext>, filter: ActionListFilter): string;
+}
+
+// @public
 export function assembleAbhService(config: AbhServiceConfig): AssembledService;
 
 // @public (undocumented)
@@ -109,6 +119,13 @@ export interface AssembledService {
     app: ReturnType<typeof createCoreHttpApp>;
     // (undocumented)
     close(): Promise<void>;
+}
+
+// @public
+export class CoreError extends Error {
+    constructor(code: ErrorCode);
+    // (undocumented)
+    readonly code: ErrorCode;
 }
 
 // @public (undocumented)
@@ -350,6 +367,60 @@ export class IdentityIngress {
     }, options: TransactionOptions): Promise<VerifiedContext>;
 }
 
+// @public
+export class InboxCursorCodec {
+    constructor(key: Uint8Array, ttlMs?: number);
+    // (undocumented)
+    decode(token: string, context: Readonly<RequestContext>, filter: InboxCursorFilter): string;
+    // (undocumented)
+    encode(after: string, context: Readonly<RequestContext>, filter: InboxCursorFilter): string;
+}
+
+// @public (undocumented)
+export class LearningCursorCodec {
+    constructor(route: LearningListRoute, key: Uint8Array, ttlMs?: number);
+    // (undocumented)
+    decode(token: string, context: Readonly<RequestContext>, filter: LearningListFilter): LearningListPosition;
+    // (undocumented)
+    encode(after: LearningListPosition, context: Readonly<RequestContext>, filter: LearningListFilter): string;
+}
+
+// @public
+export class LocalDrainJournal {
+    constructor(options: LocalDrainJournalOptions);
+    // (undocumented)
+    read(digest: string): Promise<DrainReport>;
+    // (undocumented)
+    save(value: DrainReport): Promise<string>;
+}
+
+// @public
+export class MissionCursorCodec {
+    constructor(key: Uint8Array, ttlMs?: number);
+    // (undocumented)
+    decode(token: string, context: Readonly<RequestContext>, filter: MissionListFilter): MissionListPosition;
+    // (undocumented)
+    encode(after: MissionListPosition, context: Readonly<RequestContext>, filter: MissionListFilter): string;
+}
+
+// @public (undocumented)
+export interface MissionListFilter {
+    // (undocumented)
+    domainType?: string;
+    // (undocumented)
+    missionStatus?: 'Draft' | 'Active' | 'Paused' | 'Blocked' | 'Completed' | 'Cancelled';
+    // (undocumented)
+    workspaceId?: string;
+}
+
+// @public (undocumented)
+export interface MissionListPosition {
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    updatedAt: string;
+}
+
 // @public (undocumented)
 export interface ObjectArtifactUploadMetadata extends Omit<StoreInlineArtifactPayload, 'content'> {
     // (undocumented)
@@ -358,6 +429,42 @@ export interface ObjectArtifactUploadMetadata extends Omit<StoreInlineArtifactPa
     readonly declaredSizeBytes: number;
     // (undocumented)
     readonly digest: string;
+}
+
+// @public (undocumented)
+export class ProjectionCursorCodec {
+    constructor(key: Uint8Array, ttlMs?: number);
+    // (undocumented)
+    decode(token: string, context: Readonly<RequestContext>, filter: ProjectionListFilter): ProjectionListPosition;
+    // (undocumented)
+    encode(after: ProjectionListPosition, context: Readonly<RequestContext>, filter: ProjectionListFilter): string;
+}
+
+// @public (undocumented)
+export interface ProjectionListFilter {
+    // (undocumented)
+    domainType?: string;
+    // (undocumented)
+    missionStatus?: string;
+    // (undocumented)
+    type?: string;
+}
+
+// @public (undocumented)
+export interface ProjectionListPosition {
+    // (undocumented)
+    id: string;
+    // (undocumented)
+    updatedAt: string;
+}
+
+// @public
+export class RunCursorCodec {
+    constructor(key: Uint8Array, ttlMs?: number);
+    // (undocumented)
+    decode(token: string, context: Readonly<RequestContext>, filter: RunListFilter): RunListPosition;
+    // (undocumented)
+    encode(after: RunListPosition, context: Readonly<RequestContext>, filter: RunListFilter): string;
 }
 
 // @public

@@ -110,7 +110,11 @@ export class PgBossDeliveryAdapter implements Pick<DurableExecutionPort,'enqueue
           retentionSeconds:policy.retentionSeconds,deleteAfterSeconds:policy.deleteAfterSeconds});}
       if(await boss.schemaVersion()!==40||!(await boss.detectSchemaDrift()).ok)throw new Error('QUEUE_SCHEMA_MISMATCH');
       return new PgBossDeliveryAdapter(boss,options.admission,postgres(options.connectionString,{max:4,connect_timeout:5,onnotice:()=>{},types:{encodedJson:{to:114,from:[114,3802],serialize:(value:unknown)=>typeof value==='string'?value:JSON.stringify(value),parse:JSON.parse}}}));
-    }catch{await boss.stop({graceful:false});throw new Error('QUEUE_UNAVAILABLE');}
+    }catch(startError){
+      await boss.stop({graceful:false}).catch(()=>{});
+      // Keep the stable operator code, preserve the root cause for diagnosability.
+      throw new Error('QUEUE_UNAVAILABLE',{cause:startError instanceof Error?startError:new Error(String(startError))});
+    }
   }
   async close():Promise<void>{this.#accepting.clear();try{await this.#boss.stop({graceful:true,timeout:5000});}finally{await this.#queue.end({timeout:5});}}
   async enqueue(request:EnqueueJobRequest,options:PortCallOptions):Promise<DurableExecutionEnqueueResult>{

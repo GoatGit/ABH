@@ -1,0 +1,22 @@
+{
+  "schema": "DevelopmentConfig",
+  "value": {
+    "deployment": {
+      "profile": "Development"
+    },
+    "identity": {
+      "provider": "Fake"
+    },
+    "database": {
+      "runtimeUrlRef": "env:ABH_DATABASE_RUNTIME_URL",
+      "queueUrlRef": "env:ABH_DATABASE_QUEUE_URL"
+    },
+    "runtime": {
+      "businessEntry": "./service.mjs",
+      "mode": "ActionOnly"
+    },
+    "web": {
+      "enabled": false
+    }
+  }
+}

@@ -8,6 +8,24 @@ importers:
 
   .: {}
 
+  examples/hello-service:
+    dependencies:
+      '@abh/adapter-pg-boss':
+        specifier: workspace:*
+        version: link:../../packages/adapter-pg-boss
+      '@abh/cli':
+        specifier: workspace:*
+        version: link:../../packages/cli
+      '@abh/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
+      '@abh/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      postgres:
+        specifier: 3.4.9
+        version: 3.4.9
+
   packages/adapter-fastify:
     dependencies:
       '@abh/contracts':
