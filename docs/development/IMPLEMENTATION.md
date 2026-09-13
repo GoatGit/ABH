@@ -16,6 +16,14 @@
 
 2026-09-13：V1 工程实现完成度约 99.9%。Learning Gate 到 Workbench Release 的受控写路径已闭合；Release Assignment 现在具备 Core 与 Workbench 的授权 Get/List、稳定分页和受治理 Pause 生命周期。Run 取消、有界 Task Graph Patch、Durable Wait 条件唤醒 Worker、Ready Task Worker、Running 租约过期接管、迟到 Invocation 观察/裁决、无进展预算停止、Human Exception 处置与 ApplyCorrection 后治理解冻、Task Execution/Invocation/Checkpoint Owner、Correction 候选/公开接入、三类目标应用、受治理 Signal/Case、Draft Capability Candidate、Profile 冻结/Evaluation Run、Evaluation Retry/Gate 与 Learning Release 均已形成契约、PostgreSQL、授权、幂等和审计闭环；Ledger 余额/责任审计已接入 CLI doctor，周期/单位目录与退款/汇率 Correction 也已进入本地闭环。Action 的确定性 TransportFailed Safe Retry 已补齐三次上限、完整 T2 重授权、同一 Operation 围栏轮换和强制策略重评。`abh run` 已移除组合桩，改为显式部署安装模块提供 Identity Provider、凭证解析、Mission 治理、Durable Port 和 drain 记录后，连接 `assembleAbhService` 与 `runHttpService`。`defineBusiness` 与 hello-business 初始化模板提供 Action-only 声明、稳定摘要、schema 输入校验和公开 SDK 示例；Manifest 编译、Pack 发布和生产治理仍不计入本地闭环。
 
+## 2026-09-14：审查修复、Workbench 重设计与 hello-service 参考部署
+
+外部深度审查发现并已修复：CLI `abh run` 引用未导出的 `@abh/core/server`（运行必崩，测试注入掩盖）；`abh mission` 写命令缺 Idempotency-Key/If-Match 且 body 携带非法字段（对合规服务器必 400）；core 测试夹具 60 秒上下文过期在慢环境引发套件级联 UNAUTHENTICATED（默认 TTL 提升至 30 分钟）；CI 缺 cosign 导致 7 个真实签名测试永久跳过；adapter-pg-boss 无测试门禁；README 完成度口径与 61 路径计数过时。
+
+Workbench 前端重设计为令牌化扁平设计系统（明暗双主题、侧栏/顶栏应用外壳、状态徽章、页面页眉），SSE 逻辑收敛为共享 `useProjectionStream` hook（Last-Event-ID 续传 + 指数退避 500ms–8s），五处复制粘贴实现消除；新增 `identity-production.ts` 生产身份适配器（JWKS/RS256/ES256 与 HS256 时间安全验证、exp/nbf/iss/aud 校验、abh_organizations 声明映射、组织 Cookie 仅作选择意图、生产构建无配置即 fail closed），装配点按环境选择并修正 README 指引；axe WCAG AA 对比度与全部 e2e 旅程通过（4/4）。
+
+新增 `examples/hello-service` 参考部署：完整 `createAbhServiceInstallation`（身份提供者、经附加 Database 的 Grant 解析、部署拥有的定义与 MissionAuthority 注册表、真实 pg-boss 队列与 LocalDrainJournal、启动就绪检查）、幂等 provision 脚本与受限角色口令管理。`abh run` 修复信号装配（AbortSignal 入 options、process 作为信号源）、新增可选 `install.attach({database})` 阶段与 `ABH_RUN_DEBUG=1` 根因诊断；adapter-pg-boss 启动失败保留根因。`@abh/core/server` 增补 CoreError、列表游标编解码器与 LocalDrainJournal 导出。已在 PostgreSQL 16 全迁移库上联测：授权 missions.list 200、缺 token 401、错误用途 403，全程脱敏。完整 `pnpm check` 门禁全绿（1024 测试 0 失败；cosign 在 CI 安装后真实签名测试生效）。
+
 ## 2026-09-13：defineBusiness 与 hello-business 模板
 
 `@abh/core` 新增 `defineBusiness`、`validateBusinessInput` 和封闭 `BusinessDefinition` 类型。作者只能声明 Action-only 业务名、SemVer、1—20 个唯一 Action、有界 title/description、最多 8 层的封闭 JSON-Schema 子集、执行 Service、完成策略、风险类、行为槽、操作上限、intent 有效期和已登记用途。函数返回冻结声明和 JCS/SHA-256 稳定摘要；`validateBusinessInput` 在发送前执行同一 schema 的有界校验。公共入口不暴露事务或 Repository。
