@@ -1,5 +1,7 @@
 {
   "date": "2026-09-09",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "scope": "Suspension scan page actual Artifact command persistence, idempotent lost-ack recovery and fresh-process readback",
   "tests": {
     "signedConnector": {

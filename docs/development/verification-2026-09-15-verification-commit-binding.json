@@ -1,0 +1,74 @@
+{
+  "date": "2026-09-15",
+  "commit": "ba38108bc3765706349534286c36cbc9160df535",
+  "scope": "Commit SHA binding for verification records and doc-link anchor validation",
+  "summary": "Every verification record now carries the 40-hex SHA of the commit that introduced it (445 records backfilled from git --diff-filter=A provenance; one pre-existing malformed JSON repaired). scripts/verify-record.mjs enforces the binding in --check mode and stamps new records with git HEAD; it is wired into pnpm check. scripts/check-doc-links.mjs additionally validates #anchors against GitHub-style heading slugs (inline code, CJK, dedupe suffixes) after a negative self-test. The adapter-fastify suite also grew from 14 to 21 tests covering create/update command modes, a registry query path, multi-mount identity isolation and the query response firewall.",
+  "commands": [
+    "corepack pnpm verification:check",
+    "corepack pnpm docs:check",
+    "corepack pnpm --filter @abh/adapter-fastify test",
+    "corepack pnpm --filter @abh/workbench test",
+    "corepack pnpm check"
+  ],
+  "results": {
+    "verificationRecords": 445,
+    "commitBound": 445,
+    "malformedJsonRepaired": 1,
+    "adapterFastifyTests": "21 passed, 0 failed (was 14)",
+    "workbenchUnitTests": "36 passed, 0 failed",
+    "workbenchE2e": "4 passed",
+    "docLinksCheckedWithAnchors": 808
+  },
+  "finalCheck": {
+    "command": "corepack pnpm check",
+    "passed": true,
+    "docsLinksChecked": 808,
+    "contractArtifactsMatched": 51,
+    "publicApiEntryPoints": {
+      "contracts": 9,
+      "core": 7
+    },
+    "testsTotal": 1067,
+    "testsPassed": 1060,
+    "testsFailed": 0,
+    "testsSkipped": 7,
+    "packages": {
+      "contracts": {
+        "passed": 313,
+        "failed": 0,
+        "skipped": 0
+      },
+      "adapterPi": {
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0
+      },
+      "adapterFastify": {
+        "passed": 21,
+        "failed": 0,
+        "skipped": 0
+      },
+      "adapterPgBoss": {
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "core": {
+        "passed": 616,
+        "failed": 0,
+        "skipped": 7
+      },
+      "workbench": {
+        "passed": 36,
+        "failed": 0,
+        "skipped": 0
+      },
+      "cli": {
+        "passed": 27,
+        "failed": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "boundaries": "The bound SHA refers to the tree the verification ran on; the record's own commit is its successor. Legacy records are bound to the commit that first added them. The seven skipped core tests require a real cosign binary. CI results for pushed commits are confirmed in the GitHub Actions page."
+}

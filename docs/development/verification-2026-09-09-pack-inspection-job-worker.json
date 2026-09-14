@@ -1,5 +1,7 @@
 {
   "date": "2026-09-09",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "scope": "Persisted Pack inspection Job management recovery worker and optional tenant host installation",
   "tests": {
     "suite": "Core full suite with real PostgreSQL and Cosign",

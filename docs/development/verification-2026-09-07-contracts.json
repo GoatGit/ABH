@@ -2,6 +2,8 @@
   "stage": "M0-A workflow and transport contracts; not full gate acceptance",
   "execution": "local",
   "date": "2026-09-07",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "repositoryHead": "d038f12e12a95d960807c5ce502d79adcec3399a",
   "workingTree": "uncommitted implementation; existing migration and foundation preserved",
   "platform": "Darwin arm64",

@@ -1,5 +1,7 @@
 {
   "date": "2026-09-14",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "scope": "Capability correction to governed draft Learning Candidate",
   "summary": "Added Capability as a governed Correction target. Proposals still store an immutable before/after candidate with Human Correction responsibility; Apply does not mutate production capability. Instead it validates the linked Learning Case, baseline and proposed artifact, then invokes the existing Learning Candidate creation path inside the apply transaction. The result is a fresh Draft candidate owned by the Learning plane, with durable application evidence and replay-safe response.",
   "commands": [

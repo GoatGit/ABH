@@ -1,5 +1,7 @@
 {
   "date": "2026-09-13",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "scope": "Organization projection SSE, Workbench aggregate invalidation, and isolated production E2E",
   "summary": "Added an authorized abh.organization SSE subject that emits only committed Mission/Decision/Action change hints for the caller's organization. Every hint revalidates active organization, human membership, projections grant, event ownership and cursor identity; unknown cursors reset. Workbench Overview, Inbox and Action List subscribe to one same-origin organization stream, invalidate authorization-scoped TanStack caches and retain polling fallback. Run SSE, Action SSE reconnect and the compensation JSON Forms proposal journey were verified in Chromium.",
   "commands": [

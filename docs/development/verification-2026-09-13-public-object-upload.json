@@ -1,5 +1,7 @@
 {
   "date": "2026-09-13",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "scope": "Public HTTP and typed-client object upload, artifact-level replay reservation, route body bounds, and export expiry",
   "summary": "Added a non-contract Fastify binary transport with route-specific limits, installed the object upload route and typed client method, and promoted upload replay from ObjectStore receipts to durable Artifact command reservations. The parser now forwards each received chunk exactly once, completes the decoded stream at the declared Content-Length, rejects missing or zero-length frames explicitly, and preserves empty-body rejection. The upload path verifies current grants and governance before T1 staging, then ObjectStore put, read-back digest/size verification and T2 publication.",
   "commands": [

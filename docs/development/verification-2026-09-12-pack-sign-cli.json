@@ -1,5 +1,7 @@
 {
   "date": "2026-09-12",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "subject": "Bounded Cosign Pack signing CLI",
   "commands": [
     "corepack pnpm --filter @abh/contracts generate --check",
@@ -22,7 +24,7 @@
     "rootTypecheckAndBuild": "passed",
     "apiReports": "Contracts 9 entry points; Core 6 entry points",
     "documentationLinks": "777 checked",
-    "actualCosignRoundTrip": "skipped without explicit ABH_TEST_COSIGN; failure, binding and cancellation paths passed"
+    "actualCosignRoundTrip": "skipped without explicit ABH_TEST_COSIGN; failure, binding and cancellation paths passed",
     "signaturePayloadBinding": true,
     "independentPublicKeyVerificationBeforeWrite": true,
     "namedEnvironmentKeyRefsOnly": true,

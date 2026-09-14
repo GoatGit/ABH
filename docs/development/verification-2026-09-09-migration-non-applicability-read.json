@@ -1,5 +1,7 @@
 {
   "date": "2026-09-09",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "scope": "Read persisted migration non-applicability with current signed impact/content and Artifact byte verification",
   "tests": {
     "realCosignDatabaseFinal": {

@@ -1,5 +1,7 @@
 {
   "date": "2026-09-11",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "subject": "host-declared Settings governance snapshot and bounded command surface",
   "commands": [
     "corepack pnpm --filter @abh/workbench test",

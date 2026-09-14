@@ -1,5 +1,7 @@
 {
   "date": "2026-09-14",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "scope": "Dedicated responsibility DelegateSlot command",
   "summary": "Added an internal DelegateSlot command that reuses governed route revision CAS while replacing exactly one frozen seat. The owner validates the delegation metadata, current Human assignment, responsibility type, request/workspace scope and limited expiry before fresh decisions are created. Approved history remains immutable, pending seats are superseded, and ALL completion only occurs after every fresh seat responds.",
   "commands": [

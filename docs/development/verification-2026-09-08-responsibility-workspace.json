@@ -1,6 +1,8 @@
 {
   "execution": "local",
   "date": "2026-09-08",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "stage": "Workspace inheritance and isolation across responsibility, approval, authority and Command replay",
   "checks": {
     "workspaceCheck": "passed",

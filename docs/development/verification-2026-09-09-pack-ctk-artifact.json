@@ -1,5 +1,7 @@
 {
   "date": "2026-09-09",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "scope": "Internal CTK Artifact recording and reading, and current PackEnableProposal evidence assembly for NotApplicable migrations",
   "tests": {
     "realCosignPostgres": {

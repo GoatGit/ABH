@@ -1,5 +1,7 @@
 {
   "date": "2026-09-13",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "scope": "Correction-driven Exception resolution effect",
   "summary": "Closed authorized correction application to governance unfreeze while preserving unresolved operations and fencing tokens.",
   "commands": [

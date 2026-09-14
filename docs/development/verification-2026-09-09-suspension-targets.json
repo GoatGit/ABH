@@ -1,5 +1,7 @@
 {
   "date": "2026-09-09",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "scope": "Suspension event to authorized business reference target pages, context-bound cursors and deterministic notification keys",
   "tests": {
     "signedConnector": {

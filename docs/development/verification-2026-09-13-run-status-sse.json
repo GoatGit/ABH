@@ -1,5 +1,7 @@
 {
   "date": "2026-09-13",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "scope": "Authorized Run status SSE and Workbench strong-read polling",
   "summary": "Added abh.run to the projection read registration and authorized Core SSE router. The subscriber anchors to the same Run Outbox subject, rechecks the Run, active human membership, current projections grant and UUID cursor, emits only immutable subject/version/watermark hints and resets unknown cursors. The Workbench exposes a same-origin Run BFF, authorized query cache, polling fallback and live status consumer.",
   "commands": [

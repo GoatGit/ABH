@@ -1,5 +1,7 @@
 {
   "date": "2026-09-11",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "subject": "production Workbench browser journeys with real Mission views, Run history, consolidated projection pagination, configurable durable queue policies, SSE recovery, dual-organization isolation, late-response rejection, accessibility and performance gates",
   "commands": [
     "corepack pnpm --filter @abh/workbench exec node test/browser/build-e2e.mjs",

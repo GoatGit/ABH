@@ -1,5 +1,7 @@
 {
   "date": "2026-09-11",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "subject": "@abh/core and @abh/adapter-fastify authorized projection reset hints and SSE concurrency limits",
   "commands": [
     "node --test --test-name-pattern \"Run lifecycle\" --test-concurrency=1 packages/core/test/run-commands.test.ts",

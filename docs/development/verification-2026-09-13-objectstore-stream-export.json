@@ -1,5 +1,7 @@
 {
   "date": "2026-09-13",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "scope": "Single-host durable ObjectStore adapter, unbounded object artifact streaming, and authorized open-directory export",
   "summary": "Added a filesystem ObjectStore adapter with staged streaming writes, digest/size verification, atomic publication, range reads and idempotent receipts; connected it to unbounded T1/T2 object artifact upload and authorized streamed reads; added lease-fenced artifact exports with a repeatable-read snapshot, hash-indexed manifest, JSONL records and persisted completion state.",
   "commands": [

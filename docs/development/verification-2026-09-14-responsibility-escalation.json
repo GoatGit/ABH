@@ -1,5 +1,7 @@
 {
   "date": "2026-09-14",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "scope": "Dedicated responsibility EscalateSlot command",
   "summary": "Added an internal EscalateSlot command for Unresolved responsibility requests. It replaces exactly one seat with the next governed responsibility assignment, records escalation depth, reuses Route Revision locks/CAS/audit/Outbox, and rejects a fifth escalation. The next candidate is revalidated for active Human membership, responsibility type, Workspace/Subject scope and limited expiry before fresh decisions are routed.",
   "commands": [

@@ -1,5 +1,7 @@
 {
   "date": "2026-09-12",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "subject": "Immutable evaluation result and evaluation run CAS",
   "commands": [
     "corepack pnpm --filter @abh/contracts generate",

@@ -1,5 +1,7 @@
 {
   "date": "2026-09-09",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "scope": "Persist checked installed-Pack migration non-applicability from current signed complete inventories and actual staged content",
   "tests": {
     "realCosignDatabase": {

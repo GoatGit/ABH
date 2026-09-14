@@ -19,9 +19,10 @@
     "build": "pnpm -r build",
     "typecheck": "pnpm -r build && pnpm -r typecheck",
     "test": "pnpm -r build && pnpm -r test",
-    "check": "pnpm docs:check && pnpm contracts:check && pnpm typecheck && pnpm test && pnpm build && pnpm api:check",
+    "check": "pnpm verification:check && pnpm docs:check && pnpm contracts:check && pnpm typecheck && pnpm test && pnpm build && pnpm api:check",
     "api:check": "pnpm -r --if-present api:check",
     "api:update": "pnpm -r --if-present api:update",
-    "abh": "node packages/cli/bin/abh.mjs"
+    "abh": "node packages/cli/bin/abh.mjs",
+    "verification:check": "node scripts/verify-record.mjs --check"
   }
 }

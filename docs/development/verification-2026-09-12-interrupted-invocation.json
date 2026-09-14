@@ -1,5 +1,7 @@
 {
   "date": "2026-09-12",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "subject": "expired Running lease takeover with fenced invocation requeue and retry",
   "commands": [
     "corepack pnpm --filter @abh/core exec node --test test/run-execution.test.ts",

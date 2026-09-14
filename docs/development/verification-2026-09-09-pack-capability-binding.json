@@ -1,5 +1,7 @@
 {
   "date": "2026-09-09",
+  "commit": "1a68329cca37247ae4a95d4011cde8d12f458570",
+
   "scope": "Explicit build-time capability binding validation and current staged content assembly; no registry write",
   "tests": {
     "capabilitiesContentAndRealCosign": {

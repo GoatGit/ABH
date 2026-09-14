@@ -1,5 +1,7 @@
 {
   "date": "2026-09-13",
+  "commit": "ccc687e60a5b16f69e36f78fb20162be94df6c80",
+
   "scope": "defineBusiness declaration, hello-business template, and local Pack/CTK fixed build",
   "summary": "Added a closed Action-only business declaration API with stable digest and schema validation, an SDK-based generated hello-business template, and a bounded compiler for an unsigned local Manifest plus an explicit NotRun CTK plan.",
   "commands": [
