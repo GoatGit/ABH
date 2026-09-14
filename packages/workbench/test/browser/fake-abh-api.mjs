@@ -917,6 +917,15 @@ const error=(code,category,message)=>({success:false,error:{code,category,messag
 const forbidden=response=>json(response,403,error('FORBIDDEN','Authorization','denied'));
 
 const port=Number(process.env.FAKE_ABH_PORT??18777);
+server.on('error',error=>{
+  const code=error&&error.code;
+  if(code==='EADDRINUSE'){
+    // A previous launcher instance already owns the port; treat it as the demo API.
+    console.log(`fake ABH API already running on http://127.0.0.1:${port}`);
+    process.exit(0);
+  }
+  throw error;
+});
 server.listen(port,'127.0.0.1',()=>{
   console.log(`fake ABH API on http://127.0.0.1:${port}`);
 });

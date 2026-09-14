@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "node test/browser/fake-abh-api.mjs & fake_pid=$!; trap 'kill $fake_pid 2>/dev/null' EXIT; ABH_API_URL=http://127.0.0.1:18777 WORKBENCH_SETTINGS_URL=http://127.0.0.1:18777/v1/testing/settings WORKBENCH_COMPENSATION_URL=http://127.0.0.1:18777/v1/testing/compensation WEB_QUERY_STALE_SECONDS=1 WEB_SSE_ENABLED=true pnpm exec next dev",
     "dev:demo": "node test/browser/fake-abh-api.mjs & fake_pid=$!; trap 'kill $fake_pid 2>/dev/null' EXIT; ABH_API_URL=http://127.0.0.1:18777 WORKBENCH_SETTINGS_URL=http://127.0.0.1:18777/v1/testing/settings WORKBENCH_COMPENSATION_URL=http://127.0.0.1:18777/v1/testing/compensation WEB_QUERY_STALE_SECONDS=1 WEB_SSE_ENABLED=true pnpm exec next dev",
     "start": "next start",
     "test": "node --test test/*.test.ts",
