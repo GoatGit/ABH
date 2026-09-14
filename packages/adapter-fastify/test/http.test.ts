@@ -444,3 +444,55 @@ test('SSE classifies a consumer that cannot keep up as a slow drop after 256 que
   assert.ok(produced >= 256);
   await response.body!.cancel().catch(() => {});
 });
+
+test('authentication receives the registered operation id for commands, queries and SSE', async t => {
+  const seen: string[] = [];
+  const record = (ingress: { operation: string }) => { seen.push(ingress.operation); return identity; };
+  const app = createHttpApp({ authenticate: async (request, ingress) => record(ingress),
+    commands: { 'abh.actions.cancel': async () => ({}) },
+    queries: { 'abh.decisions.get': async () => decisionQuery },
+    events: { subscribe: async function* (_type: string, _id: string, _context: RequestContext, signal: AbortSignal) {
+      await new Promise<void>(resolve => { signal.addEventListener('abort', () => resolve(), { once: true }); });
+    } } });
+  t.after(() => app.close());
+  await app.inject({ method: 'POST', url, headers, payload: body });
+  await app.inject(`/v1/queries/abh.decisions.get?id=${decisionId}`);
+  await app.listen({ host: '127.0.0.1', port: 0 });
+  const address = app.server.address();
+  assert.ok(address && typeof address !== 'string');
+  const stream = await fetch(`http://127.0.0.1:${address!.port}/v1/events/abh.mission/${body.target.id}`);
+  assert.equal(stream.status, 200);
+  await stream.body!.cancel().catch(() => {});
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(seen, ['abh.actions.cancel', 'abh.decisions.get', 'abh.projections.get']);
+});
+
+test('unregistered query handlers are rejected at construction like commands', async t => {
+  assert.throws(() => createHttpApp({ authenticate, queries: { 'abh.queries.unknown': async () => ({}) } } as unknown as HttpInstallation));
+});
+
+test('SSE bounds concurrent connections per organization after fifty users', async t => {
+  let users = 0;
+  const app = createHttpApp({ authenticate: async () => {
+    users += 1;
+    const id = `00000000-0000-4000-8000-${users.toString(16).padStart(12, '0')}`;
+    return { ...identity, actor: { type: 'Human', id }, contextExpiresAt: new Date(Date.now() + 60_000).toISOString() };
+  }, events: { subscribe: async function* (_type: string, _id: string, _context: RequestContext, signal: AbortSignal) {
+    await new Promise<void>(resolve => { signal.addEventListener('abort', () => resolve(), { once: true }); });
+  } } });
+  t.after(() => app.close());
+  await app.listen({ host: '127.0.0.1', port: 0 });
+  const address = app.server.address();
+  assert.ok(address && typeof address !== 'string');
+  const endpoint = `http://127.0.0.1:${address!.port}/v1/events/abh.mission/${body.target.id}`;
+  const streams = await Promise.all(Array.from({ length: 50 }, () => fetch(endpoint)));
+  try {
+    assert.ok(streams.every(response => response.status === 200));
+    const rejected = await fetch(endpoint);
+    assert.equal(rejected.status, 429);
+    assert.equal((await rejected.json()).error.code, 'RATE_LIMITED');
+  } finally {
+    await Promise.all(streams.map(response => response.body!.cancel().catch(() => {})));
+  }
+  await new Promise(resolve => setImmediate(resolve));
+});
