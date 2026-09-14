@@ -28,6 +28,8 @@ ABH 服务端内部模块，按 `docs/V1` 持续实现。根入口导出 `coreVe
 
 治理/bootstrap、完整 Domain/Scope/Artifact admission 和 Connector 安装证据仍有明确 Fixture 回调，不能直接接成公共路由。独立 Query Authority 与已派发取消已有内部实现；终态 Correction/Exception、安全重试、持续外部责任与完整恢复策略继续实现。
 
+真实 Cosign 签名测试（7 项）需要设置 `ABH_TEST_COSIGN` 指向 cosign 可执行文件（2.x CLI；3.x 移除了 `--tlog-upload`），未设置时自动跳过；CI 中由 cosign-installer 钉住 v2.5.0 并注入该变量。
+
 内联 Artifact 上限 64 KiB UTF-8；二进制原始回执使用无损 base64 包装，上限 48,000 bytes。FilesystemObjectStore 支持单主机 durable 大对象 staging、digest/size 复核、streaming 读取、lineage、保留/删除证明和导出；公开上传用 Artifact 级回执预约去重。生产上传扫描/隔离、跨主机/云 ObjectStore 与完整 Domain 验收仍需宿主实现。保存失败的进程内句柄不会跨重启保存，进程丢失后仍须独立 Query 查回。
 
 Outbox 冻结扇出与 Inbox 已持久化；真实 pg-boss 已验证队列角色隔离、入队超时查回、确认丢失重投和有界排空。DurableWaitOwner 已持久化等待、源水位回读、唯一唤醒、取消及 Tenant 补偿扫描；Wait Port 已与 pg-boss 组合，并接入真实 Action/Decision 授权请求等待、Operation 对账完成等待和 Inbox 通知；发布扫描与租户内 Worker 装配已有实现。HTTP、typed SDK、Mission/Run/Pi、显式 `abh run` 宿主和其余业务 Owner 已有本地闭环；`defineBusiness` 声明、hello-business 模板和本地 Manifest/CTK 计划编译已实现，生产身份/安装治理、发行验收及完整故障矩阵待完成。本地 Fixture 测试不替代生产治理、正式模块门禁、独立审查或 SLO 证据。

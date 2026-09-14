@@ -16,6 +16,11 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
+      # Core's offline-signature tests target the cosign 2.x CLI; 3.x removed --tlog-upload.
       - uses: sigstore/cosign-installer@v3.9.2
+        with:
+          cosign-release-version: 'v2.5.0'
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
+        env:
+          ABH_TEST_COSIGN: cosign

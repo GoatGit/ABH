@@ -327,7 +327,14 @@ test('real independent CTK signatures bind complete cases, tested subject, claim
    await databaseFixture.admin`ALTER TABLE extension.installed_packs DROP CONSTRAINT installed_pack_lifecycle_check,
     ADD CONSTRAINT installed_packs_version_check CHECK(version=1),ADD CONSTRAINT installed_packs_status_check CHECK(status='Staged')`;
    const lifecycleMigration=createRequire(import.meta.url)('../migrations/1788886000000_pack_enable_lifecycle.cjs');let lifecycleSql='';lifecycleMigration.up({sql:(value:string)=>{lifecycleSql=value;}});
-   await databaseFixture.admin.unsafe(lifecycleSql);await databaseFixture.database.verify();
+   await databaseFixture.admin.unsafe(lifecycleSql);
+   // The registered manifest expects the FINAL lifecycle shape, so the simulated
+   // upgrade must replay every later constraint evolution (suspension, retirement).
+   const suspensionMigration=createRequire(import.meta.url)('../migrations/1788888000000_pack_suspension.cjs');let suspensionSql='';suspensionMigration.up({sql:(value:string)=>{suspensionSql=value;}});
+   await databaseFixture.admin.unsafe(suspensionSql);
+   const retirementMigration=createRequire(import.meta.url)('../migrations/1788889000000_pack_retirement.cjs');let retirementSql='';retirementMigration.up({sql:(value:string)=>{retirementSql=value;}});
+   await databaseFixture.admin.unsafe(retirementSql);
+   await databaseFixture.database.verify();
    assert.deepEqual(await history(),installed!.record);
    assert.deepEqual(await doStage(),stagedRef);
    const collision={...installed!.record,packRef:{type:'abh.installed-pack',id:randomUUID(),version:1},deploymentVersion:2,

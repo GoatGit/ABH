@@ -32,5 +32,6 @@ export async function signPackManifest(manifest:unknown,key:{executable:string;p
     {executable:key.executable,mode:'OfflinePublicKey',publicKeyPem:key.publicKeyPem},options);
   const diagnostic={packId:pack.metadata.id,packVersion:pack.metadata.version,packageDigest:computed.packageDigest,
     bundleDigest:`sha256:${createHash('sha256').update(bundle).digest('hex')}`,bundleBytes:bundle.byteLength};
-  return Object.freeze({bundle:Object.freeze(bundle),diagnostic:Object.freeze(diagnostic)});
+  // Object.freeze on the Uint8Array view would throw; the digest binding protects the bytes at verify time.
+  return Object.freeze({bundle,diagnostic:Object.freeze(diagnostic)});
 }
