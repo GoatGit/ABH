@@ -54,12 +54,6 @@ export default async function LearningPage({searchParams}:{searchParams:Promise<
     return <main>
       <PageHeader eyebrow="Learning" title="Learning 治理"
         description={<>数据时点 {formatDateTime(candidates.asOf)}；候选 {candidates.candidates.length} 条，评测 {runs.runs.length} 条，Gate {visibleGates.length} 条。Assignment {assignments.assignments.length} 条。恢复由受授权的宿主 Worker 执行。</>}/>
-      <p className="message stale" role="status">
-        数据时点 {formatDateTime(candidates.asOf)}；候选 {candidates.candidates.length} 条，
-        评测 {runs.runs.length} 条，Gate {visibleGates.length} 条。
-        Assignment {assignments.assignments.length} 条。
-        恢复由受授权的宿主 Worker 执行。
-      </p>
       <form className="action-form" method="get" aria-label="Learning 筛选">
         <label htmlFor="candidateId">Candidate ID（可选）</label>
         <input id="candidateId" name="candidateId" type="text" defaultValue={candidateId??''}/>

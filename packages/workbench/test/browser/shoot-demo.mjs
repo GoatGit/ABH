@@ -20,9 +20,9 @@ const page=await browser.newPage({viewport:{width:1600,height:1000}});
 const errors=[];
 page.on('console',message=>{if(message.type()==='error')errors.push(`${page.url()} :: ${message.text()}`);});
 for(const [name,path] of routes){
-  await page.goto(`http://127.0.0.1:3100${path}`,{waitUntil:'networkidle',timeout:60000})
+  await page.goto(`http://127.0.0.1:3100${path}`,{waitUntil:'domcontentloaded',timeout:60000})
     .catch(error=>errors.push(`${path} :: goto ${error.message}`));
-  await page.waitForTimeout(1200);
+  await page.waitForTimeout(2500);
   await page.screenshot({path:`/tmp/shots/${name}.png`,fullPage:false});
   console.log('shot',name);
 }

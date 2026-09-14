@@ -6,7 +6,7 @@ const org='00000000-0000-4000-8000-0000000000c1';
 const missionId='00000000-0000-4000-8000-000000000011';
 const decisionId='00000000-0000-4000-8000-000000000011';
 const runId='00000000-0000-4000-8000-0000000000r1'.replace('r','1');
-const queuedRunId='00000000-0000-4000-8000-0000000000q1'.replace('q','1');
+const queuedRunId='00000000-0000-4000-8000-0000000000c4';
 const runningRunId='00000000-0000-4000-8000-0000000000c2';
 const completedTaskId='00000000-0000-4000-8000-0000000000t1'.replace('t','1');
 const queuedTaskId='00000000-0000-4000-8000-0000000000s1'.replace('s','1');
@@ -121,8 +121,9 @@ const extraDecisions=[
 const decisionById=id=>{
   if(id===decisionId)return decision;
   const extra=extraDecisions.find(entry=>entry.id===id);
-  if(extra)return {...extra,decisionRef:entity('abh.decision',extra.id,1),
-    status:'Pending',effectSummaries:[],availableActions:[]};
+  if(extra){const {id:_ignored,package:decisionPackage}=extra;
+    return {decisionRef:entity('abh.decision',extra.id,1),package:decisionPackage,
+      status:'Pending',effectSummaries:[],availableActions:[]};}
   if(id===approvedDecisionId)return {...decision,decisionRef:entity('abh.decision',id,2),
     status:'Approved'};
   return undefined;
@@ -238,9 +239,9 @@ const runView=id=>{
       '00000000-0000-4000-8000-000000000012');
     return {run:waiting,tasks:[
       task('00000000-0000-4000-8000-000000000061',runRef,'billing.emit','DomainCommand',
-        'Waiting',true,1),
+        'Running',true,1),
       task('00000000-0000-4000-8000-000000000062',runRef,'billing.confirm','Wait',
-        'Blocked',false,1),
+        'Pending',false,1),
     ],asOf};
   }
   if(id==='00000000-0000-4000-8000-000000000075'){
@@ -334,15 +335,38 @@ let learningReleaseAssignments=[
 ];
 
 // ---- Projection (m1), settings, compensation. ----
-let projection={projectionType:'abh.projection.mission-summary',
-  subjectRef:entity('abh.mission',missionId,missionVersion),resourceOrganizationId:org,
-  schemaVersion:1,watermark:42,stale:false,
-  data:{missionRef:entity('abh.mission',missionId,missionVersion),goalDigest:digest,
-    domainType:'demo.project',status:'Active',goalRevision:2,
-    pendingTriggerCount:3,blockerCount:1,updatedAt:asOf},
-  availableActions:missionStatus==='Active'
-    ?['pause','cancel','block','revise-goal','close']
-    :missionStatus==='Draft'?['activate']:missionStatus==='Paused'?['resume','cancel']:[],asOf};
+const projectionSeed={
+  '00000000-0000-4000-8000-000000000011':{domainType:'demo.project',status:()=>'Active',
+    goalRevision:2,triggers:3,blockers:1,version:()=>missionVersion},
+  '00000000-0000-4000-8000-000000000012':{domainType:'demo.billing',status:()=>'Paused',
+    goalRevision:1,triggers:0,blockers:0,version:()=>2},
+  '00000000-0000-4000-8000-000000000013':{domainType:'demo.inventory',status:()=>'Blocked',
+    goalRevision:3,triggers:1,blockers:1,version:()=>4},
+  '00000000-0000-4000-8000-000000000014':{domainType:'demo.report',status:()=>'Draft',
+    goalRevision:1,triggers:0,blockers:0,version:()=>1},
+  '00000000-0000-4000-8000-000000000015':{domainType:'demo.archive',status:()=>'Completed',
+    goalRevision:2,triggers:0,blockers:0,version:()=>5},
+  '00000000-0000-4000-8000-000000000016':{domainType:'demo.legacy',status:()=>'Cancelled',
+    goalRevision:1,triggers:0,blockers:0,version:()=>2},
+};
+const projectionOverrides=new Map();
+const projectionFor=id=>{
+  const seed=projectionSeed[id];
+  if(!seed)return undefined;
+  const override=projectionOverrides.get(id);
+  const watermark=override?.watermark??42;
+  const triggers=override?.triggers??seed.triggers;
+  const blockers=override?.blockers??seed.blockers;
+  return {projectionType:'abh.projection.mission-summary',
+    subjectRef:entity('abh.mission',id,seed.version()),resourceOrganizationId:org,
+    schemaVersion:1,watermark,stale:false,
+    data:{missionRef:entity('abh.mission',id,seed.version()),goalDigest:digest,
+      domainType:seed.domainType,status:seed.status(),goalRevision:seed.goalRevision,
+      pendingTriggerCount:triggers,blockerCount:blockers,updatedAt:asOf},
+    availableActions:seed.status()==='Active'
+      ?['pause','cancel','block','revise-goal','close']
+      :seed.status()==='Draft'?['activate']:seed.status()==='Paused'?['resume','cancel']:[],asOf};
+};
 let eventSequence=0,lastEventId='',reconnectEventPending=false;
 let settingsAutomationEnabled=false;
 let inboxAvailable=true;
@@ -452,7 +476,9 @@ const server=http.createServer((request,response)=>{
   }
   if(request.method==='GET'&&url.pathname==='/v1/queries/abh.projections.get'){
     if(!isOrganizationA)return forbidden(response);
-    return json(response,200,{projection,asOf});
+    const view=projectionFor(url.searchParams.get('id')??'');
+    if(!view)return json(response,404,error('RESOURCE_NOT_FOUND','NotFound','unknown projection'));
+    return json(response,200,{projection:view,asOf});
   }
   if(request.method==='GET'&&url.pathname==='/v1/queries/abh.runs.list'){
     if(!isOrganizationA)return forbidden(response);
@@ -656,8 +682,7 @@ const server=http.createServer((request,response)=>{
     requestedEvaluationRuns=[];
     learningReleaseAssignments=[learningReleaseAssignments[0]];
     settingsAutomationEnabled=false;
-    projection={...projection,watermark:42,
-      data:{...projection.data,pendingTriggerCount:3,blockerCount:1}};
+    projectionOverrides.clear();
     return json(response,200,{success:true});
   }
   if(request.method==='POST'&&url.pathname==='/v1/testing/settings/resolve'){
@@ -768,8 +793,7 @@ const server=http.createServer((request,response)=>{
   }
   if(request.method==='GET'&&url.pathname==='/v1/testing/projection-update'){
     if(!isOrganizationA)return forbidden(response);
-    projection={...projection,watermark:43,
-      data:{...projection.data,pendingTriggerCount:4,blockerCount:2}};
+    projectionOverrides.set(missionId,{watermark:43,triggers:4,blockers:2});
     reconnectEventPending=true;
     return json(response,200,{success:true});
   }
