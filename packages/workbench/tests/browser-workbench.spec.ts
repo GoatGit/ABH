@@ -120,8 +120,8 @@ test('reviewer completes overview, mission and decision journey',async({page})=>
   await page.goto('/decisions/00000000-0000-4000-8000-000000000011');
   await expect(page.getByRole('heading',{name:'Publish the approved customer brief?'})).toBeVisible();
   const approval=page.locator('section[aria-label="批准"]');
-  await approval.getByLabel('Reason').fill('Compliance check passed.');
-  await approval.getByLabel('Reason').press(' ');
+  await approval.getByLabel('审批理由').fill('Compliance check passed.');
+  await approval.getByLabel('审批理由').press(' ');
   page.once('dialog',dialog=>void dialog.accept());
   await approval.getByRole('button',{name:'批准'}).click();
   await expect(page.getByText('当前状态 Approved')).toBeVisible();
@@ -226,7 +226,7 @@ test('late response is rejected and organization context stays isolated',async({
   await expect(page.getByText('当前状态 Pending')).toBeVisible();
 
   const approval=page.locator('section[aria-label="批准"]');
-  await approval.getByLabel('Reason').fill('Compliance check passed.');
+  await approval.getByLabel('审批理由').fill('Compliance check passed.');
   await page.request.get('http://127.0.0.1:18777/v1/testing/arm-late-response',{
     headers:{authorization:'Bearer browser-e2e'},
   });

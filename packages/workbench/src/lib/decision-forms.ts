@@ -46,12 +46,14 @@ const reauthProofRefSchema={
   },
 } as const;
 
-const conditionUiSchema={
-  type:'VerticalLayout',
-  elements:[
-    {type:'Control',scope:'#/properties/reason',options:{multi:true}},
-  ],
-} as const;
+const conditionUiSchema=(reasonLabel:string)=>{
+  return {
+    type:'VerticalLayout',
+    elements:[
+      {type:'Control',scope:'#/properties/reason',options:{multi:true},label:reasonLabel},
+    ],
+  } as const;
+};
 
 function templateFor(response:'Approved'|'Rejected',label:string,description:string):
   WorkbenchDecisionFormTemplate{
@@ -66,7 +68,7 @@ function templateFor(response:'Approved'|'Rejected',label:string,description:str
         reauthProofRef:reauthProofRefSchema,
       },
     },
-    uiSchema:conditionUiSchema,
+    uiSchema:conditionUiSchema(response==='Approved'?'审批理由':'拒绝理由'),
     initialData:response==='Approved'?{conditionRefs:[]}:{reason:'',conditionRefs:[]},
   };
 }
