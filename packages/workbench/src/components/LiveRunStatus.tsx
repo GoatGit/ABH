@@ -28,7 +28,7 @@ export function LiveRunStatus({identity,runId,initial,staleSeconds,sseEnabled}:{
     ||current.status!==initial.run.status;
   return <aside className="card" aria-live="polite">
     <h2>Run 服务端状态</h2>
-    <p><Badge>{current.status}</Badge> · 版本 {current.runRef.version} · 时点 {query.data.asOf}</p>
+    <p><Badge>{current.status}</Badge> · 版本 {current.runRef.version} · 时点 {formatDateTime(query.data.asOf)}</p>
     <p role="status">订阅状态：{streamState==='live'?'实时':streamState==='reset'?'已重置，请刷新重建基线':streamState==='disabled'?'授权轮询':'连接中'}</p>
     {changed?<p className="message stale">Run 已变更；取消前请确认最新版本和任务状态。</p>:null}
   </aside>;

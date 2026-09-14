@@ -16,7 +16,7 @@ export default async function Overview(){
       client.missions.list({}),
       client.decisions.listInbox({status:'Pending',limit:25}),
     ]);
-    return <LiveOverview identity={{
+    return <LiveOverview displayName={session.displayName} identity={{
       actorId:session.actorId,actingOrganizationId:session.actingOrganizationId,
       resourceOrganizationId:session.resourceOrganizationId,workspaceId:session.workspaceId,
       purposeOfUse:session.purposeOfUse,authorizationDigest:session.authorizationDigest,

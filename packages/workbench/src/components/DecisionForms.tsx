@@ -7,6 +7,7 @@ import {vanillaCells,vanillaRenderers} from '@jsonforms/vanilla-renderers';
 import {useActionState,useMemo,useState} from 'react';
 import type {WorkbenchDecisionFormTemplate} from '@/lib/decision-forms';
 import {submitDecisionAction,type ActionState} from '@/lib/actions';
+import {jsonFormsZhI18n} from '@/lib/form-i18n';
 
 const initialState:ActionState={status:'idle'};
 
@@ -30,7 +31,7 @@ function DecisionForm({decisionId,decisionVersion,packageDigest,form}:{
       schema={form.inputSchema}
       uischema={form.uiSchema as UISchemaElement|undefined}
       data={data} ajv={ajv} renderers={vanillaRenderers}
-      cells={vanillaCells}
+      cells={vanillaCells} i18n={jsonFormsZhI18n}
       onChange={({data:newData,errors:newErrors})=>{
         setData((newData??{}) as Record<string,unknown>);
         setErrors(newErrors??[]);

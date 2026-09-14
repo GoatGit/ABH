@@ -5,6 +5,7 @@ import {useProjectionStream} from './use-projection-stream';
 import type {DecisionQueryResponse} from '@abh/contracts';
 import {decisionQueryKey,type QueryIdentity} from '@/lib/query-keys';
 import {Badge} from './primitives';
+import {formatDateTime} from '@/lib/format';
 
 export function LiveDecisionStatus({identity,decisionId,initial,staleSeconds,sseEnabled}:{
   identity:QueryIdentity;decisionId:string;initial:DecisionQueryResponse;staleSeconds:number;sseEnabled:boolean;
@@ -33,7 +34,7 @@ export function LiveDecisionStatus({identity,decisionId,initial,staleSeconds,sse
     ||current.status!==initial.data.status;
   return <aside className="card" aria-live="polite">
     <h2>服务端状态</h2>
-    <p><Badge>{current.status}</Badge> · 版本 {current.decisionRef.version} · 时点 {query.data.meta.asOf}</p>
+    <p><Badge>{current.status}</Badge> · 版本 {current.decisionRef.version} · 时点 {formatDateTime(query.data.meta.asOf)}</p>
     <p>订阅状态：{streamState==='live'?'实时':streamState==='reset'?'已重置，请刷新重建基线':streamState==='disabled'?'授权轮询':'连接中'}</p>
     {changed?<p className="message stale">服务端状态已变更；提交前请刷新页面确认最新版本与可用操作。</p>:null}
   </aside>;

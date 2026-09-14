@@ -140,6 +140,14 @@ dt{color:var(--text-muted);font-size:.88rem;font-weight:500}
 dd{margin:0;font-weight:500}
 .meta{color:var(--text-faint);font-size:.85rem}
 
+/* ---------- Skeletons ---------- */
+.skeleton{border-radius:var(--radius-s);
+  animation:skeleton-pulse 1.4s ease-in-out infinite}
+.skeleton-line{height:.9rem;margin:.3rem 0}
+.skeleton-block{height:7rem}
+@keyframes skeleton-pulse{0%,100%{opacity:.55}50%{opacity:.2}}
+@media (prefers-reduced-motion:reduce){.skeleton{animation:none;opacity:.4}}
+
 /* ---------- Status badges ---------- */
 .badge{display:inline-flex;align-items:center;gap:.35rem;padding:.1rem .55rem;
   border-radius:999px;font-size:.8rem;font-weight:600;line-height:1.5;

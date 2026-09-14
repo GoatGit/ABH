@@ -8,8 +8,8 @@ import {formatDateTime,formatImpact} from '@/lib/format';
 import {useOrganizationLiveInvalidation} from './useOrganizationLiveInvalidation';
 import {Badge,Card,PageHeader} from './primitives';
 
-export function LiveOverview({identity,initialMissions,initialInbox,staleSeconds}:{
-  identity:QueryIdentity;initialMissions:MissionListResult;
+export function LiveOverview({displayName,identity,initialMissions,initialInbox,staleSeconds}:{
+  displayName:string;identity:QueryIdentity;initialMissions:MissionListResult;
   initialInbox:DecisionInboxResponse;staleSeconds:number;
 }){
   const streamState=useOrganizationLiveInvalidation(identity,[
@@ -32,7 +32,8 @@ export function LiveOverview({identity,initialMissions,initialInbox,staleSeconds
     inboxQuery.isError?(inboxQuery.error as Error).message:undefined;
 
   return <main>
-    <PageHeader title="业务总览" description={<>身份：<strong>{identity.actorId}</strong>；组织上下文见页首。</>}/>
+    <PageHeader title="业务总览" description={<>身份：<strong>{displayName}</strong>
+      {' '}<code>{identity.actorId}</code>；组织上下文见页首。</>}/>
     {pending?<p className="message stale" role="status">正在读取授权总览…</p>:null}
     {error?<p className="message error" role="alert">总览不可用：{error}</p>:(
       <div className="grid">

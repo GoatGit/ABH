@@ -4,6 +4,7 @@ import {JsonForms} from '@jsonforms/react';
 import type {UISchemaElement} from '@jsonforms/core';
 import Ajv2020 from 'ajv/dist/2020.js';
 import {vanillaCells,vanillaRenderers} from '@jsonforms/vanilla-renderers';
+import {jsonFormsZhI18n} from '@/lib/form-i18n';
 import {useActionState,useMemo,useState} from 'react';
 import type {WorkbenchCompensationTemplate} from '@/lib/compensation';
 import {submitCompensationAction,type ActionState} from '@/lib/actions';
@@ -29,7 +30,7 @@ export function CompensationForm({actionId,actionVersion,template}:{
       data={data}
       ajv={ajv}
       renderers={vanillaRenderers}
-      cells={vanillaCells}
+      cells={vanillaCells} i18n={jsonFormsZhI18n}
       onChange={({data:newData,errors:newErrors})=>{
         setData((newData??{}) as Record<string,unknown>);
         setErrors(newErrors??[]);
