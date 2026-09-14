@@ -308,3 +308,110 @@ test('shutdown during authentication joins it and prevents an expired identity f
   } finally { release({ ...identity, contextExpiresAt: new Date(Date.now() + 60000).toISOString() }); await shutdown; }
   assert.equal(calls, 0);
 });
+// ---- Registry coverage beyond the cancel/action pair: a Create-mode command, an
+// ---- Update-mode decision command, a registered query path, multi-mount registration
+// ---- and the query response firewall.
+
+const decisionId = '00000000-0000-4000-8000-000000000052';
+const taskId = '00000000-0000-4000-8000-000000000062';
+const entityId = '00000000-0000-4000-8000-000000000063';
+const digestValue = `sha256:${'a'.repeat(64)}`;
+const decisionView = await fixture('decision-view');
+const decisionQuery = { success: true as const, data: decisionView, meta: { asOf: '2026-09-11T10:00:00.000Z', watermark: '7', stale: false } };
+
+test('create-mode verification commits with 201 semantics and rejects update-mode headers', async t => {
+  let seen: Extract<PublicCommand, { type: 'abh.verification.submit' }> | undefined;
+  const app = createHttpApp({ authenticate, commands: { 'abh.verification.submit': async ({ command }) => {
+    seen = command;
+    return { reportRef: { type: 'abh.verification-report', id: entityId, version: 1 },
+      resourceOrganizationId: identity.resourceOrganizationId,
+      taskRef: { type: 'abh.task', id: taskId, version: 1 },
+      invocationRef: { type: 'abh.invocation', id: entityId, version: 1 },
+      resultArtifactRef: { type: 'abh.artifact', id: entityId, version: 1 },
+      resultDigest: digestValue, digest: digestValue, verdict: 'Pass',
+      verifiedAt: new Date().toISOString() };
+  } } });
+  t.after(() => app.close());
+  const submitBody = { target: { type: 'abh.task', id: taskId },
+    payload: { taskRef: { type: 'abh.task', id: taskId, version: 1 },
+      invocationRef: { type: 'abh.invocation', id: entityId, version: 1 },
+      resultArtifactRef: { type: 'abh.artifact', id: entityId, version: 1 },
+      verdict: 'Pass' } };
+  const result = await app.inject({ method: 'POST', url: '/v1/commands/abh.verification.submit',
+    headers: { 'idempotency-key': 'verify-1' }, payload: submitBody });
+  assert.equal(result.statusCode, 201, result.body);
+  assert.equal(seen?.payload.verdict, 'Pass');
+  assert.equal(result.headers.location, undefined, 'create commands never promise action tracking');
+  assert.equal((await app.inject({ method: 'POST', url: '/v1/commands/abh.verification.submit', payload: submitBody })).statusCode, 400, 'idempotency key is mandatory');
+  assert.equal((await app.inject({ method: 'POST', url: '/v1/commands/abh.verification.submit',
+    headers: { 'idempotency-key': 'verify-2', 'if-match': '"1"' }, payload: submitBody })).statusCode, 400, 'If-Match belongs to update mode only');
+});
+
+test('update-mode decision submit pairs If-Match with a strong ETag on the new version', async t => {
+  let seen: Extract<PublicCommand, { type: 'abh.decisions.submit' }> | undefined;
+  const app = createHttpApp({ authenticate, commands: { 'abh.decisions.submit': async ({ command }) => {
+    seen = command;
+    return { success: true, data: { objectRef: { type: 'abh.decision', id: decisionId, version: 3 },
+      commandId: command.commandId, status: 'Approved', effectTrackingRefs: [] } };
+  } } });
+  t.after(() => app.close());
+  const decisionUrl = '/v1/commands/abh.decisions.submit';
+  const decisionBody = { target: { type: 'abh.decision', id: decisionId },
+    payload: { ...await fixture('submit-decision') } };
+  const result = await app.inject({ method: 'POST', url: decisionUrl,
+    headers: { 'idempotency-key': 'submit-1', 'if-match': '"2"' }, payload: decisionBody });
+  assert.equal(result.statusCode, 200, result.body);
+  assert.equal(seen?.expectedVersion, 2);
+  assert.equal(result.headers.etag, '"3"');
+  assert.equal((await app.inject({ method: 'POST', url: decisionUrl, headers: { 'idempotency-key': 'submit-1' }, payload: decisionBody })).statusCode, 400, 'update commands require If-Match');
+});
+
+test('registered decision query returns the strong view and enforces its filter contract', async t => {
+  let calls = 0;
+  let seenQuery: unknown;
+  const app = createHttpApp({ authenticate, queries: { 'abh.decisions.get': async ({ query, id }) => {
+    calls++;
+    seenQuery = query;
+    return decisionQuery;
+  } } });
+  t.after(() => app.close());
+  const ok = await app.inject(`/v1/queries/abh.decisions.get?id=${decisionId}`);
+  assert.equal(ok.statusCode, 200, ok.body);
+  assert.equal(ok.json().data.decisionRef.id, decisionView.decisionRef.id);
+  assert.equal(ok.json().data.status, decisionView.status);
+  for (const bad of ['/v1/queries/abh.decisions.get', '/v1/queries/abh.decisions.get?id=no-uuid',
+    `/v1/queries/abh.decisions.get?id=${decisionId}&actor=admin`]) {
+    assert.equal((await app.inject(bad)).statusCode, 400, bad);
+  }
+  assert.equal((await app.inject({ method: 'POST', url: `/v1/queries/abh.decisions.get?id=${decisionId}` })).statusCode, 404);
+  assert.equal(calls, 1);
+  assert.deepEqual(seenQuery, { id: decisionId });
+});
+
+test('multiple mounts register every route and trusted identity is never reused across requests', async t => {
+  const contexts: RequestContext[] = [];
+  const app = createHttpApp({ authenticate, commands: {
+    'abh.actions.cancel': async ({ context }) => { contexts.push(context); return accepted({ type: 'abh.actions.cancel', commandId: '00000000-0000-4000-8000-0000000000e1' } as PublicCommand); },
+    'abh.decisions.submit': async ({ context }) => { contexts.push(context); return { success: true, data: { objectRef: { type: 'abh.decision', id: decisionId, version: 3 }, commandId: '00000000-0000-4000-8000-0000000000e2', status: 'Approved', effectTrackingRefs: [] } }; },
+  }, queries: { 'abh.decisions.get': async () => decisionQuery } });
+  t.after(() => app.close());
+  assert.equal((await app.inject({ method: 'POST', url, headers, payload: body })).statusCode, 202);
+  assert.equal((await app.inject({ method: 'POST', url: '/v1/commands/abh.decisions.submit', headers: { 'idempotency-key': 'submit-2', 'if-match': '"2"' }, payload: { target: { type: 'abh.decision', id: decisionId }, payload: { ...await fixture('submit-decision') } } })).statusCode, 200);
+  assert.equal((await app.inject(`/v1/queries/abh.decisions.get?id=${decisionId}`)).statusCode, 200);
+  assert.equal((await app.inject({ method: 'POST', url: '/v1/commands/abh.missions.activate', payload: {} })).statusCode, 404, 'unmounted commands stay unavailable');
+  assert.equal(contexts.length, 2);
+  assert.notEqual(contexts[0]!.requestId, contexts[1]!.requestId, 'every request receives its own trusted context');
+  assert.notEqual(contexts[0]!.correlationId, contexts[1]!.correlationId);
+  assert.deepEqual(contexts.map(context => context.actor.id), [identity.actor.id, identity.actor.id]);
+});
+
+test('query response firewall sanitizes owner failures symmetrically with commands', async t => {
+  for (const handler of [async () => ({ secret: 'private-value' }), async () => { throw new Error('private-value'); }]) {
+    const app = createHttpApp({ authenticate, queries: { 'abh.decisions.get': handler } });
+    t.after(() => app.close());
+    const result = await app.inject(`/v1/queries/abh.decisions.get?id=${decisionId}`);
+    assert.equal(result.statusCode, 500);
+    assert.ok(!result.body.includes('private-value'));
+    assert.equal(result.json().error.retryable, false);
+  }
+});
