@@ -1,5 +1,5 @@
 import {readFile} from 'node:fs/promises';
-import {resolve} from 'node:path';
+import {dirname,resolve} from 'node:path';
 import {resolveDevelopmentConfig,requiredEnvironmentReferences} from '@abh/contracts/config';
 
 const USAGE = `abh run [options]
@@ -61,7 +61,9 @@ export async function runServer(args, { env, stdout, stderr, signal }, imports =
   const host = parsed.flags['--host'] ?? '0.0.0.0', portValue = parsed.flags['--port'] ?? '3000';
   if (!/^[0-9]+$/.test(portValue) || Number(portValue) > 65535) return fail(stderr, 'INVALID_ARGUMENT');
   const listen = { host, port: Number(portValue) };
-  const businessPath = resolve(config.data.runtime.businessEntry);
+  // businessEntry is owned by the deployment and resolves relative to the config
+  // file's directory, so `abh run --config examples/x/abh.config.json` works from any cwd.
+  const businessPath = resolve(dirname(resolve(configPath)), config.data.runtime.businessEntry);
   let module;
   try {
     module = await (imports.business?.() ?? import(businessPath));

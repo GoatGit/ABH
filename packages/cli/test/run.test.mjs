@@ -57,6 +57,22 @@ test('abh run invokes explicit deployment installation without defaults',async t
   assert.deepEqual(calls.filter(value=>typeof value==='string'),['database','identity','service']);
 });
 
+test('abh run resolves businessEntry relative to the config file directory',async t=>{
+  const root=await mkdtemp(join(tmpdir(),'abh-run-cwd-'));t.after(()=>rm(root,{recursive:true,force:true}));
+  const path=join(root,'abh.config.json');
+  await writeFile(path,JSON.stringify(config));
+  await writeFile(join(root,'business-fixture.mjs'),
+    'export async function createAbhServiceInstallation(){throw new Error(\'INSTALLER_MARKER\');}');
+  const stderr=[];
+  const code=await runServer(['--config',path],{
+    env:{ABH_TEST_RUNTIME:'postgresql://runtime',ABH_TEST_QUEUE:'postgresql://queue'},
+    stdout:{write(){}},stderr:{write(value){stderr.push(String(value));}},signal:AbortSignal.abort()});
+  assert.equal(code,6);
+  // The business module must load (installation failure, not module-unavailable)
+  // even when the process cwd differs from the config file's directory.
+  assert.ok(stderr.join('').includes('BUSINESS_INSTALLATION_FAILED'),stderr.join(''));
+});
+
 test('the real @abh/core/server module exposes every symbol abh run composes',async()=>{
   const server=await import('@abh/core/server');
   for(const symbol of ['Database','IdentityIngress','assembleAbhService','runHttpService'])
