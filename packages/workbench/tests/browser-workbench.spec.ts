@@ -260,7 +260,7 @@ test('late response is rejected and organization context stays isolated',async({
   await page.reload();
   const compensationForm=page.locator('form.action-form');
   await expect(compensationForm.getByRole('button',{name:'提交补偿提案'})).toBeVisible();
-  await compensationForm.getByLabel('Publication Id', {exact:false}).fill('publication-1');
+  await compensationForm.getByLabel('发布编号').fill('publication-1');
   await compensationForm.getByRole('button',{name:'提交补偿提案'}).click();
   await expect(page.getByText('补偿提案已受理')).toBeVisible();
 

@@ -422,7 +422,7 @@ const compensationTemplate=actionRef=>({
       '00000000-0000-4000-8000-000000000041',1)},
   inputSchema:{type:'object',required:['publicationId'],additionalProperties:false,
     properties:{publicationId:{type:'string',minLength:1}}},
-  uiSchema:{type:'Control',scope:'#/properties/publicationId'},
+  uiSchema:{type:'Control',scope:'#/properties/publicationId',label:'发布编号'},
   initialData:{publicationId:'publication-1'},
 });
 const emitOrganizationChange=()=>{

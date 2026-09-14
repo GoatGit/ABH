@@ -415,3 +415,32 @@ test('query response firewall sanitizes owner failures symmetrically with comman
     assert.equal(result.json().error.retryable, false);
   }
 });
+
+test('SSE classifies a consumer that cannot keep up as a slow drop after 256 queued changes', async t => {
+  const drops: string[] = [];
+  let produced = 0;
+  const app = createHttpApp({ authenticate, events: {
+    metrics: { incrementSseDrop: reason => drops.push(reason) },
+    subscribe: async function* (_type: string, _id: string, _context: RequestContext, signal: AbortSignal) {
+      for (; produced < 2000 && !signal.aborted; produced++) {
+        yield { kind: 'change' as const, projectionType: 'abh.projection.mission-summary',
+          version: 1, watermark: produced, cursor: `event-${produced}` };
+        await new Promise(resolve => setImmediate(resolve));
+      }
+      await new Promise<void>(resolve => { signal.addEventListener('abort', () => resolve(), { once: true }); });
+    },
+  } });
+  t.after(() => app.close());
+  await app.listen({ host: '127.0.0.1', port: 0 });
+  const address = app.server.address();
+  assert.ok(address && typeof address !== 'string');
+  // The consumer never reads the body; queued writes must cross the bound and end the stream.
+  const response = await fetch(`http://127.0.0.1:${address!.port}/v1/events/abh.mission/${body.target.id}`);
+  assert.equal(response.status, 200);
+  for (let waited = 0; waited < 2000 && !drops.includes('slow'); waited += 100) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  assert.ok(drops.includes('slow'), `expected a slow drop, saw ${JSON.stringify(drops)}`);
+  assert.ok(produced >= 256);
+  await response.body!.cancel().catch(() => {});
+});
