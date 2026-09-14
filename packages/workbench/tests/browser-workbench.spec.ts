@@ -172,7 +172,9 @@ test('late response is rejected and organization context stays isolated',async({
   await expect(page.getByText('demo.accuracy 0.91–0.97')).toBeVisible();
   await expect(page.getByText('数据时点').first()).toBeVisible();
   await expect(page.getByRole('region',{name:'Assignments'})).toBeVisible();
-  await expect(page.getByText('没有可见 Assignment。')).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Paused · v1'})).toBeVisible();
+  await expect(page.getByText('Superseded by the reviewed candidate; kept for rollback evidence.'))
+    .toBeVisible();
   await accessibility(page);
 
   const retryForm=page.locator('section', {has:page.getByRole('heading',{name:'Inconclusive · v1'})})
@@ -180,7 +182,7 @@ test('late response is rejected and organization context stays isolated',async({
   await retryForm.getByRole('button',{name:'确认提交'}).click();
   await expect(page.getByText('评测重试已受理')).toBeVisible();
 
-  const releaseForm=page.locator('section',{has:page.getByRole('heading',{name:'Pass · v1'})})
+  const releaseForm=page.getByLabel('Learning Gate 00000000-0000-4000-8000-00000000003b')
     .locator('form.action-form');
   await releaseForm.getByRole('button',{name:'确认提交'}).click();
   await expect(page.getByText('Learning Release 已受理')).toBeVisible();
@@ -188,9 +190,11 @@ test('late response is rejected and organization context stays isolated',async({
     {has:page.getByRole('heading',{name:'Active · v1'})})
     .filter({has:page.getByLabel('暂停原因')});
   await expect(assignmentSection).toBeVisible();
-  await assignmentSection.getByLabel('暂停原因').fill('Release validation paused pending operations review.');
+  const pauseForm=assignmentSection.locator('form')
+    .filter({has:page.getByLabel('暂停原因')});
+  await pauseForm.getByLabel('暂停原因').fill('Release validation paused pending operations review.');
   page.once('dialog',dialog=>void dialog.accept());
-  await assignmentSection.getByRole('button',{name:'确认提交'}).click();
+  await pauseForm.getByRole('button',{name:'确认提交'}).click();
   await expect(page.getByRole('heading',{name:'Paused · v2'})).toBeVisible();
   await expect(page.getByText('可选择').first()).toBeVisible();
   await expect(page.getByText('Release validation paused pending operations review.')).toBeVisible();
