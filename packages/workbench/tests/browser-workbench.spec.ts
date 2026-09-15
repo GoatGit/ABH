@@ -51,7 +51,7 @@ test('reviewer completes overview, mission and decision journey',async({page})=>
   await page.request.get('http://127.0.0.1:18777/v1/testing/inbox-consume',{
     headers:{authorization:'Bearer browser-e2e'},
   });
-  await expect(page.getByRole('link',{name:'Publish the approved customer brief?'}))
+  await expect(page.getByRole('link',{name:'是否发布已获批的客户简报？'}))
     .toBeHidden({timeout:8_000});
   await accessibility(page);
   expect((await metrics(page)).lcp).toBeLessThanOrEqual(lcpBudget);
@@ -118,7 +118,7 @@ test('reviewer completes overview, mission and decision journey',async({page})=>
   expect(missionMetrics.cls).toBeLessThanOrEqual(0.1);
 
   await page.goto('/decisions/00000000-0000-4000-8000-000000000011');
-  await expect(page.getByRole('heading',{name:'Publish the approved customer brief?'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'是否发布已获批的客户简报？'})).toBeVisible();
   const approval=page.locator('section[aria-label="批准"]');
   await approval.getByLabel('审批理由').fill('Compliance check passed.');
   await approval.getByLabel('审批理由').press(' ');
@@ -146,7 +146,7 @@ test('late response is rejected and organization context stays isolated',async({
   const missionId='00000000-0000-4000-8000-000000000011';
   await page.goto('/inbox');
   await expect(page.getByRole('heading',{
-    name:'Publish the approved customer brief?'})).toBeVisible();
+    name:'是否发布已获批的客户简报？'})).toBeVisible();
   await expect(page.locator('p[role="status"]').filter({hasText:'刷新状态：实时'})).toBeVisible();
   await accessibility(page);
   await page.request.get('http://127.0.0.1:18777/v1/testing/inbox-consume',{
@@ -222,7 +222,7 @@ test('late response is rejected and organization context stays isolated',async({
 
   await page.goto(`/decisions/${decisionId}`);
   await expect(page.getByRole('heading',{
-    name:'Publish the approved customer brief?'})).toBeVisible();
+    name:'是否发布已获批的客户简报？'})).toBeVisible();
   await expect(page.getByText('当前状态 Pending')).toBeVisible();
 
   const approval=page.locator('section[aria-label="批准"]');
@@ -300,7 +300,7 @@ test('late response is rejected and organization context stays isolated',async({
   await page.goto(`/decisions/${decisionId}`);
   await expect(page.getByText('FORBIDDEN')).toBeVisible();
   await expect(page.getByRole('heading',{
-    name:'Publish the approved customer brief?'})).toBeHidden();
+    name:'是否发布已获批的客户简报？'})).toBeHidden();
   await page.goto(completedRunUrl);
   await expect(page.getByText('FORBIDDEN')).toBeVisible();
   await expect(page.getByRole('heading',{name:'demo.trigger'})).toBeHidden();

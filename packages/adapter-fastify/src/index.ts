@@ -47,6 +47,8 @@ export interface HttpInstallation {
     metrics?: {
       incrementSseDrop(reason: HttpProjectionSseDropReason): void;
     };
+    /** Keeps idle connections observable through silent proxies; 15s by default. */
+    heartbeatIntervalMs?: number;
   };
   deadlineMs?: number;
   bodyLimit?: number;
@@ -206,6 +208,8 @@ export function createHttpApp(installation: HttpInstallation): FastifyInstance {
 
   if (installation.events) {
     const events = installation.events;
+    const heartbeatIntervalMs = events.heartbeatIntervalMs ?? 15_000;
+    if (!Number.isSafeInteger(heartbeatIntervalMs) || heartbeatIntervalMs < 50 || heartbeatIntervalMs > 60_000) throw new TypeError('Invalid SSE heartbeat interval');
     app.get('/v1/events/:subjectType/:subjectId', async (request, reply) => {
       const { subjectType, subjectId } = request.params as { subjectType: string; subjectId: string };
       const controller = new AbortController();
@@ -248,7 +252,7 @@ export function createHttpApp(installation: HttpInstallation): FastifyInstance {
       try {
         const heartbeat = setInterval(() => {
           if (!reply.raw.writableEnded && !reply.raw.writableNeedDrain) reply.raw.write(': heartbeat\n\n');
-        }, 15_000);
+        }, heartbeatIntervalMs);
         let queued = 0;
         reply.raw.once('drain', () => { queued = Math.max(0, queued - 1); });
         try {

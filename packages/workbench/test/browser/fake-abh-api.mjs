@@ -89,8 +89,8 @@ const decisionPackage=(question,slotId,subjectId,impact)=>({
   requestRef:ref('abh.responsibility-request'),routeRevision:1,slotId,
   subjectRef:entity('abh.action',subjectId,2),
   proposalDigest:digest,question,
-  recommendation:'Review the impact summary before deciding.',
-  alternatives:['Keep the current state.','Request another revision.'],
+  recommendation:'先核对影响摘要，再给出决定。',
+  alternatives:['保持现状。','退回再修订一轮。'],
   impactUpperBound:{scopeRefs:[ref('abh.organization')],resourceRequirements:[],maxMoney:impact.money,
     description:impact.description},
   risks:impact.risks,evidenceRefs:[ref('abh.artifact')],
@@ -99,24 +99,24 @@ const decisionPackage=(question,slotId,subjectId,impact)=>({
 });
 let decision={
   decisionRef:entity('abh.decision',decisionId,1),
-  package:decisionPackage('Publish the approved customer brief?','reviewer',
+  package:decisionPackage('是否发布已获批的客户简报？','reviewer',
     '00000000-0000-4000-8000-0000000000a5',
-    {money:[],description:'Publishes one reviewed brief; no financial spend.',
-      risks:['The destination may acknowledge late.']}),
+    {money:[],description:'发布一份已审阅简报；无资金支出。',
+      risks:['目标平台可能延迟确认。']}),
   status:'Pending',effectSummaries:[],availableActions:[],
 };
 const extraDecisions=[
   {id:'00000000-0000-4000-8000-0000000000d2',
-    package:decisionPackage('Approve the Q3 marketing spend of ¥50,000?','approver',
+    package:decisionPackage('是否批准三季度 ¥50,000 营销支出？','approver',
       '00000000-0000-4000-8000-0000000000a6',
       {money:[{amount:'50000.00',currency:'CNY'}],
-        description:'Commits quarterly media spend against the approved budget.',
-        risks:['Actual platform spend may exceed the reserved amount.']})},
+        description:'按已批预算承诺三季度媒体投放支出。',
+        risks:['平台实际消耗可能超出预留额度。']})},
   {id:'00000000-0000-4000-8000-0000000000d3',
-    package:decisionPackage('Grant read access to the analytics warehouse?','security-reviewer',
+    package:decisionPackage('是否授予分析仓库的只读访问？','security-reviewer',
       '00000000-0000-4000-8000-0000000000a7',
-      {money:[],description:'Grants one principal read access to aggregated analytics.',
-        risks:['Access persists until the next review.','Row-level policies may lag grant approval.']})},
+      {money:[],description:'授予单个主体对聚合分析数据的只读访问。',
+        risks:['授权将持续到下一次审查。','行级策略生效可能滞后于授权。']})},
 ];
 const decisionById=id=>{
   if(id===decisionId)return decision;

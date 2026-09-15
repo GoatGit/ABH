@@ -496,3 +496,30 @@ test('SSE bounds concurrent connections per organization after fifty users', asy
   }
   await new Promise(resolve => setImmediate(resolve));
 });
+
+test('SSE emits heartbeats on the configured interval so idle streams stay observable', async t => {
+  const app = createHttpApp({ authenticate, events: {
+    heartbeatIntervalMs: 50,
+    subscribe: async function* (_type: string, _id: string, _context: RequestContext, signal: AbortSignal) {
+      await new Promise<void>(resolve => { signal.addEventListener('abort', () => resolve(), { once: true }); });
+    },
+  } });
+  t.after(() => app.close());
+  await app.listen({ host: '127.0.0.1', port: 0 });
+  const address = app.server.address();
+  assert.ok(address && typeof address !== 'string');
+  const response = await fetch(`http://127.0.0.1:${address!.port}/v1/events/abh.mission/${body.target.id}`);
+  assert.equal(response.status, 200);
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder();
+  let text = '';
+  const deadline = setTimeout(() => void response.body!.cancel(), 1000);
+  try {
+    while (text.split(': heartbeat').length < 3) {
+      const next = await reader.read();
+      if (next.done) break;
+      text += decoder.decode(next.value);
+    }
+  } finally { clearTimeout(deadline); void reader.cancel().catch(() => {}); }
+  assert.ok(text.split(': heartbeat').length >= 3, 'expected repeated heartbeats on an idle stream');
+});
