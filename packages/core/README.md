@@ -29,7 +29,9 @@ ABH 服务端内部模块，按 `docs/V1` 持续实现。根入口导出 `coreVe
 治理/bootstrap、完整 Domain/Scope/Artifact admission 和 Connector 安装证据仍有明确 Fixture 回调，不能直接接成公共路由。独立 Query Authority 与已派发取消已有内部实现；终态 Correction/Exception、安全重试、持续外部责任与完整恢复策略继续实现。
 
 真实 Cosign 签名测试（7 项）需要设置 `ABH_TEST_COSIGN` 指向 cosign 可执行文件（2.x CLI；3.x 移除了 `--tlog-upload`），未设置时自动跳过；CI 中由 cosign-installer 钉住 v2.5.0 并注入该变量。
-测试内存画像：测试按文件串行运行，每个文件使用独立 PG 容器与进程；最大的 `actions.test.ts` 峰值约 2GB RSS（35+ 子测试共享夹具的累积 + 策略求值），OPA 求值本身被 Worker 内 32MiB 上限约束。≥8GB 内存的 runner 充足；<4GB 的自托管 VM 会 OOM SIGKILL 该文件（已实测），属资源限制而非产品缺陷，拆分文件仅降低单进程峰值、不减少总占用，暂不做。
+策略求值的常驻模型：`InstalledPolicyAssets` 按 WASM 摘要装载一次 runtime（每入口一个 Worker）并跨求值驻留，重复装载自动去重、随属主关闭——即常驻池已实现；新鲜度由摘要绑定与 epoch fence 保证，无需额外池化。
+
+测试按文件串行运行，每个文件使用独立 PG 容器与进程；最大的 `actions.test.ts` 峰值约 2GB RSS（35+ 子测试共享夹具的累积 + 策略求值），OPA 求值本身被 Worker 内 32MiB 上限约束。≥8GB 内存的 runner 充足；<4GB 的自托管 VM 会 OOM SIGKILL 该文件（已实测），属资源限制而非产品缺陷，拆分文件仅降低单进程峰值、不减少总占用，暂不做。
 
 内联 Artifact 上限 64 KiB UTF-8；二进制原始回执使用无损 base64 包装，上限 48,000 bytes。FilesystemObjectStore 支持单主机 durable 大对象 staging、digest/size 复核、streaming 读取、lineage、保留/删除证明和导出；公开上传用 Artifact 级回执预约去重。生产上传扫描/隔离、跨主机/云 ObjectStore 与完整 Domain 验收仍需宿主实现。保存失败的进程内句柄不会跨重启保存，进程丢失后仍须独立 Query 查回。
 
