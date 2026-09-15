@@ -23,4 +23,4 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
         env:
-          ABH_TEST_COSIGN: cosign
+          ABH_TEST_COSIGN: /usr/local/bin/cosign
