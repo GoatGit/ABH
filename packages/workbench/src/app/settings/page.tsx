@@ -1,3 +1,4 @@
+import type {Metadata} from 'next';
 import {currentSession} from '@/lib/session';
 import {currentSettingsAdapter} from '@/lib/settings-install';
 import {validateSettingsView} from '@/lib/settings-validation';
@@ -8,6 +9,7 @@ import {SettingsCommandSection} from '@/components/SettingsCommandSection';
 import {formatDateTime} from '@/lib/format';
 
 export const dynamic='force-dynamic';
+export const metadata:Metadata={title:'组织设置'};
 
 function List<T>({items,render}:{items:readonly T[];render:(item:T)=>React.ReactNode}){
   if(items.length===0)return <Message kind="empty">当前无可见记录。</Message>;

@@ -1,3 +1,4 @@
+import type {Metadata} from 'next';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import Link from 'next/link';
@@ -11,6 +12,7 @@ import {workbenchConfig} from '@/lib/config';
 import {formatDateTime} from '@/lib/format';
 
 export const dynamic='force-dynamic';
+export const metadata:Metadata={title:'项目详情'};
 
 export default async function MissionPage({params}:{params:Promise<{id:string}>}){
   const {id}=await params,session=await currentSession();

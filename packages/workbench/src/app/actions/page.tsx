@@ -1,3 +1,4 @@
+import type {Metadata} from 'next';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {LiveActionList} from '@/components/LiveActionList';
@@ -7,6 +8,7 @@ import {lifecycleLabels} from '@/lib/action-view';
 import {workbenchConfig} from '@/lib/config';
 
 export const dynamic='force-dynamic';
+export const metadata:Metadata={title:'执行结果'};
 
 const lifecycles=['Proposed','Validated','Authorized','Executing','Reconciling','Closed','Rejected','Expired','Cancelled'] as const;
 const outcomes=['NotStarted','Pending','Unknown','Succeeded','PartiallySucceeded','Failed'] as const;

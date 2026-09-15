@@ -1,3 +1,4 @@
+import type {Metadata} from 'next';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {LiveInbox} from '@/components/LiveInbox';
@@ -6,6 +7,7 @@ import {Message} from '@/components/primitives';
 import {workbenchConfig} from '@/lib/config';
 
 export const dynamic='force-dynamic';
+export const metadata:Metadata={title:'待办与审批'};
 
 export default async function InboxPage(){
   const session=await currentSession();

@@ -1,3 +1,4 @@
+import type {Metadata} from 'next';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {formatDateTime} from '@/lib/format';
@@ -7,6 +8,7 @@ import {ActionForm} from '@/components/ActionForm';
 import {pauseAssignmentAction,releaseLearningCandidateAction,rollbackAssignmentAction,requestEvaluationAction,retryEvaluationAction} from '@/lib/actions';
 
 export const dynamic='force-dynamic';
+export const metadata:Metadata={title:'Learning 治理'};
 
 type SearchParams=Record<string,string|string[]|undefined>;
 

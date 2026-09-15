@@ -1,3 +1,4 @@
+import type {Metadata} from 'next';
 import Link from 'next/link';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
@@ -13,6 +14,7 @@ import {LiveActionStatus} from '@/components/LiveActionStatus';
 import {workbenchConfig} from '@/lib/config';
 
 export const dynamic='force-dynamic';
+export const metadata:Metadata={title:'执行详情'};
 
 const uuidPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

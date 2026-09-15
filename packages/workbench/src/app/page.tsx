@@ -1,3 +1,4 @@
+import type {Metadata} from 'next';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {SessionRequired} from '@/components/ui';
@@ -6,6 +7,7 @@ import {LiveOverview} from '@/components/LiveOverview';
 import {workbenchConfig} from '@/lib/config';
 
 export const dynamic='force-dynamic';
+export const metadata:Metadata={title:'业务总览'};
 
 export default async function Overview(){
   const session=await currentSession();
