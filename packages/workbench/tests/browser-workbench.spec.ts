@@ -163,15 +163,15 @@ test('late response is rejected and organization context stays isolated',async({
   await page.goto('/learning');
   await expect(page.getByRole('heading',{name:'Learning 治理'})).toBeVisible();
   await expect(page.getByText('model · model.prompt')).toBeVisible();
-  await expect(page.getByText('Candidate').first()).toBeVisible();
+  await expect(page.getByText('候选').first()).toBeVisible();
   await expect(page.getByText('Queued · v1')).toBeVisible();
   await expect(page.getByText('Inconclusive · v1')).toBeVisible();
-  await expect(page.getByRole('region',{name:'Learning Gates'})).toBeVisible();
-  await expect(page.getByRole('region',{name:'Learning Gate 00000000-0000-4000-8000-00000000003b'}))
+  await expect(page.getByRole('region',{name:'学习门禁',exact:true})).toBeVisible();
+  await expect(page.getByRole('region',{name:'学习门禁 00000000-0000-4000-8000-00000000003b'}))
     .toBeVisible();
   await expect(page.getByText('demo.accuracy 0.91–0.97')).toBeVisible();
   await expect(page.getByText('数据时点').first()).toBeVisible();
-  await expect(page.getByRole('region',{name:'Assignments'})).toBeVisible();
+  await expect(page.getByRole('region',{name:'职责分配',exact:true})).toBeVisible();
   await expect(page.getByRole('heading',{name:'Paused · v1'})).toBeVisible();
   await expect(page.getByText('Superseded by the reviewed candidate; kept for rollback evidence.'))
     .toBeVisible();
@@ -182,11 +182,11 @@ test('late response is rejected and organization context stays isolated',async({
   await retryForm.getByRole('button',{name:'确认提交'}).click();
   await expect(page.getByText('评测重试已受理')).toBeVisible();
 
-  const releaseForm=page.getByLabel('Learning Gate 00000000-0000-4000-8000-00000000003b')
+  const releaseForm=page.getByLabel('学习门禁 00000000-0000-4000-8000-00000000003b')
     .locator('form.action-form');
   await releaseForm.getByRole('button',{name:'确认提交'}).click();
   await expect(page.getByText('Learning Release 已受理')).toBeVisible();
-  const assignmentSection=page.locator('section[aria-label^="Assignment "]',
+  const assignmentSection=page.locator('section[aria-label^="职责分配 "]',
     {has:page.getByRole('heading',{name:'Active · v1'})})
     .filter({has:page.getByLabel('暂停原因')});
   await expect(assignmentSection).toBeVisible();
@@ -217,7 +217,7 @@ test('late response is rejected and organization context stays isolated',async({
   await evaluationRequestForm.getByLabel('基线版本').fill('1');
   await evaluationRequestForm.getByRole('button',{name:'确认提交'}).click();
   await expect(page.getByText('评测请求已受理')).toBeVisible();
-  await expect(page.getByRole('region',{name:'Evaluation Run 00000000-0000-4000-8000-000000000039'}))
+  await expect(page.getByRole('region',{name:'评测运行 00000000-0000-4000-8000-000000000039'}))
     .toBeVisible();
 
   await page.goto(`/decisions/${decisionId}`);

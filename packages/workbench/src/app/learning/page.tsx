@@ -69,7 +69,7 @@ export default async function LearningPage({searchParams}:{searchParams:Promise<
           <section key={item.candidateRef.id} className="card">
             <h2>model · {item.assetKind}</h2>
             <dl>
-              <dt>Candidate</dt><dd><code>{item.candidateRef.id}</code></dd>
+              <dt>候选</dt><dd><code>{item.candidateRef.id}</code></dd>
               <dt>风险</dt><dd>{item.risk}</dd><dt>状态</dt><dd>{item.status}</dd>
               <dt>Case</dt><dd><code>{item.caseRef.id}</code></dd>
               <dt>可见评测</dt><dd>{runCount(item.candidateRef.id)}</dd>
@@ -89,15 +89,15 @@ export default async function LearningPage({searchParams}:{searchParams:Promise<
           <p>请求只绑定 Candidate 与 Baseline；Profile 由服务端策略冻结。</p>
         </ActionForm>)}
       <section aria-labelledby="evaluation-runs-heading" className="card">
-        <h2 id="evaluation-runs-heading">Evaluation Runs</h2>
+        <h2 id="evaluation-runs-heading">评测运行</h2>
         {runs.runs.length===0?<p className="message empty">没有可见评测请求。</p>:(
           <div className="grid">{runs.runs.map(item=>(
-            <section key={item.runRef.id} aria-label={`Evaluation Run ${item.runRef.id}`}>
+            <section key={item.runRef.id} aria-label={`评测运行 ${item.runRef.id}`}>
               <h3>{item.status} · v{item.runRef.version}</h3>
               <dl>
-                <dt>Candidate</dt><dd><code>{item.candidateRef.id}</code></dd>
+                <dt>候选</dt><dd><code>{item.candidateRef.id}</code></dd>
                 <dt>到期</dt><dd>{formatDateTime(item.expiresAt)}</dd>
-                <dt>Result</dt><dd>{item.resultRef?.id?<code>{item.resultRef.id}</code>:'尚未收口'}</dd>
+                <dt>结果</dt><dd>{item.resultRef?.id?<code>{item.resultRef.id}</code>:'尚未收口'}</dd>
               </dl>
               {item.status==='Inconclusive'?(
                 <ActionForm action={retryEvaluationAction}>
@@ -109,14 +109,14 @@ export default async function LearningPage({searchParams}:{searchParams:Promise<
         {runs.cursor?<p><a href={`/learning?${nextQuery.toString()}`}>下一页</a></p>:null}
       </section>
       <section aria-labelledby="learning-gates-heading" className="card">
-        <h2 id="learning-gates-heading">Learning Gates</h2>
+        <h2 id="learning-gates-heading">学习门禁</h2>
         {visibleGates.length===0?<p className="message empty">没有可见 Gate Artifact。</p>:(
           <div className="grid">{visibleGates.map(item=>(
-            <section key={item.gateRef.id} aria-label={`Learning Gate ${item.gateRef.id}`}>
+            <section key={item.gateRef.id} aria-label={`学习门禁 ${item.gateRef.id}`}>
               <h3>{item.verdict} · v{item.gateRef.version}</h3>
               <dl>
-                <dt>Candidate</dt><dd><code>{item.candidateRef.id}</code></dd>
-                <dt>Profile</dt><dd><code>{item.profileRef.id}</code></dd>
+                <dt>候选</dt><dd><code>{item.candidateRef.id}</code></dd>
+                <dt>画像</dt><dd><code>{item.profileRef.id}</code></dd>
                 <dt>评测证据</dt><dd>{item.evaluationRefs.length}</dd>
                 <dt>置信区间</dt>
                 <dd>{item.uncertainty.map(value=>`${value.metric} ${value.lowerBound}–${value.upperBound}`).join('；')}</dd>
@@ -155,7 +155,7 @@ export default async function LearningPage({searchParams}:{searchParams:Promise<
             </section>))}</div>)}
       </section>
       <section aria-labelledby="assignments-heading" className="card">
-        <h2 id="assignments-heading">Assignments</h2>
+        <h2 id="assignments-heading">职责分配</h2>
         {assignments.assignments.length===0?<p className="message empty">没有可见 Assignment。</p>:(
           <div className="grid">{assignments.assignments.map(item=>{
             const rollbackCandidates=assignments.assignments.filter(candidate=>
@@ -164,7 +164,7 @@ export default async function LearningPage({searchParams}:{searchParams:Promise<
               &&candidate.evidenceRefs.filter(evidence=>evidence.type==='abh.artifact').length===1);
             const previousReleaseIds=[...new Set(rollbackCandidates.map(candidate=>candidate.releaseRef.id))];
             return (
-            <section key={item.assignmentRef.id} aria-label={`Assignment ${item.assignmentRef.id}`}>
+            <section key={item.assignmentRef.id} aria-label={`职责分配 ${item.assignmentRef.id}`}>
               <h3>{item.status} · v{item.assignmentRef.version}</h3>
               <dl>
                 <dt>Release</dt><dd><code>{item.releaseRef.id}</code></dd>
