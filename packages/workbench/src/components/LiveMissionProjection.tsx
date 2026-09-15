@@ -2,13 +2,11 @@
 
 import {useQuery,useQueryClient} from '@tanstack/react-query';
 import dynamic from 'next/dynamic';
-import {useEffect,useState} from 'react';
 import type {ProjectionQueryResult} from '@abh/contracts';
-import {
-  missionProjectionFieldSet,projectionEventPathWithCursor,projectionQueryKey,type QueryIdentity,
-} from '@/lib/query-keys';
+import {missionProjectionFieldSet,projectionQueryKey,type QueryIdentity} from '@/lib/query-keys';
 import {readMissionProjectionSummary} from '@/lib/mission-projection';
 
+import {useProjectionStream} from './use-projection-stream';
 const EChartsMissionProjection=dynamic(()=>
   import('./EChartsMissionProjection').then(module=>module.EChartsMissionProjection),{
   ssr:false,
@@ -20,8 +18,11 @@ export function LiveMissionProjection({identity,missionId,initial,staleSeconds,s
 }){
   const queryClient=useQueryClient();
   const queryKey=projectionQueryKey(identity,'abh.mission',missionId,missionProjectionFieldSet);
-  const [streamState,setStreamState]=useState<'connecting'|'live'|'reset'|'disabled'>(
-    sseEnabled?'connecting':'disabled');
+  const streamState=useProjectionStream(
+    sseEnabled?{type:'abh.mission',id:missionId}:undefined,
+    ()=>void queryClient.invalidateQueries({queryKey}),
+    ()=>queryClient.removeQueries({queryKey}),
+    sseEnabled);
   const query=useQuery({
     queryKey,initialData:initial,staleTime:staleSeconds*1000,
     refetchInterval:staleSeconds*1000,
@@ -35,35 +36,6 @@ export function LiveMissionProjection({identity,missionId,initial,staleSeconds,s
     },
   });
 
-  useEffect(()=>{
-    if(!sseEnabled){setStreamState('disabled');return;}
-    let lastEventId='',source:EventSource,reconnectTimer:number|undefined,closed=false;
-    const connect=()=>{
-      source=new EventSource(projectionEventPathWithCursor('abh.mission',missionId,lastEventId));
-      source.addEventListener('projection_changed',event=>{
-        lastEventId=(event as MessageEvent).lastEventId||lastEventId;
-        setStreamState('live');
-        void queryClient.invalidateQueries({queryKey});
-      });
-      source.addEventListener('projection_reset',()=>{
-        setStreamState('reset');
-        queryClient.removeQueries({queryKey});
-        source.close();
-      });
-      source.onopen=()=>{
-        setStreamState('live');
-        void queryClient.invalidateQueries({queryKey});
-      };
-      source.onerror=()=>{
-        setStreamState(current=>current==='reset'?'reset':'connecting');
-        if(source.readyState===EventSource.CLOSED&&!closed){
-          reconnectTimer=window.setTimeout(connect,500);
-        }
-      };
-    };
-    connect();
-    return()=>{closed=true;window.clearTimeout(reconnectTimer);source.close();};
-  },[missionId,queryClient,sseEnabled]);
 
   if(query.isPending)return <p className="message stale">正在读取授权投影…</p>;
   if(query.isError)return <p className="message error" role="alert">投影不可用：{(query.error as Error).message}</p>;
