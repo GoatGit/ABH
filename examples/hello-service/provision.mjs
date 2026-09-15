@@ -58,7 +58,7 @@ const grant = {
   principalRef: { type: 'abh.principal', id: principalId, version: 1 },
   scopeRefs: [{ type: 'abh.organization', id: organizationId, version: 1 }],
   actionTypes: ['abh.missions.read', 'abh.missions.create', 'abh.missions.activate',
-    'abh.missions.pause', 'abh.missions.resume', 'abh.missions.cancel'],
+    'abh.missions.pause', 'abh.missions.resume', 'abh.missions.cancel', 'abh.artifacts.store-inline'],
   purposeNames: ['abh.mission.manage'],
   validFrom: now.toISOString(), validUntil: inOneYear.toISOString(),
   issuanceEvidenceRef: { type: 'abh.organization', id: organizationId, version: 1 },

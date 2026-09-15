@@ -47,10 +47,12 @@ test('actual Cosign signing round-trips through the existing verifier',{skip:!pr
   // cryptographic verification, not transport parsing.
   const bundleDocument=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(signed.bundle)) as
     {messageSignature?:{signature?:string}};
-  const signature=bundleDocument.messageSignature?.signature;
-  assert.ok(signature&&signature.length>2);
-  const replacement=signature[0]==='A'?'B':'A';
-  bundleDocument.messageSignature.signature=replacement+signature.slice(1);
+  const signatureText=bundleDocument.messageSignature?.signature;
+  assert.ok(signatureText&&signatureText.length>2);
+  const replacement=signatureText[0]==='A'?'B':'A';
+  const messageSignature=bundleDocument.messageSignature;
+  assert.ok(messageSignature);
+  messageSignature.signature=replacement+signatureText.slice(1);
   const tamperedBytes=new TextEncoder().encode(JSON.stringify(bundleDocument));
   await assert.rejects(verifyPackSignature(manifest,tamperedBytes,{executable,mode:'OfflinePublicKey',
     publicKeyPem:await readFile(join(root,'pack.pub'),'utf8'),packId:manifest.metadata.id},options()),{code:'PRECONDITION_FAILED'});
