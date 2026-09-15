@@ -211,10 +211,10 @@ test('late response is rejected and organization context stays isolated',async({
   await expect(page.getByText('回滚自 Release')).toBeVisible();
 
   const evaluationRequestForm=page.locator('form.action-form')
-    .filter({has:page.getByLabel('Baseline Artifact ID')});
-  await evaluationRequestForm.getByLabel('Baseline Artifact ID').fill(
+    .filter({has:page.getByLabel('基线 Artifact ID')});
+  await evaluationRequestForm.getByLabel('基线 Artifact ID').fill(
     '00000000-0000-4000-8000-000000000037');
-  await evaluationRequestForm.getByLabel('Baseline Version').fill('1');
+  await evaluationRequestForm.getByLabel('基线版本').fill('1');
   await evaluationRequestForm.getByRole('button',{name:'确认提交'}).click();
   await expect(page.getByText('评测请求已受理')).toBeVisible();
   await expect(page.getByRole('region',{name:'Evaluation Run 00000000-0000-4000-8000-000000000039'}))

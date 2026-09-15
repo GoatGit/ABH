@@ -81,10 +81,10 @@ export default async function LearningPage({searchParams}:{searchParams:Promise<
         <ActionForm action={requestEvaluationAction}>
           <input type="hidden" name="candidateId" value={visibleCandidates[0]!.candidateRef.id}/>
           <input type="hidden" name="candidateVersion" value={visibleCandidates[0]!.candidateRef.version}/>
-          <label htmlFor="baselineArtifactId">Baseline Artifact ID</label>
+          <label htmlFor="baselineArtifactId">基线 Artifact ID</label>
           <input id="baselineArtifactId" name="baselineArtifactId" type="text" required
             pattern="[0-9a-fA-F-]{36}" defaultValue="00000000-0000-4000-8000-000000000037"/>
-          <label htmlFor="baselineVersion">Baseline Version</label>
+          <label htmlFor="baselineVersion">基线版本</label>
           <input id="baselineVersion" name="baselineVersion" type="number" min="1" defaultValue="1"/>
           <p>请求只绑定 Candidate 与 Baseline；Profile 由服务端策略冻结。</p>
         </ActionForm>)}
@@ -130,24 +130,24 @@ export default async function LearningPage({searchParams}:{searchParams:Promise<
                   <input type="hidden" name="candidateVersion" value={item.candidateRef.version}/>
                   <input type="hidden" name="gateId" value={item.gateRef.id}/>
                   <input type="hidden" name="gateVersion" value={item.gateRef.version}/>
-                  <label htmlFor={`behaviorSlot-${item.gateRef.id}`}>Behavior Slot</label>
+                  <label htmlFor={`behaviorSlot-${item.gateRef.id}`}>行为槽</label>
                   <input id={`behaviorSlot-${item.gateRef.id}`} name="behaviorSlot" required
                     minLength={3} maxLength={100} defaultValue="learning.policy"/>
-                  <label htmlFor={`capabilityId-${item.gateRef.id}`}>Capability ID</label>
+                  <label htmlFor={`capabilityId-${item.gateRef.id}`}>能力 ID</label>
                   <input id={`capabilityId-${item.gateRef.id}`} name="capabilityId" required
                     minLength={3} maxLength={100} defaultValue="learning.passed-candidate"/>
-                  <label htmlFor={`capabilityVersion-${item.gateRef.id}`}>Capability Version</label>
+                  <label htmlFor={`capabilityVersion-${item.gateRef.id}`}>能力版本</label>
                   <input id={`capabilityVersion-${item.gateRef.id}`} name="capabilityVersion"
                     required defaultValue="0.1.0"/>
-                  <label htmlFor={`capabilityDigest-${item.gateRef.id}`}>Capability Digest</label>
+                  <label htmlFor={`capabilityDigest-${item.gateRef.id}`}>能力摘要</label>
                   <input id={`capabilityDigest-${item.gateRef.id}`} name="capabilityDigest" required
                     pattern="sha256:[0-9a-f]{64}"
                     defaultValue={`sha256:${'c'.repeat(64)}`}/>
-                  <label htmlFor={`compatibilityArtifactId-${item.gateRef.id}`}>Compatibility Artifact ID</label>
+                  <label htmlFor={`compatibilityArtifactId-${item.gateRef.id}`}>兼容性 Artifact ID</label>
                   <input id={`compatibilityArtifactId-${item.gateRef.id}`} name="compatibilityArtifactId"
                     required pattern="[0-9a-fA-F-]{36}"
                     defaultValue="00000000-0000-4000-8000-000000000037"/>
-                  <label htmlFor={`compatibilityArtifactVersion-${item.gateRef.id}`}>Compatibility Version</label>
+                  <label htmlFor={`compatibilityArtifactVersion-${item.gateRef.id}`}>兼容性版本</label>
                   <input id={`compatibilityArtifactVersion-${item.gateRef.id}`}
                     name="compatibilityArtifactVersion" type="number" min="1" defaultValue="1"/>
                   <p>发布将强读 Pass Gate、绑定精确能力版本，并创建唯一的 Assignment。</p>
