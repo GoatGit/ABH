@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 import { connect } from 'node:net';
 import type { RequestContext } from '@abh/contracts';
+import type { FastifyInstance } from 'fastify';
 import { createHttpApp, stopHttpIngress, HttpFailure, type HttpInstallation, type PublicCommand } from '../src/index.ts';
 
 const fixture = async (name: string) => JSON.parse(await readFile(new URL(`../../contracts/fixtures/valid/${name}.json`, import.meta.url), 'utf8')).value;
@@ -175,6 +176,16 @@ test('handler deadline aborts cooperative work and returns a nonretryable respon
   assert.equal(result.json().error.retryable, false);
 });
 
+type ListenResult={app:FastifyInstance;eventsUrl:string};
+
+/** Binds the app and returns the SSE events URL for one subject. */
+async function listen(app:FastifyInstance):Promise<ListenResult>{
+  await app.listen({host:'127.0.0.1',port:0});
+  const address=app.server.address();
+  assert.ok(address&&typeof address!=='string');
+  return {app,eventsUrl:`http://127.0.0.1:${address.port}/v1/events`};
+}
+
 // Injection normalizes arbitrary duplicate headers; use the wire to preserve them.
 test('raw duplicate idempotency headers are rejected before Owner execution', async t => {
   let calls = 0;
@@ -211,9 +222,8 @@ test('SSE preserves Last-Event-ID, emits opaque cursor and bounds slow delivery'
     await new Promise<void>(resolve=>{signal.addEventListener('abort',()=>resolve(), {once:true});});
   }}});
   t.after(() => app.close());
-  await app.listen({host:'127.0.0.1',port:0});
-  const address=app.server.address();assert.ok(address&&typeof address!=='string');
-  const response=await fetch(`http://127.0.0.1:${address.port}/v1/events/abh.mission/${body.target.id}`,{
+  const {eventsUrl}=await listen(app);
+  const response=await fetch(`${eventsUrl}/abh.mission/${body.target.id}`,{
     headers:{'last-event-id':'event-zero'}});
   assert.equal(response.status,200);
   assert.equal(response.headers.get('content-type'),'text/event-stream');
@@ -239,9 +249,8 @@ test('SSE emits reset without object information', async t => {
     }
   }});
   t.after(() => app.close());
-  await app.listen({host:'127.0.0.1',port:0});
-  const address=app.server.address();assert.ok(address&&typeof address!=='string');
-  const response=await fetch(`http://127.0.0.1:${address.port}/v1/events/abh.mission/${body.target.id}`);
+  const {eventsUrl}=await listen(app);
+  const response=await fetch(`${eventsUrl}/abh.mission/${body.target.id}`);
   assert.equal(response.status,200);
  assert.equal(await response.text(),`retry: 5000\n\nevent: projection_reset\ndata: {"reason":"reset"}\n\n`);
  assert.deepEqual(drops,['reset']);
@@ -253,9 +262,8 @@ test('SSE rejects the sixth concurrent connection for one user', async t => {
     await new Promise<void>(resolve=>{signal.addEventListener('abort',()=>resolve(),{once:true});});
   }}});
   t.after(() => app.close());
-  await app.listen({host:'127.0.0.1',port:0});
-  const address=app.server.address();assert.ok(address&&typeof address!=='string');
-  const endpoint=`http://127.0.0.1:${address.port}/v1/events/abh.mission/${body.target.id}`;
+  const {eventsUrl}=await listen(app);
+  const endpoint=`${eventsUrl}/abh.mission/${body.target.id}`;
   const streams=await Promise.all(Array.from({length:5},()=>fetch(endpoint)));
   try {
     assert.ok(streams.every(response=>response.status===200));
