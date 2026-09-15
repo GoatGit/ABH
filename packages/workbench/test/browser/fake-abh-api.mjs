@@ -2,6 +2,25 @@ import http from 'node:http';
 
 // Demo dataset for `pnpm dev:demo`. Every e2e-pinned identifier keeps its exact behavior;
 // additional entities only extend the lists so all workbench pages render with data.
+//
+// Entity key reference (route -> id):
+//   mission  demo.project        00000000-0000-4000-8000-000000000011  (Active; e2e-pinned)
+//   mission  demo.billing        00000000-0000-4000-8000-000000000012  (Paused)
+//   mission  demo.inventory      00000000-0000-4000-8000-000000000013  (Blocked)
+//   mission  demo.report         00000000-0000-4000-8000-000000000014  (Draft)
+//   mission  demo.archive        00000000-0000-4000-8000-000000000015  (Completed)
+//   mission  demo.legacy         00000000-0000-4000-8000-000000000016  (Cancelled)
+//   decision 发布审批(d1)        00000000-0000-4000-8000-000000000011  (Pending)
+//   decision 支出审批(d2)        00000000-0000-4000-8000-0000000000d2  (Pending)
+//   decision 授权审批(d3)        00000000-0000-4000-8000-0000000000d3  (Pending)
+//   decision 已批准示例(d9)      00000000-0000-4000-8000-0000000000d9  (Approved)
+//   action   demo.publish        00000000-0000-4000-8000-000000000021  (Reconciling)
+//   actions  demo.notify/ingest/reconcile/export/cleanup/enrich/validate
+//                               00000000-0000-4000-8000-000000000022..28
+//   run      demo.trigger v2     00000000-0000-4000-8000-000000000011  (Completed)
+//   run      cancel.trigger v1   00000000-0000-4000-8000-0000000000c2  (Running)
+//   run      demo.trigger v1     00000000-0000-4000-8000-0000000000c4  (Queued)
+//   tokens   browser-e2e (org A) / browser-e2e-b (org B, empty data)
 const org='00000000-0000-4000-8000-0000000000c1';
 const missionId='00000000-0000-4000-8000-000000000011';
 const decisionId='00000000-0000-4000-8000-000000000011';
