@@ -412,7 +412,7 @@ const settingsView=()=>({
     initialData:{automationKey:'demo.agent',enabled:true}}],
 });
 const compensationTemplate=actionRef=>({
-  key:'demo.compensate',label:'撤销发布',description:'Revoke the failed publication.',
+  key:'demo.compensate',label:'撤销发布',description:'撤销已失败的发布内容。',
   actionType:'demo.retract-publication',
   targetRefs:[entity('abh.artifact','00000000-0000-4000-8000-000000000031',1)],
   sourceVersionRefs:[actionRef],

@@ -1,3 +1,7 @@
+# Resource note: core 'Control Snapshot' (OPA WASM evaluation) transiently peaks
+# around 2GB RSS inside actions.test.ts; GitHub runners (16GB) are sufficient,
+# but sub-4GB local Docker VMs will OOM-kill that test file (SIGKILL, not a
+# product defect). Keep runner memory >= 8GB if self-hosting.
 name: ABH checks
 on:
   push:
