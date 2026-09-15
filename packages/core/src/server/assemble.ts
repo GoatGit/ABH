@@ -10,6 +10,14 @@ export interface AbhServiceConfig {
   mission:MissionHttpInstallation;
   deadlineMs?:number;
   bodyLimit?:number;
+  /** Optional capability surfaces. Without them the corresponding public
+   *  commands/queries are not mounted at all (fail-closed composition). */
+  capabilityQuery?:CoreHttpInstallation['capabilityQuery'];
+  artifactStorage?:CoreHttpInstallation['artifactStorage'];
+  objectUpload?:CoreHttpInstallation['objectUpload'];
+  safetyStops?:CoreHttpInstallation['safetyStops'];
+  packInspectionDiagnostic?:CoreHttpInstallation['packInspectionDiagnostic'];
+  actionCancellation?:CoreHttpInstallation['actionCancellation'];
 }
 
 export interface AssembledService {
@@ -30,6 +38,12 @@ export function assembleAbhService(config:AbhServiceConfig):AssembledService{
     mission:config.mission,
     ...(config.deadlineMs!==undefined?{deadlineMs:config.deadlineMs}:{}),
     ...(config.bodyLimit!==undefined?{bodyLimit:config.bodyLimit}:{}),
+    ...(config.capabilityQuery?{capabilityQuery:config.capabilityQuery}:{}),
+    ...(config.artifactStorage?{artifactStorage:config.artifactStorage}:{}),
+    ...(config.objectUpload?{objectUpload:config.objectUpload}:{}),
+    ...(config.safetyStops?{safetyStops:config.safetyStops}:{}),
+    ...(config.packInspectionDiagnostic?{packInspectionDiagnostic:config.packInspectionDiagnostic}:{}),
+    ...(config.actionCancellation?{actionCancellation:config.actionCancellation}:{}),
   };
   const app=createCoreHttpApp(installation);
   return {

@@ -204,12 +204,56 @@ export async function createAbhServiceInstallation({ credentials: databaseCreden
     }],
   };
 
+  // Optional capability surfaces. The reference deployment mounts inline goal-artifact
+  // storage (CreateMission requires a goal artifact) and the pack capability query with
+  // deployment-policy admission; a production deployment replaces these with its own
+  // governed policy implementation.
+  const organizationScope = { type: 'abh.organization', id: organizationId, version: 1 };
+  const artifactStorage = {
+    grants: async (context, command, options) => currentGrants(context, command.type, options),
+    checks: {
+      fenceRefs: async () => [organizationScope],
+      admit: async (_tx, payload) => {
+        process.stderr.write(`DBG admit payload=${JSON.stringify(payload)} org=${organizationId}\n`);
+        if (payload.ownerRef?.type !== 'abh.organization' || payload.ownerRef?.id !== organizationId) {
+          throw new Error('artifact owner must be the deployment organization');
+        }
+        if (payload.dataClass !== 'abh.data.internal') throw new Error('unsupported data class');
+        if (payload.region !== 'local') throw new Error('unsupported region');
+        if (payload.retentionPolicyRef?.type !== 'abh.organization' || payload.retentionPolicyRef?.id !== organizationId) {
+          throw new Error('retention policy must reference the deployment organization');
+        }
+        for (const purpose of payload.purposeNames) {
+          if (purpose !== 'abh.mission.manage') throw new Error(`purpose not allowed: ${purpose}`);
+        }
+      },
+      references: async (_tx, refs) => {
+        for (const ref of refs) {
+          if (ref?.type === 'abh.organization' && ref.id !== organizationId) {
+            throw new Error('cross-organization artifact references are not allowed');
+          }
+        }
+      },
+    },
+  };
+  const capabilityQuery = {
+    grants: async (context, _query, options) => currentGrants(context, 'abh.capabilities.query', options),
+    admission: {
+      fenceRefs: async () => [],
+      // No packs are registered in the reference deployment; inspect is unreachable
+      // until a pack is staged and enabled by the deployment's governance.
+      inspect: async () => { throw new Error('pack capability inspection is not configured in the reference deployment'); },
+    },
+  };
+
   return {
     identity: { provider, issuer, audience },
     credentials,
     mission,
     runtime,
     startup,
+    artifactStorage,
+    capabilityQuery,
     attach: async attached => { database = attached.database; },
     async close() {
       await queue.close();

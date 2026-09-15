@@ -1,6 +1,6 @@
 # hello-service — `abh run` 参考部署
 
-一个最小但完整的 ABH 服务部署示例：`abh run` 直接装配本目录的 `service.mjs`，连接真实 PostgreSQL（含 94 个迁移与 pg-boss 队列），通过公开 HTTP 契约提供 Mission 生命周期命令与查询。
+一个最小但完整的 ABH 服务部署示例：`abh run` 直接装配本目录的 `service.mjs`，连接真实 PostgreSQL（含 96 个迁移与 pg-boss 队列），通过公开 HTTP 契约提供 Mission 生命周期命令与查询。
 
 ## 组成
 

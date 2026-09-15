@@ -42,6 +42,18 @@
 Query 当前行为和限制见 [执行 Owner 说明](../../packages/core/src/execution/README.md)；历次实现与验证记录见 [持续实现跟踪](IMPLEMENTATION.md)。
 
 
+## 2026-09-16：首个领域产品（lime-ads）集成审查发现
+
+以真实领域产品通过 `link:` 依赖 + `abh run` 参考部署接入时的实测发现：
+
+1. **伴生 schema 登记缺口（已由领域侧补齐，框架留观察）**：领域产品与 ABH 同库存放自有业务表（如 `lime.document/audit/credential`）时，readiness 安全清单将其判为 `unregistered-table` 并拒绝启动。领域侧按隔离 Pack 语义登记（专属角色 + 所有权 + 受限角色零权限 + `extension.schema_ownership/schema_roles`，见 lime-ads `apps/api/scripts/register-companion-schema.sql`，并在领域服务启动时自愈维护）。框架侧"伴生 schema 一等登记"（不必伪装成 Pack 隔离 schema）留作改进项。
+2. **`assembleAbhService` 能力透传缺口（已修复）**：组合器此前丢弃 `capabilityQuery/artifactStorage/objectUpload/safetyStops/packInspectionDiagnostic/actionCancellation`，导致经 `abh run` 的部署永远无法挂载这些公开命令。已按 `CoreHttpInstallation` 可选字段透传。
+3. **hello-service 缺 artifact 存储与能力查询装配（已补）**：CreateMission 需要 goal artifact，但参考部署未提供 `artifactStorage`，写路径不可用；同时补 `capabilityQuery`（空注册表 + 明确未配置的 inspect）与 provision 的 `abh.artifacts.store-inline` 授权。
+4. **run.mjs 安全清单违规明示（已补）**：readiness 失败现在无条件输出违规明细（部署操作员的修复清单，非机密）；`ABH_RUN_DEBUG=1` 仍输出被掩码错误的 cause。
+5. **待查回归**：空库上 `abh.missions.list` 返回 `INVALID_ARGUMENT`（grants 解析成功、事务内抛出）；grants/授权/身份均已验证正确。待并行重构稳定后定位。
+6. 文档修正：hello-service README 迁移数 94 → 96。
+
+
 ## 2026-09-08：HTTP 适配层
 
 新增 adapter-fastify，固定 Fastify 5.12.3。显式安装公开路由、可信认证上下文、Contract Package 请求/响应校验、ETag/Location、脱敏错误和有界取消已实现。真实 TCP 验证重复幂等头拒绝。Core 业务授权/DTO、生产身份、真实 readiness、SDK/CLI 和 hello-business 仍未装配；不能把传输层测试当成公开业务链路验收。

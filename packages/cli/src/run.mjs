@@ -97,6 +97,14 @@ export async function runServer(args, { env, stdout, stderr, signal }, imports =
     });
     const service = server.assembleAbhService({
       database, identity: ingress, credentials: installation.credentials, mission,
+      // Optional capability surfaces declared by the deployment are mounted verbatim;
+      // without them the corresponding public commands stay unmounted (fail-closed).
+      ...(installation.artifactStorage ? { artifactStorage: installation.artifactStorage } : {}),
+      ...(installation.capabilityQuery ? { capabilityQuery: installation.capabilityQuery } : {}),
+      ...(installation.objectUpload ? { objectUpload: installation.objectUpload } : {}),
+      ...(installation.safetyStops ? { safetyStops: installation.safetyStops } : {}),
+      ...(installation.packInspectionDiagnostic ? { packInspectionDiagnostic: installation.packInspectionDiagnostic } : {}),
+      ...(installation.actionCancellation ? { actionCancellation: installation.actionCancellation } : {}),
     });
     stdout.write(`abh: starting on ${listen.host}:${listen.port}\n`);
     await server.runHttpService({
@@ -117,6 +125,11 @@ export async function runServer(args, { env, stdout, stderr, signal }, imports =
     const code = error?.code === 'DEPENDENCY_UNAVAILABLE' || error?.code === 'DEPENDENCY_TIMEOUT'
       ? error.code : 'DEPENDENCY_UNAVAILABLE';
     // Registered codes are never secret; the opt-in detail line can contain dependency text.
+    // Security-manifest violations are the deployment's own remediation list — printed
+    // unconditionally because a failed readiness check is otherwise undiagnosable.
+    if (Array.isArray(error?.violations) && error.violations.length) {
+      stderr.write(`abh run: security manifest violations: ${error.violations.join(', ')}\n`);
+    }
     if (env.ABH_RUN_DEBUG === '1') {
       const cause = error?.cause ? `; cause: ${error.cause.message ?? String(error.cause)}` : '';
       stderr.write(`abh run: ${code}; ${error?.message ?? 'unknown error'}${cause}\n`);
