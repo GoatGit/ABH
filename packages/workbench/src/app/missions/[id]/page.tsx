@@ -1,4 +1,6 @@
 import type {Metadata} from 'next';
+import type {WorkbenchSession} from '@/lib/identity';
+import {cache} from 'react';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import Link from 'next/link';
@@ -12,7 +14,22 @@ import {workbenchConfig} from '@/lib/config';
 import {formatDateTime} from '@/lib/format';
 
 export const dynamic='force-dynamic';
-export const metadata:Metadata={title:'项目详情'};
+
+// generateMetadata and the page share one strong read per request via React cache.
+const loadView=cache(async(session:WorkbenchSession,id:string)=>
+  createWorkbenchClient(session).missions.get(id));
+
+async function titleFor(session:WorkbenchSession,id:string):Promise<string>{
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))return '项目详情';
+  try{return (await loadView(session,id)).mission.domainType;}
+  catch{return '项目详情';}
+}
+
+export async function generateMetadata({params}:{params:Promise<{id:string}>}):Promise<Metadata>{
+  const {id}=await params,session=await currentSession();
+  if(!session)return {title:'项目详情'};
+  return {title:await titleFor(session,id)};
+}
 
 export default async function MissionPage({params}:{params:Promise<{id:string}>}){
   const {id}=await params,session=await currentSession();
@@ -20,7 +37,7 @@ export default async function MissionPage({params}:{params:Promise<{id:string}>}
   try{
     const client=createWorkbenchClient(session);
     const [view,projection,runs]=await Promise.all([
-      client.missions.get(id),
+      loadView(session,id),
       client.projections.get(id,{type:'abh.projection.mission-summary',
         id,fieldSet:missionProjectionFieldSet}),
       client.runs.list({missionId:id,limit:25}),

@@ -1,4 +1,6 @@
 import type {Metadata} from 'next';
+import {cache} from 'react';
+import type {WorkbenchSession} from '@/lib/identity';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {SessionRequired} from '@/components/ui';
@@ -11,13 +13,26 @@ import {LiveDecisionStatus} from '@/components/LiveDecisionStatus';
 import {workbenchConfig} from '@/lib/config';
 
 export const dynamic='force-dynamic';
-export const metadata:Metadata={title:'责任决定'};
+
+const loadDecision=cache(async(session:WorkbenchSession,id:string)=>
+  createWorkbenchClient(session).decisions.get({id,consistency:'Strong'}));
+
+async function decisionQuestion(session:WorkbenchSession,id:string):Promise<string>{
+  try{return (await loadDecision(session,id)).data.package.question;}
+  catch{return '责任决定';}
+}
+
+export async function generateMetadata({params}:{params:Promise<{id:string}>}):Promise<Metadata>{
+  const {id}=await params,session=await currentSession();
+  if(!session)return {title:'责任决定'};
+  return {title:await decisionQuestion(session,id)};
+}
 
 export default async function DecisionPage({params}:{params:Promise<{id:string}>}){
   const {id}=await params,session=await currentSession();
   if(!session)return <SessionRequired/>;
   try{
-    const decision=await createWorkbenchClient(session).decisions.get({id,consistency:'Strong'});
+    const decision=await loadDecision(session,id);
     const item=decision.data,alternatives=item.package.alternatives.join('、')||'无';
     const resolvedForms=item.status==='Pending'
       ?await currentDecisionFormsAdapter().resolve({session,decision:item})

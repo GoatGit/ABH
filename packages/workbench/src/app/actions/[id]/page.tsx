@@ -1,5 +1,7 @@
 import type {Metadata} from 'next';
+import {cache} from 'react';
 import Link from 'next/link';
+import type {WorkbenchSession} from '@/lib/identity';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {ActionForm} from '@/components/ActionForm';
@@ -14,16 +16,30 @@ import {LiveActionStatus} from '@/components/LiveActionStatus';
 import {workbenchConfig} from '@/lib/config';
 
 export const dynamic='force-dynamic';
-export const metadata:Metadata={title:'执行详情'};
 
 const uuidPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const loadAction=cache(async(session:WorkbenchSession,id:string)=>
+  createWorkbenchClient(session).actions.get(id,{consistency:'Strong'}));
+
+async function actionTitle(session:WorkbenchSession,id:string):Promise<string>{
+  if(!uuidPattern.test(id))return '执行详情';
+  try{return (await loadAction(session,id)).data.actionType;}
+  catch{return '执行详情';}
+}
+
+export async function generateMetadata({params}:{params:Promise<{id:string}>}):Promise<Metadata>{
+  const {id}=await params,session=await currentSession();
+  if(!session)return {title:'执行详情'};
+  return {title:await actionTitle(session,id)};
+}
 
 export default async function ActionPage({params}:{params:Promise<{id:string}>}){
   const {id}=await params,session=await currentSession();
   if(!session)return <SessionRequired/>;
   if(!uuidPattern.test(id))return <main><h1>执行详情</h1><Message kind="error">INVALID_ARGUMENT</Message></main>;
   try{
-    const action=await createWorkbenchClient(session).actions.get(id,{consistency:'Strong'});
+    const action=await loadAction(session,id);
     const item=action.data,unknown=item.position.outcome==='Unknown';
     const compensationAvailable=item.position.lifecycle==='Closed'
       &&['Failed','PartiallySucceeded'].includes(item.position.outcome);

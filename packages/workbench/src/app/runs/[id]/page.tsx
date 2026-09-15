@@ -1,5 +1,7 @@
 import type {Metadata} from 'next';
+import {cache} from 'react';
 import Link from 'next/link';
+import type {WorkbenchSession} from '@/lib/identity';
 import {currentSession} from '@/lib/session';
 import {createWorkbenchClient,errorText} from '@/lib/client';
 import {SessionRequired} from '@/components/ui';
@@ -11,16 +13,29 @@ import {formatDateTime} from '@/lib/format';
 import {workbenchConfig} from '@/lib/config';
 
 export const dynamic='force-dynamic';
-export const metadata:Metadata={title:'Run 详情'};
 
 const uuidPattern=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const loadRun=cache(async(session:WorkbenchSession,id:string)=>createWorkbenchClient(session).runs.get(id));
+
+async function runTitle(session:WorkbenchSession,id:string):Promise<string>{
+  if(!uuidPattern.test(id))return 'Run 详情';
+  try{return (await loadRun(session,id)).run.triggerKey;}
+  catch{return 'Run 详情';}
+}
+
+export async function generateMetadata({params}:{params:Promise<{id:string}>}):Promise<Metadata>{
+  const {id}=await params,session=await currentSession();
+  if(!session)return {title:'Run 详情'};
+  return {title:await runTitle(session,id)};
+}
 
 export default async function RunPage({params}:{params:Promise<{id:string}>}){
   const {id}=await params,session=await currentSession();
   if(!session)return <SessionRequired/>;
   if(!uuidPattern.test(id))return <main><h1>Run 详情</h1><Message kind="error">INVALID_ARGUMENT</Message></main>;
   try{
-    const view=await createWorkbenchClient(session).runs.get(id),run=view.run;
+    const view=await loadRun(session,id),run=view.run;
     return <main>
       <PageHeader eyebrow="Run" title={run.triggerKey}
         description={<>当前强读 Run v{run.runRef.version}；时点 {formatDateTime(view.asOf)}。</>}
