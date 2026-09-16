@@ -50,7 +50,7 @@ Query 当前行为和限制见 [执行 Owner 说明](../../packages/core/src/exe
 2. **`assembleAbhService` 能力透传缺口（已修复）**：组合器此前丢弃 `capabilityQuery/artifactStorage/objectUpload/safetyStops/packInspectionDiagnostic/actionCancellation`，导致经 `abh run` 的部署永远无法挂载这些公开命令。已按 `CoreHttpInstallation` 可选字段透传。
 3. **hello-service 缺 artifact 存储与能力查询装配（已补）**：CreateMission 需要 goal artifact，但参考部署未提供 `artifactStorage`，写路径不可用；同时补 `capabilityQuery`（空注册表 + 明确未配置的 inspect）与 provision 的 `abh.artifacts.store-inline` 授权。
 4. **run.mjs 安全清单违规明示（已补）**：readiness 失败现在无条件输出违规明细（部署操作员的修复清单，非机密）；`ABH_RUN_DEBUG=1` 仍输出被掩码错误的 cause。
-5. **待查回归**：空库上 `abh.missions.list` 返回 `INVALID_ARGUMENT`。已定位：`assertCurrentGrants` 内 `contract('EntityRef', grantRef)` 对**离线校验完全相同且通过**的引用（`{abh.grant, UUID, version:1}`）抛出——指向运行进程内契约注册表/目录与磁盘 dist 漂移（并行重构期间 dist 混合构建所致）。修复方向：干净重建 contracts+core dist 后复测；若仍复现，则核查 `validateContract` 注册表在多入口（CLI/服务/Pi）进程中的单例一致性。
+5. **已解决（非框架缺陷）**：空库上 `abh.missions.list` 返回 `INVALID_ARGUMENT` 的根因是部署数据事故——领域集成时授权 SQL 向 `actionTypes` 追加 `abh.artifacts.store-inline` 两次（provision 重跑已含该项），`GrantRecord` 的 `uniqueItems` 校验按设计拒绝。去重后 200 实测确认。经验沉淀：授权记录变更必须整组替换而非数组追加；`ABH_RUN_DEBUG=1` 下的契约拒绝明细（本次新增）把此类问题的定位从黑盒猜测缩短为一次请求。
 6. 文档修正：hello-service README 迁移数 94 → 96。
 
 
