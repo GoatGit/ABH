@@ -77,7 +77,8 @@ export async function runServer(args, { env, stdout, stderr, signal }, imports =
       config: config.data,
       credentials: { runtimeDatabaseUrl: databaseUrl, queueDatabaseUrl: queueUrl },
     });
-  } catch {
+  } catch (error) {
+    stderr.write(`[diagnostic] ${error?.message}\n${String(error?.stack || '').split('\n').slice(0, 5).join('\n')}\n`);
     return fail(stderr, 'BUSINESS_INSTALLATION_FAILED');
   }
   const identity = installation?.identity, mission = installation?.mission, runtime = installation?.runtime;
