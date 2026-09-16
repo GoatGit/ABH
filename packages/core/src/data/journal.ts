@@ -8,7 +8,14 @@ import { CoreError } from '../internal/errors.ts';
 
 export function contract<N extends SchemaName>(name: N, value: unknown): SchemaTypes[N] {
   const checked = validateContract(name,value);
-  if (!checked.success) throw new CoreError('INVALID_ARGUMENT');
+  if (!checked.success) {
+    // Deployment-facing diagnosability: contract rejections carry no detail over HTTP,
+    // so operators opt in here to see the failing name, issues and sanitized value.
+    if (process.env.ABH_RUN_DEBUG === '1') {
+      process.stderr.write(`abh: contract ${name} rejected: ${JSON.stringify(checked).slice(0, 400)} value=${JSON.stringify(value, (_k, v) => (typeof v === 'object' && v !== null ? v : typeof v === 'string' ? v : typeof v))}\n`);
+    }
+    throw new CoreError('INVALID_ARGUMENT');
+  }
   return checked.data;
 }
 export async function inputDigest(value: unknown): Promise<Digest> {
