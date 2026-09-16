@@ -54,6 +54,8 @@ Query 当前行为和限制见 [执行 Owner 说明](../../packages/core/src/exe
 5a. **hello-service Mission 创建写路径（新发现，部分打通）**：lime-ads 写路径探针实测——goal artifact 入库（`abh.artifacts.store-inline`，purpose `abh.action.prepare`）已打通（201，经 provision 用途/grant 补齐 + 幂等键请求头协议修正）；`abh.missions.create` 在核心 `create-mission` 内部校验处返回 400 INVALID_ARGUMENT（先于 hello-service definition 检查器）。初步定位：adapter 要求条件引用为 EntityRef（UUID id），而 definitions.json 按名称注册（'hello.predicate' 等）——两者不相容，示例的 Mission 创建路径自发布起即不可用。修复方向：provision 以确定性 UUID 登记条件条目（lime-ads 探针已按同源派生发送），definitions 注册表与定义检查器改为按 UUID 匹配。
 
    **进展（同日）**：条件注册 UUID 化已实现（definitions.json `conditionUuids` + 定义检查器双轨匹配 + 探针同源派生），定义检查器全过；goal artifact 入库 201。当前 400 收敛到 core `create-mission` 定义检查之后的**生产治理链**（Ledger 准备/承诺等——V1-GAPS 总表"生产业务治理仍缺"项），需要部署侧 Ledger 授权装配后打通。
+
+   **新发现 P1（core 审计构造缺陷，阻塞 CreateMission）**：定义检查全过后，审计写入步骤抛 500——`contract('AuditRecord')` 拒绝：`relatedRefs` 违反 `uniqueItems`（存在重复引用），且部分记录的 `version` 字段值为字面量 `"number"`（类型名被误用作值）。复现：对已恢复的开发库发送 `abh.missions.create`（goal artifact 入库 201 后）必现，`ABH_RUN_DEBUG=1` 的服务日志含 `contract AuditRecord rejected` 明细。修复方向：`appendChange` 构造 AuditRecord 时对 `relatedRefs` 去重、修正 `version` 取值来源。该缺陷阻塞所有领域产品的 Mission 创建写路径，P1。
 6. 文档修正：hello-service README 迁移数 94 → 96。
 
 
