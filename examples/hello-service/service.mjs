@@ -127,13 +127,19 @@ export async function createAbhServiceInstallation({ credentials: databaseCreden
     fenceRefs: async () => [],
     definition: {
       async definition(tx, input, goal) {
+        process.stderr.write(`DBG def entered: workflow=${input.workflowRef.id} digest=${input.workflowRef.digest} goalDigest=${goal.contentDigest}\n`);
         const workflow = definitions.workflows.find(entry => entry.id === input.workflowRef.id);
         if (!workflow || !workflow.versions.includes(input.workflowRef.version)) throw new Error('workflow not registered');
         if (input.workflowRef.digest !== goal.contentDigest) throw new Error('workflow digest does not bind the goal artifact');
-        if (!definitions.predicates.includes(input.conditions.successConditionRef.id)
-          || !definitions.predicates.includes(input.conditions.stopConditionRef.id)) throw new Error('condition not registered');
-        if (!definitions.triggerPolicies.includes(input.conditions.triggerPolicyRef.id)) throw new Error('trigger policy not registered');
-        if (!definitions.resourceEnvelopes.includes(input.conditions.resourceEnvelopeRef.id)) throw new Error('resource envelope not registered');
+        // 条件引用的 id 是部署登记的确定性 UUID（EntityRef 契约要求 UUID）；
+        // 注册表同时接受登记名与派生 UUID，保证名称制与 UUID 制部署均可校验。
+        const conditionIds = [
+          ...definitions.predicates, ...definitions.triggerPolicies, ...definitions.resourceEnvelopes,
+          ...definitions.conditionUuids.predicates, ...definitions.conditionUuids.triggerPolicies, ...definitions.conditionUuids.resourceEnvelopes,
+        ];
+        for (const ref of [input.conditions.successConditionRef, input.conditions.stopConditionRef, input.conditions.triggerPolicyRef, input.conditions.resourceEnvelopeRef]) {
+          if (!conditionIds.includes(ref.id)) throw new Error(`condition not registered: ${ref.id}`);
+        }
         for (const scope of input.responsibilityScopeRefs) {
           if (!definitions.responsibilityScopeTypes.includes(scope.type)) throw new Error('responsibility scope not registered');
         }
@@ -224,7 +230,11 @@ export async function createAbhServiceInstallation({ credentials: databaseCreden
           throw new Error('retention policy must reference the deployment organization');
         }
         for (const purpose of payload.purposeNames) {
-          if (purpose !== 'abh.mission.manage') throw new Error(`purpose not allowed: ${purpose}`);
+          // goal artifact 为 Mission 创建的受限输入存储：mission.manage（业务）与
+          // action.prepare（store-inline 协议要求的执行准备用途）均为合法用途。
+          if (!['abh.mission.manage', 'abh.action.prepare'].includes(purpose)) {
+            throw new Error(`purpose not allowed: ${purpose}`);
+          }
         }
       },
       references: async (_tx, refs) => {

@@ -22,5 +22,16 @@
   ],
   "missionAuthorities": [
     "c9e73ffd-5f09-4fc8-8c5b-05b07c9cf89d"
-  ]
+  ],
+  "conditionUuids": {
+    "predicates": [
+      "10533d73-1444-4a2c-806e-3664659cc2bf"
+    ],
+    "triggerPolicies": [
+      "9f5c8978-00ae-4f12-8234-4ae8fa5b6693"
+    ],
+    "resourceEnvelopes": [
+      "e07bba47-0476-4aef-8027-b257b6a71194"
+    ]
+  }
 }
