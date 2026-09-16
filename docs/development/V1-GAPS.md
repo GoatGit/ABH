@@ -51,6 +51,7 @@ Query 当前行为和限制见 [执行 Owner 说明](../../packages/core/src/exe
 3. **hello-service 缺 artifact 存储与能力查询装配（已补）**：CreateMission 需要 goal artifact，但参考部署未提供 `artifactStorage`，写路径不可用；同时补 `capabilityQuery`（空注册表 + 明确未配置的 inspect）与 provision 的 `abh.artifacts.store-inline` 授权。
 4. **run.mjs 安全清单违规明示（已补）**：readiness 失败现在无条件输出违规明细（部署操作员的修复清单，非机密）；`ABH_RUN_DEBUG=1` 仍输出被掩码错误的 cause。
 5. **已解决（非框架缺陷）**：空库上 `abh.missions.list` 返回 `INVALID_ARGUMENT` 的根因是部署数据事故——领域集成时授权 SQL 向 `actionTypes` 追加 `abh.artifacts.store-inline` 两次（provision 重跑已含该项），`GrantRecord` 的 `uniqueItems` 校验按设计拒绝。去重后 200 实测确认。经验沉淀：授权记录变更必须整组替换而非数组追加；`ABH_RUN_DEBUG=1` 下的契约拒绝明细（本次新增）把此类问题的定位从黑盒猜测缩短为一次请求。
+5a. **hello-service Mission 创建写路径（新发现，部分打通）**：lime-ads 写路径探针实测——goal artifact 入库（`abh.artifacts.store-inline`，purpose `abh.action.prepare`）已打通（201，经 provision 用途/grant 补齐 + 幂等键请求头协议修正）；`abh.missions.create` 在核心 `create-mission` 内部校验处返回 400 INVALID_ARGUMENT（先于 hello-service definition 检查器）。初步定位：adapter 要求条件引用为 EntityRef（UUID id），而 definitions.json 按名称注册（'hello.predicate' 等）——两者不相容，示例的 Mission 创建路径自发布起即不可用。修复方向：provision 以确定性 UUID 登记条件条目（lime-ads 探针已按同源派生发送），definitions 注册表与定义检查器改为按 UUID 匹配。
 6. 文档修正：hello-service README 迁移数 94 → 96。
 
 
