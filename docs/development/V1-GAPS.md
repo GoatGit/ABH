@@ -56,6 +56,8 @@ Query 当前行为和限制见 [执行 Owner 说明](../../packages/core/src/exe
    **进展（同日）**：条件注册 UUID 化已实现（definitions.json `conditionUuids` + 定义检查器双轨匹配 + 探针同源派生），定义检查器全过；goal artifact 入库 201。当前 400 收敛到 core `create-mission` 定义检查之后的**生产治理链**（Ledger 准备/承诺等——V1-GAPS 总表"生产业务治理仍缺"项），需要部署侧 Ledger 授权装配后打通。
 
    **新发现 P1（core 审计构造缺陷，阻塞 CreateMission）**：定义检查全过后，审计写入步骤抛 500——`contract('AuditRecord')` 拒绝：`relatedRefs` 违反 `uniqueItems`（存在重复引用），且部分记录的 `version` 字段值为字面量 `"number"`（类型名被误用作值）。复现：对已恢复的开发库发送 `abh.missions.create`（goal artifact 入库 201 后）必现，`ABH_RUN_DEBUG=1` 的服务日志含 `contract AuditRecord rejected` 明细。修复方向：`appendChange` 构造 AuditRecord 时对 `relatedRefs` 去重、修正 `version` 取值来源。该缺陷阻塞所有领域产品的 Mission 创建写路径，P1。
+
+   **运行时证据补充**：被拒记录中 `auditRef.version` 的值为字符串 `"number"`（静态源码无此字面量，系运行时注入——疑似某处把类型标注当值传入）；同时 `relatedRefs` 存在重复元素。两者均位于 `appendChange` 的 AuditRecord 构造入参链（create-mission → 审计写入）。**排除项**：干净重建 dist 后仍复现（非构建漂移）；离线 `validateContract('EntityRef', 同一引用)` 通过（非契约定义漂移）。归属：core 审计构造链 P1，需与 hello-service 条件注册改造（本条 5a）同轮修复。
 6. 文档修正：hello-service README 迁移数 94 → 96。
 
 
