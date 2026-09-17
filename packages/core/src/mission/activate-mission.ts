@@ -18,7 +18,9 @@ export async function activateMission(database:Database,context:VerifiedContext,
  grantRefs:readonly EntityRef[],admission:ActivateMissionAdmission){
  requireVerifiedContext(context);
  const input=contract('ActivateMissionCommand',structuredClone(supplied)),grants=structuredClone(grantRefs),limits={...options},c=context.tenant;
- if(input.target.id!==c.resourceOrganizationId)throw new CoreError('FORBIDDEN');
+ // Registry/CLI contract: the command target is the mission being activated (like the
+ // other lifecycle commands), not the organization scope.
+ if(input.target.type!=='abh.mission'||input.target.id!==input.payload.missionRef.id)throw new CoreError('FORBIDDEN');
  if(c.purposeOfUse!=='abh.mission.manage')throw new CoreError('PURPOSE_DENIED');
  const authority=admission.authority.bind(admission);
  const command={type:input.type,commandId:input.commandId,idempotencyKey:input.idempotencyKey,digest:await digestCommandIntent(input)};

@@ -224,6 +224,9 @@ function publicFailure(error: unknown): never {
     `abh core INTERNAL_ERROR ${error.message}\n${(error.stack ?? '').split('\n').slice(1, 5).join('\n')}\n`);
   // These internal admission diagnostics must not disclose permission/fence existence.
   if (['AUTHORITY_REQUIRED', 'EPOCH_REVOKED', 'PURPOSE_DENIED', 'TENANT_CONTEXT_REQUIRED'].includes(error.code)) throw new HttpFailure('FORBIDDEN');
+  // Deployment-side diagnosis of client-visible rejections stays opt-in (may include dependency text).
+  if (process.env.ABH_RUN_DEBUG === '1') process.stderr.write(
+    `abh core reject ${error.code}: ${(error.stack ?? '').split('\n').slice(1, 4).join('\n')}\n`);
   throw new HttpFailure(error.code);
 }
 
