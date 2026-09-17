@@ -78,7 +78,12 @@ export async function runServer(args, { env, stdout, stderr, signal }, imports =
       credentials: { runtimeDatabaseUrl: databaseUrl, queueDatabaseUrl: queueUrl },
     });
   } catch (error) {
-    stderr.write(`[diagnostic] ${error?.message}\n${String(error?.stack || '').split('\n').slice(0, 5).join('\n')}\n`);
+    let e = error, depth = 0;
+    while (e && depth < 6) {
+      stderr.write(`[diagnostic:${depth}] ${e.message}\n`);
+      e = e.cause; depth += 1;
+      if (e) stderr.write('  └─ cause:\n');
+    }
     return fail(stderr, 'BUSINESS_INSTALLATION_FAILED');
   }
   const identity = installation?.identity, mission = installation?.mission, runtime = installation?.runtime;

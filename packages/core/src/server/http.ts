@@ -218,6 +218,10 @@ export interface CoreHttpInstallation {
 
 function publicFailure(error: unknown): never {
   if (!(error instanceof CoreError)) throw error;
+  // An internal error reaching the public surface is a defect: keep the stack server-side
+  // (the client payload stays an opaque INTERNAL_ERROR) so operators can act on it.
+  if (error.code === 'INTERNAL_ERROR') process.stderr.write(
+    `abh core INTERNAL_ERROR ${error.message}\n${(error.stack ?? '').split('\n').slice(1, 5).join('\n')}\n`);
   // These internal admission diagnostics must not disclose permission/fence existence.
   if (['AUTHORITY_REQUIRED', 'EPOCH_REVOKED', 'PURPOSE_DENIED', 'TENANT_CONTEXT_REQUIRED'].includes(error.code)) throw new HttpFailure('FORBIDDEN');
   throw new HttpFailure(error.code);
@@ -348,7 +352,9 @@ export function createCoreHttpApp(installation: CoreHttpInstallation): ReturnTyp
           if (!binding || signal.aborted) throw new CoreError('UNAUTHENTICATED');
           verified.delete(signal); requireVerifiedContext(binding.context);
           if (signal.aborted) throw new CoreError('DEPENDENCY_TIMEOUT');
-          return { success: true as const, data: await handler(binding.context, binding.options, structuredClone(command)) };
+          // Handlers return exactly the fact the protocol registry declares as the
+          // command response (e.g. MissionRecord); no transport envelope is added.
+          return await handler(binding.context, binding.options, structuredClone(command));
   } catch (error) { return publicFailure(error); }
   };
   }
@@ -360,7 +366,7 @@ export function createCoreHttpApp(installation: CoreHttpInstallation): ReturnTyp
           if (!binding || signal.aborted) throw new CoreError('UNAUTHENTICATED');
           verified.delete(signal); requireVerifiedContext(binding.context);
           if (signal.aborted) throw new CoreError('DEPENDENCY_TIMEOUT');
-          return { success: true as const, data: await handler(binding.context, binding.options, structuredClone(command)) };
+          return await handler(binding.context, binding.options, structuredClone(command));
         } catch (error) { return publicFailure(error); }
       };
     }
@@ -378,7 +384,7 @@ export function createCoreHttpApp(installation: CoreHttpInstallation): ReturnTyp
         { commandId: command.commandId, type: command.type, idempotencyKey: command.idempotencyKey, digest },
         command.target.id, command.payload, grants, artifactStorage.checks);
       return { success: true, data: { objectRef: { ...result.artifactRef, type: 'abh.artifact' as const, version: 2 as const }, commandId: result.commandId } };
-    } catch (error) { return publicFailure(error); }
+    } catch (error) { process.stderr.write(`DBG store-inline: ${(error as Error).message?.slice(0, 300)} stack=${(error as Error).stack?.split('\n').filter(f => f.includes('core/dist')).slice(0, 3).join(' | ')}\n`); return publicFailure(error); }
   };
   if (actionCancellation) commands['abh.actions.cancel'] = async ({ command, signal }) => {
     try {

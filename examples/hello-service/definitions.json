@@ -25,7 +25,9 @@
   ],
   "conditionUuids": {
     "predicates": [
-      "10533d73-1444-4a2c-806e-3664659cc2bf"
+      "0905f83a-a660-4d84-8bcb-6fb0c3f76880",
+      "10533d73-1444-4a2c-806e-3664659cc2bf",
+      "f30233e2-44f6-450d-8ad6-432c678beef2"
     ],
     "triggerPolicies": [
       "9f5c8978-00ae-4f12-8234-4ae8fa5b6693"

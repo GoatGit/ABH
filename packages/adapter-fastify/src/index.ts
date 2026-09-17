@@ -116,6 +116,9 @@ export function createHttpApp(installation: HttpInstallation): FastifyInstance {
     const rawCode = error instanceof HttpFailure ? error.code : (error as { code?: unknown }).code;
     const code = typeof rawCode === 'string' && Object.hasOwn(errorRegistry, rawCode) ? rawCode as ErrorCode
       : (error as { statusCode?: number }).statusCode === 400 || (error as { statusCode?: number }).statusCode === 413 || (error as { statusCode?: number }).statusCode === 415 ? 'INVALID_ARGUMENT' : 'INTERNAL_ERROR';
+    // Unmapped 500s are operator-actionable; keep the evidence server-side, never in the client payload.
+    if (code === 'INTERNAL_ERROR' && !(error instanceof HttpFailure)) process.stderr.write(
+      `abh http 500 correlationId=${request.id} ${error instanceof Error ? `${error.message}\n${(error.stack ?? '').split('\n').slice(1, 4).join('\n')}` : String(error)}\n`);
     reply.code(errorRegistry[code].httpStatus).send(createErrorResponse(code, request.id));
   });
   app.setNotFoundHandler((request, reply) => reply.code(404).send(createErrorResponse('RESOURCE_NOT_FOUND', request.id)));
@@ -335,7 +338,12 @@ export function createHttpApp(installation: HttpInstallation): FastifyInstance {
         const body = await Promise.race([pending, cancelled]);
         const status = isCommand ? definition.status : 200;
         const encoded = serializeHttpResponse(definition.name, status, body);
-        if (!encoded.success) throw new HttpFailure('INTERNAL_ERROR');
+        if (!encoded.success) {
+          // A committed command whose response fails its contract is a defect: log the
+          // evidence server-side; the client still receives an opaque 500.
+          process.stderr.write(`abh http 500 correlationId=${correlationId} op=${definition.type} response-schema=${encoded.schemaId ?? '?'} issues=${JSON.stringify(encoded.issues ?? [])} body=${JSON.stringify(body)?.slice(0, 800)}\n`);
+          throw new HttpFailure('INTERNAL_ERROR');
+        }
         if (isCommand) {
           const snapshot = JSON.parse(encoded.json);
           const version = snapshot.data?.objectRef?.version ?? snapshot.assignmentRef?.version;
@@ -346,6 +354,10 @@ export function createHttpApp(installation: HttpInstallation): FastifyInstance {
       } catch (error) {
         let code: ErrorCode = error instanceof HttpFailure ? error.code : 'INTERNAL_ERROR';
         if (!([...protocolRegistry.commonErrors, ...definition.errors] as readonly string[]).includes(code)) code = 'INTERNAL_ERROR';
+        // Unmapped failures reaching the public surface are operator-actionable defects:
+        // keep the evidence server-side, never in the client payload.
+        if (code === 'INTERNAL_ERROR' && !(error instanceof HttpFailure)) process.stderr.write(
+          `abh http 500 correlationId=${correlationId} op=${definition.type} ${error instanceof Error ? `${error.message}\n${(error.stack ?? '').split('\n').slice(1, 4).join('\n')}` : String(error)}\n`);
         const status = errorRegistry[code].httpStatus;
         const encoded = serializeHttpResponse(definition.name, status, createErrorResponse(code, correlationId));
         if (!encoded.success) throw new HttpFailure('INTERNAL_ERROR');

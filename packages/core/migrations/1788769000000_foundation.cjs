@@ -1,9 +1,19 @@
 /* Immutable migration snapshot; CHECK clauses copied from contracts 0.1.0 generation. */
 exports.up = pgm => {
   pgm.sql(`
-    CREATE ROLE abh_core_owner NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
-    CREATE ROLE abh_runtime LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
-    CREATE ROLE abh_queue LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+    -- Roles live at cluster scope while migrations run per database; re-provisioning a
+    -- database on an existing cluster must not fail on pre-existing roles.
+    DO $migration$ BEGIN
+      IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'abh_core_owner') THEN
+        CREATE ROLE abh_core_owner NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+      END IF;
+      IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'abh_runtime') THEN
+        CREATE ROLE abh_runtime LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+      END IF;
+      IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'abh_queue') THEN
+        CREATE ROLE abh_queue LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+      END IF;
+    END $migration$;
     REVOKE ALL ON SCHEMA public FROM PUBLIC;
     DO $migration$ BEGIN
       EXECUTE format('REVOKE CREATE, TEMP ON DATABASE %I FROM PUBLIC', current_database());

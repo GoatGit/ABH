@@ -17,11 +17,12 @@ export async function createMission(database:Database,context:VerifiedContext,op
  grantRefs:readonly EntityRef[],admission:CreateMissionAdmission){
  requireVerifiedContext(context);
  const input=contract('CreateMissionCommand',structuredClone(supplied)),grants=structuredClone(grantRefs),limits={...options},c=context.tenant;
- if(input.target.id!==c.resourceOrganizationId)throw new CoreError('FORBIDDEN');
- if(c.actor.type!=='Human'||c.purposeOfUse!=='abh.mission.manage')throw new CoreError('PURPOSE_DENIED');
+ if(input.target.id!==c.resourceOrganizationId){process.stderr.write('DBG cm fail: target org\n');throw new CoreError('FORBIDDEN');}
+ if(c.actor.type!=='Human'||c.purposeOfUse!=='abh.mission.manage'){process.stderr.write(`DBG cm fail: purpose=${c.purposeOfUse}\n`);throw new CoreError('PURPOSE_DENIED');}
  const fences=admission.fenceRefs.bind(admission),definition=admission.definition.bind(admission);
  const command={type:input.type,commandId:input.commandId,idempotencyKey:input.idempotencyKey,digest:await digestCommandIntent(input)};
  return database.transaction(context,limits,async tx=>{
+  process.stderr.write(`DBG cm: entered tx, purpose=${c.purposeOfUse}\n`);
   const work={...limits,signal:AbortSignal.any([limits.signal,tx.signal])},owner=new MissionOwner(),scope={type:'abh.organization',id:c.resourceOrganizationId,version:1};
   const extra=structuredClone(await boundedCallback(opts=>fences(tx,structuredClone(input.payload),opts),work));
   const admit=async()=>{
@@ -33,7 +34,10 @@ export async function createMission(database:Database,context:VerifiedContext,op
   };
   let mission:MissionRecord|undefined;
   const result=await executeCommand(tx,command,async()=>{await admit();},async()=>{
-   const goal=await admit(),created=await owner.create(tx,command,input.payload,goal);
+   const goal=await admit();
+   let created;
+   try { created = await owner.create(tx,command,input.payload,goal); }
+   catch(e) { process.stderr.write(`DBG create fail: ${e instanceof Error ? e.message : String(e)}\n`); throw e; }
     await admit();mission=created;return mission.missionRef;
   });
   return mission??await owner.get(tx,result.receipt.resultRef.id);

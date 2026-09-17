@@ -62,14 +62,14 @@ export function parseHttpQuery(type: (typeof protocolRegistry.queries)[number]['
 /** Validate the permission-filtered DTO before serialization; callers send a sanitized 500 on failure. */
 export function serializeHttpResponse(operationId: string, status: number, body: unknown):
   | { success: true; json: string }
-  | { success: false; code: 'INTERNAL_ERROR'; schemaId?: string } {
+  | { success: false; code: 'INTERNAL_ERROR'; schemaId?: string; issues?: readonly string[] } {
   const command = protocolRegistry.commands.find((entry): entry is PublicCommand => entry.name === operationId && entry.visibility === 'Public');
   const query = protocolRegistry.queries.find(entry => entry.name === operationId);
   const definition = command ?? query;
   if (!definition) return { success: false, code: 'INTERNAL_ERROR' };
   const successStatus = command?.status ?? 200;
   const schema: SchemaName = status === successStatus ? definition.response : 'ErrorResponse';
-  const failed = () => ({ success: false as const, code: 'INTERNAL_ERROR' as const, schemaId: schemaIds[schema] });
+  const failed = (issues?: readonly string[]) => ({ success: false as const, code: 'INTERNAL_ERROR' as const, schemaId: schemaIds[schema], ...(issues ? { issues } : {}) });
   let json: string;
   let snapshot: unknown;
   try {
@@ -77,8 +77,9 @@ export function serializeHttpResponse(operationId: string, status: number, body:
     // This prevents inherited toJSON/getters from changing a DTO after validation.
     json = canonicalJson(body);
     snapshot = JSON.parse(json);
-  } catch { return failed(); }
-  if (!validateContract(schema, snapshot).success) return failed();
+  } catch (error) { return failed([error instanceof Error ? error.message : String(error)]); }
+  const validated = validateContract(schema, snapshot);
+  if (!validated.success) return failed(validated.issues?.map(issue => `${issue.path || '/'} ${issue.message}`));
   if (schema === 'ErrorResponse') {
     const code = (snapshot as { error: { code: keyof typeof errorRegistry } }).error.code;
     if (!(new Set<string>([...protocolRegistry.commonErrors, ...definition.errors])).has(code) || errorRegistry[code].httpStatus !== status) return failed();

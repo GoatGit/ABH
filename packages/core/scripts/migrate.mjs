@@ -10,8 +10,9 @@ if (!url || process.argv.length > 2) {
       direction: 'up', migrationsTable: 'pgmigrations', migrationsSchema: 'abh_migrations', createMigrationsSchema: true,
       log: ()=>{} });
     console.log(`Applied ${migrations.length} migrations.`);
-  } catch {
-    console.error('Migration failed; inspect restricted maintenance diagnostics. No runtime fallback was attempted.');
+  } catch (error) {
+    console.error('MIGRATION FAILED:', error?.message);
+    console.error((error?.stack || '').split('\n').slice(0, 6).join('\n'));
     process.exitCode = 1;
   }
 }

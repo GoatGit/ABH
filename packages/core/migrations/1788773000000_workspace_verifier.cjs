@@ -26,7 +26,12 @@ exports.up = pgm => {
       USING (resource_organization_id = NULLIF(current_setting('abh.resource_organization_id', true), '')::uuid)
       WITH CHECK (resource_organization_id = NULLIF(current_setting('abh.resource_organization_id', true), '')::uuid);
     GRANT SELECT,INSERT,UPDATE ON control.workspaces TO abh_runtime;
-    CREATE ROLE abh_control_verifier NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+    -- Cluster-scoped role: tolerate pre-existing role when re-provisioning a database.
+    DO $migration$ BEGIN
+      IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'abh_control_verifier') THEN
+        CREATE ROLE abh_control_verifier NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+      END IF;
+    END $migration$;
     GRANT USAGE ON SCHEMA identity,control TO abh_control_verifier;
     GRANT SELECT (resource_organization_id,id,version,status,deleted_at) ON identity.organizations TO abh_control_verifier;
     GRANT SELECT (resource_organization_id,id,version,status,identity_kind,credential_epoch,deleted_at) ON identity.principals TO abh_control_verifier;

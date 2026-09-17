@@ -62,10 +62,17 @@ export async function appendChange(tx: TenantTransaction, change: {
   relatedRefs?: EntityRef[]; eventOrdinal?: number;
 }): Promise<void> {
   const {tenant,request}=tx.context, now=new Date().toISOString();
+  // AuditRecord 契约要求 relatedRefs uniqueItems——去重防止调用方传入重复引用
+  const rawRefs=change.relatedRefs??[];
+  const seen=new Set<string>();
+  const relatedRefs=rawRefs.filter(ref=>{
+    const key=`${ref.type}/${ref.id}`;
+    if(seen.has(key))return false; seen.add(key); return true;
+  });
   const audit: AuditRecord=contract('AuditRecord',{
     auditRef:{type:'abh.audit',id:randomUUID(),version:1},resourceOrganizationId:tenant.resourceOrganizationId,
     actingOrganizationId:tenant.actingOrganizationId,actor:tenant.actor,action:change.command.type,
-    targetRef:change.target,outcome:'abh.outcome.committed',relatedRefs:change.relatedRefs??[],digest:change.command.digest,
+    targetRef:change.target,outcome:'abh.outcome.committed',relatedRefs,digest:change.command.digest,
     recordedAt:now,correlationId:request.correlationId,
   });
   const event=contract('EventEnvelope',{

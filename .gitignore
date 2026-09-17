@@ -12,3 +12,4 @@ test-results/
 !.env.example
 .DS_Store
 report.*.json
+.drain/
