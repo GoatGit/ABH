@@ -56,6 +56,36 @@ To see a fully deployed service — migrations, provisioning, queues, HTTP — w
 | `pnpm api:update` | Refresh the public API report after an intentional change (review the diff) |
 | `pnpm abh doctor data --format json` | Read-only database diagnostics — see the [CLI reference](./packages/cli/README.md) |
 
+## FAQ
+
+**Do I need Docker to contribute?**
+
+Only for the test suite: integration tests run against a real PostgreSQL 16 managed by Testcontainers. Contract generation, type checks, builds, and the documentation link check all run offline without Docker.
+
+**Why do a few `@abh/core` tests skip locally?**
+
+Seven real-signature tests run only when `ABH_TEST_COSIGN` points at a **cosign 2.x** CLI; they skip automatically otherwise. CI pins cosign v2.5.0 — 3.x removed `--tlog-upload` and will not work. See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+**One core test file gets killed on my machine.**
+
+`actions.test.ts` (the OPA WASM control snapshot) transiently peaks around 2 GB RSS. Sub-4 GB Docker VMs will OOM-kill it; keep 8 GB or more for self-hosted CI. It passes on GitHub runners.
+
+**Do tests call real models or external services?**
+
+No. The suite uses in-repo fakes and the Pi adapter invoked against test doubles — no real model calls, no real business services.
+
+**Can I run ABH in production today?**
+
+Not yet. This is a 0.1.0 preview: production hosting, a real identity provider, and an independent security review are still open. Read [`SECURITY.md`](./SECURITY.md) and the [gap list](./docs/development/V1-GAPS.md) before evaluating ABH for sensitive use.
+
+**How is ABH different from an agent framework?**
+
+Core has no dependency on any agent framework — the agent runtime plugs in through ports (the Pi adapter is one implementation). ABH owns what a framework leaves out: authorization on every command, the ledger, durable execution, audit, and recovery.
+
+## Contributing
+
+Contributions are welcome — bug reports, documentation, and help closing the open gaps. Start with [CONTRIBUTING.md](./CONTRIBUTING.md) for setup, the `pnpm check` gate, and the contract-first workflow; proposals belong in [issues](https://github.com/GoatGit/ABH/issues) and security reports in the [private advisory flow](./SECURITY.md). All participants agree to the [Code of Conduct](./CODE_OF_CONDUCT.md).
+
 ## Documentation
 
 - **[The ABH paper](./docs/V1/00-总体设计/Building-Agentic-Business-Harness-on-Agent-Harness.md)** — the design-science paper behind ABH: why an agent harness alone is not enough for a real business, and what a business-grade harness adds (CC BY 4.0, Chinese with English abstract)

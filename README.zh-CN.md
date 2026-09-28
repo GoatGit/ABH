@@ -56,6 +56,36 @@ pnpm check
 | `pnpm api:update` | 有意更改公开 API 后刷新报告（请审阅差异） |
 | `pnpm abh doctor data --format json` | 只读数据库诊断——见 [CLI 文档](./packages/cli/README.md) |
 
+## 常见问题
+
+**参与贡献必须装 Docker 吗？**
+
+只有测试套件需要：集成测试跑在 Testcontainers 管理的真实 PostgreSQL 16 上。契约生成、类型检查、构建、文档链接检查全部可离线运行，不需要 Docker。
+
+**为什么本地会跳过 `@abh/core` 的几个测试？**
+
+7 个真实签名测试仅在 `ABH_TEST_COSIGN` 指向 **cosign 2.x** CLI 时运行，未设置时自动跳过。CI 固定 cosign v2.5.0——3.x 移除了 `--tlog-upload`，不可用。详见 [CONTRIBUTING](./CONTRIBUTING.zh-CN.md)。
+
+**某个 core 测试文件在我的机器上被杀掉了。**
+
+`actions.test.ts`（OPA WASM 控制快照）峰值 RSS 短时约 2 GB；低于 4 GB 的 Docker 虚拟机会把它 OOM 杀掉。自托管 CI 请保证内存 ≥ 8 GB。GitHub runner 上可正常通过。
+
+**测试会调用真实模型或外部服务吗？**
+
+不会。套件使用仓库内 fake 与测试替身驱动 Pi 适配器——没有真实模型调用，也没有真实业务服务。
+
+**现在能把 ABH 用到生产吗？**
+
+还不行。当前是 0.1.0 Preview：生产托管、真实身份 Provider、独立安全审查均未完成。在把 ABH 用于敏感场景前，请先阅读 [`SECURITY.md`](./SECURITY.md) 与[缺口清单](./docs/development/V1-GAPS.md)。
+
+**ABH 和 Agent 框架有什么区别？**
+
+Core 不依赖任何 Agent 框架——Agent 运行时经端口接入（Pi 适配器只是其中一种实现）。ABH 管的是框架不管的部分：每条命令的授权、账本、持久执行、审计与恢复。
+
+## 参与贡献
+
+欢迎各种贡献——缺陷报告、文档、以及帮忙关闭现有缺口。环境搭建、`pnpm check` 门禁与契约优先工作流请从 [CONTRIBUTING](./CONTRIBUTING.zh-CN.md) 开始；方案讨论请到 [Issue](https://github.com/GoatGit/ABH/issues)，安全漏洞请走[私有上报流程](./SECURITY.md)。所有参与者须遵守[行为准则](./CODE_OF_CONDUCT.md)。
+
 ## 文档
 
 - **[ABH 论文](./docs/V1/00-总体设计/Building-Agentic-Business-Harness-on-Agent-Harness.md)**——ABH 背后的设计科学论文：为什么只有 Agent Harness 不够，业务级运行框架还缺什么（CC BY 4.0，中文正文，附英文摘要）

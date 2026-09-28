@@ -13,3 +13,4 @@ test-results/
 .DS_Store
 report.*.json
 .drain/
+.pi/

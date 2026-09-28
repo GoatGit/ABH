@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/GoatGit/ABH/security/advisories/new
+    about: Report security issues privately — please do not open a public issue.
+  - name: Design documents
+    url: https://github.com/GoatGit/ABH/blob/main/docs/V1/README.md
+    about: Overall design and module specifications before proposing large changes.
