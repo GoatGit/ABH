@@ -58,6 +58,7 @@ To see a fully deployed service — migrations, provisioning, queues, HTTP — w
 
 ## Documentation
 
+- **[The ABH paper](./docs/V1/00-总体设计/Building-Agentic-Business-Harness-on-Agent-Harness.md)** — the design-science paper behind ABH: why an agent harness alone is not enough for a real business, and what a business-grade harness adds (CC BY 4.0, Chinese with English abstract)
 - [Design documents index](./docs/V1/README.md) (Chinese) — overall design plus 33 module specifications
 - [Implementation tracker](./docs/development/IMPLEMENTATION.md) (Chinese)
 - [CLI reference](./packages/cli/README.md)

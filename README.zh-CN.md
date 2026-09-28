@@ -58,6 +58,7 @@ pnpm check
 
 ## 文档
 
+- **[ABH 论文](./docs/V1/00-总体设计/Building-Agentic-Business-Harness-on-Agent-Harness.md)**——ABH 背后的设计科学论文：为什么只有 Agent Harness 不够，业务级运行框架还缺什么（CC BY 4.0，中文正文，附英文摘要）
 - [设计文档索引](./docs/V1/README.md)——总体设计与 33 份模块规范
 - [实施跟踪](./docs/development/IMPLEMENTATION.md)
 - [CLI 参考](./packages/cli/README.md)

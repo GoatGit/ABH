@@ -19,7 +19,7 @@ function slugger() {
     add(heading) {
       const base = heading.toLowerCase()
         .replace(/[^\p{L}\p{N}\p{M}_\s-]/gu, '')
-        .trim().replace(/\s+/g, '-');
+        .trim().replace(/\s/g, '-');
       const index = used.get(base) ?? 0;
       used.set(base, index + 1);
       anchors.add(index === 0 ? base : `${base}-${index}`);

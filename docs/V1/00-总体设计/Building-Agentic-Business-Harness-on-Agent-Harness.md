@@ -2,13 +2,7 @@
 
 > 中文题名：构建于 Agent Harness 之上的 Agentic Business Harness
 >
-> 文档类型：设计科学研究论文 / Reference Architecture Paper
->
-> 版本：1.12
->
-> 日期：2026-09-07
->
-> 说明：本文提出可证伪、可实现、可评测的参考架构。文中关于既有技术和标准的陈述以引用为依据；关于 ABH 的结构、契约和设计命题属于本文提出的设计贡献，尚需通过跨领域实现和长期生产数据进一步验证。本文是论证性论文，不定义部署 Profile；实现时以 [ABH 总体设计](Agentic-Business-Harness总体设计.md)和[系统边界与技术基线](系统边界与技术基线.md)为规范来源。ABH V1 固定 Pi Agent Core 作为唯一 Agent Loop，经 Port 隔离；持久工作默认使用 PostgreSQL/`pg-boss`，Tool 默认使用同进程强类型 Binding，Temporal 与 MCP 仅在总体设计门禁成立后启用。
+> 设计科学研究论文（Reference Architecture Paper）· 2026-09
 >
 > 许可证：Creative Commons Attribution 4.0 International（CC BY 4.0）
 
@@ -39,6 +33,32 @@ Modern agent-harness ecosystems have made it practical for language-model agents
 Using a design-science approach, the paper derives requirements from agent architectures, workflow systems, human–automation research, AI risk frameworks, zero-trust security, durable execution, and provenance standards. It specifies the core objects, cross-layer protocols, safety invariants, autonomy model, and evaluation program of ABH. Its Learning Plane separates epistemic learning from operational capability evolution: results and human interventions first become scoped learning signals, then knowledge or capability candidates, and only independently evaluated capability candidates may progress through shadow execution, scoped canaries, versioned release, outcome attribution, and rollback. To make these claims independently testable, the reference implementation must be fully self-hostable and telemetry-off by default, and must publish contracts, conformance tests, software-supply-chain evidence, and implementations across heterogeneous domains. Its central claim is deliberately narrower than “autonomous enterprise”: an agent harness makes an agent work; an Agentic Business Harness makes a bounded business process operable through agents while preserving human accountability and deterministic control. The artifact is presented as a falsifiable reference architecture rather than as an empirically proven universal solution.
 
 **Keywords:** Agentic Business Harness; Agent Harness; AI-native systems; multi-agent systems; human accountability; trusted execution; business process; experience distillation
+
+---
+
+## 目录 / Contents
+
+1. [引言](#1-introduction--引言)
+2. [研究方法](#2-research-methodology--研究方法)
+3. [相关工作与结构性缺口](#3-main-analysis--相关工作与结构性缺口)
+4. [Agentic Business Harness 的定义](#4-synthesis--reference-architecture--agentic-business-harness-的定义)
+5. [参考架构](#5-参考架构)
+6. [核心对象与形式化不变量](#6-核心对象与形式化不变量)
+7. [运行协议](#7-运行协议)
+8. [Learning Plane：补齐学习缺口](#8-learning-plane补齐学习缺口)
+9. [自主等级](#9-自主等级)
+10. [评测框架与设计命题](#10-评测框架与设计命题)
+11. [安全、治理与主权](#11-安全治理与主权)
+12. [讨论](#12-讨论)
+13. [局限与反证](#13-limitations--counterevidence-register--局限反证与威胁)
+14. [实现与验证建议](#14-recommendations--实现与验证建议)
+15. [结论](#15-conclusion--结论)
+
+- [参考文献](#bibliography--参考文献)
+- [附录 A：设计命题与验证证据](#附录-a设计命题与验证证据)
+- [附录 B：术语边界](#附录-b术语边界)
+- [附录 C：研究方法与证据说明](#附录-c研究方法与证据说明)
+- [附录 D：主张—证据表](#附录-dclaims-evidence-table--主张证据表)
 
 ---
 
@@ -92,7 +112,7 @@ LLM 应用的第一阶段主要把模型当作文本生成函数；Agent 系统�
 
 ### 2.2 证据范围
 
-本文使用 23 个来源：学术论文用于 Agent 推理/工具、人机自动化、工作流、自治计算和设计科学；官方技术文档用于核实 Agent Loop、持久执行和中断机制；政府/监管文件用于风险、零信任和人类监督；开放标准与协议用于溯源、事件、观测和工具互操。来源覆盖 2000—2026 年。由于部分来源同时具有论文、规范和开源实现属性，本文不用互斥数量对其做人为分类。
+本文使用 23 个来源：学术论文用于 Agent 推理/工具、人机自动化、工作流、自治计算和设计科学；官方技术文档用于核实 Agent Loop、持久执行和中断机制；政府/监管文件用于风险、零信任和人类监督；开放标准与协议用于溯源、事件、观测和工具互操作。来源覆盖 2000—2026 年。由于部分来源同时具有论文、规范和开源实现属性，本文不用互斥数量对其做人为分类。
 
 本文没有把厂商文档中的产品能力当作普遍规律。厂商来源只证明相应机制已在某类实现中出现；ABH 的跨层组合与命名是本文的设计综合。论文也不使用“生产领先”“提高百分之多少”等缺乏跨组织实验的数据。
 
@@ -134,7 +154,7 @@ LangGraph 的 Checkpointer 能保存线程状态，Store 能保存跨线程长�
 
 自主计算早期工作将自配置、自修复、自优化和自保护组织为受高层目标约束的管理循环[15]。ABH 吸收其“目标与反馈循环”思想，但将自主系统的技术目标扩展为带 Organization、Human Responsibility、Grant、业务 Result 和可逆能力发布的业务目标，避免把“系统自调节”等同于“系统可以自行承担业务责任”。
 
-ABH 因此区分长期 `Mission` 与阶段性 `Run`。Agent Harness 的 Session、Thread、Turn 和 Message 是运行细节；Mission 是跨多次 Run、模型版本、人工决定和外部结果持续存在的业务承诺。
+ABH 因此区分长期 Mission 与阶段性 Run。Agent Harness 的 Session、Thread、Turn 和 Message 是运行细节；Mission 是跨多次 Run、模型版本、人工决定和外部结果持续存在的业务承诺。
 
 ### 3.4 人机自动化与责任
 
@@ -148,7 +168,7 @@ NIST AI RMF 用 GOVERN、MAP、MEASURE、MANAGE 组织 AI 风险活动，并将�
 
 NIST Zero Trust Architecture 主张不基于网络位置授予隐式信任，并采用逐请求、最小权限的策略判断与执行点[18]。ABH 将该原则应用于 Agent：一次 Human Session 的权限不能被整个 Run 隐式继承；每个 Agent Invocation、Tool Binding 与 Action 都必须具有显式身份、Scope、用途和时效。
 
-W3C PROV 用 Entity、Activity 和 Agent 表达来源与责任关系[20]；CloudEvents 用统一上下文描述跨系统事件，并要求 `source + id` 对不同事件保持唯一[21]；OpenTelemetry 用 Trace、Span、Event 和 Link 表达因果运行路径[22]。ABH 复用这些成熟结构分别承载 Evidence、领域事件和 Trace，但拒绝用 Trace 代替正式业务事实或 Audit。
+W3C PROV 用 Entity、Activity 和 Agent 表达来源与责任关系[20]；CloudEvents 用统一上下文描述跨系统事件，并要求来源与标识符的组合对不同事件保持唯一[21]；OpenTelemetry 用 Trace、Span、Event 和 Link 表达因果运行路径[22]。ABH 复用这些成熟结构分别承载 Evidence、领域事件和 Trace，但拒绝用 Trace 代替正式业务事实或 Audit。
 
 ### 3.6 六类结构性缺口
 
@@ -197,13 +217,13 @@ flowchart TB
         TR["Trusted Runtime"]
     end
 
-    DURABLE["DurableExecutionPort<br/>pg-boss / gated Temporal"]
-    AR["AgentRuntimePort<br/>Pi Adapter"]
-    AH["Pi Agent Core<br/>single active Agent Loop"]
-    MODEL["ModelInvocationPort"]
+    DURABLE["Durable Execution Port<br/>可替换的队列 / 工作流引擎"]
+    AR["Agent Runtime Port<br/>运行时适配器"]
+    AH["Agent Harness<br/>single active Agent Loop"]
+    MODEL["Model Invocation Port"]
     MG["Model Gateway"]
     MP["Configured local / external Model Adapter"]
-    TOOL["Typed Tool Binding<br/>in-process / gated MCP transport"]
+    TOOL["Typed Tool Binding<br/>in-process / gated remote transport"]
     CP["Connector Packs"]
     EXT["External Systems"]
 
@@ -239,9 +259,9 @@ flowchart TB
     TR -.Learning Lineage.-> BW
 ```
 
-依赖方向必须单向稳定：业务应用依赖 ABH；Domain Pack 通过公开 SDK 向 Domain Application 和四个 ABH 责任域注入定义；Domain Application 是业务语义与聚合状态的 Owner，不是第五个 ABH 子系统。ABH V1 通过 `DurableExecutionPort`、`AgentRuntimePort`、`ModelInvocationPort` 以及 Tool Binding/`ToolProtocolPort` 边界分别隔离持久工作实现、Pi、模型供应商与 Tool 传输。图中的连线表达运行时调用：Durable Adapter 只唤醒 Core，不会调用 Pi；Pi 只在 `AgentRuntimePort` 之后运行，其模型请求仍通过 Trusted Runtime 中的 Model Gateway 执行许可列表、Purpose/Data-use、成本、Secret 和 Audit 控制；Tool 调用必须重入 Trusted Runtime，不会从持久队列直接穿到外部系统。
+依赖方向必须单向稳定：业务应用依赖 ABH；Domain Pack 通过公开 SDK 向 Domain Application 和四个 ABH 责任域注入定义；Domain Application 是业务语义与聚合状态的 Owner，不是第五个 ABH 子系统。ABH 通过持久执行、Agent 运行时、模型调用和工具绑定四类 Port 边界，分别隔离持久工作实现、Agent 运行时框架、模型供应商与工具传输，使任何一方都可以整体替换而不改变业务契约。图中的连线表达运行时调用：持久执行适配器只负责唤醒 Core；Agent 运行时只在 Agent Runtime Port 之后运行，其模型请求仍必须经过 Trusted Runtime 中的 Model Gateway，接受许可范围、数据用途、成本、秘密与审计控制；工具调用必须重入 Trusted Runtime，不会从持久队列直接穿透到外部系统。
 
-M0 的持久工作和 Agent Runtime 默认实现分别为 PostgreSQL/`pg-boss` 与 Pi，Tool 默认使用同进程强类型 Binding，不需要部署 MCP；Temporal 与 MCP 仅在规范性总体设计门禁成立后启用。Connector Pack 适配外部系统。第三方框架、模型供应商或外部 API 的对象不能反向成为通用业务模型。图中的虚线反馈构成 Learning Plane；它复用四个子系统的控制权，不增加第五个可以绕过 Human Gateway 或 Trusted Runtime 的系统边界。
+持久工作引擎与跨进程工具协议等重型依赖不是部署 ABH 的前提条件，只在可观测门禁证明需要时才引入。Connector Pack 适配外部系统；第三方框架、模型供应商或外部 API 的对象不能反向成为通用业务模型。图中的虚线反馈构成 Learning Plane；它复用四个子系统的控制权，不增加第五个可以绕过 Human Gateway 或 Trusted Runtime 的系统边界。
 
 ### 4.3 四个子系统
 
@@ -281,7 +301,7 @@ Connector Pack 只负责外部能力和协议差异，包括认证方式、读�
 
 ### 5.1 Agentic Core
 
-Agentic Core 以 `Mission` 为长期业务单元，以 `Run` 为阶段性可恢复执行，以 `Agent Definition` 表达稳定责任，以 `Workflow` 和运行时 `Task Graph` 结合确定性骨架与动态规划。
+Agentic Core 以 Mission 为长期业务单元，以 Run 为阶段性可恢复执行，以 Agent Definition 表达稳定责任，以 Workflow 和运行时 Task Graph 结合确定性骨架与动态规划。
 
 ```mermaid
 flowchart LR
@@ -295,7 +315,7 @@ flowchart LR
     AR <--> AH["Agent Harness"]
     AH <--> GW["Tool Gateway"]
     GW <--> TR["Trusted Runtime"]
-    AH --> MIP["ModelInvocationPort"]
+    AH --> MIP["Model Invocation Port"]
     MIP --> MG["Trusted Runtime Model Gateway"]
     MG --> MA["Model Adapter"]
     AR -->|structured output| VER["Verification"]
@@ -318,7 +338,7 @@ Human Gateway 只承载四类正式责任：
 | Correction | 纠正事实、偏好、判断或已生成产物 | Correction Record、替代版本 |
 | Exception | 处理 Agent 无法在现有边界内安全收敛的问题 | Exception Decision、Takeover、Policy Exception |
 
-Human Gateway 的通用责任主体称为 `Responsibility Principal`；具体产品可以将其映射为 Manager、Owner、Approver 或 Reviewer。Product Responsibility 决定谁有资格对某类事项负责，Approval Grant 决定主体可以执行的具体动作；两者分别失效，不相互推导。责任解析至少考虑 Organization、Workspace、对象 Scope、责任类型、动作、风险、职责分离、委托和有效期。聊天中的“好的”不构成正式授权；有效 Decision 必须具有明确对象、版本、影响、选项、决定者身份和生效范围。Decision Outcome 只能由相应 Owner 转换为 Grant、对象修订或 Takeover，Human Gateway 不跨边界直写这些状态。
+Human Gateway 的通用责任主体称为 Responsibility Principal；具体产品可以将其映射为 Manager、Owner、Approver 或 Reviewer。Product Responsibility 决定谁有资格对某类事项负责，Approval Grant 决定主体可以执行的具体动作；两者分别失效，不相互推导。责任解析至少考虑 Organization、Workspace、对象 Scope、责任类型、动作、风险、职责分离、委托和有效期。聊天中的“好的”不构成正式授权；有效 Decision 必须具有明确对象、版本、影响、选项、决定者身份和生效范围。Decision Outcome 只能由相应 Owner 转换为 Grant、对象修订或 Takeover，Human Gateway 不跨边界直写这些状态。
 
 ### 5.3 Trusted Runtime
 
@@ -328,23 +348,13 @@ Trusted Runtime 包含三个逻辑 Plane：
 |---|---|
 | Control Plane | 身份、租户、授权、Policy、限额/配额、自主等级、模型/工具允许范围、职责分离和审计 |
 | Execution Plane | Tool Gateway、Action Engine、Operation、Adapter、Secret、幂等、限流、熔断、调度、对账和补偿 |
-| Data Plane | 为状态 Owner 提供正式事实提交、Event/Outbox、Artifact、Evidence、Memory、Knowledge、Result、Lineage、Index 和 Audit 底座；领域迁移语义仍属于对应 Domain Owner |
+| Data Plane | 为状态 Owner 提供正式事实提交、事件与外发记录、Artifact、Evidence、Memory、Knowledge、Result、Lineage、Index 和 Audit 底座；领域迁移语义仍属于对应 Domain Owner |
 
-任何外部副作用都必须沿以下链路执行：
-
-```text
-Business Intent → Action: Proposed
-  → RequestContext + Action Target + upstream authority refs
-  → Capability + Mandatory/Behavior Policy + Grant/Resource Preflight
-  → Action-specific Authorization Snapshot + applicable Reservation/Commitment
-  → Action: Authorized → Operation → Attempt → Receipt → Reconciliation
-```
-
-`Action` 表达领域业务意图；Proposed 是已持久的提案。Action Engine 以经过认证的 RequestContext、Action Target 和上游权限引用请求 Preflight，上游 Invocation/Tool Snapshot 只证明来源。Control 固定唯一适用行为版本，检查 Grant、Purpose、两类 Policy、对象版本和适用资源预留；Action 专属 Authorization Snapshot 与必要预留一致提交后，才签发 AuthorizedRequestContext 并允许进入 Authorized。Operation Dispatch 时继续重验当前权限、强制控制策略和版本有效性。
+任何外部副作用都必须沿同一条链路执行：业务意图先固化为已持久化的 Proposed 提案，并绑定目标对象版本与上游授权引用；随后由确定性引擎完成联合预检——调用身份、工具能力、强制控制策略、领域行为策略、Grant 与资源预留一次性求交——预检结果与必要预留一致提交后，Action 才进入 Authorized，并向外部系统派发 Operation。派发时系统继续重验当前权限、强制策略与版本有效性，保证授权在执行时刻仍然成立。
 
 Policy 分为两类，由同一确定性引擎求交：Mandatory Control Policy 由 Trusted Runtime 独立发布，约束身份、租户、用途、职责分离、硬限额与禁止动作；Domain Behavior Policy 随能力版本表达领域建议、质量、责任路由和附加限制。行为策略只能在强制边界内生效，不能覆盖 Mandatory Deny、减少强制义务或扩大 Grant。Capability Release 固定行为版本，授权仍由当前责任与 Grant 决定。
 
-`Operation` 是面向某个连接或资源边界的执行单元；`Attempt` 是一次可能失败或超时的调用；`Receipt` 保存外部回执；`Reconciliation` 根据外部事实确认最终结果。补偿作为新的 Action 执行并引用被补偿的 Operation，历史事实保持可追溯。
+Operation 是面向某个连接或资源边界的执行单元；Attempt 是一次可能失败或超时的调用；Receipt 保存外部回执；Reconciliation 根据外部事实确认最终结果。补偿作为新的 Action 执行并引用被补偿的 Operation，历史事实保持可追溯。
 
 ### 5.4 Business Workbench
 
@@ -410,7 +420,7 @@ ABH 必须保持：
 
 ### 6.5 知识晋级不变量
 
-Knowledge 采用 `Candidate → Provisional → Validated → Superseded / Expired` 生命周期。晋级函数可表示为：
+Knowledge 采用 Candidate → Provisional → Validated → Superseded / Expired 的生命周期。晋级函数可表示为：
 
 \[
 Promote(k) = EvidenceQuality \land Reproducibility \land ScopeValidity \land IndependentGate \land NoCriticalConflict
@@ -442,9 +452,11 @@ Agent Definition 表达稳定业务责任，Agent Instance 表达一次 Mission/
 
 ### 7.5 外部执行与未知结果
 
-Action Engine 先以幂等键保存 Proposed Action 及来源对象版本；当 Active Capability Assignment、授权快照、Policy 与适用的 Resource Reservation/Commitment 在同一可证明边界中成立时，它再将 Action 转为 Authorized 并写入 Outbox。Operation Controller 在 Action Validated 后按固定 Connector Capability 无副作用地生成不可变 Operation Plan；授权事务必须验证并绑定 planDigest，Worker 仅派发该获准计划。Operation Controller 唯一写入 Operation/Attempt/Receipt；Action Engine 保存 Plan Ref 并汇总父 Action 结果。Action 键标识业务意图，Operation 键由 Action/计划节点/连接边界稳定派生，同一 Operation 的各 Attempt 复用同一 Provider 幂等键。外部超时不能直接标记失败并盲目重试，因为外部系统可能已接受请求。系统先进入 `Unknown`，使用查询、稳定命名/标签、外部 ID 或对账窗口确定结果；只有确认未生效且重试安全时才创建新 Attempt，多个匹配则进入 Duplicate Exception。Provider 既无原生幂等也无可靠查询标记时，高影响创建不进入自动执行范围。Error Registry 表达失败原因与处置，Unknown 表达副作用事实尚未确定，两者不得压缩为同一个错误枚举。
+执行引擎先以幂等键持久化 Proposed Action 及其来源对象版本；当能力分配、授权快照、策略与资源预留能在同一可证明边界内成立时，Action 才进入 Authorized。获准的执行计划是不可变的：系统只派发获准计划本身，不在执行时重新解释提案。业务意图由 Action 键标识，外部调用由 Operation 键标识；同一 Operation 的多次尝试复用同一个面向外部系统的幂等键，使重复投递不会变成重复副作用。
 
-跨平台或跨账户动作拆成多个 Operation。父 Action 按明确聚合规则呈现 `Succeeded`、`PartiallySucceeded`、`Failed` 或 `Unknown` outcome；它的生命周期状态仍由独立契约表达，部分成功不会被一个布尔值掩盖。回滚不可行时，补偿 Action 用新的业务意图修正外部状态。
+外部超时不能直接标记失败并盲目重试，因为外部系统可能已接受请求。系统先进入 Unknown，再用查询、稳定命名、外部标识或对账窗口确定真实结果；只有确认未生效且重试安全时才创建新的 Attempt，出现多个匹配则进入重复异常处理。外部平台既无原生幂等也无可靠查询手段时，高影响创建动作不得进入自动执行范围。错误登记表达失败原因与处置方式，Unknown 表达副作用事实尚未确定——两者是不同的语义，不得压缩为同一个错误枚举。
+
+跨平台或跨账户动作拆成多个 Operation。父 Action 按明确的聚合规则呈现 Succeeded、PartiallySucceeded、Failed 或 Unknown 等结果；它的生命周期状态仍由独立契约表达，部分成功不会被一个布尔值掩盖。回滚不可行时，补偿 Action 用新的业务意图修正外部状态。
 
 ### 7.6 恢复与重放
 
@@ -517,25 +529,13 @@ flowchart TB
 
 ### 8.4 学习信号契约
 
-所有学习输入首先形成 `Learning Signal`，而不是直接写入 Prompt、Policy 或 Knowledge：
-
-```text
-signalId / signalType / occurredAt
-organizationId / workspaceId / domain / subjectScope
-missionRef / runRef / taskRef / objectVersionRefs
-sourceActor / sourceSystem / evidenceRefs
-observedBehavior / expectedBehavior / delta
-humanChange / rationale / responsibilityType（如适用）
-businessOutcome / safetyOutcome / costOutcome（可延迟补充）
-dataUse / sensitivity / retention / deletionRefs
-confidence / knownAlternatives / validityWindow
-```
+所有学习输入首先形成 Learning Signal，而不是直接写入 Prompt、Policy 或 Knowledge。每条信号必须显式声明自己的来源与边界：发生了什么、期望行为与实际行为的差异是什么、涉及哪些运行与对象版本、由谁或哪个系统产生、支持它的证据是什么；涉及人类介入时记录责任类型与理由；同时声明数据的允许用途、敏感级别、保留与删除义务，并附置信度、已知替代解释和有效期。业务结果、安全结果和成本结果允许事后补充，但来源与数据用途不可缺省。
 
 信号来源包括：业务 Result 与 Experiment、Agent/Workflow 离线和在线评测、Human Gateway 的 Correction/Exception/Takeover/重复 Decision、Action/Operation 事故、Policy 拦截、用户采纳或拒绝、模型/Connector 漂移以及成本和延迟异常。点击、点赞或一次成功只表达弱信号，不能单独晋级高影响能力。
 
 ### 8.5 从信号到候选：归因而非照抄
 
-Agentic Core 的 Evaluation & Learning 对相似信号聚类，并把重复介入归因到以下一个或多个根因：缺少事实或数据、检索失败、上下文组装错误、工具能力不足、Workflow 缺口、Agent 判断错误、验证器不足、Policy 缺口、责任配置错误、外部系统限制或 UI 误导。只有完成根因归因，它才创建 `Capability Candidate` 或向对应 Domain Knowledge Owner 提交 `Knowledge Candidate` Command。
+Agentic Core 的 Evaluation & Learning 对相似信号聚类，并把重复介入归因到以下一个或多个根因：缺少事实或数据、检索失败、上下文组装错误、工具能力不足、Workflow 缺口、Agent 判断错误、验证器不足、Policy 缺口、责任配置错误、外部系统限制或 UI 误导。只有完成根因归因，它才创建 Capability Candidate，或向对应的领域 Knowledge Owner 提交 Knowledge Candidate。
 
 候选记录目标资产、基线版本、建议变更、适用 Scope、预期效果、风险等级、所需数据用途、支持/反对 Evidence、评测计划、发布计划和回滚版本。人工做了什么不等于系统就应该模仿什么；例如人工绕过一个故障平台完成投放，可能暴露 Connector 缺口，而不是证明应放宽 Agent 权限。
 
@@ -687,7 +687,7 @@ ABH 不宣称公司可以脱离人类经营。它提供一种技术和产品结�
 
 ### 12.4 明确选型与 Port 隔离
 
-不同 Harness 在 Session、Message、Tool、Handoff、Checkpoint 和 Streaming 上有不同抽象，因此 ABH 仍以 Port 隔离第三方类型；但可替换性不等于把 V1 选型留空。ABH V1 固定使用 Pi Agent Core 承载唯一模型—工具循环；M0 以 PostgreSQL/`pg-boss` 实现 `DurableExecutionPort`，以同进程强类型 Binding 实现 Tool 调用。只有经规范性总体设计的已观测门禁证明需要时，才整体以 Temporal Adapter 替换持久工作实现，或以 MCP Adapter 增加跨进程/第三方 Tool 互操作；二者不是安装 ABH、通过 M0 或进入后续阶段的自动前置条件。`AgentRuntimePort` 提供受控 Invocation、事件、取消、预算和工具反馈，Pi 的 Thread、Message 或 Handoff 不进入业务对象。任何实现替换都属于框架级迁移命题，必须整体通过 Contract、必要的 Replay、Evaluation 和 Canary，不能由 Domain Pack 自行选择，也不能在同一业务链并行运行两个 Agent Loop 或两个 Job Owner。
+不同 Harness 在 Session、Message、Tool、Handoff、Checkpoint 和 Streaming 上有不同抽象，因此 ABH 以 Port 隔离第三方类型；但可替换性不等于把选型留空。一个 ABH 部署在其业务执行链上只有一个 Active Agent Loop 和一个持久执行实现：Port 边界使它们可以被整体替换，却不允许同一业务链并行运行两个 Agent Loop 或两个任务所有者。Agent 运行时自身的会话、消息、交接等内部概念不进入业务对象。持久工作引擎与跨进程工具互操作协议是可选的重型依赖，只在可观测门禁证明需要时引入，而不是部署或进入后续阶段的自动前提。任何实现替换都属于框架级迁移命题，必须整体通过契约符合性、必要的重放、评测与金丝雀验证，不能由单个 Domain Pack 自行选择。
 
 ---
 
@@ -709,7 +709,7 @@ ABH 不宣称公司可以脱离人类经营。它提供一种技术和产品结�
 
 ## 14. Recommendations / 实现与验证建议
 
-ABH 的实现应从一条具有正式业务状态、人类授权和可对账副作用的纵向闭环开始：先独立 Action，再把 Agent 产物接入同一执行链。启用 ABH 原生 Agent 时通过 `AgentRuntimePort` 隔离 Harness；所有受管外部写入收敛到 Action—Operation。首条闭环保存来源、版本、决定、回执和失败证据，学习启用后从仍合法可用的来源形成 Signal，避免先实现学习服务才验证业务执行。
+ABH 的实现应从一条具有正式业务状态、人类授权和可对账副作用的纵向闭环开始：先独立 Action，再把 Agent 产物接入同一执行链。启用 ABH 原生 Agent 时通过 Agent Runtime Port 隔离 Harness；所有受管外部写入收敛到 Action—Operation。首条闭环保存来源、版本、决定、回执和失败证据，学习启用后从仍合法可用的来源形成 Signal，避免先实现学习服务才验证业务执行。
 
 通用性验证不应依赖继续丰富营销领域。Marketing Domain Pack 稳定后，应选择采购、客户服务或合规等具有不同对象和责任结构的第二个 Domain Pack；若需要改写 Mission、Decision、Grant、Action、Learning Signal 或 Capability Release 的核心含义，框架抽象需要收缩或重构。
 
@@ -810,7 +810,7 @@ ABH 以明确的控制权组织业务：Agent 负责语义工作，人类承担�
 
 ## 附录 C：研究方法与证据说明
 
-参考文献记录各来源的版本与访问日期；Pi 接口以固定 v0.85.1 来源为准。本文采用围绕 Agent 运行、业务工作流、人类监督和可信执行的定向文献综合，未声称完成系统性综述或穷尽市场项目。架构设计命题由第 10 章和附录 A 的验证方案检验，厂商 API 可用性本身不构成业务有效性证据。
+参考文献记录各来源的版本与访问日期。本文采用围绕 Agent 运行、业务工作流、人类监督和可信执行的定向文献综合，未声称完成系统性综述或穷尽市场项目。架构设计命题由第 10 章和附录 A 的验证方案检验，厂商 API 可用性本身不构成业务有效性证据。
 
 本文的主要反证视角包括：ABH 是否只是 BPM 或 Agent Framework 的重新命名；四子系统是否制造不必要复杂度；Human Gateway 是否导致橡皮图章式审批；Trusted Runtime 是否对不可原子外部平台做出过强承诺；Domain Pack 是否真正可跨行业。相应限制和验证条件已写入第 10、12、13 章，未将这些开放问题写成已解决事实。
 
