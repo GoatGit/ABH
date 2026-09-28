@@ -1,19 +1,23 @@
 # @abh/adapter-pi
 
-Pi Agent Runtime Adapter 固定使用 `@earendil-works/pi-agent-core@0.85.1` 与同版 `@earendil-works/pi-ai`。Adapter 复用上游模型—工具循环，只负责 ABH 合同映射、Gateway 强制注入、事件归一化、有界缓冲和基础停止。
+[English](./README.md) | [简体中文](./README.zh-CN.md)
 
-## 安全边界
+The Pi Agent runtime adapter, pinned to `@earendil-works/pi-agent-core@0.85.1` and the matching `@earendil-works/pi-ai`. The adapter reuses the upstream model–tool loop and adds only what ABH needs: contract mapping, enforced gateway injection, event normalization, bounded buffering, and basic stopping.
 
-- 模型请求只能经过调用方注入的 `ModelGatewayPort`。
-- 工具调用只能经过 `ToolGatewayPort`，未知或未绑定工具在执行前拒绝。
-- 工具循环固定为 `sequential`；禁用出站 Pi telemetry。
-- `maxBufferedEvents` 限制为 32—4096，`cleanupDeadlineMs` 限制为 1000—10000。
-- Adapter 不拥有 Run、Task、授权或业务状态；正式产物和完成证据必须回到 Owner。
+## Safety boundaries
 
-## 当前边界
+- Model requests only go through the caller-injected `ModelGatewayPort`.
+- Tool calls only go through `ToolGatewayPort`; unknown or unbound tools are rejected before execution.
+- The tool loop is fixed to `sequential`; outbound Pi telemetry is disabled.
+- `maxBufferedEvents` is clamped to 32–4096, `cleanupDeadlineMs` to 1000–10000.
+- The adapter owns no run, task, authorization, or business state — artifacts and completion evidence always return to their owners.
 
-基础 `invoke` 覆盖合同校验、启动、Turn/Tool/Output/Stopped 事件、Token/费用/Deadline 停止、外部取消和依赖失败。
+## Invoke and continue
 
-`continue` 复用同一 Pi/Gateway/事件路径：安装 `checkpointSink` 后，只在 Tool Result 已落地的等待点保存裁剪 Transcript、Tool Receipt Refs、事件水位、预算和工具计数。恢复必须提供 checkpoint 与 permit Ref，并通过显式 `checkpointGateway` 和 `resumeAdmission`；版本、Definition、Context digest、当前授权、剩余预算、Transcript 终点和未查回 Receipt 不一致时返回 `INVOCATION_RESUME_UNSAFE`。通过后使用 Pi 原生 `continue()`，不重放已观察工具。
+Basic `invoke` covers contract validation, startup, Turn/Tool/Output/Stopped events, stopping on token/cost/deadline limits, external cancellation, and dependency failure.
 
-生产 Model/Tool Gateway 装配、完整 CTK/故障矩阵、真实 Artifact Checkpoint Owner 和独立升级兼容矩阵仍按 V1 设计推进。
+`continue` reuses the same Pi/gateway/event path. With a `checkpointSink` installed, checkpoints are saved only at wait points where tool results have landed: a trimmed transcript, tool receipt refs, the event watermark, remaining budget, and tool counts. Resuming requires the checkpoint and a permit ref through an explicit `checkpointGateway` and `resumeAdmission`. If the version, definition, context digest, current authorization, remaining budget, transcript end, or unsettled receipts disagree, the call fails with `INVOCATION_RESUME_UNSAFE`. Once admitted, it uses Pi's native `continue()` and never replays already-observed tools.
+
+## Status
+
+Production model/tool gateway assembly, the full CTK and fault matrix, a real artifact checkpoint owner, and an independent upgrade-compatibility matrix are still on the V1 roadmap.

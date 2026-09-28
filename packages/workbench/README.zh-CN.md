@@ -1,0 +1,31 @@
+# ABH Workbench
+
+[English](./README.md) | 简体中文
+
+ABH 的可选 Next.js 参考管理台——服务本身不依赖它。页面覆盖总览、责任待办、Decision 审批、Mission 进展/暂停/恢复、Action 列表/详情/取消/补偿，以及宿主声明的 Settings 快照与治理命令。所有 ABH 调用都走公开 HTTP 契约，服务端始终拥有最终授权权。
+
+## 启用方式
+
+1. 把 `ABH_API_URL` 指向你的 ABH HTTP 服务。
+2. 身份装配在 `src/lib/identity-install.ts`，按环境选择：
+   - 设置 `ABH_IDENTITY_ISSUER`、`ABH_IDENTITY_AUDIENCE` 与 `ABH_IDENTITY_JWKS_URL`（RS256/ES256，生产必须 https），或 `ABH_IDENTITY_SHARED_SECRET`（HS256，自托管），即启用内置生产适配器（`src/lib/identity-production.ts`）。它校验 Bearer JWT 签名与 `exp`/`nbf`/`iss`/`aud`，从 `sub`/`name`/`abh_organizations`/`abh_purpose` 声明解析会话，并把验证过的 token 在服务端转发给 ABH API。组织 Cookie 只是选择意图，成员资格一律按 token 声明复核。
+   - 生产构建（`NODE_ENV=production`）未配置身份时 fail closed，所有会话拒绝。
+   - 开发构建未配置时使用浏览器 e2e fixture，仅限本地演示，不得部署。
+3. 需要自定义会话语义时，实现 `src/lib/identity.ts` 的 `WorkbenchIdentityAdapter`：从真实 IdP/session 解析当前 Human 身份，在 `apiHeaders` 中为每个请求注入宿主凭据，并区分 `actingOrganizationId` 与 `resourceOrganizationId`。组织选择 Cookie 只是用户意图；适配器必须在每次请求重新验证成员资格、Workspace、两个组织与用途。
+4. 提供稳定且非保密的 `authorizationDigest` 用于隔离客户端缓存；它不能替代服务端授权。
+5. 需要补偿时，替换 `src/lib/compensation.ts` 的 `denyAllCompensationAdapter`：返回已注册 Action 定义的补偿模板，并核对 Action 可见性、状态、定义归属和授权。
+6. 需要自定义责任表单时，替换 `src/lib/decision-forms.ts` 的 `contractDecisionFormsAdapter`。默认表单只暴露公开 `SubmitDecisionPayload` 的字段（reason、condition refs、reauth proof）；自定义适配器必须核对 Decision 可见性、状态与审批授权，且只能声明已注册 Schema。
+7. 需要 Settings 治理时，设置 `WORKBENCH_SETTINGS_URL` 启用显式生产 HTTP 装配：服务返回有界非保密快照与已注册命令，`execute` 每次调用重新授权并用请求 ID 保证幂等。也可以继续使用 `src/lib/settings.ts` 的 `denyAllSettingsAdapter`。
+8. 不要把 API 凭据存进浏览器返回、日志或 Next 缓存；页面与 BFF 均已禁用共享缓存。
+
+生产构建未配置身份适配器时，应用只显示未登录，不会发送任何 ABH 请求。
+
+## 当前边界
+
+- 审批使用稳定幂等键与 If-Match；界面不做乐观的"已生效"显示。
+- Mission 投影、Decision 状态与 Action 详情经 TanStack Query 刷新；同源 SSE BFF 注入身份并支持有界 Last-Event-ID，禁用或失败时回退授权轮询。
+- Mission 投影用语义表格加懒加载 ECharts SVG 渲染；只有通过形状守卫的授权摘要才画图，数据异常时安全降级。
+- Decision 审批用懒加载 JSON Forms；服务端强读 Decision、复核状态与 Package 摘要，并用 Ajv 2020 重新校验注册表单输入。`pnpm test:e2e` 覆盖生产构建浏览器旅程、axe 扫描和 LCP/CLS 门禁。
+- 补偿表单使用宿主声明的 JSON Schema；生产 Action 定义、完成策略与业务治理仍由 Core 宿主最终裁决。
+- Settings 页面只渲染宿主声明的成员、用途、连接、自动化和命令；未安装适配器时默认拒绝。连接视图不得包含凭据，命令受理不等于治理变更已生效。
+- 尚未包含：生产 Settings/Domain Pack 治理装配、真实 IdP 与生产 API 旅程、读屏用户确认、移动与桌面视觉矩阵、INP/SSE 恢复旅程。

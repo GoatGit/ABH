@@ -2,7 +2,7 @@
 
 > 版本：1.2 · Owner：Contract Maintainer
 >
-> 包：`@abh/contracts`；Apache-2.0；公共入口 Preview，数据库/Controller 内部类型不导出。
+> 包：`@abh/contracts`；MIT；公共入口 Preview，数据库/Controller 内部类型不导出。
 
 ## 1. 单一来源
 

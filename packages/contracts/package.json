@@ -4,7 +4,7 @@
   "description": "ABH Preview machine contracts and deterministic generated validators",
   "private": true,
   "type": "module",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "engines": {
     "node": "24.13.0"
   },

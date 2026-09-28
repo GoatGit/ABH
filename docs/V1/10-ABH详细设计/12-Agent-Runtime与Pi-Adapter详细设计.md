@@ -2,7 +2,7 @@
 
 > 版本：1.2 · Owner：Agent Runtime Maintainer · Adapter 包：`@abh/adapter-pi`
 >
-> 固定参考：`@earendil-works/pi-agent-core@0.85.1`、同版 pi-ai；MIT 上游经 Apache-2.0 Adapter 接入。
+> 固定参考：`@earendil-works/pi-agent-core@0.85.1`、同版 pi-ai；MIT 上游经 MIT Adapter 接入。
 
 ## 1. 责任与公开 Port
 

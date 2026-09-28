@@ -2,7 +2,7 @@
 
 > 版本：1.2 · Owner：Release / Runtime Maintainers
 >
-> 制品：abh-core、abh-full、abh-dev、@abh/cli；Apache-2.0。
+> 制品：abh-core、abh-full、abh-dev、@abh/cli；MIT。
 
 ## 1. 部署与依赖
 
@@ -49,7 +49,7 @@ Secret 使用 Ref，文件权限最小化；production=true 与开发 Identity/F
 
 ## 5. 供应链、许可与社区
 
-pnpm 锁依赖；Turborepo 执行构建；Changesets 发版本；Syft 生成 SBOM；CodeQL/OSV/Gitleaks/Trivy/许可扫描形成门禁；Cosign 签制品及构建 Provenance。规范/代码 Apache-2.0，论文 CC BY 4.0，第三方保留 LICENSE/NOTICE。
+pnpm 锁依赖；Turborepo 执行构建；Changesets 发版本；Syft 生成 SBOM；CodeQL/OSV/Gitleaks/Trivy/许可扫描形成门禁；Cosign 签制品及构建 Provenance。规范/代码 MIT，论文 CC BY 4.0，第三方保留 LICENSE/NOTICE。
 
 支持线上源码审查与 DCO；公开 SECURITY.md、维护者/发布责任、漏洞受理流程。漏洞响应初始目标：高危报告 2 个工作日确认，已确认且有可利用路径的 Critical 72 h 内提供缓解/修复计划；正式时限由维护能力与公开政策验证，不能假称已有值守团队。
 

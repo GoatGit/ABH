@@ -1,19 +1,27 @@
 # @abh/adapter-fastify
 
-内部 Fastify 5.12.3 入口适配器，Node 24.13.0。`createHttpApp` 返回未监听的实例，调用方安装可信 `authenticate` 和公开命令/查询处理器后，由 Host 负责监听、实际 readiness 和排空。没有默认身份、业务处理器或健康状态。
+[English](./README.md) | [简体中文](./README.zh-CN.md)
 
-路由来自 Contract Package 注册表，仅安装明确提供的处理器；内部命令和未安装操作返回契约 404。请求用已编译的契约校验器验证，拒绝额外字段、客户端 Context/commandId、重复条件头、无效 UUID 和未注册查询参数。只有契约声明的查询数值字段可以转换。
+The internal HTTP ingress adapter, built on Fastify 5.12.3 for Node 24.13.0.
 
-认证安装负责验证凭据，解析当前身份、组织、Workspace 和用途，不得直接复制客户端上下文头。适配器生成 requestId、correlationId、receivedAt 和 commandId，校验并快照认证上下文。Owner 仍负责独立授权、当前 Grant/fence、重放准入、事务和字段可见性。适配器不会把认证成功视为业务授权，也不自动重试命令。
+`createHttpApp` returns an instance that is **not** listening. The host installs a trusted `authenticate` plus the command/query handlers it wants to expose, then owns listening, real readiness, and draining. There is no default identity, no business handler, and no health state.
 
-处理器返回公开契约 DTO；错误通过 `HttpFailure` 显式映射。未知异常和操作未声明的错误统一返回脱敏 INTERNAL_ERROR。成功响应先生成规范 JSON，再校验实际发送快照；命令 ETag 和 202 Location 从该快照生成。错误默认不承诺可安全重试。
+## How requests are handled
 
-默认请求体上限 1 MiB、总处理期限 30 秒（配置最多 60 秒），认证上下文更早过期时提前终止。显式 binary route 可配置独立 `maxBytes`，其 content parser 不再继承全局 JSON 上限；parser 在解码流超限时断流并返回脱敏 `LIMIT_EXCEEDED`，HTTP 状态受 Fastify parser 错误约束为 400。handler 仍必须复核声明长度和实际流长度。认证及 Owner 收到 AbortSignal；不合作的 Promise 也不会阻塞 HTTP 响应，超时后返回的认证结果不能启动 Owner。已开始的业务事务是否提交由 Owner 的取消/事务规则决定，HTTP 超时不证明回滚，调用方应使用原幂等键查回。Socket 断开也会取消信号。
+- Routes come from the contract registry; only explicitly provided handlers are installed. Internal commands and uninstalled operations return a contract 404.
+- Requests are validated with compiled contract validators: extra fields, client-supplied context/commandId, duplicate conditional headers, invalid UUIDs and unregistered query parameters are all rejected. Only contract-declared numeric query fields are coerced.
+- The authentication install verifies credentials and resolves identity, organization, workspace and purpose. It must not copy client context headers. The adapter generates `requestId`, `correlationId`, `receivedAt` and `commandId`, and snapshots the authenticated context.
+- Authentication is not authorization: owners still do their own grant/fence/replay checks, transactions and field visibility. The adapter never retries a command on its own.
+- Handlers return public contract DTOs. Errors are mapped explicitly via `HttpFailure`; anything unknown becomes a redacted `INTERNAL_ERROR`. Success responses are canonical JSON generated first and validated before sending; command ETags and 202 Location headers derive from that snapshot.
 
-测试使用 Fastify inject，并用真实 TCP 验证原始重复头。生产身份/治理安装、hello-business、TLS/代理配置和完整发行验收仍待完成；Core DTO 映射、typed SDK、显式 CLI 宿主和本地服务生命周期联测已通过。
+## Limits and cancellation
 
-`stopHttpIngress(app)` 可直接接入 RuntimeService.stopIngress。调用时同步关闭业务准入，关闭监听/连接并等待所有已进入的认证和 Owner Promise；重复调用返回同一停机 Promise。超时响应后的后台业务也必须真正结束后才能关闭数据库。请求自身的业务失败由请求处理，传输关闭失败则在收尾后上报。直接 app.close() 只负责 Fastify 的传输生命周期，生产宿主应使用此钩子。
+Default body limit is 1 MiB with a 30-second total deadline (configurable up to 60 s). Explicit binary routes may set their own `maxBytes`; an oversized stream is cut off with a redacted `LIMIT_EXCEEDED`. Both the authentication install and owners receive an `AbortSignal`: a slow authentication cannot start an owner after the deadline, and a socket disconnect cancels the signal. HTTP timeout does not prove a rollback — callers should query back with the original idempotency key.
 
-这里保留实际工作 join，不以 Promise.race 超时冒充业务完成；安装的认证/Owner 必须遵守信号并有界收尾。永不结束的自定义处理器仍会阻止安全停机，进程强制终止和持久恢复由部署负责。测试覆盖超时 Owner 晚到失败、认证超时后不能启动 Owner、重复关闭和停止后拒绝新请求；Core 联测验证实际入口收尾先于队列 drain/报告保存/数据库关闭。
+## Graceful shutdown
 
-与异步启动并用时，传入 `stopHttpIngress(app, pendingListen)`，其中 pendingListen 是已经开始的 app.listen Promise。准入立即关闭，传输关闭等该 Promise 完成后执行，避免 close 先结束而 listen 随后绑定端口；启动失败仍由启动宿主报告。Core runHttpService 已统一处理这一顺序。
+`stopHttpIngress(app)` closes admission immediately, then stops listening and joins every in-flight authentication and owner promise — the real work join, not a `Promise.race` timeout. Repeat calls return the same shutdown promise. A never-resolving custom handler will still block a safe shutdown; forced termination and durable recovery remain the deployment's job. For async startup, pass the pending listen promise: `stopHttpIngress(app, pendingListen)`. Core's `runHttpService` already wires this ordering.
+
+## Status
+
+Tests use Fastify `inject` plus real-TCP checks for raw duplicate headers. Production identity/governance installation, hello-business, TLS/proxy configuration and full release acceptance are still pending; core DTO mapping, the typed SDK, the explicit CLI host and local service lifecycle integration have passed joint testing.

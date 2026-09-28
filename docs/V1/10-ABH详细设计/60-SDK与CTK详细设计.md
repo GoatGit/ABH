@@ -1,6 +1,6 @@
 # SDK、扩展合同与 CTK 详细设计
 
-> 版本：1.2 · Owner：SDK / Conformance Maintainers · 许可：Apache-2.0
+> 版本：1.2 · Owner：SDK / Conformance Maintainers · 许可：MIT
 >
 > 公开入口 Preview；0.x 仅承诺 compatibility.yaml 中实际通过的组合。
 
